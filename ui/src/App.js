@@ -14,8 +14,8 @@ class App extends Component {
   }
 
   handleClick () {
-    axios.get('https://localhost/api/v1')
-      .then(response => this.setState({username: response.data.name}))
+    axios.get('http://localhost/api')
+      .then(response => this.setState({quote: response.data.quote}))
       .catch(response => {
         console.log("errorrrr");
         console.log(response)
@@ -26,7 +26,7 @@ class App extends Component {
     return (
       <div className='button__container'>
         <button className='button' onClick={this.handleClick}>Click Meeee</button>
-        <p>{this.state.username}</p>
+        <p>{this.state.quote}</p>
       </div>
     )
   }
