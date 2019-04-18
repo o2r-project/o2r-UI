@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom';
+import Button from '@material-ui/core/Button';
 import './App.css'
 
 import axios from 'axios'
@@ -24,8 +26,12 @@ class App extends Component {
 
   render () {
     return (
+      
       <div className='button__container'>
-        <button className='button' onClick={this.handleClick}>Click Meeee</button>
+      <Button variant="contained" color="primary">
+      Material UI
+    </Button>
+        <button className='button' onClick={this.handleClick}>Click Me</button>
         <p>{this.state.quote}</p>
       </div>
     )
