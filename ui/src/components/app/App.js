@@ -10,6 +10,7 @@ import logo from '../../assets/img/o2r-logo-only-white.svg';
 import Privacy from '../footerLinks/Privacy';
 import Impressum from '../footerLinks/Impressum';
 import Upload from '../upload/Upload';
+import httpRequests from '../../helpers/httpRequests'
 
 const Header = () => {
   return (        
@@ -41,7 +42,32 @@ const Footer = () => {
 }
 
 class App extends Component {
-  render () {
+  constructor(props){
+    super(props);
+    this.state = {
+      userName: null,
+      userOrcid: null,
+    }
+
+    this.user = this.user.bind(this)
+  }
+
+  user() {
+    console.log("request")
+    httpRequests.getUser()
+    .then(
+      response => this.setState({
+        userName: response.data.name,
+        userOrcid:response.data.orcid
+      }),
+    )
+    .catch(response => {
+      console.log(response)
+    });  
+  }
+
+
+  render() {
     return (
       <div id="pageContainer">
       <Header></Header>
@@ -49,6 +75,7 @@ class App extends Component {
       <HashRouter>
       <div>
         <div className="content" id="mainView">
+          <button className='button' onClick={() => this.user()}>Click Me</button>
           <Route exact path="/" component={Upload}/>
           <Route path="/impressum" component={Impressum}/>
           <Route path="/privacy" component={Privacy}/>
@@ -63,11 +90,9 @@ class App extends Component {
 export default App
 
 class Main extends React.Component {
-  constructor(props){
-    super(props);
 
-  }
   render() {
+    
     return (
       <div>{this.props.view}</div>
     );
