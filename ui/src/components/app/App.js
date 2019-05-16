@@ -19,7 +19,7 @@ const Header = () => {
           <a href="/"><img src={logo} alt="" id="headerLogo"/></a>
         </Typography>
         <Button color="inherit">Discover ERC</Button>
-        <Button color="inherit">Login</Button>
+        <Button color="inherit" href="api/v1/auth/login">Login</Button>
         <Button color="inherit">Help</Button>
       </Toolbar> 
     </AppBar>
