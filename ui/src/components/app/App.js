@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
-import Button from '@material-ui/core/Button';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
+import {Button, AppBar, Toolbar} from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { Route, NavLink, HashRouter } from "react-router-dom";
 
 import './App.css';
 import logo from '../../assets/img/o2r-logo-only-white.svg';
+import orcidLogo from '../../assets/img/orcid.png';
 import Privacy from './footerLinks/Privacy';
 import Impressum from './footerLinks/Impressum';
 import Upload from '../upload/Upload';
-import httpRequests from '../../helpers/httpRequests'
+import httpRequests from '../../helpers/httpRequests';
+import Author from '../authorView/Author';
 
 const Header = (props) => {
   return (        
@@ -22,12 +22,21 @@ const Header = (props) => {
         <Button color="inherit">
           Discover ERC
         </Button>
-        {props.loggedIn ? <Button color="inherit">{props.userName} {props.userOrcid}</Button> : ''}
+        <HashRouter>
+          <NavLink id="link" to="/author">
+            {props.loggedIn ? 
+              <Button color="inherit" href="/author">
+                {props.userName} | <img src={orcidLogo} className="orcidImage"></img>{props.userOrcid}
+              </Button> : ''}
+          </NavLink>
+        </HashRouter>
         <Button color="inherit"
           href= {props.loggedIn ? "api/v1/auth/logout" : "api/v1/auth/login"} 
           onClick={() => props.login()}>{props.loggedIn ? 'Logout' : 'Login'}
         </Button>
-        <Button color="inherit">Help</Button>
+        <Button color="inherit">
+          Help
+        </Button>
       </Toolbar> 
     </AppBar>
   );
@@ -88,6 +97,7 @@ class App extends Component {
           <Route exact path="/" component={Upload}/>
           <Route path="/impressum" component={Impressum}/>
           <Route path="/privacy" component={Privacy}/>
+          <Route path="/author" component={Author}/>
         </div>
       </div>
       </HashRouter>
