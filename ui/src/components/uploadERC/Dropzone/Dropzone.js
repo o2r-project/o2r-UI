@@ -38,9 +38,9 @@ class DropzoneAreaExample extends Component{
         <DropzoneArea 
           onChange={this.handleChange}
           />
-        <Button 
+        <Button className="uploadButton" variant="contained" color="primary"
           onClick={this.uploadWorkspace}>
-          Load
+          Load workspace
         </Button>
       </div>
     )  

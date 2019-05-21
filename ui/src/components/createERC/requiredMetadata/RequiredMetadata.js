@@ -20,7 +20,6 @@ function Title() {
 }
 
 function Authors(props) {
-    console.log(props.authors)
     const listItems = props.authors.authors.map((author) => {
         return (
             <li key={author}>

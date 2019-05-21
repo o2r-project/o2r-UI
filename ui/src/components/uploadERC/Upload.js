@@ -1,21 +1,22 @@
 import React, { Component } from "react";
-import { Card, CardContent, Button, Input } from "@material-ui/core";
+import { Card, CardContent, Button, Input, Grid } from "@material-ui/core";
 import Dropzone from './Dropzone/Dropzone'
 
 import './upload.css';
 import httpRequests from '../../helpers/httpRequests';
+import Examples from './Examples/Examples';
 
 class Upload extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            url:''
+            url:'',
+            folder:'',
         };
-        this.scieboUpload = this.scieboUpload.bind(this);
     }
 
-    scieboUpload() {
+    upload = () => {
         this.props.history.push('/createERC');
         /*httpRequests.
             uploadViaSciebo(document.getElementById("scieboURL").value,
@@ -28,40 +29,53 @@ class Upload extends Component {
             );*/
     }
 
+    enterURL = (newURL, newFolder) => {
+        this.setState({
+            url: newURL,
+            folder: newFolder,
+        })
+    }
+
     render() {
         return (
+            <div>
             <Card id="uploadCard">
                 <CardContent>
-                    <h3>
-                        Upload from public share
-                    </h3>
+                <h1>Create an ERC</h1>
+                <div className="option1">
                     <div>
-                        <div>
+                        <h3>Option 1: Upload via public share</h3>
+                        
+                    </div>
+                    <div>
                         <Input
                             id="scieboURL"
+                            fullWidth
                             placeholder="Enter link to public folder"
-                            inputProps={{
-                                'aria-label': 'Description',
-                            }}/>
-                        </div>
-                        <div>
-                        <Input
-                            id="scieboFolder"
-                            placeholder="Enter folder name"
-                            inputProps={{
-                                'aria-label': 'Description',
-                            }}/>
-                        </div>
-                        <Button 
-                            onClick={this.scieboUpload}>
-                            Load and go to Metadata
-                        </Button>
+                            value={this.state.url}/>
                     </div>
                     <div>
-                        <Dropzone></Dropzone>
+                        <Input
+                            id="scieboFolder"
+                            fullWidth
+                            placeholder="Enter folder name"
+                            value={this.state.folder}/>
                     </div>
+                    <div className="uploadButton">
+                        <Button variant="contained" color="primary"
+                            onClick={this.upload}>
+                            Load workspace
+                        </Button>
+                        <Examples onClick={this.enterURL}></Examples>
+                    </div>
+                </div>
+                <div>
+                    <h3>Option 2: Upload your workspace (.zip)</h3>
+                    <Dropzone></Dropzone>
+                </div>
                 </CardContent>
             </Card>
+            </div>
         );
     }
 }

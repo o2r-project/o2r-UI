@@ -36,12 +36,6 @@
     display: flex;
     flex-direction: row;
   }
-  
-  #mainView {
-    margin-top: 5%;
-    margin-left: 1%;
-    padding-bottom: 2.5rem;
-  }
 
   .orcidImage{
     width:12px;
