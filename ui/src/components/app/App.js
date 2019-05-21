@@ -8,9 +8,10 @@ import logo from '../../assets/img/o2r-logo-only-white.svg';
 import orcidLogo from '../../assets/img/orcid.png';
 import Privacy from './footerLinks/Privacy';
 import Impressum from './footerLinks/Impressum';
-import Upload from '../upload/Upload';
+import Upload from '../uploadERC/Upload';
 import httpRequests from '../../helpers/httpRequests';
 import Author from '../authorView/Author';
+import CreateERC from '../createERC/CreateERC';
 
 const Header = (props) => {
   return (        
@@ -63,8 +64,8 @@ class App extends Component {
       loggedIn: this.user(),
       userName: null,
       userOrcid: null,
-    }
-  }
+    };
+  };
 
   user() {
     httpRequests.getUser()
@@ -79,7 +80,6 @@ class App extends Component {
       console.log(response);
     });  
   }
-
 
   render() {
     return (
@@ -98,23 +98,14 @@ class App extends Component {
           <Route path="/impressum" component={Impressum}/>
           <Route path="/privacy" component={Privacy}/>
           <Route path="/author" component={Author}/>
+          <Route path="/createERC" component={CreateERC}/>
         </div>
       </div>
       </HashRouter>
       </div>
     )
   }
-
 }
+
 export default App
 
-class Main extends React.Component {
-
-  render() {
-    return (
-      <div>
-        {this.props.view}
-      </div>
-    );
-  }
-}

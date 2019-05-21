@@ -16,15 +16,16 @@ class Upload extends Component {
     }
 
     scieboUpload() {
-        httpRequests.
+        this.props.history.push('/createERC');
+        /*httpRequests.
             uploadViaSciebo(document.getElementById("scieboURL").value,
                             document.getElementById("scieboFolder").value)
             .then(
                 response=>console.log(response)
             )
-            .catch(response => {
-                console.log(response);
-            });
+            .catch(
+                response=> console.log(response)
+            );*/
     }
 
     render() {
@@ -35,24 +36,28 @@ class Upload extends Component {
                         Upload from public share
                     </h3>
                     <div>
+                        <div>
                         <Input
                             id="scieboURL"
                             placeholder="Enter link to public folder"
                             inputProps={{
                                 'aria-label': 'Description',
                             }}/>
+                        </div>
+                        <div>
                         <Input
                             id="scieboFolder"
                             placeholder="Enter folder name"
                             inputProps={{
                                 'aria-label': 'Description',
                             }}/>
-                    </div>
-                    <div>
+                        </div>
                         <Button 
                             onClick={this.scieboUpload}>
-                            Load
+                            Load and go to Metadata
                         </Button>
+                    </div>
+                    <div>
                         <Dropzone></Dropzone>
                     </div>
                 </CardContent>
@@ -62,4 +67,3 @@ class Upload extends Component {
 }
 
 export default Upload;
-

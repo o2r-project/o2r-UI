@@ -14,11 +14,17 @@ function listAllCompendia() {
 }
 
 function uploadViaSciebo(url, folder) {
-    return axios.post(_env.api + 'compendium/', {content_type:"workspace", share_url: url, path:folder});
+    return axios.post(_env.api + 'compendium', {content_type:'workspace', share_url: url, path:folder});
+}
+
+function uploadWorkspace(workspace) {
+    console.log(workspace)
+    return axios.post(_env.api + 'compendium', {compendium: workspace, content_type: 'compendium'});
 }
 
 module.exports = {
     getUser: getUser,
     listAllCompendia: listAllCompendia,
     uploadViaSciebo: uploadViaSciebo,
+    uploadWorkspace: uploadWorkspace,
 };
