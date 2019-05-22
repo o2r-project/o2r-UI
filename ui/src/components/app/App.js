@@ -12,6 +12,7 @@ import Upload from '../uploadERC/Upload';
 import httpRequests from '../../helpers/httpRequests';
 import Author from '../authorView/Author';
 import CreateERC from '../createERC/CreateERC';
+import Discovery from '../discovery/Discovery';
 
 const Header = (props) => {
   return (        
@@ -20,10 +21,12 @@ const Header = (props) => {
         <Typography variant="h6" color="inherit" style={{ flex: 1 }}>
           <a href="/"><img src={logo} alt="" id="headerLogo"/></a>
         </Typography>
-        <Button color="inherit">
-          Discover ERC
-        </Button>
         <HashRouter>
+          <NavLink id="link" to="/discover">
+            <Button color="inherit">
+              Discover ERC
+            </Button>
+          </NavLink>
           <NavLink id="link" to="/author">
             {props.loggedIn ? 
               <Button color="inherit" href="/author">
@@ -99,6 +102,7 @@ class App extends Component {
           <Route path="/privacy" component={Privacy}/>
           <Route path="/author" component={Author}/>
           <Route path="/createERC" component={CreateERC}/>
+          <Route path="/discover" component={Discovery}/>
         </div>
       </div>
       </HashRouter>
