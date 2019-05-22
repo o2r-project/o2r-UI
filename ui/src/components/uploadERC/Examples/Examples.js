@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 
 import './examples.css';
-import ercs from './ercs.json';
+import ercs from '../../../helpers/ercs.json';
 
 function exampleERCs(props, close){
     const ercItems = ercs.map((erc) => {
         return (
-            <div> 
+            <div key={erc.id}> 
                 <Button onClick={() => close(erc.url, erc.folder)}>{erc.name}</Button>
                 <a href={erc.doi}>{erc.doi ? 'Original':''}</a>
             </div>

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import {Button, AppBar, Toolbar} from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
+import {Button, AppBar, Toolbar, Typography } from '@material-ui/core';
 import { Route, NavLink, HashRouter } from "react-router-dom";
 
 import './App.css';
@@ -8,7 +7,7 @@ import logo from '../../assets/img/o2r-logo-only-white.svg';
 import orcidLogo from '../../assets/img/orcid.png';
 import Privacy from './footerLinks/Privacy';
 import Impressum from './footerLinks/Impressum';
-import Upload from '../uploadERC/Upload';
+import Startpage from '../startpage/Startpage';
 import httpRequests from '../../helpers/httpRequests';
 import Author from '../authorView/Author';
 import CreateERC from '../createERC/CreateERC';
@@ -29,7 +28,7 @@ const Header = (props) => {
           </NavLink>
           <NavLink id="link" to="/author">
             {props.loggedIn ? 
-              <Button color="inherit" href="/author">
+              <Button color="inherit">
                 {props.userName} | <img src={orcidLogo} className="orcidImage"></img>{props.userOrcid}
               </Button> : ''}
           </NavLink>
@@ -97,7 +96,7 @@ class App extends Component {
       <HashRouter>
       <div>
         <div className="content" id="mainView">
-          <Route exact path="/" component={Upload}/>
+          <Route exact path="/" component={Startpage}/>
           <Route path="/impressum" component={Impressum}/>
           <Route path="/privacy" component={Privacy}/>
           <Route path="/author" component={Author}/>

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Card, CardContent, Button, Input, Grid } from "@material-ui/core";
-import Dropzone from './Dropzone/Dropzone'
+import { Button, Input } from "@material-ui/core";
+import Dropzone from './Dropzone/Dropzone';
 
 import './upload.css';
 import httpRequests from '../../helpers/httpRequests';
@@ -39,8 +39,6 @@ class Upload extends Component {
     render() {
         return (
             <div>
-            <Card id="uploadCard">
-                <CardContent>
                 <h1>Create an ERC</h1>
                 <div className="option1">
                     <div>
@@ -73,8 +71,6 @@ class Upload extends Component {
                     <h3>Option 2: Upload your workspace (.zip)</h3>
                     <Dropzone></Dropzone>
                 </div>
-                </CardContent>
-            </Card>
             </div>
         );
     }

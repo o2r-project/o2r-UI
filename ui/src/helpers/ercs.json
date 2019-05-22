@@ -1,26 +1,31 @@
 [
     {
+    "id": "1",
     "name": "R Markdown",
     "url": "https://uni-muenster.sciebo.de/s/hAh8AZLYvHNgNA9",
     "folder": "/workspace-rmd-data"
 },
 {
+    "id": "2",
     "name": "R Markdown (different data)",
     "url": "https://uni-muenster.sciebo.de/s/hAh8AZLYvHNgNA9",
     "folder": "/workspace-rmd-data-other"
 },
 {
+    "id": "3",
     "name": "R Markdown (random plot)",
     "url": "https://uni-muenster.sciebo.de/s/hAh8AZLYvHNgNA9",
     "folder": "/workspace-rmd-data-random"
 },
 {
+    "id": "4",
     "name": "A question driven socio-hydrological modeling process",
     "url": "https://uni-muenster.sciebo.de/s/hAh8AZLYvHNgNA9",
     "folder": "/corpus_aquestiondrivenprocess",
     "doi": "https://doi.org/10.5194/hess-20-73-2016"
 },
 {
+    "id": "5",
     "name": "spacetime: Spatio-Temporal Data in R",
     "url": "https://uni-muenster.sciebo.de/s/hAh8AZLYvHNgNA9",
     "folder": "/corpus_spacetime.zip",
