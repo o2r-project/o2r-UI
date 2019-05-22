@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, CardContent, CardActionArea, CardActions, CardMedia, Typography, Button} from "@material-ui/core/";
+import { Card, CardContent, CardActionArea, CardActions, CardMedia, Typography, Button, Collapse, CardHeader } from "@material-ui/core/";
 import { withStyles } from '@material-ui/core/styles';
 
 import './inspectExamples.css';
@@ -21,6 +21,9 @@ function exampleERCs(props){
         return (
             <div key={erc.id}>
                 <Card id="example">
+                    <CardHeader
+                            title={erc.name}
+                            subheader={erc.id}/>
                     <CardActionArea>
                         <CardMedia
                             component="img"
