@@ -35,6 +35,7 @@ class Startpage extends Component {
               </Card>
               </Grid>
           </Grid>
+          <p id="moreInfo">Find more information on our project website <a href="https://o2r.info">https://o2r.info</a></p>
         </Grid>
       </Grid>
     );

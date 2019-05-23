@@ -57,9 +57,9 @@ class RequiredMetadata extends Component {
                     </Authors>
                     <TextField
                         id="date"
-                        label="Birthday"
+                        label="Publication date"
                         type="date"
-                        defaultValue="2017-05-24"
+                        //defaultValue="2017-05-24"
                         //className={classes.textField}
                         InputLabelProps={{
                         shrink: true,

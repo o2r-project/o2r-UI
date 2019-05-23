@@ -108,7 +108,6 @@ class App extends Component {
           <Route path="/author" component={Author}/>
           <Route path="/createERC" component={CreateERC}/>
           <Route path="/discover" component={Discovery}/>
-          <p id="moreInfo">Find more information on our project website <a href="https://o2r.info">https://o2r.info</a></p>
         </div>
       </div>
       </HashRouter>

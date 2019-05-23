@@ -11,7 +11,7 @@ const styles = {
       maxWidth: 345,
     },
     media: {
-      height: 140,
+      width: 200,
     },
   };
 
@@ -21,21 +21,10 @@ function exampleERCs(props){
         return (
             <div key={erc.id}>
                 <Card id="example">
-                    <CardHeader
-                            title={erc.name}
-                            subheader={erc.id}/>
                     <CardActionArea>
-                        <CardMedia
-                            component="img"
-                            alt="Contemplative Reptile"
-                            className={classes.media}
-                            image={pic}
-                            maxWidth="10"
-                        />
+                    <CardHeader
+                            title={erc.name}/>
                         <CardContent>
-                        <Typography gutterBottom variant="h5" component="h2">
-                            Bla
-                        </Typography>
                         <Typography component="p">
                             Text
                         </Typography>
@@ -60,7 +49,7 @@ class InspectExamples extends Component {
     render() {
         return(
             <div>
-                <h1>Inspect ERC examples</h1>
+                <h1>Latest ERCs</h1>
                 <div> 
                     {exampleERCs(this.props)}
                 </div>
