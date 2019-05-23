@@ -11,7 +11,6 @@ class Startpage extends Component {
   };
 
   render() {
-    const { classes } = this.props;
     const { spacing } = this.state;
 
     return (

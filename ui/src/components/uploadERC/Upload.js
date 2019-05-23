@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Button, Input } from "@material-ui/core";
 import Dropzone from './Dropzone/Dropzone';
+import { withRouter } from 'react-router-dom';
 
 import './upload.css';
 import httpRequests from '../../helpers/httpRequests';
@@ -76,4 +77,4 @@ class Upload extends Component {
     }
 }
 
-export default Upload;
+export default withRouter(Upload);
