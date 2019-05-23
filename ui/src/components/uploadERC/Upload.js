@@ -19,7 +19,7 @@ class Upload extends Component {
 
     upload = () => {
         this.props.history.push('/createERC');
-        /*httpRequests.
+        httpRequests.
             uploadViaSciebo(document.getElementById("scieboURL").value,
                             document.getElementById("scieboFolder").value)
             .then(
@@ -27,7 +27,7 @@ class Upload extends Component {
             )
             .catch(
                 response=> console.log(response)
-            );*/
+            );
     }
 
     enterURL = (newURL, newFolder) => {
