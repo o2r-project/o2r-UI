@@ -57,7 +57,8 @@ const Footer = () => {
           <NavLink id="link" to="/privacy"> Privacy Policy</NavLink> |
           <a id="link" href="https://o2r.info/api/"> API</a> |
           <a id="link" href="https://o2r.uni-muenster.de/api/v1/"> Endpoint</a> |
-          <a id="link" href="https://github.com/o2r-project/reference-implementation"> Implementation</a>
+          <a id="link" href="https://github.com/o2r-project/reference-implementation"> Implementation</a> | 
+          Version 0.0.1
       </div>
       </HashRouter>
     </div>
@@ -107,6 +108,7 @@ class App extends Component {
           <Route path="/author" component={Author}/>
           <Route path="/createERC" component={CreateERC}/>
           <Route path="/discover" component={Discovery}/>
+          <p id="moreInfo">Find more information on our project website <a href="https://o2r.info">https://o2r.info</a></p>
         </div>
       </div>
       </HashRouter>
