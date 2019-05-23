@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, CardContent, CardActionArea, CardActions, CardMedia, Typography, Button, Collapse, CardHeader } from "@material-ui/core/";
+import { Card, CardContent, CardActionArea, CardActions, CardMedia, Typography, Button, CardHeader } from "@material-ui/core/";
 import { withStyles } from '@material-ui/core/styles';
 
 import './inspectExamples.css';

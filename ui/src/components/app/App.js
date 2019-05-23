@@ -51,8 +51,13 @@ const Footer = () => {
       <HashRouter>
       <div id="links">
           <NavLink id="link" to="/">Home</NavLink> |
+          <a id="link" href="http://www.dlib.org/dlib/january17/nuest/01nuest.html"> About ERC</a> |
+          <a id="link" href="https://o2r.info/erc-spec/"> ERC specification</a> |
           <NavLink id="link" to="/impressum"> Impressum</NavLink> |
-          <NavLink id="link" to="/privacy"> Privacy Policy</NavLink>
+          <NavLink id="link" to="/privacy"> Privacy Policy</NavLink> |
+          <a id="link" href="https://o2r.info/api/"> API</a> |
+          <a id="link" href="https://o2r.uni-muenster.de/api/v1/"> Endpoint</a> |
+          <a id="link" href="https://github.com/o2r-project/reference-implementation"> Implementation</a>
       </div>
       </HashRouter>
     </div>

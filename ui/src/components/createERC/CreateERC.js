@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Tab, Typography} from '@material-ui/core';
+import { Tabs, Tab, Typography } from '@material-ui/core';
 
 import './createERC.css';
 import RequiredMetadata from './requiredMetadata/RequiredMetadata';
@@ -43,7 +43,7 @@ class CreateERC extends Component {
                 </Tabs>
                     {value === 0 && 
                 <TabContainer>
-                    <RequiredMetadata authors={[1,2,3,4,5,6]}>
+                    <RequiredMetadata authors={[1,2,3]}>
                     </RequiredMetadata>
                 </TabContainer>}
                 {value === 1 && <TabContainer>Item Two</TabContainer>}

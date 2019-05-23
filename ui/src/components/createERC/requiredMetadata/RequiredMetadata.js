@@ -22,9 +22,13 @@ function Title() {
 function Authors(props) {
     const listItems = props.authors.authors.map((author) => {
         return (
-            <li key={author}>
-                {author}
-            </li>
+            <Card key={author} id="authorcard">
+                <CardContent>
+                    <p>Max Power</p>
+                    <p>Institute for Geoinformatics</p>
+                    <p>0000 000 000 1</p>
+                </CardContent>
+            </Card>
         );
     });
     return listItems;
@@ -43,12 +47,24 @@ class RequiredMetadata extends Component {
         return (
             <div>
                 <Card>
+                    <h4>Authors</h4>
                     <CardContent>
                         <Title></Title>
                     </CardContent>
+                    <h4>Title</h4>
                     <Authors 
                         authors={this.props}>
                     </Authors>
+                    <TextField
+                        id="date"
+                        label="Birthday"
+                        type="date"
+                        defaultValue="2017-05-24"
+                        //className={classes.textField}
+                        InputLabelProps={{
+                        shrink: true,
+                        }}
+                    />
                 </Card>
             </div>
         );
