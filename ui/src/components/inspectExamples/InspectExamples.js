@@ -4,7 +4,6 @@ import { withStyles } from '@material-ui/core/styles';
 
 import './inspectExamples.css';
 import ercs from '../../helpers/ercs.json';
-import pic from '../../assets/img/image.png';
 
 const styles = {
     card: {
