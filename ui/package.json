@@ -4,7 +4,9 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "latest",
+    "@types/leaflet-draw": "^0.4.13",
     "leaflet": "^1.5.1",
+    "leaflet-draw": "^1.0.4",
     "material-ui-dropzone": "^2.3.5",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
