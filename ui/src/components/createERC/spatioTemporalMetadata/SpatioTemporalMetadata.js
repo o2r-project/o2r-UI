@@ -5,6 +5,8 @@ import './spatioTemporalMetadata.css';
 import React, { Component } from 'react'
 import { Map, TileLayer, FeatureGroup } from 'react-leaflet'
 import { EditControl } from 'react-leaflet-draw'
+import { Card, CardContent, TextField } from "@material-ui/core";
+import { throwStatement } from '@babel/types';
 
 
 
@@ -88,7 +90,7 @@ class OwnMap extends React.Component {
 
 
 
-
+let to;
 class SpatioTemporalMetadata extends React.Component {
   constructor(props){
     super(props);
@@ -97,15 +99,57 @@ class SpatioTemporalMetadata extends React.Component {
     };
   };
 
+  getInitialState = () => {
+    return {
+        textFieldValue: ''
+    };
+}
+
 
 
   render() {
-    
+    let to;
     return (
-      <div>
+      <div id="form">
+        <Card>
       <h1>Specify the spatial Propertys of your dataset</h1>
       <OwnMap/>
+      <h1> Specify the temporal properties of your dataset(s)</h1>
+      
+      <TextField
+                        id="date"
+                        label="From"
+                        type="date"
+                        //defaultValue="2017-05-24"
+                        //className={classes.textField}
+                        InputLabelProps={{
+                          required: true,
+                        shrink: true,
+                        }}
+                        value={this.state.from}
+                        onChange={(e) => this.setState({
+                          from: e.target.value
+                      })}
+                    />
+                
+        <TextField
+                        id="date"
+                        label="To"
+                        type="date"
+                        //defaultValue="2017-05-24"
+                        //className={classes.textField}
+                        InputLabelProps={{
+                        required: true,
+                        shrink: true,
+                        }}
+                        value={this.state.to}
+                        onChange={(e) => this.setState({
+                          to: e.target.value
+                      })}
+                    />
+                </Card>
       </div>
+
 
     );
   }
