@@ -22,6 +22,7 @@ function uploadWorkspace(workspace) {
     return axios.post(_env.api + 'compendium', {compendium: workspace, content_type: 'compendium'});
 }
 
+
 module.exports = {
     getUser: getUser,
     listAllCompendia: listAllCompendia,
