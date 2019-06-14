@@ -19,13 +19,17 @@ const dataLicense=[];
 const codeLicense=[];
 
 function prepareLicense(){
-    console.log(licensesData);
+    
         for(var i in licensesData){
             if(licensesData[i].domain_content){ textLicense.push(licensesData[i])};
             if(licensesData[i].domain_data) {dataLicense.push(licensesData[i])};
             if(licensesData[i].domain_software) {codeLicense.push(licensesData[i])};
 }
-    console.log (textLicense)
+    
+}
+
+function mostRestrictive(){
+
 }
 
 
@@ -62,7 +66,6 @@ function Authors(props) {
 
         
     });
-    console.log(listItems);
     return listItems;
 }
 
@@ -74,7 +77,7 @@ const validationSchema= Yup.object({
     abstract: Yup.string()
         .required('Abstract is required'),
     publicationDate: Yup.date().max(new Date, 'No Valid Date')
-    .required("Date is require"),
+        .required("Date is require"),
     displayFile: Yup.string()
         .required('DisplayFile is required'),
     mainFile: Yup.string()
@@ -99,18 +102,18 @@ const Form = props =>{
         setFieldTouched
     }=props
 
- /**
-  * 
-  * const handleChange2 = name => event =>{
+ 
+ /** const handleChange2 = name => event =>{
       console.log(props);
-      props.values.{[name]: event.target.value})
-    }
-*/
+      props.values.name = event.target.value;
+}*/
+
 
     const change= (name, e) => {
         console.log(e);
         e.persist();
         console.log(props);
+        e.target.name = name;
         handleChange(e);
         setFieldTouched(name, true, false)
     }
@@ -118,113 +121,112 @@ const Form = props =>{
         <form
         onSubmit={()=> {
             alert('submit');
-        }}
-        >
-            <br/>
-            <Card> 
-                <h4>Title</h4>                   
-    <TextField
-        id="title"
-        label="Required"
-        style={{ margin: 8 }}
-        placeholder="Title"
-        fullWidth
-        required
-        helperText={touched.title ? errors.title : ""}
-        error={touched.title && Boolean(errors.title)}
-        value={title}
-        onChange={change.bind(null, "title")}
-        margin="normal"
-        variant="outlined"
-        InputLabelProps={{
-            shrink: true,
-    }}/>
+        }} >
+    <br/>
+    <Card> 
+        <h4>Title</h4>                   
+        <TextField
+            id="title"
+            label="Required"
+            style={{ margin: 8 }}
+            placeholder="Title"
+            fullWidth
+            required
+            helperText={touched.title ? errors.title : ""}
+            error={touched.title && Boolean(errors.title)}
+            value={title}
+            onChange={change.bind(null, "title")}
+            margin="normal"
+            variant="outlined"
+            InputLabelProps={{
+                shrink: true,
+            }}/>
     </Card>
     <br/>
     <Card> 
-    <h4>Abstract</h4>                   
-    <TextField
-        id="abstract"
-        label="Required"
-        style={{ margin: 8 }}
-        placeholder="Abstract"
-        fullWidth
-        required
-        helperText={touched.abstract ? errors.abstract : ""}
-        error={touched.abstract && Boolean(errors.abstract)}
-        value={abstract}
-        onChange={change.bind(null, "abstract")}
-        margin="normal"
-        variant="outlined"
-        InputLabelProps={{
-            shrink: true,
-    }}/>
+        <h4>Abstract</h4>                   
+        <TextField
+            id="abstract"
+            label="Required"
+            style={{ margin: 8 }}
+            placeholder="Abstract"
+            fullWidth
+            required
+            helperText={touched.abstract ? errors.abstract : ""}
+            error={touched.abstract && Boolean(errors.abstract)}
+            value={abstract}
+            onChange={change.bind(null, "abstract")}
+            margin="normal"
+            variant="outlined"
+            InputLabelProps={{
+                shrink: true,
+            }}/>
+    </Card>
+        <br/>   
+    <Card> 
+        <h4>Publication Date</h4>                
+        <TextField
+            id="publicationDate"
+            label="Publication date"
+            type="date"
+            style={{ margin: 8 }}
+            required
+            helperText={touched.publicationDate ? errors.publicationDate : ""}
+            error={touched.publicationDate && Boolean(errors.publicationDate)}
+            value={publicationDate}
+            onChange={change.bind(null, "publicationDate")}
+            margin="normal"
+            variant="outlined"
+            InputLabelProps={{
+                shrink: true,
+            }}/>
     </Card>
     <br/>
     <Card> 
-    <h4>Publication Date</h4>                
-    <TextField
-        id="date"
-        label="Publication date"
-        type="date"
-        style={{ margin: 8 }}
-        required
-        helperText={touched.publicationDate ? errors.publicationDate : ""}
-        error={touched.publicationDate && Boolean(errors.publicationDate)}
-        value={publicationDate}
-        onChange={change.bind(null, "publicationDate")}
-        margin="normal"
-        variant="outlined"
-        InputLabelProps={{
-            shrink: true,
-    }}/>
+        <h4>Display File</h4>                   
+        <TextField
+            id="displayFile"
+            label="displayFile"
+            style={{ margin: 8 }}
+            placeholder="display.html"
+            fullWidth
+            required
+            helperText={touched.displayFile ? errors.displayFile : ""}
+            error={touched.displayFile && Boolean(errors.displayFile)}
+            value={displayFile}
+            onChange={change.bind(null, "displayFile")}
+            margin="normal"
+            variant="outlined"
+            InputLabelProps={{
+                shrink: true,
+            }}/>
     </Card>
-    <br/>
-    <Card> 
-    <h4>Display File</h4>                   
-    <TextField
-        id="displayFile"
-        label="displayFile"
-        style={{ margin: 8 }}
-        placeholder="display.html"
-        fullWidth
-        required
-        helperText={touched.displayFile ? errors.displayFile : ""}
-        error={touched.displayFile && Boolean(errors.displayFile)}
-        value={displayFile}
-        onChange={change.bind(null, "displayFile")}
-        margin="normal"
-        variant="outlined"
-        InputLabelProps={{
-            shrink: true,
-    }}/>
-    </Card>
-    <br/>
+        <br/>
     <Card>
-    <h4>Main File</h4>                   
-    <TextField
-        id="mainFile"
-        label="mainFile"
-        style={{ margin: 8 }}
-        placeholder="main.Rmd"
-        fullWidth
-        required
-        helperText={touched.mainFile ? errors.mainFile : ""}
-        error={touched.mainFile && Boolean(errors.mainFile)}
-        value={mainFile}
-        onChange={change.bind(null, "mainFile")}
-        margin="normal"
-        variant="outlined"
-        InputLabelProps={{
-            shrink: true,
-    }}/>
+        <h4>Main File</h4>                   
+            <TextField
+            id="mainFile"
+            label="mainFile"
+            style={{ margin: 8 }}
+            placeholder="main.Rmd"
+            fullWidth
+            required
+            helperText={touched.mainFile ? errors.mainFile : ""}
+            error={touched.mainFile && Boolean(errors.mainFile)}
+            value={mainFile}
+            onChange={change.bind(null, "mainFile")}
+            margin="normal"
+            variant="outlined"
+            InputLabelProps={{
+                shrink: true,
+            }}/>
     </Card>
-    <br/>
+        <br/>
     <Card>
-    <h4>Licenses</h4>  
-    <p>Templates</p>  
-    <Button
-    ></Button>               
+        <h4>Licenses</h4>  
+        <p>Templates</p>  
+        <Button onClick={mostRestrictive()}
+        >Most restrictive</Button>               
     <TextField
         id="dataLicenses"
         select
@@ -242,7 +244,7 @@ const Form = props =>{
         {dataLicense.map(option =>(
             <MenuItem key={option.id} value={option}>
                 {option.title}
-                </MenuItem>
+            </MenuItem>
         ))}
     </TextField>
     <TextField
@@ -309,12 +311,14 @@ class RequiredMetadata extends Component {
     };
 
     render() {
-        const values = {Titel: "",
-        Abstract: "",
-        PublicationDate:"",
-        DisplayFile: "",
-        MainFile: "",
-        dataLicenses: "",}
+        const values = {titel: "",
+        abstract: "",
+        publicationDate:"",
+        displayFile: "",
+        mainFile: "",
+        dataLicenses: "",
+        textLicenses: "",
+        codeLicenses: "",}
         prepareLicense();
 
         return (
