@@ -30,9 +30,9 @@ function prepareLicense(){
 mostRestrictiveData.push(textLicenses[3]);
 mostRestrictiveData.push(codeLicenses[28]);
 mostRestrictiveData.push(dataLicenses[1]);
- leastRestrictiveData.push(textLicenses[5]);
- leastRestrictiveData.push(codeLicenses[39]);
- leastRestrictiveData.push(dataLicenses[4]);
+leastRestrictiveData.push(textLicenses[5]);
+leastRestrictiveData.push(codeLicenses[39]);
+leastRestrictiveData.push(dataLicenses[4]);
     
 }
 
@@ -126,7 +126,7 @@ const Form = props =>{
         else if(name === "leastRestrictive") {
             setFieldValue('textLicense', leastRestrictiveData[0]);
             setFieldValue('codeLicense', leastRestrictiveData[1]);
-            setFieldValue('dataLicense', leastRestrictiveData[0]);
+            setFieldValue('dataLicense', leastRestrictiveData[2]);
         }
     }
 
