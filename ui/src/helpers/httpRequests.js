@@ -19,7 +19,7 @@ function uploadViaSciebo(url, folder) {
 
 function uploadWorkspace(workspace) {
     console.log(workspace)
-    return axios.post(_env.api + 'compendium', {compendium: workspace, content_type: 'compendium'});
+    return axios.post(_env.api + 'compendium', workspace);
 }
 
 

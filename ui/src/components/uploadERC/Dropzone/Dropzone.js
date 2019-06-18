@@ -23,7 +23,10 @@ class DropzoneAreaExample extends Component{
   }
 
   uploadWorkspace() {
-    httpRequests.uploadWorkspace(this.state.files)
+    const data = new FormData();
+    data.append('compendium', this.state.files[0]);
+    data.append('content_type', 'workspace');
+    httpRequests.uploadWorkspace(data)
     .then(
       response=>console.log(response)
     )
