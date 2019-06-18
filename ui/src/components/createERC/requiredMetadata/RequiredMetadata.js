@@ -25,12 +25,11 @@ function prepareLicense(){
             if(licensesData[i].domain_data) {dataLicense.push(licensesData[i])};
             if(licensesData[i].domain_software) {codeLicense.push(licensesData[i])};
 }
+ const mostRestcitivaData= licensesData[0];
+console.log(dataLicense[0])
     
 }
 
-function mostRestrictive(){
-
-}
 
 
 function Authors(props) {
@@ -99,14 +98,9 @@ const Form = props =>{
         touched, 
         handleChange,
         isValid,
-        setFieldTouched
+        setFieldTouched,
+        setFieldValue
     }=props
-
- 
- /** const handleChange2 = name => event =>{
-      console.log(props);
-      props.values.name = event.target.value;
-}*/
 
 
     const change= (name, e) => {
@@ -117,6 +111,11 @@ const Form = props =>{
         handleChange(e);
         setFieldTouched(name, true, false)
     }
+
+   const handleClick = (name, e) => {
+        console.log("button");
+    }
+
     return(
         <form
         onSubmit={()=> {
@@ -204,7 +203,7 @@ const Form = props =>{
         <br/>
     <Card>
         <h4>Main File</h4>                   
-            <TextField
+        <TextField
             id="mainFile"
             label="mainFile"
             style={{ margin: 8 }}
@@ -225,68 +224,68 @@ const Form = props =>{
     <Card>
         <h4>Licenses</h4>  
         <p>Templates</p>  
-        <Button onClick={mostRestrictive()}
+        <Button onClick={handleClick.bind(null, "mostRestrictive")}
         >Most restrictive</Button>               
-    <TextField
-        id="dataLicenses"
-        select
-        label="dataLicenses"
-        style={{ margin: 8 }}
-        required
-        fullWidth
-        helperText={touched.dataLicenses ? errors.dataLicenses : ""}
-        error={touched.dataLicenses && Boolean(errors.dataLicenses)}
-        value={dataLicenses}
-        onChange={change.bind(null, "dataLicenses")}
-        margin="normal"
-        variant="outlined"
-        >
-        {dataLicense.map(option =>(
-            <MenuItem key={option.id} value={option}>
-                {option.title}
-            </MenuItem>
-        ))}
-    </TextField>
-    <TextField
-        id="textLicenses"
-        select
-        label="textLicenses"
-        style={{ margin: 8 }}
-        required
-        fullWidth
-        helperText={touched.textLicenses ? errors.textLicenses : ""}
-        error={touched.textLicenses && Boolean(errors.textLicenses)}
-        value={textLicenses}
-        onChange={change.bind(null, "textLicenses")}
-        margin="normal"
-        variant="outlined"
-        >
-        {textLicense.map(option =>(
-            <MenuItem key={option.id} value={option}>
-                {option.title}
+        <TextField
+            id="dataLicenses"
+            select
+            label="dataLicenses"
+            style={{ margin: 8 }}
+            required
+            fullWidth
+            helperText={touched.dataLicenses ? errors.dataLicenses : ""}
+            error={touched.dataLicenses && Boolean(errors.dataLicenses)}
+            value={dataLicenses}
+            onChange={change.bind(null, "dataLicenses")}
+            margin="normal"
+            variant="outlined"
+            >
+            {dataLicense.map(option =>(
+                <MenuItem key={option.id} value={option}>
+                    {option.title}
                 </MenuItem>
-        ))}
-    </TextField>
-    <TextField
-        id="codeLicenses"
-        select
-        label="codeLicenses"
-        style={{ margin: 8 }}
-        required
-        fullWidth
-        helperText={touched.codeLicenses ? errors.codeLicenses : ""}
-        error={touched.codeLicenses && Boolean(errors.codeLicenses)}
-        value={codeLicenses}
-        onChange={change.bind(null, "codeLicenses")}
-        margin="normal"
-        variant="outlined"
-        >
-        {codeLicense.map(option =>(
-            <MenuItem key={option.id} value={option}>
-                {option.title}
-                </MenuItem>
-        ))}
-    </TextField>
+            ))}
+        </TextField>
+        <TextField
+            id="textLicenses"
+            select
+            label="textLicenses"
+            style={{ margin: 8 }}
+            required
+            fullWidth
+            helperText={touched.textLicenses ? errors.textLicenses : ""}
+            error={touched.textLicenses && Boolean(errors.textLicenses)}
+            value={textLicenses}
+            onChange={change.bind(null, "textLicenses")}
+            margin="normal"
+            variant="outlined"
+            >
+            {textLicense.map(option =>(
+                <MenuItem key={option.id} value={option}>
+                    {option.title}
+                    </MenuItem>
+            ))}
+        </TextField>
+        <TextField
+            id="codeLicenses"
+            select
+            label="codeLicenses"
+            style={{ margin: 8 }}
+            required
+            fullWidth
+            helperText={touched.codeLicenses ? errors.codeLicenses : ""}
+            error={touched.codeLicenses && Boolean(errors.codeLicenses)}
+            value={codeLicenses}
+            onChange={change.bind(null, "codeLicenses")}
+            margin="normal"
+            variant="outlined"
+            >
+            {codeLicense.map(option =>(
+                <MenuItem key={option.id} value={option}>
+                    {option.title}
+                    </MenuItem>
+            ))}
+        </TextField>
     </Card>
     <Button
                 type="submit"
@@ -311,7 +310,7 @@ class RequiredMetadata extends Component {
     };
 
     render() {
-        const values = {titel: "",
+        const values = {title: "",
         abstract: "",
         publicationDate:"",
         displayFile: "",
