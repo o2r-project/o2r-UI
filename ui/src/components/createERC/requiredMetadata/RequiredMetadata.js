@@ -14,19 +14,25 @@ function updateCard(){
  Yup.object()
 }
 */
-const textLicense=[];
-const dataLicense=[];
-const codeLicense=[];
+const textLicenses=[];
+const dataLicenses=[];
+const codeLicenses=[];
+const mostRestrictiveData = [];
+const leastRestrictiveData = [];
 
 function prepareLicense(){
     
         for(var i in licensesData){
-            if(licensesData[i].domain_content){ textLicense.push(licensesData[i])};
-            if(licensesData[i].domain_data) {dataLicense.push(licensesData[i])};
-            if(licensesData[i].domain_software) {codeLicense.push(licensesData[i])};
+            if(licensesData[i].domain_content){ textLicenses.push(licensesData[i])};
+            if(licensesData[i].domain_data) {dataLicenses.push(licensesData[i])};
+            if(licensesData[i].domain_software) {codeLicenses.push(licensesData[i])};
 }
- const mostRestcitivaData= licensesData[0];
-console.log(dataLicense[0])
+mostRestrictiveData.push(textLicenses[3]);
+mostRestrictiveData.push(codeLicenses[28]);
+mostRestrictiveData.push(dataLicenses[1]);
+ leastRestrictiveData.push(textLicenses[5]);
+ leastRestrictiveData.push(codeLicenses[39]);
+ leastRestrictiveData.push(dataLicenses[4]);
     
 }
 
@@ -81,19 +87,19 @@ const validationSchema= Yup.object({
         .required('DisplayFile is required'),
     mainFile: Yup.string()
         .required('MainFile is required'),
-    textLicenses: Yup.string()
-        .required('Licenses is requires'),
-    codeLicenses: Yup.string()
-        .required('Licenses is requires'),
-    dataLicenses: Yup.string()
-        .required('Licenses is requires')
+    textLicense: Yup.string()
+        .required('License is requires'),
+    codeLicense: Yup.string()
+        .required('License is requires'),
+    dataLicense: Yup.string()
+        .required('License is requires')
 })
 
 
 
 const Form = props =>{
     const{
-        values: {title, abstract, publicationDate, displayFile, mainFile, textLicenses, dataLicenses, codeLicenses},
+        values: {title, abstract, publicationDate, displayFile, mainFile, textLicense, dataLicense, codeLicense},
         errors,
         touched, 
         handleChange,
@@ -104,16 +110,24 @@ const Form = props =>{
 
 
     const change= (name, e) => {
-        console.log(e);
         e.persist();
-        console.log(props);
         e.target.name = name;
         handleChange(e);
         setFieldTouched(name, true, false)
     }
 
    const handleClick = (name, e) => {
-        console.log("button");
+        console.log(name);
+        if (name === "mostRestrictive") {
+            setFieldValue('textLicense', mostRestrictiveData[0]);
+            setFieldValue('codeLicense', mostRestrictiveData[1]);
+            setFieldValue('dataLicense', mostRestrictiveData[2]);
+        }
+        else if(name === "leastRestrictive") {
+            setFieldValue('textLicense', leastRestrictiveData[0]);
+            setFieldValue('codeLicense', leastRestrictiveData[1]);
+            setFieldValue('dataLicense', leastRestrictiveData[0]);
+        }
     }
 
     return(
@@ -225,65 +239,67 @@ const Form = props =>{
         <h4>Licenses</h4>  
         <p>Templates</p>  
         <Button onClick={handleClick.bind(null, "mostRestrictive")}
-        >Most restrictive</Button>               
+        >MOST RESTRICTIVE</Button>   
+        <Button onClick={handleClick.bind(null, "leastRestrictive")}
+        >LEAST RESTRICTIVE</Button>             
         <TextField
-            id="dataLicenses"
+            id="textLicense"
             select
-            label="dataLicenses"
+            label="Text License"
             style={{ margin: 8 }}
             required
             fullWidth
-            helperText={touched.dataLicenses ? errors.dataLicenses : ""}
-            error={touched.dataLicenses && Boolean(errors.dataLicenses)}
-            value={dataLicenses}
-            onChange={change.bind(null, "dataLicenses")}
+            helperText={touched.textLicense ? errors.textLicense : ""}
+            error={touched.textLicense && Boolean(errors.textLicense)}
+            value={textLicense}
+            onChange={change.bind(null, "textLicense")}
             margin="normal"
             variant="outlined"
             >
-            {dataLicense.map(option =>(
+            {textLicenses.map(option =>(
+                <MenuItem key={option.id} value={option}>
+                    {option.title}
+                    </MenuItem>
+            ))}
+        </TextField>
+        <TextField
+            id="codeLicense"
+            select
+            label="Code License"
+            style={{ margin: 8 }}
+            required
+            fullWidth
+            helperText={touched.codeLicense ? errors.codeLicense : ""}
+            error={touched.codeLicense && Boolean(errors.codeLicense)}
+            value={codeLicense}
+            onChange={change.bind(null, "codeLicense")}
+            margin="normal"
+            variant="outlined"
+            >
+            {codeLicenses.map(option =>(
+                <MenuItem key={option.id} value={option}>
+                    {option.title}
+                    </MenuItem>
+            ))}
+        </TextField>
+        <TextField
+            id="dataLicense"
+            select
+            label="Data License"
+            style={{ margin: 8 }}
+            required
+            fullWidth
+            helperText={touched.dataLicense ? errors.dataLicense : ""}
+            error={touched.dataLicense && Boolean(errors.dataLicense)}
+            value={dataLicense}
+            onChange={change.bind(null, "dataLicense")}
+            margin="normal"
+            variant="outlined"
+            >
+            {dataLicenses.map(option =>(
                 <MenuItem key={option.id} value={option}>
                     {option.title}
                 </MenuItem>
-            ))}
-        </TextField>
-        <TextField
-            id="textLicenses"
-            select
-            label="textLicenses"
-            style={{ margin: 8 }}
-            required
-            fullWidth
-            helperText={touched.textLicenses ? errors.textLicenses : ""}
-            error={touched.textLicenses && Boolean(errors.textLicenses)}
-            value={textLicenses}
-            onChange={change.bind(null, "textLicenses")}
-            margin="normal"
-            variant="outlined"
-            >
-            {textLicense.map(option =>(
-                <MenuItem key={option.id} value={option}>
-                    {option.title}
-                    </MenuItem>
-            ))}
-        </TextField>
-        <TextField
-            id="codeLicenses"
-            select
-            label="codeLicenses"
-            style={{ margin: 8 }}
-            required
-            fullWidth
-            helperText={touched.codeLicenses ? errors.codeLicenses : ""}
-            error={touched.codeLicenses && Boolean(errors.codeLicenses)}
-            value={codeLicenses}
-            onChange={change.bind(null, "codeLicenses")}
-            margin="normal"
-            variant="outlined"
-            >
-            {codeLicense.map(option =>(
-                <MenuItem key={option.id} value={option}>
-                    {option.title}
-                    </MenuItem>
             ))}
         </TextField>
     </Card>
@@ -315,9 +331,9 @@ class RequiredMetadata extends Component {
         publicationDate:"",
         displayFile: "",
         mainFile: "",
-        dataLicenses: "",
-        textLicenses: "",
-        codeLicenses: "",}
+        dataLicense: "",
+        textLicense: "",
+        codeLicense: "",}
         prepareLicense();
 
         return (
