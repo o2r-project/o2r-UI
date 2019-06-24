@@ -338,7 +338,6 @@ class RequiredMetadata extends Component {
         httpRequests.singleCompendium(this.props.metadata.data.data.id)
         .then(function(response) {
             const data = response.data.metadata.o2r;
-                console.log(data)
             self.setState({
                 metadata: data,
                 title: data.title,

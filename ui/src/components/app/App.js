@@ -12,6 +12,7 @@ import httpRequests from '../../helpers/httpRequests';
 import Author from '../authorView/Author';
 import CreateERC from '../createERC/CreateERC';
 import Discovery from '../discovery/Discovery';
+import ERC from '../erc/ERC';
 
 const Header = (props) => {
   return (        
@@ -108,6 +109,7 @@ class App extends Component {
           <Route path="/author" component={Author}/>
           <Route path="/createERC/:id" component={CreateERC}/>
           <Route path="/discover" component={Discovery}/>
+          <Route path="/erc/:id" component={ERC}/>
         </div>
       </div>
       </HashRouter>
