@@ -106,7 +106,7 @@ class App extends Component {
           <Route path="/impressum" component={Impressum}/>
           <Route path="/privacy" component={Privacy}/>
           <Route path="/author" component={Author}/>
-          <Route path="/createERC" component={CreateERC}/>
+          <Route path="/createERC/:id" component={CreateERC}/>
           <Route path="/discover" component={Discovery}/>
         </div>
       </div>

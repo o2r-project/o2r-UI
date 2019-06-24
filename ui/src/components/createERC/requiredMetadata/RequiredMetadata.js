@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Card, CardContent, TextField, CardActions, IconButton, Button, MenuItem,  } from "@material-ui/core";
+import { Card, CardContent, TextField, CardActions, IconButton, Button, MenuItem } from "@material-ui/core";
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import licensesData from '../../../helpers/licenses.json'
 
+import licensesData from '../../../helpers/licenses.json'
 import './requiredMetadata.css';
 
 /** 
@@ -18,20 +18,17 @@ const textLicense=[];
 const dataLicense=[];
 const codeLicense=[];
 
-function prepareLicense(){
-    
-        for(var i in licensesData){
-            if(licensesData[i].domain_content){ textLicense.push(licensesData[i])};
-            if(licensesData[i].domain_data) {dataLicense.push(licensesData[i])};
-            if(licensesData[i].domain_software) {codeLicense.push(licensesData[i])};
-}
-    
+function prepareLicense(){    
+    for(var i in licensesData){
+        if(licensesData[i].domain_content){ textLicense.push(licensesData[i])};
+        if(licensesData[i].domain_data) {dataLicense.push(licensesData[i])};
+        if(licensesData[i].domain_software) {codeLicense.push(licensesData[i])};
+    }
 }
 
 function mostRestrictive(){
 
 }
-
 
 function Authors(props) {
     const listItems = props.authors.authors.map((author) => {

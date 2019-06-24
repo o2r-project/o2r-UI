@@ -7,14 +7,14 @@ import InspectExamples from '../inspectExamples/InspectExamples';
 
 class Startpage extends Component {
   state = {
-    spacing: "40"
+    spacing: "10"
   };
 
   render() {
     const { spacing } = this.state;
 
     return (
-      <Grid container spacing={40}>
+      <Grid container spacing={10}>
         <Grid item xs={12}>
           <Grid
             container
