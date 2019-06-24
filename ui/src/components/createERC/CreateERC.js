@@ -44,7 +44,7 @@ class CreateERC extends Component {
                 </Tabs>
                     {value === 0 && 
                 <TabContainer>
-                    <RequiredMetadata authors={[1,2,3]}>
+                    <RequiredMetadata metadata={this.props.location.state}>
                     </RequiredMetadata>
                 </TabContainer>}
                 {value === 1 && <TabContainer><SpatioTemporalMetadata></SpatioTemporalMetadata></TabContainer>}

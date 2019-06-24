@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 
 import licensesData from '../../../helpers/licenses.json'
 import './requiredMetadata.css';
+import httpRequests from '../../../helpers/httpRequests';
 
 /** 
 function openForm(){
@@ -320,38 +321,58 @@ class RequiredMetadata extends Component {
         super(props);
 
         this.state = {
-            metadata: props,
+            metadata: null,
+            title: "",
+            abstract: "",
+            publicationDate:"",
+            displayFile: "",
+            mainFile: "",
+            dataLicense: "",
+            textLicense: "",
+            codeLicense: ""
         }
     };
+    
+    getMetadata() {
+        const self = this;
+        httpRequests.singleCompendium(this.props.metadata.data.data.id)
+        .then(function(response) {
+            const data = response.data.metadata.o2r;
+                console.log(data)
+            self.setState({
+                metadata: data,
+                title: data.title,
+                abstract: data.description,
+                publicationDate: data.publication_date,
+                displayFile: data.displayfile,
+                mainFile: data.mainfile,
+                dataLicense: data.license.data,
+                textLicense: data.license.text,
+                codeLicense: data.license.code,
+            });
+        })
+        .catch(function(response){
+            console.log(response)
+        })
+    }
+
+    componentDidMount() {
+        this.getMetadata()
+    }
 
     render() {
-        const values = {title: "",
-        abstract: "",
-        publicationDate:"",
-        displayFile: "",
-        mainFile: "",
-        dataLicense: "",
-        textLicense: "",
-        codeLicense: "",}
         prepareLicense();
 
         return (
-             
             <div>
-                {//<Card>
+                <h4>Authors</h4>
+                { this.state.metadata &&
+                <Formik
+                    render={props => <Form{...props}/>}
+                    initialValues ={this.state}
+                    validationSchema = {validationSchema}
+                    />
                 }
-                    <h4>Authors</h4>
-                    <Authors 
-                        authors={this.props}>
-                    </Authors>
-                    <Formik
-                        render={props => <Form{...props}/>}
-                        initialValues ={values}
-                        validationSchema = {validationSchema}
-                        />
-                
-              { // </Card>
-              }
             </div>
         );
     }

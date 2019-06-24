@@ -25,13 +25,15 @@ class DropzoneAreaExample extends Component{
   }
 
   uploadFolder() {
-    const properties = this.props;
+    const self = this.props;
     const data = new FormData();
     data.append('compendium', this.state.files[0]);
     data.append('content_type', 'workspace');
     httpRequests.uploadWorkspace(data)
     .then(function(response) {
-      properties.history.push('/createERC/' + response.data.id);
+      self.history.push({
+        pathname: '/createERC/' + response.data.id, 
+        state: {data:response}});
     })
     .catch(function(response){
       console.log(response);
