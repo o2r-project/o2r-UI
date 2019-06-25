@@ -39,7 +39,7 @@ const authorValidationSchma = Yup.object({
 
 const AuthorForm = props => {
     const {
-        values: { author, affiliation, orcidId },
+        values: { author, affiliation, orcid },
         errors,
         touched,
         handleChange,
@@ -47,6 +47,13 @@ const AuthorForm = props => {
         setFieldTouched,
         setFieldValue
     } = props
+
+    const change = (name, e) => {
+        e.persist();
+        e.target.name = name;
+        handleChange(e);
+        setFieldTouched(name, true, false)
+    }
 
     return (
         <form
@@ -89,15 +96,24 @@ const AuthorForm = props => {
                 label="ORCID"
                 type="text"
                 style={{ margin: 8 }}
-                helperText={touched.orcId ? errors.orcId : ""}
-                error={touched.orcId && Boolean(errors.orcId)}
-                value={orcId}
-                onChange={change.bind(null, "orcId")}
+                helperText={touched.orcid ? errors.orcid : ""}
+                error={touched.orcid && Boolean(errors.orcid)}
+                value={orcid}
+                onChange={change.bind(null, "orcid")}
                 margin="normal"
                 variant="outlined"
                 InputLabelProps={{
                     shrink: true,
                 }} />
+            <Button
+                type="submit"
+                fullWidth
+                variant="raised"
+                color="primary"
+                disabled={!isValid}
+            >
+                Update Author
+            </Button>
 
         </form>
 
