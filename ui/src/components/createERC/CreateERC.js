@@ -3,6 +3,7 @@ import { Tabs, Tab, Typography } from '@material-ui/core';
 
 import './createERC.css';
 import RequiredMetadata from './requiredMetadata/RequiredMetadata';
+import SpatioTemporalMetadata from './spatioTemporalMetadata/SpatioTemporalMetadata';
 
 function TabContainer(props) {
     return (
@@ -43,11 +44,11 @@ class CreateERC extends Component {
                 </Tabs>
                     {value === 0 && 
                 <TabContainer>
-                    <RequiredMetadata authors={[1,2,3]}>
+                    <RequiredMetadata metadata={this.props.location.state}>
                     </RequiredMetadata>
                 </TabContainer>}
-                {value === 1 && <TabContainer>Item Two</TabContainer>}
-                {value === 2 && <TabContainer>Item Three</TabContainer>}
+                {value === 1 && <TabContainer><SpatioTemporalMetadata></SpatioTemporalMetadata></TabContainer>}
+                {value === 2 && <TabContainer>Item Three3</TabContainer>}
             </div>
         );
     }

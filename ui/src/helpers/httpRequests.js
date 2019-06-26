@@ -22,9 +22,16 @@ function uploadWorkspace(workspace) {
     return axios.post(_env.api + 'compendium', workspace);
 }
 
+function singleCompendium(id) {
+    var _url = _env.api + 'compendium/' + id;
+    return axios.get(_url);
+}
+
+
 module.exports = {
     getUser: getUser,
     listAllCompendia: listAllCompendia,
     uploadViaSciebo: uploadViaSciebo,
     uploadWorkspace: uploadWorkspace,
+    singleCompendium: singleCompendium
 };

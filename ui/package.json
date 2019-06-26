@@ -3,12 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "latest",
+    "@material-ui/core": "^4.1.1",
+    "@types/leaflet-draw": "^0.4.14",
+    "core-js": "^3.1.4",
+    "formik": "^1.5.7",
+    "leaflet": "^1.5.1",
+    "leaflet-draw": "^1.0.4",
     "material-ui-dropzone": "^2.3.5",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-leaflet": "^2.3.0",
+    "react-leaflet-draw": "^0.19.0",
+    "react-reflex": "^3.0.15",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "2.1.8"
+    "react-scripts": "^3.0.1",
+    "yup": "^0.27.0"
   },
   "scripts": {
     "start": "react-scripts start",
