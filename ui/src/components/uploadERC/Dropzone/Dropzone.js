@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import './Dropzone.css';
 import httpRequests from '../../../helpers/httpRequests';
  
-class DropzoneAreaExample extends Component{
+class Dropzone extends Component{
   
   constructor(props){
     super(props);
@@ -55,4 +55,4 @@ class DropzoneAreaExample extends Component{
   }
 }
 
-export default withRouter(DropzoneAreaExample);
+export default withRouter(Dropzone);
