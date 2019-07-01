@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Card, CardContent, TextField, CardActions, IconButton, Button, MenuItem, Collapse } from "@material-ui/core";
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { withRouter } from 'react-router-dom';
 
 import licensesData from '../../../helpers/licenses.json'
 import './requiredMetadata.css';
@@ -436,6 +437,10 @@ class RequiredMetadata extends Component {
                     textLicense: data.license.text,
                     codeLicense: data.license.code,
                 });
+                self.props.history.push({
+                    pathname: '/erc/' + self.props.metadata.data.data.id, 
+                    state: {data:data}
+                });
             })
             .catch(function (response) {
                 console.log(response)
@@ -448,7 +453,7 @@ class RequiredMetadata extends Component {
 
     render() {
         prepareLicense();
-
+        
         return (
             <div>
                 <h4>Authors</h4>
@@ -464,4 +469,4 @@ class RequiredMetadata extends Component {
     }
 }
 
-export default RequiredMetadata;
+export default withRouter(RequiredMetadata);

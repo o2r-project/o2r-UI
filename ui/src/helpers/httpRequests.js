@@ -1,5 +1,3 @@
-'use strict';
-
 const axios = require('axios');
 const _env = {
     api: "http://localhost/api/v1/"
@@ -27,11 +25,16 @@ function singleCompendium(id) {
     return axios.get(_url);
 }
 
+function getFile(path) {
+    return axios.get(path);
+}
+
 
 module.exports = {
     getUser: getUser,
     listAllCompendia: listAllCompendia,
     uploadViaSciebo: uploadViaSciebo,
     uploadWorkspace: uploadWorkspace,
-    singleCompendium: singleCompendium
+    singleCompendium: singleCompendium,
+    getFile: getFile,
 };

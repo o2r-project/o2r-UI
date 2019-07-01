@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {DropzoneArea} from 'material-ui-dropzone';
-import {Button} from '@material-ui/core';
+import React, { Component } from 'react';
+import { DropzoneArea } from 'material-ui-dropzone';
+import { Button } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 
 import './Dropzone.css';
@@ -33,7 +33,8 @@ class Dropzone extends Component{
     .then(function(response) {
       self.history.push({
         pathname: '/createERC/' + response.data.id, 
-        state: {data:response}});
+        state: {data:response}
+      });
     })
     .catch(function(response){
       console.log(response);

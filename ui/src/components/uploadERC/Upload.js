@@ -44,7 +44,6 @@ class Upload extends Component {
                 <div className="option1">
                     <div>
                         <h3>Option 1: Upload via public share</h3>
-                        
                     </div>
                     <div>
                         <Input

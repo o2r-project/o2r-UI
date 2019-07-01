@@ -3,13 +3,3 @@
   text-align: center;
   margin-right: 1%;
 }
-
-.left-pane {
-  background-color: rgb(0, 256, 256);
-}
-.right-pane {
-  background-color: rgb(256, 0, 256);
-}
-.middle-pane {
-  background-color: rgb(256, 256, 0);
-}
