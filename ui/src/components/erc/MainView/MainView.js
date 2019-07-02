@@ -9,7 +9,7 @@ class MainView extends React.Component {
     }
 
     render() {
-        const url = "http://localhost/api/v1/compendium/jsEBA/data/" + this.props.fileName;
+        const url = this.props.filePath;
         return (
             <Iframe url={url} className="iframe"/>
         )

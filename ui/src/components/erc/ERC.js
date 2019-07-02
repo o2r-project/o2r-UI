@@ -14,7 +14,7 @@ class ERC extends React.Component {
         this.state = { 
             id: this.props.match.params.id,
             mainFile: "",
-            dataFile: "",
+            dataSet: "",
             codeFile: "",
         };
     }
@@ -23,12 +23,39 @@ class ERC extends React.Component {
         this.getMetadata();
     }
 
-    setFiles(main, data, code) {
+    setDataFile(dataFile) {
+        const self = this;
+        httpRequests.getFile("http://localhost/api/v1/compendium/"+self.state.id+"/data/" + dataFile)
+            .then(function(res) {
+                httpRequests.getFile("http://localhost/api/v1/compendium/"+self.state.id+"/data/")
+                    .then(function(res2) {
+                        self.setState({
+                            dataSet: {
+                                dataFile: dataFile,
+                                data: res.data,
+                                tree: res2.data.children,
+                            },
+                        });
+                    })
+                    .catch(function(res2) {
+                        console.log(res2)
+                    })   
+            })
+            .catch(function(res) {
+                console.log(res)
+            })
+    }
+
+    setCodeFile(codeFile) {
         this.setState({
-            mainFile: main,
-            dataFile: data,
-            codeFile: code,
-        })
+            codeFile: codeFile,
+        });        
+    }
+
+    setMainFile(mainFile) {
+        this.setState({
+            mainFile: mainFile,
+        });        
     }
 
     getMetadata() {
@@ -36,7 +63,9 @@ class ERC extends React.Component {
         httpRequests.singleCompendium(this.state.id)
             .then(function(response) {
                 const data = response.data.metadata.o2r;
-                self.setFiles(data.displayfile, data.inputfiles[0], data.codefiles[0]);
+                self.setMainFile(data.displayfile);
+                self.setDataFile(data.inputfiles[0]);
+                self.setCodeFile(data.codefiles[0]);
             })
             .catch(function (response) {
                 console.log(response)
@@ -44,11 +73,12 @@ class ERC extends React.Component {
     }
   
     render () {
+
         return (
             <div className="Erc">
                 <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
                     <ReflexElement>
-                        <MainView fileName={this.state.mainFile}></MainView>
+                        <MainView filePath={"http://localhost/api/v1/compendium/"+this.state.id+"/data/"+this.state.mainFile}></MainView>
                     </ReflexElement>
                     <ReflexSplitter propagate={true} style={{ width: "10px" }} />
                     <ReflexElement className="right-pane">
@@ -58,14 +88,14 @@ class ERC extends React.Component {
                             </ReflexElement>
                             <ReflexSplitter propagate={true} style={{ height: "10px" }} />
                             <ReflexElement className="right-bottom">
-                                <DataView fileName={this.state.dataFile}></DataView>
+                                <DataView data={this.state.dataSet}></DataView>
                             </ReflexElement>
                         </ReflexContainer>
                     </ReflexElement>
                 </ReflexContainer>
             </div>
         )
-  }
+    }
 }
 
 export default ERC;
