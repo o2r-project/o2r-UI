@@ -1,7 +1,6 @@
 import React from 'react';
 
 import CSV from './CSV/CSV';
-import { getThemeProps } from '@material-ui/styles';
 
 const DataTable = (props) => {
     let dataFormat = null; 
