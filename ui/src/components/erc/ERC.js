@@ -15,27 +15,27 @@ class ERC extends React.Component {
         super(props);
         this.state = { 
             id: this.props.match.params.id,
-            mainFile: null,
-            dataSet: null,
-            codeFile: null,
-            inputfiles: null,
-        };
-        
+            displayfile: null,
+            dataset: null,
+            datafiles: null,
+            codefile: null,
+            codefiles: null,
+        };  
     }
 
     componentDidMount() {
         this.getMetadata();
     }
 
-    setDataFile(dataFile) {
+    setDataFile(datafile) {
         const self = this;
-        httpRequests.getFile("http://localhost/api/v1/compendium/"+self.state.id+"/data/" + dataFile)
+        httpRequests.getFile("http://localhost/api/v1/compendium/" + self.state.id + "/data/" + datafile)
             .then(function(res) {
-                httpRequests.getFile("http://localhost/api/v1/compendium/"+self.state.id+"/data/")
+                httpRequests.getFile("http://localhost/api/v1/compendium/" + self.state.id + "/data/")
                     .then(function(res2) {
                         self.setState({
-                            dataSet: {
-                                dataFile: dataFile,
+                            dataset: {
+                                datafile: datafile,
                                 data: res.data,
                                 tree: res2.data.children,
                             },
@@ -50,20 +50,31 @@ class ERC extends React.Component {
             })
     }
 
-    setCodeFile(codeFile) {
+    setCodeFile(codefile) {
+        const self = this;
+        httpRequests.getFile("http://localhost/api/v1/compendium/" + self.state.id + "/data/" + codefile)
+        .then(function(res) {
+            self.setState({
+                codefile:codefile,
+            });
+        })
+        .catch(function(res) {
+            console.log(res)
+        })
+    }
+
+    setDisplayFile(displayfile) {
         this.setState({
-            codeFile: codeFile,
+            displayfile: displayfile,
         });        
     }
 
-    setMainFile(mainFile) {
-        this.setState({
-            mainFile: mainFile,
-        });        
-    }
-
-    handleChange(evt) {
+    handleDataChange(evt) {
         this.setDataFile(evt.target.value)
+    } 
+
+    handleCodeChange(evt) {
+        this.setCodeFile(evt.target.value)
     } 
 
     getMetadata() {
@@ -74,9 +85,10 @@ class ERC extends React.Component {
                 console.log(data)
                 self.setState({
                     inputfiles: data.inputfiles,
-                    dataSet: data.inputfiles[0],
+                    codefiles: data.codefiles,
+                    dataset: data.inputfiles[0],
                 });
-                self.setMainFile(data.displayfile);
+                self.setDisplayFile(data.displayfile);
                 self.setDataFile(data.inputfiles[0]);
                 self.setCodeFile(data.codefiles[0]);
             })
@@ -91,33 +103,47 @@ class ERC extends React.Component {
             <div className="Erc">
                 <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
                     <ReflexElement>
-                        {this.state.dataSet!=null ? <MainView 
-                                                        filePath={"http://localhost/api/v1/compendium/"+this.state.id+"/data/"+this.state.mainFile}>
+                        {this.state.displayfile!=null ? <MainView 
+                                                        filePath={"http://localhost/api/v1/compendium/"+this.state.id + "/data/" + this.state.displayfile}>
                                                     </MainView> : <div>There is no file to display</div>}
                     </ReflexElement>
                     <ReflexSplitter propagate={true} style={{ width: "10px" }} />
                     <ReflexElement className="right-pane">
                         <ReflexContainer orientation="horizontal">
                             <ReflexElement className="right-up">
-                                {this.state.dataSet!=null ? <CodeView fileName={this.state.codeFile}></CodeView> : <div>There is no data to display</div>}
+                                {this.state.codefiles!=null ? 
+                                    <FormControl variant="outlined">
+                                        <InputLabel htmlFor="outlined-age-native-simple"></InputLabel>
+                                        <Select
+                                            native
+                                            value={this.state.codefile}
+                                            onChange={this.handleCodeChange.bind(this)}
+                                            input={<FilledInput name="dataset" id="filled-age-native-simple" />}
+                                        >
+                                            {this.state.codefiles.map(option => (
+                                                <option value={option} key={uuid()}>{option}</option>
+                                            ))}
+                                        </Select>
+                                    </FormControl> : ''}
+                                {this.state.codefile!=null ? <CodeView data={this.state.codefile}></CodeView> : <div>There is no data to display</div>}
                             </ReflexElement>
                             <ReflexSplitter propagate={true} style={{ height: "10px" }} />
                             <ReflexElement className="right-bottom">
                                 {this.state.inputfiles!=null ? 
-                                <FormControl variant="outlined">
-                                    <InputLabel htmlFor="outlined-age-native-simple"></InputLabel>
-                                    <Select
-                                        native
-                                        value={this.state.dataSet.dataFile}
-                                        onChange={this.handleChange.bind(this)}
-                                        input={<FilledInput name="dataset" id="filled-age-native-simple" />}
-                                    >
-                                        {this.state.inputfiles.map(option => (
-                                            <option value={option} key={uuid()}>{option}</option>
-                                        ))}
-                                    </Select>
-                                </FormControl> : ''}
-                                {this.state.dataSet!=null ? <DataView data={this.state.dataSet}></DataView> : <div>There is no code to display</div>}
+                                    <FormControl variant="outlined">
+                                        <InputLabel htmlFor="outlined-age-native-simple"></InputLabel>
+                                        <Select
+                                            native
+                                            value={this.state.dataset.datafile}
+                                            onChange={this.handleDataChange.bind(this)}
+                                            input={<FilledInput name="dataset" id="filled-age-native-simple" />}
+                                        >
+                                            {this.state.inputfiles.map(option => (
+                                                <option value={option} key={uuid()}>{option}</option>
+                                            ))}
+                                        </Select>
+                                    </FormControl> : ''}
+                                {this.state.dataset!=null ? <DataView data={this.state.dataset}></DataView> : <div>There is no data to display</div>}
                             </ReflexElement>
                         </ReflexContainer>
                     </ReflexElement>
