@@ -55,7 +55,10 @@ class ERC extends React.Component {
         httpRequests.getFile("http://localhost/api/v1/compendium/" + self.state.id + "/data/" + codefile)
         .then(function(res) {
             self.setState({
-                codefile:codefile,
+                codefile:{
+                    filename:codefile,
+                    file:res,
+                },
             });
         })
         .catch(function(res) {
@@ -84,13 +87,13 @@ class ERC extends React.Component {
                 const data = response.data.metadata.o2r;
                 console.log(data)
                 self.setState({
-                    inputfiles: data.inputfiles,
-                    codefiles: data.codefiles,
+                    datafiles: data.inputfiles,
                     dataset: data.inputfiles[0],
+                    codefiles: data.codefiles,
                 });
                 self.setDisplayFile(data.displayfile);
                 self.setDataFile(data.inputfiles[0]);
-                self.setCodeFile(data.codefiles[0]);
+                self.setCodeFile(data.mainfile);
             })
             .catch(function (response) {
                 console.log(response)
@@ -111,12 +114,12 @@ class ERC extends React.Component {
                     <ReflexElement className="right-pane">
                         <ReflexContainer orientation="horizontal">
                             <ReflexElement className="right-up">
-                                {this.state.codefiles!=null ? 
+                                {this.state.codefiles != null && this.state.codefile != null ? 
                                     <FormControl variant="outlined">
                                         <InputLabel htmlFor="outlined-age-native-simple"></InputLabel>
                                         <Select
                                             native
-                                            value={this.state.codefile}
+                                            value={this.state.codefile.filename}
                                             onChange={this.handleCodeChange.bind(this)}
                                             input={<FilledInput name="dataset" id="filled-age-native-simple" />}
                                         >
@@ -125,11 +128,11 @@ class ERC extends React.Component {
                                             ))}
                                         </Select>
                                     </FormControl> : ''}
-                                {this.state.codefile!=null ? <CodeView data={this.state.codefile}></CodeView> : <div>There is no data to display</div>}
+                                {this.state.codefile != null ? <CodeView code={this.state.codefile}></CodeView> : <div>There is no data to display</div>}
                             </ReflexElement>
                             <ReflexSplitter propagate={true} style={{ height: "10px" }} />
                             <ReflexElement className="right-bottom">
-                                {this.state.inputfiles!=null ? 
+                                {this.state.datafiles != null ? 
                                     <FormControl variant="outlined">
                                         <InputLabel htmlFor="outlined-age-native-simple"></InputLabel>
                                         <Select
@@ -138,12 +141,12 @@ class ERC extends React.Component {
                                             onChange={this.handleDataChange.bind(this)}
                                             input={<FilledInput name="dataset" id="filled-age-native-simple" />}
                                         >
-                                            {this.state.inputfiles.map(option => (
+                                            {this.state.datafiles.map(option => (
                                                 <option value={option} key={uuid()}>{option}</option>
                                             ))}
                                         </Select>
                                     </FormControl> : ''}
-                                {this.state.dataset!=null ? <DataView data={this.state.dataset}></DataView> : <div>There is no data to display</div>}
+                                {this.state.dataset != null ? <DataView data={this.state.dataset}></DataView> : <div>There is no data to display</div>}
                             </ReflexElement>
                         </ReflexContainer>
                     </ReflexElement>
