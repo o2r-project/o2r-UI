@@ -47,10 +47,7 @@ class CreateERC extends Component {
                     <RequiredMetadata metadata={this.props.location.state}>
                     </RequiredMetadata>
                 </TabContainer>}
-                {value === 1 && 
-                    <TabContainer>
-                        
-                    </TabContainer>}
+                {value === 1 && <TabContainer></TabContainer>}
                 {value === 2 && <TabContainer>Item Three3</TabContainer>}
             </div>
         );

@@ -4,6 +4,7 @@ import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import { InputLabel, FormControl, Select, FilledInput, Button } from "@material-ui/core";
 import uuid from 'uuid/v1';
 
+import config from '../../helpers/config'
 import './erc.css';
 import httpRequests from '../../helpers/httpRequests';
 import MainView from './MainView/MainView';
@@ -29,9 +30,9 @@ class ERC extends React.Component {
 
     setDataFile(datafile) {
         const self = this;
-        httpRequests.getFile("http://localhost/api/v1/compendium/" + self.state.id + "/data/" + datafile)
+        httpRequests.getFile(config.baseUrl + "compendium/" + self.state.id + "/data/" + datafile)
             .then(function(res) {
-                httpRequests.getFile("http://localhost/api/v1/compendium/" + self.state.id + "/data/")
+                httpRequests.getFile(config.baseUrl + "compendium/" + self.state.id + "/data/")
                     .then(function(res2) {
                         self.setState({
                             dataset: {
@@ -52,7 +53,7 @@ class ERC extends React.Component {
 
     setCodeFile(codefile) {
         const self = this;
-        httpRequests.getFile("http://localhost/api/v1/compendium/" + self.state.id + "/data/" + codefile)
+        httpRequests.getFile(config.baseUrl + "compendium/" + self.state.id + "/data/" + codefile)
         .then(function(res) {
             self.setState({
                 codefile:{
@@ -118,7 +119,7 @@ class ERC extends React.Component {
                 <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
                     <ReflexElement>
                         {this.state.displayfile!=null ? <MainView 
-                                                        filePath={"http://localhost/api/v1/compendium/"+this.state.id + "/data/" + this.state.displayfile}>
+                                                        filePath={config.baseUrl + "compendium/"+this.state.id + "/data/" + this.state.displayfile}>
                                                     </MainView> : <div>There is no file to display</div>}
                     </ReflexElement>
                     <ReflexSplitter propagate={true} style={{ width: "10px" }} />

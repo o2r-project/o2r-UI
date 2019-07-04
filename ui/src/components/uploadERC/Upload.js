@@ -38,6 +38,7 @@ class Upload extends Component {
     }
 
     render() {
+        
         return (
             <div>
                 <h1>Create an ERC</h1>

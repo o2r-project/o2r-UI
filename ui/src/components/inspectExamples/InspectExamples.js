@@ -1,25 +1,14 @@
 import React, { Component } from "react";
-import { Card, CardContent, CardActionArea, CardActions, CardMedia, Typography, Button, CardHeader } from "@material-ui/core/";
-import { withStyles } from '@material-ui/core/styles';
+import { Card, CardContent, CardActionArea, CardActions, Typography, Button, CardHeader } from "@material-ui/core/";
 
 import './inspectExamples.css';
 import ercs from '../../helpers/ercs.json';
 
-const styles = {
-    card: {
-      maxWidth: 345,
-    },
-    media: {
-      width: 200,
-    },
-  };
-
-function exampleERCs(props){
-    const { classes } = props;
+function exampleERCs(){
     const ercItems = ercs.map((erc) => {
         return (
             <div key={erc.id}>
-                <Card id="example">
+                <Card className="example">
                     <CardActionArea>
                     <CardHeader
                             title={erc.name}/>
@@ -45,16 +34,17 @@ function exampleERCs(props){
 }
 
 class InspectExamples extends Component {
+
     render() {
         return(
             <div>
                 <h1>Latest ERCs</h1>
                 <div> 
-                    {exampleERCs(this.props)}
+                    {exampleERCs()}
                 </div>
             </div>
         )
     }
 }
 
-export default withStyles(styles)(InspectExamples);
+export default InspectExamples;

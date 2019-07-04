@@ -4,7 +4,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import './examples.css';
 import ercs from '../../../helpers/ercs.json';
 
-function exampleERCs(props, close){
+function exampleERCs(close){
     const ercItems = ercs.map((erc) => {
         return (
             <div key={erc.id}> 
@@ -51,7 +51,7 @@ class Examples extends Component {
               <DialogTitle id="alert-dialog-title">{"Select an example from the list"}</DialogTitle>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                  {exampleERCs(this.props, this.handleClose)}
+                  {exampleERCs(this.handleClose)}
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
