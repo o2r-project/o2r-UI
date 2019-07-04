@@ -31,7 +31,15 @@ function getFile(path) {
 
 function newJob(body) {
     var _url = _env.api + 'job/';
-    return axios.post(_url, body)
+    return axios.post(_url, body);
+}
+
+function listJobs() {
+    return axios.get(_env.api + "job");
+}
+
+function getSingleJob(id) {
+    return axios.get(_env.api + "job/" + id );
 }
 
 function updateMetadata(id, data){
@@ -50,4 +58,6 @@ module.exports = {
     getFile: getFile,
     newJob: newJob,
     updateMetadata: updateMetadata,
+    listJobs: listJobs,
+    getSingleJob: getSingleJob
 };

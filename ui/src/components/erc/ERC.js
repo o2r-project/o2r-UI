@@ -149,7 +149,7 @@ class ERC extends React.Component {
                                 handleCodeChange={this.handleCodeChange.bind(this)}
                                 ></Inspect>}
                         {this.state.tabValue === 1 && <div>
-                            <Check newJob={this.newJob.bind(this)}></Check>
+                            <Check newJob={this.newJob.bind(this)} id={this.state.id}></Check>
                         </div>}
                     </ReflexElement>
                 </ReflexContainer>
