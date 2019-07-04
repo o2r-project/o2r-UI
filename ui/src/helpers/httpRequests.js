@@ -29,6 +29,17 @@ function getFile(path) {
     return axios.get(path);
 }
 
+function newJob(body) {
+    var _url = _env.api + 'job/';
+    return axios.post(_url, body)
+}
+
+function updateMetadata(id, data){
+    var _url = _env.api + 'compendium/' + id + '/metadata';
+    var body = {o2r: data};
+    return axios.put(_url, body);
+}
+
 
 module.exports = {
     getUser: getUser,
@@ -37,4 +48,6 @@ module.exports = {
     uploadWorkspace: uploadWorkspace,
     singleCompendium: singleCompendium,
     getFile: getFile,
+    newJob: newJob,
+    updateMetadata: updateMetadata,
 };

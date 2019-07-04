@@ -1,7 +1,7 @@
 import React from 'react';
 import 'react-reflex/styles.css';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
-import { InputLabel, FormControl, Select, FilledInput } from "@material-ui/core";
+import { InputLabel, FormControl, Select, FilledInput, Button } from "@material-ui/core";
 import uuid from 'uuid/v1';
 
 import './erc.css';
@@ -78,14 +78,25 @@ class ERC extends React.Component {
 
     handleCodeChange(evt) {
         this.setCodeFile(evt.target.value)
-    } 
+    }
+    
+    newJob() {
+        const self=this;
+        httpRequests.newJob({'compendium_id':self.state.id})
+            .then(function(res) {
+                console.log(res)
+            })
+            .catch(function(res) {
+                console.log(res)
+            })
+    }
 
     getMetadata() {
         const self = this;
         httpRequests.singleCompendium(this.state.id)
             .then(function(response) {
                 const data = response.data.metadata.o2r;
-                console.log(data)
+                console.log(response)
                 self.setState({
                     datafiles: data.inputfiles,
                     dataset: data.inputfiles[0],
@@ -114,6 +125,7 @@ class ERC extends React.Component {
                     <ReflexElement className="right-pane">
                         <ReflexContainer orientation="horizontal">
                             <ReflexElement className="right-up">
+                                <Button color="inherit" onClick={this.newJob.bind(this)}>Run analysis</Button>
                                 {this.state.codefiles != null && this.state.codefile != null ? 
                                     <FormControl variant="outlined">
                                         <InputLabel htmlFor="outlined-age-native-simple"></InputLabel>

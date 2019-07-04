@@ -421,6 +421,7 @@ class RequiredMetadata extends Component {
         }
     };
 
+    //Review, should be better ;)
     getMetadata() {
         const self = this;
         httpRequests.singleCompendium(this.props.metadata.data.data.id)
@@ -437,10 +438,15 @@ class RequiredMetadata extends Component {
                     textLicense: data.license.text,
                     codeLicense: data.license.code,
                 });
-                self.props.history.push({
-                    pathname: '/erc/' + self.props.metadata.data.data.id, 
-                    state: {data:data}
-                });
+                response.data.candidate = false;
+                httpRequests.updateMetadata(self.props.metadata.data.data.id, response.data.metadata.o2r)
+                    .then(function(res) {
+                        console.log(res)
+                        self.props.history.push({
+                            pathname: '/erc/' + self.props.metadata.data.data.id, 
+                            state: {data:data}
+                        });
+                    })
             })
             .catch(function (response) {
                 console.log(response)
