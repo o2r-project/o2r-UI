@@ -1,15 +1,15 @@
 import React from 'react';
 import 'react-reflex/styles.css';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
-import { InputLabel, FormControl, Select, FilledInput, Button } from "@material-ui/core";
-import uuid from 'uuid/v1';
+import { Paper, Tabs, Tab } from "@material-ui/core";
+
 
 import config from '../../helpers/config'
 import './erc.css';
 import httpRequests from '../../helpers/httpRequests';
 import MainView from './MainView/MainView';
-import CodeView from './CodeView/CodeView';
-import DataView from './DataView/DataView';
+import Inspect from './Inspect/Inspect';
+import Check from './Check/Check';
 
 class ERC extends React.Component {
     constructor(props) {
@@ -21,6 +21,7 @@ class ERC extends React.Component {
             datafiles: null,
             codefile: null,
             codefiles: null,
+            tabValue: 0,
         };  
     }
 
@@ -111,57 +112,45 @@ class ERC extends React.Component {
                 console.log(response)
             })
     }
+
+    handleTabChange(event, newValue){
+        console.log(event)
+        this.setState({
+            tabValue: newValue,
+        })
+    }
   
     render () {
 
         return (
-            <div className="Erc">
+            <div className="Erc" >
                 <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
                     <ReflexElement>
-                        {this.state.displayfile!=null ? <MainView 
-                                                        filePath={config.baseUrl + "compendium/"+this.state.id + "/data/" + this.state.displayfile}>
-                                                    </MainView> : <div>There is no file to display</div>}
+                        {this.state.displayfile!=null ? 
+                            <MainView 
+                               filePath={config.baseUrl + "compendium/"+this.state.id + "/data/" + this.state.displayfile}>
+                            </MainView> : <div>There is no file to display</div>}
                     </ReflexElement>
-                    <ReflexSplitter propagate={true} style={{ width: "10px" }} />
-                    <ReflexElement className="right-pane">
-                        <ReflexContainer orientation="horizontal">
-                            <ReflexElement className="right-up">
-                                <Button color="inherit" onClick={this.newJob.bind(this)}>Run analysis</Button>
-                                {this.state.codefiles != null && this.state.codefile != null ? 
-                                    <FormControl variant="outlined">
-                                        <InputLabel htmlFor="outlined-age-native-simple"></InputLabel>
-                                        <Select
-                                            native
-                                            value={this.state.codefile.filename}
-                                            onChange={this.handleCodeChange.bind(this)}
-                                            input={<FilledInput name="dataset" id="filled-age-native-simple" />}
-                                        >
-                                            {this.state.codefiles.map(option => (
-                                                <option value={option} key={uuid()}>{option}</option>
-                                            ))}
-                                        </Select>
-                                    </FormControl> : ''}
-                                {this.state.codefile != null ? <CodeView code={this.state.codefile}></CodeView> : <div>There is no data to display</div>}
-                            </ReflexElement>
-                            <ReflexSplitter propagate={true} style={{ height: "10px" }} />
-                            <ReflexElement className="right-bottom">
-                                {this.state.datafiles != null ? 
-                                    <FormControl variant="outlined">
-                                        <InputLabel htmlFor="outlined-age-native-simple"></InputLabel>
-                                        <Select
-                                            native
-                                            value={this.state.dataset.datafile}
-                                            onChange={this.handleDataChange.bind(this)}
-                                            input={<FilledInput name="dataset" id="filled-age-native-simple" />}
-                                        >
-                                            {this.state.datafiles.map(option => (
-                                                <option value={option} key={uuid()}>{option}</option>
-                                            ))}
-                                        </Select>
-                                    </FormControl> : ''}
-                                {this.state.dataset != null ? <DataView data={this.state.dataset}></DataView> : <div>There is no data to display</div>}
-                            </ReflexElement>
-                        </ReflexContainer>
+                    <ReflexSplitter propagate={true} style={{ width: "10px" }} />                                 
+                    <ReflexElement>
+                        <Paper square>
+                            <Tabs indicatorColor="primary" textColor="primary" 
+                                onChange={this.handleTabChange.bind(this)}
+                                value={this.state.tabValue}
+                                >
+                                    <Tab label="Inspect" />
+                                    <Tab label="Check" />
+                            </Tabs>
+                        </Paper>
+                        {this.state.tabValue === 0 &&
+                            <Inspect 
+                                props={this.state} 
+                                handleDataChange={this.handleDataChange.bind(this)}
+                                handleCodeChange={this.handleCodeChange.bind(this)}
+                                ></Inspect>}
+                        {this.state.tabValue === 1 && <div>
+                            <Check newJob={this.newJob.bind(this)}></Check>
+                        </div>}
                     </ReflexElement>
                 </ReflexContainer>
             </div>
