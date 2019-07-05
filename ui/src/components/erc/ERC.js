@@ -31,9 +31,9 @@ class ERC extends React.Component {
 
     setDataFile(datafile) {
         const self = this;
-        httpRequests.getFile(config.baseUrl + "compendium/" + self.state.id + "/data/" + datafile)
+        httpRequests.getFile("compendium/" + self.state.id + "/data/" + datafile)
             .then(function(res) {
-                httpRequests.getFile(config.baseUrl + "compendium/" + self.state.id + "/data/")
+                httpRequests.getFile("compendium/" + self.state.id + "/data/")
                     .then(function(res2) {
                         self.setState({
                             dataset: {
@@ -54,7 +54,7 @@ class ERC extends React.Component {
 
     setCodeFile(codefile) {
         const self = this;
-        httpRequests.getFile(config.baseUrl + "compendium/" + self.state.id + "/data/" + codefile)
+        httpRequests.getFile("compendium/" + self.state.id + "/data/" + codefile)
         .then(function(res) {
             self.setState({
                 codefile:{
@@ -102,7 +102,7 @@ class ERC extends React.Component {
             })
     }
 
-    handleTabChange(event, newValue){
+    handleTabChange(event, newValue) {
         console.log(event)
         this.setState({
             tabValue: newValue,
@@ -117,7 +117,7 @@ class ERC extends React.Component {
                     <ReflexElement>
                         {this.state.displayfile!=null ? 
                             <MainView 
-                               filePath={config.baseUrl + "compendium/"+this.state.id + "/data/" + this.state.displayfile}>
+                               filePath={config.baseUrl + "compendium/" + this.state.id + "/data/" + this.state.displayfile}>
                             </MainView> : <div>There is no file to display</div>}
                     </ReflexElement>
                     <ReflexSplitter propagate={true} style={{ width: "10px" }} />                                 
@@ -136,7 +136,8 @@ class ERC extends React.Component {
                                 props={this.state} 
                                 handleDataChange={this.handleDataChange.bind(this)}
                                 handleCodeChange={this.handleCodeChange.bind(this)}
-                                ></Inspect>}
+                                >
+                            </Inspect>}
                         {this.state.tabValue === 1 && <div>
                             <Check id={this.state.id}></Check>
                         </div>}

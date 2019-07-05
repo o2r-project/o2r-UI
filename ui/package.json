@@ -20,6 +20,7 @@
     "react-reflex": "^3.0.15",
     "react-router-dom": "^5.0.0",
     "react-scripts": "0.9.5",
+    "react-websocket": "^2.0.1",
     "update": "^0.7.4",
     "uuid": "^3.3.2",
     "yup": "^0.27.0"

@@ -26,7 +26,7 @@ function singleCompendium(id) {
 }
 
 function getFile(path) {
-    return axios.get(path);
+    return axios.get(_env.api + path);
 }
 
 function newJob(body) {
