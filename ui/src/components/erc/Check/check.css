@@ -1,0 +1,32 @@
+.success {
+    color:green;
+}
+
+.failure {
+    color: red;
+}
+
+.running {
+    color: blue;
+}
+
+.steps {
+    text-align: left;
+}
+
+.skipped {
+    color: rgb(82, 79, 79);
+}
+
+.queued {
+    color: rgb(255, 123, 0);
+}
+
+.showResultBtn {
+    margin-top: 5%;
+}
+
+.runAnalysisBtn {
+    margin-top: 2%;
+    margin-bottom: 2%;
+}

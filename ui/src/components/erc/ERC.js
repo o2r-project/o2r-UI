@@ -81,17 +81,6 @@ class ERC extends React.Component {
     handleCodeChange(evt) {
         this.setCodeFile(evt.target.value)
     }
-    
-    newJob() {
-        const self=this;
-        httpRequests.newJob({'compendium_id':self.state.id})
-            .then(function(res) {
-                console.log(res)
-            })
-            .catch(function(res) {
-                console.log(res)
-            })
-    }
 
     getMetadata() {
         const self = this;
@@ -149,7 +138,7 @@ class ERC extends React.Component {
                                 handleCodeChange={this.handleCodeChange.bind(this)}
                                 ></Inspect>}
                         {this.state.tabValue === 1 && <div>
-                            <Check newJob={this.newJob.bind(this)} id={this.state.id}></Check>
+                            <Check id={this.state.id}></Check>
                         </div>}
                     </ReflexElement>
                 </ReflexContainer>
