@@ -4,7 +4,7 @@ import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import { Paper, Tabs, Tab } from "@material-ui/core";
 
 
-import config from '../../helpers/config'
+import config from '../../helpers/config';
 import './erc.css';
 import httpRequests from '../../helpers/httpRequests';
 import MainView from './MainView/MainView';
