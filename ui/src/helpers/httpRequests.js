@@ -34,8 +34,8 @@ function newJob(body) {
     return axios.post(_url, body);
 }
 
-function listJobs() {
-    return axios.get(_env.api + "job");
+function listJobs(compendium_id) {
+    return axios.get(_env.api + "job?compendium_id=" + compendium_id);
 }
 
 function getSingleJob(id) {

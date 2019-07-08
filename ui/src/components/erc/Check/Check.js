@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-import { Button, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography } from "@material-ui/core";
+import { Button, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography, Dialog, AppBar, Toolbar, IconButton, ListItem, Divider, styles, 
+    TransitionComponent, CloseIcon, List, ListItemText, Transition, makeStyles } from "@material-ui/core";
 import socketIOClient from "socket.io-client";
+import uuid from 'uuid/v1';
 
 import httpRequests from '../../../helpers/httpRequests';
 import './check.css';
@@ -32,7 +34,9 @@ function ListJobs(jobs) {
     return (
         <div>
             {jobs.jobs.map(job => (
-                <ExpansionPanel square expanded={expanded === job.id} onChange={handleChange(job.id)}>
+                <ExpansionPanel square key={uuid()}
+                    expanded={expanded === job.id} 
+                    onChange={handleChange(job.id)}>
                     <ExpansionPanelSummary aria-controls="panel1d-content" id="panel1d-header">
                         <Typography><b>Started: </b>{job.steps.validate_bag.start} <br/>
                                     <b>Status: </b><Status status={job.status}></Status>
@@ -40,21 +44,21 @@ function ListJobs(jobs) {
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                         <Typography className="steps">
-                            <div><b>Validate bag: </b><Status status={job.steps.validate_bag.status}></Status></div>
-                            <div><b>Generate configuration: </b><Status status={job.steps.generate_configuration.status}></Status></div>
-                            <div><b>Image prepare: </b><Status status={job.steps.image_prepare.status}></Status></div>
-                            <div><b>Validate compendium: </b><Status status={job.steps.validate_compendium.status}></Status></div>
-                            <div><b>Generate manifest: </b><Status status={job.steps.generate_manifest.status}></Status></div>
-                            <div><b>Image build: </b><Status status={job.steps.image_build.status}></Status></div>
-                            <div><b>Image execute: </b><Status status={job.steps.image_execute.status}></Status></div>
-                            <div><b>Image save: </b><Status status={job.steps.image_save.status}></Status></div>
-                            <div><b>Check: </b><Status status={job.steps.check.status}></Status></div>
-                            <div><b>Cleanup: </b><Status status={job.steps.cleanup.status}></Status></div>
-                            {job.status !== "queued" ? <Button color="primary" variant="contained"
-                                                            className="showResultBtn"
-                                                            //onClick={props.showResult}
-                                                        >
-                                                            Show result</Button> : ''}
+                            <span><b>Validate bag: </b><Status status={job.steps.validate_bag.status}></Status></span><br/>
+                            <span><b>Generate configuration: </b><Status status={job.steps.generate_configuration.status}></Status></span><br/>
+                            <span><b>Image prepare: </b><Status status={job.steps.image_prepare.status}></Status></span><br/>
+                            <span><b>Validate compendium: </b><Status status={job.steps.validate_compendium.status}></Status></span><br/>
+                            <span><b>Generate manifest: </b><Status status={job.steps.generate_manifest.status}></Status></span><br/>
+                            <span><b>Image build: </b><Status status={job.steps.image_build.status}></Status></span><br/>
+                            <span><b>Image execute: </b><Status status={job.steps.image_execute.status}></Status></span><br/>
+                            <span><b>Image save: </b><Status status={job.steps.image_save.status}></Status></span><br/>
+                            <span><b>Check: </b><Status status={job.steps.check.status}></Status></span><br/>
+                            <span><b>Cleanup: </b><Status status={job.steps.cleanup.status}></Status></span><br/>
+                            <Button color="primary" variant="contained"
+                                    className="showResultBtn"
+                                    disabled={job.status!='success'}
+                                    onClick={jobs.showResult}
+                            >Show result</Button>
                         </Typography>
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
@@ -111,7 +115,7 @@ class Check extends Component {
 
     getJobs() {
         const self = this;
-        httpRequests.listJobs()
+        httpRequests.listJobs(this.props.id)
             .then(function(res) {
                 for(let i=0; i<res.data.results.length; i++) {
                     httpRequests.getSingleJob(res.data.results[i])
@@ -139,6 +143,10 @@ class Check extends Component {
         this.getJobs();
     }
 
+    showResult() {
+        console.log("test")
+    }
+
     render() {
         return (
             <div>
@@ -152,11 +160,13 @@ class Check extends Component {
                     {this.state.runningJob.length>0 ? 
                         <ListJobs 
                             jobs={this.state.runningJob}
+                            showResult={this.showResult}
                         >
-                        </ListJobs> : 'No Jobs'}
+                        </ListJobs> : ''}
                     {this.state.jobs.length>0 ? 
                         <ListJobs 
                             jobs={this.state.jobs}
+                            showResult={this.showResult}
                         >
                         </ListJobs> : 'No Jobs'}
                 </div>
