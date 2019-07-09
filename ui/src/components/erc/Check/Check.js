@@ -1,18 +1,61 @@
 import React, { Component } from "react";
-import { Button, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography, Dialog, AppBar, Toolbar, IconButton, ListItem, Divider, styles, 
-    TransitionComponent, CloseIcon, List, ListItemText, Transition, makeStyles } from "@material-ui/core";
+import { Button, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography, Dialog, AppBar, Toolbar, IconButton, ListItem, Divider, CloseIcon, List, ListItemText, makeStyles, Slide } from "@material-ui/core";
 import socketIOClient from "socket.io-client";
 import uuid from 'uuid/v1';
+import Iframe from 'react-iframe';
 
 import httpRequests from '../../../helpers/httpRequests';
 import './check.css';
 import config from '../../../helpers/config';
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
+function FullScreenDialog(props) {
+    const job = props.job;
+    const [open, setOpen] = React.useState(false);
+  
+    function handleClickOpen() {
+      setOpen(true);
+    }
+  
+    function handleClose() {
+      setOpen(false);
+    }
+  
+    return (
+        <div>
+            <Button variant="contained" color="primary" onClick={handleClickOpen}>
+                Show result
+            </Button>
+            <Dialog className="main_block" fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+                <AppBar>
+                    <Toolbar>
+                        <Button color="inherit" onClick={handleClose}>Close</Button>
+                    </Toolbar>
+                </AppBar>
+                {job.status === 'success' ?
+                    <div className="compare">
+                        <Iframe className="display" url= {config.baseUrl +  "job/" + job.id + "/data/display.html"}></Iframe>
+                        <Iframe className="check"   url= {config.baseUrl +  "job/" + job.id + "/data/check.html"}></Iframe>
+                    </div> : 
+                    <div className="compare"> 
+                        <Iframe className="display_" url= {config.baseUrl +  "compendium/" + job.compendium_id + "/data/display.html"}></Iframe>
+                        <Iframe className="check_"   url= {config.baseUrl +  "job/" + job.id + "/data/display.html"}></Iframe>
+                        <Iframe className="diff"     url= {config.baseUrl +  "job/" + job.id + "/data/check.html"}></Iframe>
+                    </div>
+                }
+            </Dialog>
+        </div>
+    );
+  }
+
 function Status(status) {
     switch(status.status) {
         case 'success':
             return <span className="success">Success</span>
-        case 'failed':
+        case 'failure':
             return <span className="failure">Failed</span>
         case 'running':
             return <span className="running">Running</span>
@@ -30,7 +73,6 @@ function ListJobs(jobs) {
     const handleChange = panel => (event, newExpanded) => {
         setExpanded(newExpanded ? panel : false);
     };
-
     return (
         <div>
             {jobs.jobs.map(job => (
@@ -39,7 +81,7 @@ function ListJobs(jobs) {
                     onChange={handleChange(job.id)}>
                     <ExpansionPanelSummary aria-controls="panel1d-content" id="panel1d-header">
                         <Typography><b>Started: </b>{job.steps.validate_bag.start} <br/>
-                                    <b>Status: </b><Status status={job.status}></Status>
+                                    <b>Overall Status: </b><Status status={job.status}></Status>
                         </Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
@@ -54,11 +96,7 @@ function ListJobs(jobs) {
                             <span><b>Image save: </b><Status status={job.steps.image_save.status}></Status></span><br/>
                             <span><b>Check: </b><Status status={job.steps.check.status}></Status></span><br/>
                             <span><b>Cleanup: </b><Status status={job.steps.cleanup.status}></Status></span><br/>
-                            <Button color="primary" variant="contained"
-                                    className="showResultBtn"
-                                    disabled={job.status!='success'}
-                                    onClick={jobs.showResult}
-                            >Show result</Button>
+                            <FullScreenDialog job={job} className="compare"></FullScreenDialog>
                         </Typography>
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
@@ -120,7 +158,9 @@ class Check extends Component {
                 for(let i=0; i<res.data.results.length; i++) {
                     httpRequests.getSingleJob(res.data.results[i])
                         .then(function(res2){
+                            console.log(res2)
                             let job = res2.data;
+                            console.log(job)
                             let jobsList = self.state.jobs;
                                 jobsList.push(job);
                             if (Number(i) +1 === Number(res.data.results.length)){
@@ -168,7 +208,7 @@ class Check extends Component {
                             jobs={this.state.jobs}
                             showResult={this.showResult}
                         >
-                        </ListJobs> : 'No Jobs'}
+                        </ListJobs> : ''}
                 </div>
             </div>
         );
