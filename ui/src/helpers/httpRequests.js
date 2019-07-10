@@ -48,6 +48,10 @@ function updateMetadata(id, data){
     return axios.put(_url, body);
 }
 
+function getLogs(id) {
+    return axios.get( _env.api + 'job/' + id + '?steps=all' );
+}
+
 
 module.exports = {
     getUser: getUser,
@@ -59,5 +63,6 @@ module.exports = {
     newJob: newJob,
     updateMetadata: updateMetadata,
     listJobs: listJobs,
-    getSingleJob: getSingleJob
+    getSingleJob: getSingleJob,
+    getLogs: getLogs,
 };

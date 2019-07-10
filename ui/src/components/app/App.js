@@ -35,7 +35,7 @@ const Header = (props) => {
           </NavLink>
         </HashRouter>
         <Button color="inherit"
-          href= {props.loggedIn ? "api/v1/auth/logout" : "api/v1/auth/login"} 
+          href={props.loggedIn ? "api/v1/auth/logout" : "api/v1/auth/login"} 
           onClick={() => props.login()}>{props.loggedIn ? 'Logout' : 'Login'}
         </Button>
         <Button color="inherit">
@@ -94,10 +94,10 @@ class App extends Component {
     return (
       <div id="pageContainer">
       <Header 
-        loggedIn = {this.state.loggedIn} 
-        login = {() => this.user()}
-        userName = {this.state.userName}
-        userOrcid = {this.state.userOrcid}>
+        loggedIn={this.state.loggedIn} 
+        login={() => this.user()}
+        userName={this.state.userName}
+        userOrcid={this.state.userOrcid}>
       </Header>
       <Footer></Footer>
       <HashRouter>

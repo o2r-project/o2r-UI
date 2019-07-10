@@ -36,23 +36,3 @@
     height: 100%;
 }
 
-.display,
-.check {
-    width: 47%;
-    float: left;
-    margin-top:4%;
-    margin-left: 1%;
-    height: 100%;
-}
-
-
-.display_,
-.check_,
-.diff {
-    width: 30%;
-    float: left;
-    margin-top:4%;
-    margin-left: 2%;
-    height: 100%;
-}
-
