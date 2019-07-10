@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography } from "@material-ui/core";
+import { Button, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography, CircularProgress } from "@material-ui/core";
 import socketIOClient from "socket.io-client";
 import uuid from 'uuid/v1';
 
@@ -16,7 +16,7 @@ function Status(status) {
         case 'failure':
             return <span className="failure">Failed</span>
         case 'running':
-            return <span className="running">Running</span>
+            return <span className="running">Running <CircularProgress size={15} /></span>
         case 'skipped':
             return <span className="skipped">Skipped</span>
         case 'queued':

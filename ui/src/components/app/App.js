@@ -78,8 +78,8 @@ class App extends Component {
 
   user() {
     httpRequests.getUser()
-    .then(
-      response => this.setState({
+      .then(
+        response => this.setState({
         loggedIn: true,
         userName: response.data.name,
         userOrcid:response.data.orcid
@@ -97,7 +97,7 @@ class App extends Component {
         loggedIn={this.state.loggedIn} 
         login={() => this.user()}
         userName={this.state.userName}
-        userOrcid={this.state.userOrcid}>
+        userOrcid={this.state.userOrcid}>  
       </Header>
       <Footer></Footer>
       <HashRouter>
