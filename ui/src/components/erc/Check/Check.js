@@ -7,6 +7,7 @@ import httpRequests from '../../../helpers/httpRequests';
 import './check.css';
 import config from '../../../helpers/config';
 import Comparison from './Comparison/Comparison';
+import Logs from './Logs/Logs';
 
 function Status(status) {
     switch(status.status) {
@@ -37,7 +38,7 @@ function ListJobs(jobs) {
                 <ExpansionPanel square key={uuid()}
                     expanded={expanded === job.id} 
                     onChange={handleChange(job.id)}>
-                    <ExpansionPanelSummary aria-controls="panel1d-content" id="panel1d-header" style={{backgroundColor:'rgb(228, 228, 228)'}}>
+                    <ExpansionPanelSummary aria-controls="panel1d-content" id="panel1d-header" style={{backgroundColor:'rgb(245, 245, 245)'}}>
                         <Typography><b>Started: </b>{job.steps.validate_bag.start} <br/>
                                     <b>Overall Status: </b><Status status={job.status}></Status>
                         </Typography>
@@ -55,6 +56,7 @@ function ListJobs(jobs) {
                             <span><b>Check: </b><Status status={job.steps.check.status}></Status></span><br/>
                             <span><b>Cleanup: </b><Status status={job.steps.cleanup.status}></Status></span><br/>
                             <Comparison job={job} className="compare"></Comparison>
+                            <Logs job={job} ></Logs>
                         </Typography>
                     </ExpansionPanelDetails>
                 </ExpansionPanel>

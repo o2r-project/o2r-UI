@@ -22,17 +22,8 @@
     color: rgb(255, 123, 0);
 }
 
-.showResultBtn {
-    margin-top: 5%;
-}
-
 .runAnalysisBtn {
     margin-top: 2%;
     margin-bottom: 2%;
-}
-
-.compare {
-    width: 100%;
-    height: 100%;
 }
 

@@ -23,8 +23,10 @@ function ComparisonView(props) {
   
     return (
         <div>
-            <Button variant="contained" color="primary" disabled={job.status !== 'failure' && job.status !== 'success'}
+            <Button variant="contained" color="primary" 
+                disabled={job.status !== 'failure' && job.status !== 'success'}
                 onClick={handleClickOpen}
+                style={{marginTop: "5%", width: "150px",}}
             >
                 Show result
             </Button>
