@@ -27,11 +27,11 @@ function Status(status) {
 }
 
 function ListJobs(jobs) {
-    console.log(jobs)
     const [expanded, setExpanded] = React.useState('panel1');
     const handleChange = panel => (event, newExpanded) => {
         setExpanded(newExpanded ? panel : false);
     };
+
     return (
         <div>
             {jobs.jobs.map(job => (
@@ -86,7 +86,6 @@ class Check extends Component {
             console.log("document event");
         });
         socket.on("set", (evt) => {
-            console.log(evt)
             httpRequests.getSingleJob(evt.id)
                 .then(function(res) {
                     let tmp = [];
@@ -146,27 +145,17 @@ class Check extends Component {
             })
     }
 
-    getLogs(job_id) {
-        httpRequests.getLogs(job_id)
-            .then(function(res) {
-                console.log(res)
-            })
-            .catch(function(res) {
-
-            })
-    }
-
     componentDidMount() {
         this.getJobs();
     }
-
 
     render() {
         return (
             <div>
                 <div className="runAnalysisBtn">
                     <Button variant="contained" color="primary"
-                        onClick={this.newJob.bind(this)}>
+                        onClick={this.newJob.bind(this)}
+                    >
                         Run analysis
                     </Button>
                 </div>

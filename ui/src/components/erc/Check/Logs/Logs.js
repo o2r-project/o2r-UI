@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Button, Dialog, AppBar, Toolbar, Slide } from "@material-ui/core";
-import httpRequests from '../../../../helpers/httpRequests';
+import uuid from 'uuid/v1';
 
+import httpRequests from '../../../../helpers/httpRequests';
 import './logs.css';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -10,7 +11,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 function LogsView(props) {
     const logs = props.logs;
-    console.log(logs)
     const job = props.job
     const [open, setOpen] = React.useState(false);
 
@@ -45,7 +45,7 @@ function LogsView(props) {
                     <b>Validate bag: </b>
                     <ul>
                         {logs.validate_bag.text.map(log => (
-                            <li>
+                            <li key={uuid()}>
                                 {log}
                             </li>
                         ))}
@@ -53,7 +53,7 @@ function LogsView(props) {
                     <b>Generate configuration: </b>
                     <ul>
                         {logs.generate_configuration.text.map(log => (
-                            <li>
+                            <li key={uuid()}>
                                 {log}
                             </li>
                         ))}
@@ -61,7 +61,7 @@ function LogsView(props) {
                     <b>Image prepare: </b>
                     <ul>
                         {logs.image_prepare.text.map(log => (
-                            <li>
+                            <li key={uuid()}>
                                 {log}
                             </li>
                         ))}
@@ -69,7 +69,7 @@ function LogsView(props) {
                     <b>Validate compendium: </b>
                     <ul>
                         {logs.validate_compendium.text.map(log => (
-                            <li>
+                            <li key={uuid()}>
                                 {log}
                             </li>
                         ))}
@@ -77,7 +77,7 @@ function LogsView(props) {
                     <b>Generate manifest: </b>
                     <ul>
                         {logs.generate_manifest.text.map(log => (
-                            <li>
+                            <li key={uuid()}>
                                 {log}
                             </li>
                         ))}
@@ -85,7 +85,7 @@ function LogsView(props) {
                     <b>Image build: </b>
                     <ul>
                         {logs.image_build.text.map(log => (
-                            <li>
+                            <li key={uuid()}>
                                 {log}
                             </li>
                         ))}
@@ -93,7 +93,7 @@ function LogsView(props) {
                     <b>Image execute: </b>
                     <ul>
                         {logs.image_execute.text.map(log => (
-                            <li>
+                            <li key={uuid()}>
                                 {log}
                             </li>
                         ))}
@@ -101,7 +101,7 @@ function LogsView(props) {
                     <b>Image save: </b>
                     <ul>
                         {logs.image_save.text.map(log => (
-                            <li>
+                            <li key={uuid()}>
                                 {log}
                             </li>
                         ))}
@@ -109,7 +109,7 @@ function LogsView(props) {
                     <b>Check: </b>
                     <ul>
                         {logs.check.text.map(log => (
-                            <li>
+                            <li key={uuid()}>
                                 {log}
                             </li>
                         ))}
@@ -117,7 +117,7 @@ function LogsView(props) {
                     <b>Cleanup: </b>
                     <ul>
                         {logs.cleanup.text.map(log => (
-                            <li>
+                            <li key={uuid()}>
                                 {log}
                             </li>
                         ))}
