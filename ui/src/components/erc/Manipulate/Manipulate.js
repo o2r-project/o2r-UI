@@ -9,7 +9,7 @@ class Manipulate extends React.Component {
         this.state={
             binding: null,
             widget: null,
-
+            currentVal: null,
         }
     }
 
@@ -21,6 +21,7 @@ class Manipulate extends React.Component {
                 self.setState({
                     binding:res.data[0],
                     widget:res.data[0].sourcecode[0].parameter[0].uiWidget,
+                    currentVal:res.data[0].sourcecode[0].parameter[0].initialValue,
                 });
             })
             .catch(function(res) {
@@ -33,7 +34,12 @@ class Manipulate extends React.Component {
     }
 
     handleChange(evt, newVal) {
-
+        if(newVal !== this.state.currentVal) {
+            this.setState({
+                currentVal: newVal,
+            });
+            console.log("update")
+        }
     }
 
     render () {
@@ -42,7 +48,7 @@ class Manipulate extends React.Component {
                 {this.state.binding !== null ?
                     <div>                
                         <Slider
-                            onChange={this.handleChange}
+                            onChange={this.handleChange.bind(this)}
                             defaultValue={this.state.widget.initialValue}
                             step={this.state.widget.stepSize}
                             valueLabelDisplay="on"
