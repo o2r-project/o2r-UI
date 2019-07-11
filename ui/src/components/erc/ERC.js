@@ -89,6 +89,7 @@ class ERC extends React.Component {
                 const data = response.data.metadata.o2r;
                 console.log(response)
                 self.setState({
+                    metadata: data,
                     datafiles: data.inputfiles,
                     dataset: data.inputfiles[0],
                     codefiles: data.codefiles,
@@ -146,7 +147,7 @@ class ERC extends React.Component {
                         }
                         {this.state.tabValue === 2 && 
                             <div>
-                                <Manipulate id={this.state.id}></Manipulate>
+                                <Manipulate id={this.state.id} metadata={this.state.metadata}></Manipulate>
                             </div>
                         }
                     </ReflexElement>

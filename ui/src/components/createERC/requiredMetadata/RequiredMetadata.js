@@ -440,12 +440,19 @@ class RequiredMetadata extends Component {
                     codeLicense: data.license.code,
                 });
                 res.data.candidate = false;
+                const binding = self.getBindingJson(res.data);
+                    console.log(binding.code.parameter.text)
+                res.data.metadata.o2r.interaction.push(binding);
                 httpRequests.updateMetadata(self.props.metadata.data.data.id, res.data.metadata.o2r)
                     .then(function(res2) {
-                        self.props.history.push({
-                            pathname: '/erc/' + self.props.metadata.data.data.id, 
-                            state: {data:data}
-                        });
+                        httpRequests.sendBinding(binding)
+                            .then(function(res3) {
+                                console.log(res3)
+                                self.props.history.push({
+                                    pathname: '/erc/' + self.props.metadata.data.data.id, 
+                                    state: {data:data}
+                                });
+                            })
                     })
             })
             .catch(function (response) {
@@ -455,6 +462,46 @@ class RequiredMetadata extends Component {
 
     componentDidMount() {
         this.getMetadata()
+    }
+
+    getBindingJson(erc) {
+        return {
+            "id": erc.id,
+            "result": {
+                "type": "figure",
+                "value": "Figure 3"
+            },
+            "port": 5001,
+            "code": {
+                "file": erc.metadata.o2r.mainfile,
+                "codeLines": [{"start":28,"end":28}, {"start":36,"end":336}, {"start":341,"end":345}, {"start":351,"end":358}, {"start":361,"end":367}, {"start":361,"end":422}],
+                 "parameter":
+                    {
+                       "text":"velocity <- 0.5",
+                       "varName":"velocity",
+                       "val":0.5,
+                       "codeline":342,
+                       "uiWidget":{
+                          "type":"slider",
+                          "minValue":0.1,
+                          "maxValue":3.5,
+                          "stepSize":0.1,
+                          "caption":"Changing the velocity parameter affects damage costs"
+                       }
+                    },
+                 "data":[
+                    {
+                       "file":"costs.csv",
+                       "column":[
+                          {
+                             "name":"Costs",
+                             "rows":"1-37"
+                          }
+                       ]
+                    }
+                 ]
+            }
+        }
     }
 
     render() {

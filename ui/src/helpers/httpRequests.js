@@ -52,6 +52,14 @@ function getLogs(id) {
     return axios.get( _env.api + 'job/' + id + '?steps=all' );
 }
 
+function sendBinding(binding){
+    return axios.post(_env.api + 'bindings/binding', binding);
+}
+
+function runManipulationService(binding){
+    return axios.post(_env.api + 'bindings/runPlumberService', binding);
+}
+
 
 module.exports = {
     getUser: getUser,
@@ -65,4 +73,6 @@ module.exports = {
     listJobs: listJobs,
     getSingleJob: getSingleJob,
     getLogs: getLogs,
+    sendBinding: sendBinding,
+    runManipulationService: runManipulationService
 };

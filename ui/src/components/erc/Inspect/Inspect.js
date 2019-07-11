@@ -8,10 +8,6 @@ import DataView from '../DataView/DataView';
 
 class Inspect extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <ReflexContainer orientation="horizontal">
