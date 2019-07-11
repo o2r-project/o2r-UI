@@ -3,13 +3,13 @@ import 'react-reflex/styles.css';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import { Paper, Tabs, Tab } from "@material-ui/core";
 
-
 import config from '../../helpers/config';
 import './erc.css';
 import httpRequests from '../../helpers/httpRequests';
 import MainView from './MainView/MainView';
 import Inspect from './Inspect/Inspect';
 import Check from './Check/Check';
+import Manipulate from './Manipulate/Manipulate';
 
 class ERC extends React.Component {
     constructor(props) {
@@ -102,8 +102,7 @@ class ERC extends React.Component {
             })
     }
 
-    handleTabChange(event, newValue) {
-        console.log(event)
+    handleTabChange(evt, newValue) {
         this.setState({
             tabValue: newValue,
         })
@@ -129,6 +128,7 @@ class ERC extends React.Component {
                                 >
                                     <Tab label="Inspect" />
                                     <Tab label="Check" />
+                                    <Tab label="Manipulate" />
                             </Tabs>
                         </Paper>
                         {this.state.tabValue === 0 &&
@@ -137,10 +137,18 @@ class ERC extends React.Component {
                                 handleDataChange={this.handleDataChange.bind(this)}
                                 handleCodeChange={this.handleCodeChange.bind(this)}
                                 >
-                            </Inspect>}
-                        {this.state.tabValue === 1 && <div>
-                            <Check id={this.state.id}></Check>
-                        </div>}
+                            </Inspect>
+                        }
+                        {this.state.tabValue === 1 && 
+                            <div>
+                                <Check id={this.state.id}></Check>
+                            </div>
+                        }
+                        {this.state.tabValue === 2 && 
+                            <div>
+                                <Manipulate id={this.state.id}></Manipulate>
+                            </div>
+                        }
                     </ReflexElement>
                 </ReflexContainer>
             </div>
