@@ -1,6 +1,8 @@
 import React from 'react';
 
 import CSV from './CSV/CSV';
+import JSON from './JSON/JSON';
+
 
 const DataTable = (props) => {
     let dataFormat = null; 
@@ -9,22 +11,18 @@ const DataTable = (props) => {
             dataFormat = props.data.data.tree[i].type
         }
     }
-    
     switch(dataFormat) {
         case 'text/csv':
             return <CSV csv={props.data.data.data} file={props.data.data.datafile}>csv</CSV>
-        case 'Rdata':
-            return <div>rdata</div>
+        case 'application/json':
+            return <JSON json={props.data.data.data[0]} file={props.data.data.datafile}>json</JSON>
         default:
             return <div>No data</div>
     }
-  }
+}
 
 class DataView extends React.Component {
-    constructor(props) {
-        super(props);    
-    }
-  
+
     render () {
         return (
             <div>

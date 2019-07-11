@@ -57,10 +57,6 @@ function ComparisonView(props) {
 
 class Comparison extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <ComparisonView job={this.props.job}></ComparisonView>

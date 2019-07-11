@@ -133,7 +133,7 @@ class ERC extends React.Component {
                         </Paper>
                         {this.state.tabValue === 0 &&
                             <Inspect 
-                                props={this.state} 
+                                state={this.state} 
                                 handleDataChange={this.handleDataChange.bind(this)}
                                 handleCodeChange={this.handleCodeChange.bind(this)}
                                 >

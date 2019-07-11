@@ -4,10 +4,7 @@ import Highlight from 'react-highlight.js';
 import './codeview.css' 
 
 class CodeView extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-  
+
     render () {
 
         return (

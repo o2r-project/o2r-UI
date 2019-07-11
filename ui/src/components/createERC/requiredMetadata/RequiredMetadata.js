@@ -425,8 +425,9 @@ class RequiredMetadata extends Component {
     getMetadata() {
         const self = this;
         httpRequests.singleCompendium(this.props.metadata.data.data.id)
-            .then(function (response) {
-                const data = response.data.metadata.o2r;
+            .then(function (res) {
+                const data = res.data.metadata.o2r;
+                res.data.metadata.o2r.inputfiles.push("binding.json");
                 self.setState({
                     metadata: data,
                     title: data.title,
@@ -438,10 +439,9 @@ class RequiredMetadata extends Component {
                     textLicense: data.license.text,
                     codeLicense: data.license.code,
                 });
-                response.data.candidate = false;
-                httpRequests.updateMetadata(self.props.metadata.data.data.id, response.data.metadata.o2r)
-                    .then(function(res) {
-                        console.log(res)
+                res.data.candidate = false;
+                httpRequests.updateMetadata(self.props.metadata.data.data.id, res.data.metadata.o2r)
+                    .then(function(res2) {
                         self.props.history.push({
                             pathname: '/erc/' + self.props.metadata.data.data.id, 
                             state: {data:data}

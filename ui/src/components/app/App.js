@@ -19,7 +19,7 @@ const Header = (props) => {
     <AppBar id="header">
       <Toolbar>
         <Typography variant="h6" color="inherit" style={{ flex: 1 }}>
-          <a href="/"><img src={logo} alt="" id="headerLogo"/></a>
+          <a href="/"><img src={logo} alt="o2r" id="headerLogo"/></a>
         </Typography>
         <HashRouter>
           <NavLink id="link" to="/discover">
@@ -30,7 +30,9 @@ const Header = (props) => {
           <NavLink id="link" to="/author">
             {props.loggedIn ? 
               <Button color="inherit">
-                {props.userName} | <img src={orcidLogo} className="orcidImage"></img>{props.userOrcid}
+                {props.userName} | 
+                  <img src={orcidLogo} className="orcidImage" alt="orcid"></img>
+                  {props.userOrcid}
               </Button> : ''}
           </NavLink>
         </HashRouter>

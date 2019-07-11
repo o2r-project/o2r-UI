@@ -4,9 +4,6 @@ import { Table, TableBody, TableCell, TableHead, TableRow, Paper } from '@materi
 import uuid from 'uuid/v1';
 
 class CSV extends React.Component {
-    constructor(props) {
-        super(props);
-    }
   
     render () {
         const csv = csvstring.parse(this.props.csv);
