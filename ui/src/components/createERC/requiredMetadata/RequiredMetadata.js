@@ -441,7 +441,7 @@ class RequiredMetadata extends Component {
                 });
                 res.data.candidate = false;
                 const binding = self.getBindingJson(res.data);
-                    console.log(binding.code.parameter.text)
+                    console.log(binding.sourcecode.parameter.name)
                 res.data.metadata.o2r.interaction.push(binding);
                 httpRequests.updateMetadata(self.props.metadata.data.data.id, res.data.metadata.o2r)
                     .then(function(res2) {
@@ -467,20 +467,20 @@ class RequiredMetadata extends Component {
     getBindingJson(erc) {
         return {
             "id": erc.id,
-            "result": {
+            "computationalResult": {
                 "type": "figure",
-                "value": "Figure 3"
+                "result": "Figure 3"
             },
             "port": 5001,
-            "code": {
+            "sourcecode": {
                 "file": erc.metadata.o2r.mainfile,
-                "codeLines": [{"start":28,"end":28}, {"start":36,"end":336}, {"start":341,"end":345}, {"start":351,"end":358}, {"start":361,"end":367}, {"start":361,"end":422}],
-                 "parameter":
-                    {
+                "codeLines": [{"start":30,"end":424}],
+                "parameter":
+                    [{
                        "text":"velocity <- 0.5",
-                       "varName":"velocity",
+                       "name":"velocity",
                        "val":0.5,
-                       "codeline":342,
+                       "codeline":344,
                        "uiWidget":{
                           "type":"slider",
                           "minValue":0.1,
@@ -489,6 +489,33 @@ class RequiredMetadata extends Component {
                           "caption":"Changing the velocity parameter affects damage costs"
                        }
                     },
+                    {
+                        "text":"duration <- 24",
+                        "name":"duration",
+                        "val":24,
+                        "codeline":346,
+                        "uiWidget":{
+                           "type":"slider",
+                           "minValue":1,
+                           "maxValue":24,
+                           "stepSize":1,
+                           "caption":"Changing the duration parameter affects damage costs"
+                        }
+                     },
+                     {
+                        "text":"sediment <- 0.05",
+                        "name":"sediment",
+                        "val":0.05,
+                        "codeline":345,
+                        "uiWidget":{
+                           "type":"slider",
+                           "minValue":0.01,
+                           "maxValue":1.0,
+                           "stepSize":0.1,
+                           "caption":"Changing the sediment parameter affects damage costs"
+                        }
+                     }
+                    ],
                  "data":[
                     {
                        "file":"costs.csv",
