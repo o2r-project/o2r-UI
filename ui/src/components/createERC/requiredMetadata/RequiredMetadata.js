@@ -6,8 +6,6 @@ import { withRouter } from 'react-router-dom';
 
 import licensesData from '../../../helpers/licenses.json'
 import './requiredMetadata.css';
-import httpRequests from '../../../helpers/httpRequests';
-
 
 const textLicenses = [];
 const dataLicenses = [];
@@ -50,10 +48,12 @@ const AuthorForm = props => {
     } = props
 
     const change = (name, e) => {
+        console.log("test")
         e.persist();
         e.target.name = name;
         handleChange(e);
         setFieldTouched(name, true, false)
+        
     }
 
     return (
@@ -193,11 +193,14 @@ const Form = props => {
         handleChange,
         isValid,
         setFieldTouched,
-        setFieldValue
+        setFieldValue,
     } = props
-
+    console.log(props)
 
     const change = (name, e) => {
+        console.log(name)
+        console.log(e.target.value)
+        console.log(props)
         e.persist();
         e.target.name = name;
         handleChange(e);
@@ -407,129 +410,18 @@ const Form = props => {
 class RequiredMetadata extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
-            metadata: null,
-            title: "",
-            abstract: "",
-            publicationDate: "",
-            displayFile: "",
-            mainFile: "",
-            dataLicense: "",
-            textLicense: "",
-            codeLicense: ""
+            metadata: props.metadata,
+            title: props.metadata.title,
+            abstract: props.metadata.description,
+            publicationDate: props.metadata.publication_date,
+            displayFile: props.metadata.displayfile,
+            mainFile: props.metadata.mainfile,
+            dataLicense: props.metadata.license.data,
+            textLicense: props.metadata.license.text,
+            codeLicense: props.metadata.license.code,
         }
     };
-
-    //Review, should be better ;)
-    getMetadata() {
-        const self = this;
-        httpRequests.singleCompendium(this.props.metadata.data.data.id)
-            .then(function (res) {
-                const data = res.data.metadata.o2r;
-                res.data.metadata.o2r.inputfiles.push("binding.json");
-                self.setState({
-                    metadata: data,
-                    title: data.title,
-                    abstract: data.description,
-                    publicationDate: data.publication_date,
-                    displayFile: data.displayfile,
-                    mainFile: data.mainfile,
-                    dataLicense: data.license.data,
-                    textLicense: data.license.text,
-                    codeLicense: data.license.code,
-                });
-                res.data.candidate = false;
-                const binding = self.getBindingJson(res.data);
-                    console.log(binding.sourcecode.parameter.name)
-                res.data.metadata.o2r.interaction.push(binding);
-                httpRequests.updateMetadata(self.props.metadata.data.data.id, res.data.metadata.o2r)
-                    .then(function(res2) {
-                        httpRequests.sendBinding(binding)
-                            .then(function(res3) {
-                                console.log(res3)
-                                self.props.history.push({
-                                    pathname: '/erc/' + self.props.metadata.data.data.id, 
-                                    state: {data:data}
-                                });
-                            })
-                    })
-            })
-            .catch(function (response) {
-                console.log(response)
-            })
-    }
-
-    componentDidMount() {
-        this.getMetadata()
-    }
-
-    getBindingJson(erc) {
-        return {
-            "id": erc.id,
-            "computationalResult": {
-                "type": "figure",
-                "result": "Figure 3"
-            },
-            "port": 5001,
-            "sourcecode": {
-                "file": erc.metadata.o2r.mainfile,
-                "codeLines": [{"start":30,"end":424}],
-                "parameter":
-                    [{
-                       "text":"velocity <- 0.5",
-                       "name":"velocity",
-                       "val":0.5,
-                       "codeline":344,
-                       "uiWidget":{
-                          "type":"slider",
-                          "minValue":0.1,
-                          "maxValue":3.5,
-                          "stepSize":0.1,
-                          "caption":"Changing the velocity parameter affects damage costs"
-                       }
-                    },
-                    {
-                        "text":"duration <- 24",
-                        "name":"duration",
-                        "val":24,
-                        "codeline":346,
-                        "uiWidget":{
-                           "type":"slider",
-                           "minValue":1,
-                           "maxValue":24,
-                           "stepSize":1,
-                           "caption":"Changing the duration parameter affects damage costs"
-                        }
-                     },
-                     {
-                        "text":"sediment <- 0.05",
-                        "name":"sediment",
-                        "val":0.05,
-                        "codeline":345,
-                        "uiWidget":{
-                           "type":"slider",
-                           "minValue":0.01,
-                           "maxValue":1.0,
-                           "stepSize":0.1,
-                           "caption":"Changing the sediment parameter affects damage costs"
-                        }
-                     }
-                    ],
-                 "data":[
-                    {
-                       "file":"costs.csv",
-                       "column":[
-                          {
-                             "name":"Costs",
-                             "rows":"1-37"
-                          }
-                       ]
-                    }
-                 ]
-            }
-        }
-    }
 
     render() {
         prepareLicense();
@@ -539,7 +431,7 @@ class RequiredMetadata extends Component {
                 <h4>Authors</h4>
                 {this.state.metadata &&
                     <Formik
-                        render={props => <Form{...props} />}
+                        render={props => <Form{...props} update={props.update} />}
                         initialValues={this.state}
                         validationSchema={validationSchema}
                     />

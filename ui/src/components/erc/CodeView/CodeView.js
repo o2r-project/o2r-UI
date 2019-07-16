@@ -6,11 +6,10 @@ import './codeview.css'
 class CodeView extends React.Component {
 
     render () {
-
         return (
             <div>
                 <Highlight language="R" className="code">
-                    {this.props.code.file.data}
+                    {this.props.code}
                 </Highlight>
             </div>
         )

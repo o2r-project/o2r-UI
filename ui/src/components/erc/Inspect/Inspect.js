@@ -9,42 +9,43 @@ import DataView from '../DataView/DataView';
 class Inspect extends Component {
 
     render() {
+        const props=this.props.state;
         return (
             <ReflexContainer orientation="horizontal">
                 <ReflexElement>
-                    {this.props.state.codefiles != null && this.props.state.codefile != null ? 
+                    {props.codefiles != null && props.codefile != null ? 
                         <FormControl variant="outlined">
                             <InputLabel htmlFor="outlined-age-native-simple"></InputLabel>
                             <Select
                                 native
-                                value={this.props.state.codefile.filename}
+                                value={props.codefile.filename}
                                 onChange={this.props.handleCodeChange}
                                 input={<FilledInput name="codefile" id="filled-age-native-simple" />}
                             >
-                                {this.props.state.codefiles.map(option => (
+                                {props.codefiles.map(option => (
                                     <option value={option} key={uuid()}>{option}</option>
                                 ))}
                             </Select>
                         </FormControl> : ''}
-                    {this.props.state.codefile != null ? <CodeView code={this.props.state.codefile}></CodeView> : <div>There is no data to display</div>}
+                    {props.codefile != null ? <CodeView code={props.codefile.file.data}></CodeView> : <div>There is no data to display</div>}
                 </ReflexElement>
                 <ReflexSplitter propagate={true} style={{ height: "10px" }} />
                 <ReflexElement>
-                    {this.props.state.datafiles != null ? 
+                    {props.dataset != undefined ? 
                         <FormControl variant="outlined">
                             <InputLabel htmlFor="outlined-age-native-simple"></InputLabel>
                             <Select
                                 native
-                                value={this.props.state.dataset.datafile}
-                                onChange={this.props.handleDataChange}
+                                value={props.dataset.datafile}
+                                onChange={props.handleDataChange}
                                 input={<FilledInput name="dataset" id="filled-age-native-simple" />}
                             >
-                                {this.props.state.datafiles.map(option => (
+                                {props.datafiles.map(option => (
                                     <option value={option} key={uuid()}>{option}</option>
                                 ))}
                             </Select>
                         </FormControl> : ''}
-                    {this.props.state.dataset != null ? <DataView data={this.props.state.dataset}></DataView> : <div>There is no data to display</div>}
+                    {props.dataset != null ? <DataView data={props.dataset}></DataView> : <div>There is no data to display</div>}
                 </ReflexElement>
             </ReflexContainer>
         );
@@ -52,15 +53,3 @@ class Inspect extends Component {
 }
 
 export default Inspect;
-
-
-
-
-
-
-
-
-
-
-
-
