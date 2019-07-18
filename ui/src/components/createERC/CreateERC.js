@@ -32,7 +32,7 @@ class CreateERC extends Component {
         })
     }
 
-    getMetadata() {
+    getMetadata () {
         const self = this;
         httpRequests.singleCompendium(this.state.compendium_id)
             .then(function(res) {
@@ -51,13 +51,13 @@ class CreateERC extends Component {
             })
     }
 
-    setMetadata(metadata) {
+    setMetadata ( metadata ) {
         this.setState({
             metadata:metadata,
         });
     }
 
-    updateMetadata(){
+    updateMetadata = ( metadata ) => {
         const self = this;
         httpRequests.updateMetadata(self.state.compendium_id, self.state.metadata)
             .then(function(res2) {
@@ -87,26 +87,28 @@ class CreateERC extends Component {
                     <Tab label="Spatiotemporal Metadata"/>
                     <Tab label="Create bindings"/>
                 </Tabs>
-                <Button variant="contained" color="primary" 
-                    onClick={this.updateMetadata.bind(this)}
-                >
-                    Update Metadata
-                </Button>
                 {value === 0 && 
                     <TabContainer>
                         {this.state.metadata!=null ?
-                            <RequiredMetadata metadata={this.state.metadata}></RequiredMetadata>
+                            <RequiredMetadata 
+                                metadata={this.state.metadata} 
+                            />
                         : '' }
                     </TabContainer>
                 }
                 {value === 1 && 
                     <TabContainer>
-                        <SpatioTemporalMetadata></SpatioTemporalMetadata>
+                        <SpatioTemporalMetadata />
                     </TabContainer>
                 }
                 {value === 2 && 
                     <TabContainer>
-                        <Bindings metadata={this.state.metadata} codefile={this.state.codefile} compendium_id={this.state.compendium_id}></Bindings>
+                        <Bindings 
+                            metadata={this.state.metadata} 
+                            codefile={this.state.codefile} 
+                            compendium_id={this.state.compendium_id}
+                            updateMetadata={this.updateMetadata}
+                        />
                     </TabContainer>
                 }
             </div>

@@ -1,20 +1,22 @@
 import React from 'react';
-import httpRequests from '../../../helpers/httpRequests';
 import { Slider, Typography} from '@material-ui/core';
+import uuid from 'uuid/v1';
+
+import httpRequests from '../../../helpers/httpRequests';
 
 class Manipulate extends React.Component {
 
-    constructor(props) {
-        super(props);
+    constructor( props ) {
+        super ( props );
         this.state={
-            binding: props.metadata.interaction[0],
-            baseUrl: this.buildBaseUrl(props.metadata.interaction[0]),
-            params: this.getParams(props.metadata.interaction[0].sourcecode.parameter),
+            binding: props.binding,
+            baseUrl: this.buildBaseUrl(props.binding),
+            params: this.getParams(props.binding.sourcecode.parameter),
             fullUrl: this.buildFullUrl,
         }
     }
 
-    runManipulateService() {
+    runManipulateService () {
         const self = this;
         httpRequests.runManipulationService(self.state.binding)
             .then(function(res){
@@ -30,11 +32,11 @@ class Manipulate extends React.Component {
             })
     }
 
-    buildBaseUrl(binding) {
+    buildBaseUrl ( binding ) {
         return 'http://localhost:' + binding.port + '/' + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?';
     }
 
-    buildFullUrl() {
+    buildFullUrl () {
         let url = this.state.baseUrl;
         for (let i=0; i<this.state.params.length;i++) {
             url = url + 'newValue' + i + '=' + this.state[this.state.params[i]];
@@ -47,7 +49,7 @@ class Manipulate extends React.Component {
         })
     }
 
-    getParams(parameter) {
+    getParams ( parameter ) {
         let params = [];
         for( let i=0; i<parameter.length; i++ ) {
             params.push(parameter[i].name);
@@ -55,11 +57,11 @@ class Manipulate extends React.Component {
         return params;
     }
 
-    componentDidMount() {
+    componentDidMount () {
         this.runManipulateService()
     }
 
-    handleChange = name => (evt, newVal) => {
+    handleChange = name => ( evt, newVal ) => {
         this.setState({
             [name]: newVal,
         });
@@ -69,14 +71,15 @@ class Manipulate extends React.Component {
     render () {
         return (
             <div style={{width:'80%', marginLeft: '10%', marginTop: '10%'}}>
-            {this.state.binding.sourcecode.parameter.map(parameter => (
-                    <div style={{marginTop:'5%'}}>                
+                {this.state.binding.sourcecode.parameter.map(parameter => (
+                    <div style={{marginTop:'5%'}} key={uuid()}>                
                         <Typography variant='caption'>
                             {parameter.uiWidget.caption}
                         </Typography>
                         <Slider
-                            onChange={this.handleChange(parameter.name)}
+                            onChange={this.handleChange(parameter.name).bind(this)}
                             defaultValue={parameter.val}
+                            value={this.state[parameter.name]}
                             aria-labelledby="discrete-slider-custom"
                             valueLabelDisplay="auto"
                             step={parameter.uiWidget.stepSize}
@@ -87,7 +90,7 @@ class Manipulate extends React.Component {
                         /> 
                     </div>
                 ))}
-            <img src={this.state.fullUrl} />
+                <img src={this.state.fullUrl} />
             </div>
         )
     }

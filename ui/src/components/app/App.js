@@ -14,7 +14,7 @@ import CreateERC from '../createERC/CreateERC';
 import Discovery from '../discovery/Discovery';
 import ERC from '../erc/ERC';
 
-const Header = (props) => {
+const Header = ( props ) => {
   return (        
     <AppBar id="header">
       <Toolbar>
@@ -78,18 +78,18 @@ class App extends Component {
     };
   };
 
-  user() {
+  user () {
     httpRequests.getUser()
       .then(
         response => this.setState({
-        loggedIn: true,
-        userName: response.data.name,
-        userOrcid:response.data.orcid
-      }),
-    )
-    .catch(response => {
-      console.log(response);
-    });  
+          loggedIn: true,
+          userName: response.data.name,
+          userOrcid:response.data.orcid
+        }),
+      )
+      .catch(response => {
+        console.log(response);
+      });  
   }
 
   render() {

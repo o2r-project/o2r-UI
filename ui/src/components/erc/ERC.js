@@ -95,7 +95,9 @@ class ERC extends React.Component {
                     codefiles: data.codefiles,
                 });
                 self.setDisplayFile(data.displayfile);
-                self.setDataFile(data.inputfiles[0]);
+                if ( data.inputfiles.length > 0 ) {
+                    self.setDataFile(data.inputfiles[0]);
+                }
                 self.setCodeFile(data.mainfile);
             })
             .catch(function (response) {
@@ -147,7 +149,9 @@ class ERC extends React.Component {
                         }
                         {this.state.tabValue === 2 && 
                             <div>
-                                <Manipulate id={this.state.id} metadata={this.state.metadata}></Manipulate>
+                                {this.state.metadata.interaction.length > 0 ?
+                                <Manipulate binding={this.state.metadata.interaction[0]}></Manipulate>
+                                : 'No interactive figures were made for this paper'}
                             </div>
                         }
                     </ReflexElement>

@@ -195,12 +195,8 @@ const Form = props => {
         setFieldTouched,
         setFieldValue,
     } = props
-    console.log(props)
 
     const change = (name, e) => {
-        console.log(name)
-        console.log(e.target.value)
-        console.log(props)
         e.persist();
         e.target.name = name;
         handleChange(e);
@@ -394,15 +390,6 @@ const Form = props => {
                     ))}
                 </TextField>
             </Card>
-            <Button
-                type="submit"
-                fullWidth
-                variant="raised"
-                color="primary"
-                disabled={!isValid}
-            >
-                Submit
-            </Button>
         </form>
     )
 }
