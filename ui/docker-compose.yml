@@ -94,12 +94,12 @@ services:
     environment:
       - "MUNCHER_MONGODB=mongodb://mongodb:27017/"
       - MUNCHER_PORT=8080
-      - MUNCHER_VOLUME=ui_o2rstorage
+      - MUNCHER_VOLUME=o2rplatform_o2rstorage
       - MUNCHER_CONTAINER_USER=root
       - MUNCHER_CONTAINERIT_USER=root
       - DEBUG=*,-mquery,-express:*,-express-session,-body-parser:*
       - "MUNCHER_META_TOOL_CONTAINER=o2rproject/o2r-meta:f79cc1f"
-      #- MUNCHER_META_TOOL_CONTAINER_RM=false
+     #- "MUNCHER_META_TOOL_CONTAINER=o2rproject/o2r-meta:9198450"
       - MUNCHER_SAVE_IMAGE_TARBALL=false # saves space and time during dev
       - MUNCHER_CONTAINERIT_IMAGE=o2rproject/containerit:geospatial-0.5.0.9003
       - MUNCHER_CONTAINERIT_FILTER_BASE_IMAGE_PKGS=true
@@ -118,7 +118,7 @@ services:
       - "LOADER_MONGODB=mongodb://mongodb:27017/"
       - LOADER_PORT=8088
       - DEBUG=*,-mquery,-express:*,-express-session,-body-parser:*
-      - LOADER_VOLUME=ui_o2rstorage
+      - LOADER_VOLUME=o2rplatform_o2rstorage
       - "LOADER_META_TOOL_CONTAINER=o2rproject/o2r-meta:9198450"
       #- "LOADER_META_TOOL_CONTAINER=meta:dev"
       
@@ -217,7 +217,7 @@ services:
 
   bindings:
     image: o2rproject/o2r-bindings:0.0.1
-    #build: ./bindings
+    #build: ./bindings/o2r-bindings
     ports:
      - "5000-5499:5000-5499"
     volumes:
