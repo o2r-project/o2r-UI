@@ -7,6 +7,10 @@ import {
 import httpRequests from '../../../helpers/httpRequests';
 import CodeView from '../../erc/CodeView/CodeView';
 import Manipulate from '../../erc/Manipulate/Manipulate';
+import ComputationalResult from './ComputationalResult/ComputationalResult';
+import SelectedCode from './SelectedCode/SelectedCode';
+import SliderSetting from './SliderSetting/SliderSetting';
+import WidgetSelector from './WidgetSelector/WidgetSelector';
 import './bindings.css';
 
 const useStyles = makeStyles(theme => ({
@@ -41,18 +45,14 @@ const useStyles = makeStyles(theme => ({
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-    width: '100%',
+    width: '90%',
   },
   numField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-    width: '25%',
+    width: '20%',
   },
 }));
-
-function getSteps() {
-  return ['Specify the result', 'Identify the plot()-Function', 'Select the parameter', 'Configure a UI widget'];
-}
 
 function getStepContent(step) {
   switch (step) {
@@ -72,50 +72,44 @@ function getStepContent(step) {
 function VerticalLinearStepper(props) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
-  const steps = getSteps();
+  const steps = ['Specify the result', 'Identify the plot()-Function', 'Select the parameter', 'Configure a UI widget'];
   const [result, setResult] = React.useState();
   const [widget, setWidget] = React.useState('slider');
-  const [preview, setPreview] = React.useState(false);
   const [disabled, disable] = React.useState(true);
   const parameter = props.binding.sourcecode.parameter[0].text;
   const plot = props.binding.sourcecode.plotFunction;
   //bad hack:
-  if (parameter !== null && disabled) {
+  if (parameter !== '' && disabled) {
     disable(false);
   }
-  if (plot !== null && disabled) {
-    disable(false);
-  }
-
-  function handlePlotChange(e) {
+  if (plot !== '' && disabled) {
     disable(false);
   }
 
-  function handleParameterChange(e) {
-    disable(false);
-  }
+  const handlePlotChange = ( e ) => disable(false);
+  const handleParameterChange = ( e ) => disable(false);
+  const handleWidgetChange = ( e ) => setWidget(e.target.value);
+  const handleSlider =  ( e, field ) => props.setSlider(field, e.target.value);
 
-  function handleNext() {
+  const handleNext = () => {
     setActiveStep(prevActiveStep => prevActiveStep + 1);
     props.setStep(activeStep + 1);
     disable(true);
-    if (activeStep === 3) {
-      props.saveBinding();
-    }
+    activeStep === 3 ? props.saveBinding() : '';
   }
 
-  function handleBack() {
+  const handleBack = () => {
     setActiveStep(prevActiveStep => prevActiveStep - 1);
     props.setStep(activeStep - 1);
     disable(false);
   }
 
-  function handleReset() {
+  const handleReset = () => {
     setActiveStep(0);
     props.setStep(0)
   }
 
-  function handleResultChange(e) {
+  const handleResultChange = ( e ) => {
     if (e.target.value === '') {
       disable(true);
       setResult(e.target.value);
@@ -126,15 +120,7 @@ function VerticalLinearStepper(props) {
     }
   }
 
-  function handleWidgetChange(e) {
-    setWidget(e.target.value);
-  }
-
-  function handleSlider(e, field) {
-    props.setSlider(field, e.target.value);
-  }
-
-  function showPreview() {
+  const showPreview = () => {
     httpRequests.sendBinding(props.binding)
       .then(function (res) {
         console.log("created binding")
@@ -149,7 +135,6 @@ function VerticalLinearStepper(props) {
       .catch(function (res) {
         console.log(res)
       })
-    setPreview(true);
   }
 
   return (
@@ -161,135 +146,49 @@ function VerticalLinearStepper(props) {
             <StepContent>
               <Typography><b>{getStepContent(index)}</b></Typography>
               {activeStep === 0 ?
-                <Select
-                  native
-                  value={result}
-                  onChange={handleResultChange}
-                >
-                  <option value='' />
-                  <option value='Figure 1'>Figure 1</option>
-                  <option value='Figure 2'>Figure 2</option>
-                  <option value='Figure 3'>Figure 3</option>
-                </Select>
-                : ''}
+                <ComputationalResult value={result} handleResultChange={handleResultChange} />
+              : ''}
               {activeStep === 1 ?
-                <TextField style={{width:'100%'}}
-                  id="plotfunction"
-                  label="plot() function"
-                  className={classes.textField}
-                  value={plot}
-                  margin="normal"
-                  variant="outlined"
-                  onChange={handlePlotChange}
-                  disabled
-                />
-                : ''}
+                <SelectedCode id="plotfunction" label="plot() function" handleChange={handlePlotChange} value={plot} />
+              : ''}
               {activeStep === 2 ?
-                <TextField
-                  id="parameter"
-                  label="Parameter"
-                  className={classes.textField}
-                  value={parameter}
-                  margin="normal"
-                  variant="outlined"
-                  onChange={handleParameterChange}
-                  disabled
-                />
-                : ''}
+                <SelectedCode id="parameter" label="Parameter" handleChange={handleParameterChange} value={parameter} />
+              : ''}
               {activeStep === 3 ?
                 <div>
-                  <div>
-                    <FormControl component="fieldset">
-                      <RadioGroup aria-label="position" name="position" value={widget} onChange={handleWidgetChange} row>
-                        <FormControlLabel
-                          value="slider"
-                          control={<Radio color="primary" />}
-                          label="Slider"
-                          labelPlacement="start"
-                        />
-                        <FormControlLabel
-                          value="radio"
-                          control={<Radio color="primary" />}
-                          label="Radio"
-                          labelPlacement="start"
-                        />
-                      </RadioGroup>
-                    </FormControl>
-                  </div>
+                  <FormControl component="fieldset">
+                    <RadioGroup aria-label="position" name="position" value={widget} onChange={handleWidgetChange} row>
+                      <WidgetSelector value="slider" label="Slider"/>
+                      <WidgetSelector value="radio" label="Radio"/>
+                    </RadioGroup>
+                  </FormControl>
                   {widget === 'slider' ?
                     <div>
-                      <TextField
-                        id="min"
-                        label="Minimum value"
-                        onChange={(e) => handleSlider(e, 'minValue')}
-                        type="number"
-                        className={classes.numField}
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        margin="normal"
-                        variant="outlined"
-                      />
-                      <TextField
-                        id="max"
-                        label="Maximum value"
-                        onChange={(e) => handleSlider(e, 'maxValue')}
-                        type="number"
-                        className={classes.numField}
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        margin="normal"
-                        variant="outlined"
-                      />
-                      <TextField
-                        id="step"
-                        label="Step size"
-                        onChange={(e) => handleSlider(e, 'stepSize')}
-                        type="number"
-                        className={classes.numField}
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        margin="normal"
-                        variant="outlined"
-                      />
-                      <TextField
-                        id="caption"
-                        label="Caption"
-                        onChange={(e) => handleSlider(e, 'caption')}
-                        className={classes.textField}
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        margin="normal"
-                        variant="outlined"
-                      />
+                      <SliderSetting id="min" label="Minimum value" type="number" handleSlider={(e) => handleSlider(e, 'minValue')} styles={classes.numField} />
+                      <SliderSetting id="max" label="Maximum value" type="number" handleSlider={(e) => handleSlider(e, 'maxValue')} styles={classes.numField} />
+                      <SliderSetting id="step" label="Step size" type="number" handleSlider={(e) => handleSlider(e, 'stepSize')} styles={classes.numField} />
+                      <SliderSetting id="caption" label="Caption" type="text" handleSlider={(e) => handleSlider(e, 'caption')} styles={classes.textField} />
                       <Button variant="contained" color="primary"
                         onClick={showPreview}
                       >Preview</Button>
                     </div>
                     : <div>
-                      radio
-                        </div>
+                        radio
+                      </div>
                   }
                 </div>
-                : ''}
+              : ''}
               <div className={classes.actionsContainer} style={{ marginTop: '5%' }}>
-                <Button
+                <Button className={classes.button}
                   disabled={activeStep === 0}
                   onClick={handleBack}
-                  className={classes.button}
-                >
+                  >
                   Back
                 </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
+                <Button variant="contained" color="primary" className={classes.button}
                   onClick={handleNext}
-                  className={classes.button}
                   disabled={disabled}
-                >
+                  >
                   {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                 </Button>
               </div>
@@ -322,7 +221,7 @@ class Bindings extends Component {
             type: null,
             result: null,
           },
-          port:5005,
+          port:5006,
           sourcecode: {
             file: props.metadata.mainfile,
             plotFunction: '',
@@ -413,10 +312,10 @@ class Bindings extends Component {
   render() {
     console.log(this.state)
     return (
-      <div style={{ height: '100%' }}>
+      <div className="bindingsView">
         {this.state.codeview ?
           <div>
-            <Typography>RMarkdown</Typography>
+            <h3>RMarkdown</h3>
             <div className='codeView'
               onMouseUp={this.handleMouseUp.bind(this)}
             >
@@ -425,7 +324,7 @@ class Bindings extends Component {
           </div>
           : 
           <div>
-            <Typography>Preview of the interactive figure</Typography>
+            <h3>Preview of the interactive figure</h3>
             <div className='codeView'>
               <Manipulate binding={this.state.binding}></Manipulate>
               <Button variant="contained" color="primary"
@@ -436,7 +335,8 @@ class Bindings extends Component {
             </div>
           </div>
         }
-        <div style={{ height: '100%', width: '100%'}}>
+        <h3>Create an interactive figure</h3>
+        <div className="steps">
           <VerticalLinearStepper
             setResult={this.setResult.bind(this)}
             binding={this.state.binding}

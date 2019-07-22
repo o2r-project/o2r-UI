@@ -1,7 +1,20 @@
+.root {
+    width: '90%',   
+}
+
+.bindingsView {
+    height: '100%';
+}
+
 .codeView {
     width: 60%;
     float: left;
     height: 70vh;
     overflow: auto;
     margin-right: 1%;
+}
+
+.steps {
+    height: '100%'; 
+    width: '100%';
 }
