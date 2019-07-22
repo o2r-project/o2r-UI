@@ -14,12 +14,12 @@ import CreateERC from '../createERC/CreateERC';
 import Discovery from '../discovery/Discovery';
 import ERC from '../erc/ERC';
 
-const Header = (props) => {
+const Header = ( props ) => {
   return (        
     <AppBar id="header">
       <Toolbar>
         <Typography variant="h6" color="inherit" style={{ flex: 1 }}>
-          <a href="/"><img src={logo} alt="" id="headerLogo"/></a>
+          <a href="/"><img src={logo} alt="o2r" id="headerLogo"/></a>
         </Typography>
         <HashRouter>
           <NavLink id="link" to="/discover">
@@ -30,12 +30,14 @@ const Header = (props) => {
           <NavLink id="link" to="/author">
             {props.loggedIn ? 
               <Button color="inherit">
-                {props.userName} | <img src={orcidLogo} className="orcidImage"></img>{props.userOrcid}
+                {props.userName} | 
+                  <img src={orcidLogo} className="orcidImage" alt="orcid"></img>
+                  {props.userOrcid}
               </Button> : ''}
           </NavLink>
         </HashRouter>
         <Button color="inherit"
-          href= {props.loggedIn ? "api/v1/auth/logout" : "api/v1/auth/login"} 
+          href={props.loggedIn ? "api/v1/auth/logout" : "api/v1/auth/login"} 
           onClick={() => props.login()}>{props.loggedIn ? 'Logout' : 'Login'}
         </Button>
         <Button color="inherit">
@@ -76,28 +78,28 @@ class App extends Component {
     };
   };
 
-  user() {
+  user () {
     httpRequests.getUser()
-    .then(
-      response => this.setState({
-        loggedIn: true,
-        userName: response.data.name,
-        userOrcid:response.data.orcid
-      }),
-    )
-    .catch(response => {
-      console.log(response);
-    });  
+      .then(
+        response => this.setState({
+          loggedIn: true,
+          userName: response.data.name,
+          userOrcid:response.data.orcid
+        }),
+      )
+      .catch(response => {
+        console.log(response);
+      });  
   }
 
   render() {
     return (
       <div id="pageContainer">
       <Header 
-        loggedIn = {this.state.loggedIn} 
-        login = {() => this.user()}
-        userName = {this.state.userName}
-        userOrcid = {this.state.userOrcid}>
+        loggedIn={this.state.loggedIn} 
+        login={() => this.user()}
+        userName={this.state.userName}
+        userOrcid={this.state.userOrcid}>  
       </Header>
       <Footer></Footer>
       <HashRouter>
@@ -109,7 +111,7 @@ class App extends Component {
           <Route path="/author" component={Author}/>
           <Route path="/createERC/:id" component={CreateERC}/>
           <Route path="/discover" component={Discovery}/>
-          <Route path="/erc/" component={ERC}/>
+          <Route path="/erc/:id" component={ERC}/>
         </div>
       </div>
       </HashRouter>

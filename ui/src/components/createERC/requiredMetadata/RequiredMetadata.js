@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import { Card, CardContent, TextField, CardActions, IconButton, Button, MenuItem, Collapse } from "@material-ui/core";
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { withRouter } from 'react-router-dom';
 
 import licensesData from '../../../helpers/licenses.json'
 import './requiredMetadata.css';
-import httpRequests from '../../../helpers/httpRequests';
-
 
 const textLicenses = [];
 const dataLicenses = [];
@@ -49,10 +48,12 @@ const AuthorForm = props => {
     } = props
 
     const change = (name, e) => {
+        console.log("test")
         e.persist();
         e.target.name = name;
         handleChange(e);
         setFieldTouched(name, true, false)
+        
     }
 
     return (
@@ -192,9 +193,8 @@ const Form = props => {
         handleChange,
         isValid,
         setFieldTouched,
-        setFieldValue
+        setFieldValue,
     } = props
-
 
     const change = (name, e) => {
         e.persist();
@@ -390,15 +390,6 @@ const Form = props => {
                     ))}
                 </TextField>
             </Card>
-            <Button
-                type="submit"
-                fullWidth
-                variant="raised"
-                color="primary"
-                disabled={!isValid}
-            >
-                Submit
-            </Button>
         </form>
     )
 }
@@ -406,55 +397,28 @@ const Form = props => {
 class RequiredMetadata extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
-            metadata: null,
-            title: "",
-            abstract: "",
-            publicationDate: "",
-            displayFile: "",
-            mainFile: "",
-            dataLicense: "",
-            textLicense: "",
-            codeLicense: ""
+            metadata: props.metadata,
+            title: props.metadata.title,
+            abstract: props.metadata.description,
+            publicationDate: props.metadata.publication_date,
+            displayFile: props.metadata.displayfile,
+            mainFile: props.metadata.mainfile,
+            dataLicense: props.metadata.license.data,
+            textLicense: props.metadata.license.text,
+            codeLicense: props.metadata.license.code,
         }
     };
 
-    getMetadata() {
-        const self = this;
-        httpRequests.singleCompendium(this.props.metadata.data.data.id)
-            .then(function (response) {
-                const data = response.data.metadata.o2r;
-                self.setState({
-                    metadata: data,
-                    title: data.title,
-                    abstract: data.description,
-                    publicationDate: data.publication_date,
-                    displayFile: data.displayfile,
-                    mainFile: data.mainfile,
-                    dataLicense: data.license.data,
-                    textLicense: data.license.text,
-                    codeLicense: data.license.code,
-                });
-            })
-            .catch(function (response) {
-                console.log(response)
-            })
-    }
-
-    componentDidMount() {
-        this.getMetadata()
-    }
-
     render() {
         prepareLicense();
-
+        
         return (
             <div>
                 <h4>Authors</h4>
                 {this.state.metadata &&
                     <Formik
-                        render={props => <Form{...props} />}
+                        render={props => <Form{...props} update={props.update} />}
                         initialValues={this.state}
                         validationSchema={validationSchema}
                     />
@@ -464,4 +428,4 @@ class RequiredMetadata extends Component {
     }
 }
 
-export default RequiredMetadata;
+export default withRouter(RequiredMetadata);
