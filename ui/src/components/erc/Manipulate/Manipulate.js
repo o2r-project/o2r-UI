@@ -64,8 +64,9 @@ class Manipulate extends React.Component {
     handleChange = name => ( evt, newVal ) => {
         this.setState({
             [name]: newVal,
+        }, () => {
+            this.buildFullUrl();
         });
-        this.buildFullUrl();
     }
 
     render () {
@@ -77,13 +78,12 @@ class Manipulate extends React.Component {
                             {parameter.uiWidget.caption}
                         </Typography>
                         <Slider
-                            onChange={this.handleChange(parameter.name).bind(this)}
+                            onChange={this.handleChange(parameter.name)}
                             defaultValue={parameter.val}
                             value={this.state[parameter.name]}
                             aria-labelledby="discrete-slider-custom"
-                            valueLabelDisplay="auto"
-                            step={parameter.uiWidget.stepSize}
                             valueLabelDisplay="on"
+                            step={parameter.uiWidget.stepSize}
                             min={parameter.uiWidget.minValue}
                             max={parameter.uiWidget.maxValue}
                             marks={[{value: parameter.uiWidget.minValue, label: parameter.uiWidget.minValue},{value: parameter.uiWidget.maxValue, label: parameter.uiWidget.maxValue}]}
