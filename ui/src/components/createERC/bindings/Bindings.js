@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   makeStyles, Stepper, Step, StepLabel, StepContent,
-  Button, Typography, Paper, Select, TextField, Radio, RadioGroup, FormControlLabel, FormControl
+  Button, Typography, Paper, RadioGroup, FormControl
 } from "@material-ui/core";
 
 import httpRequests from '../../../helpers/httpRequests';
@@ -54,34 +54,23 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function getStepContent(step) {
-  switch (step) {
-    case 0:
-      return 'Select from the list below';
-    case 1:
-      return 'Select from the list below';
-    case 2:
-      return 'Select by marking the parameter in the code on the left';
-    case 3:
-      return 'Manipulate using a slider or radio buttons?';
-    default:
-      return 'Unknown step';
-  }
-}
-
 function VerticalLinearStepper(props) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
-  const steps = ['Specify the result', 'Identify the plot()-Function', 'Select the parameter', 'Configure a UI widget'];
+  const steps = ['Select result from the list below', 'Mark the plot()-Function in the code', 'Select the parameter by marking it in the code on the left', 
+              'Configure a UI widget'];
   const [result, setResult] = React.useState();
   const [widget, setWidget] = React.useState('slider');
   const [disabled, disable] = React.useState(true);
-  const parameter = props.binding.sourcecode.parameter[0].text;
+  const params = props.binding.sourcecode.parameter;
   const plot = props.binding.sourcecode.plotFunction;
-  //bad hack:
-  if (parameter !== '' && disabled) {
-    disable(false);
-  }
+  let parameter = '';
+  if ( params[0] !== undefined ) {
+    parameter = props.binding.sourcecode.parameter[params.length-1].text;
+    if ( disabled ) {
+      disable(false);
+    }
+  } 
   if (plot !== '' && disabled) {
     disable(false);
   }
@@ -137,6 +126,11 @@ function VerticalLinearStepper(props) {
       })
   }
 
+  const addParameter = () => {
+    setActiveStep(2);
+    props.setStep(2);
+  }
+
   return (
     <div className={classes.root}>
       <Stepper activeStep={activeStep} orientation="vertical">
@@ -144,7 +138,6 @@ function VerticalLinearStepper(props) {
           <Step key={label}>
             <StepLabel><h3>{label}</h3></StepLabel>
             <StepContent>
-              <Typography><b>{getStepContent(index)}</b></Typography>
               {activeStep === 0 ?
                 <ComputationalResult value={result} handleResultChange={handleResultChange} />
               : ''}
@@ -170,7 +163,14 @@ function VerticalLinearStepper(props) {
                       <SliderSetting id="caption" label="Caption" type="text" handleSlider={(e) => handleSlider(e, 'caption')} styles={classes.textField} />
                       <Button variant="contained" color="primary"
                         onClick={showPreview}
-                      >Preview</Button>
+                      >
+                        Preview
+                      </Button>
+                      <Button variant="contained" color="primary" style={{marginLeft:'5%'}}
+                        onClick={addParameter}
+                      >
+                        Add paramater
+                      </Button>
                     </div>
                     : <div>
                         radio
@@ -189,7 +189,7 @@ function VerticalLinearStepper(props) {
                   onClick={handleNext}
                   disabled={disabled}
                   >
-                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                  {activeStep === steps.length - 1 ? 'Save' : 'Next'}
                 </Button>
               </div>
             </StepContent>
@@ -226,21 +226,10 @@ class Bindings extends Component {
             file: props.metadata.mainfile,
             plotFunction: '',
             codelines: [{"start":30,"end":429}],
-            parameter: [{
-              text: '',
-              name: '',
-              val: '',
-              codeline: null,
-              uiWidget: {
-                type: 'slider',
-                minValue: null,
-                maxValue: null,
-                caption: null,
-                stepSize: null,
-              },
-            }]
+            parameter: [],
+            uiWidget: [],
+            }
         },
-      },
       codeview:true,
     }
   }
@@ -271,13 +260,13 @@ class Bindings extends Component {
   }
 
   setParameter ( param ) {
-    let text = param;
-    let name = param.split('<-')[0].trim();
-    let val = Number(param.split('<-')[1].trim());
     let state = this.state;
-    state.binding.sourcecode.parameter[0].text = text;
-    state.binding.sourcecode.parameter[0].name = name;
-    state.binding.sourcecode.parameter[0].val = val;
+    let parameter = {
+      text: param,
+      name: param.split('<-')[0].trim(),
+      val: Number(param.split('<-')[1].trim()),      
+    }
+    state.binding.sourcecode.parameter.push(parameter);
     this.setState(state);
   }
 
@@ -290,10 +279,22 @@ class Bindings extends Component {
   setSlider ( key, val ) {
     let state = this.state;
     let newVal = val;
+    let params = state.binding.sourcecode.parameter;
     if (!isNaN(newVal)) {
       newVal = Number(newVal)
     }
-    state.binding.sourcecode.parameter[0].uiWidget[key] = newVal;
+    if (params.length>0) {
+      if ( params[params.length-1].uiWidget === undefined ){
+        params[params.length-1].uiWidget = {};
+      }
+      params[params.length-1].uiWidget[key] = newVal;
+    } else {
+      if ( params[0].uiWidget === undefined ){
+        params[0].uiWidget = {};
+      }
+      params[0].uiWidget[key] = newVal;
+    }
+    
     this.setState(state);
   }
 
@@ -315,7 +316,7 @@ class Bindings extends Component {
       <div className="bindingsView">
         {this.state.codeview ?
           <div>
-            <h3>RMarkdown</h3>
+            <h3>Create an interactive figure</h3>
             <div className='codeView'
               onMouseUp={this.handleMouseUp.bind(this)}
             >
@@ -335,7 +336,6 @@ class Bindings extends Component {
             </div>
           </div>
         }
-        <h3>Create an interactive figure</h3>
         <div className="steps">
           <VerticalLinearStepper
             setResult={this.setResult.bind(this)}
