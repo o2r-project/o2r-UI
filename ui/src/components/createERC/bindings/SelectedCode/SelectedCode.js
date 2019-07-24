@@ -11,7 +11,9 @@ class SelectedCode extends Component {
                     label={this.props.label}
                     value={this.props.value}
                     onChange={this.props.handleChange}
-                    disabled
+                    InputProps={{
+                        readOnly: true,
+                      }}
                 />
             </div>
         );

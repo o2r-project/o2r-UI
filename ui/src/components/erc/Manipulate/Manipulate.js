@@ -12,7 +12,7 @@ class Manipulate extends React.Component {
             binding: props.binding,
             baseUrl: this.buildBaseUrl(props.binding),
             params: this.getParams(props.binding.sourcecode.parameter),
-            fullUrl: this.buildFullUrl,
+            fullUrl: '',
         }
     }
 
@@ -24,6 +24,10 @@ class Manipulate extends React.Component {
                 for (let i=0; i<parameter.length; i++) {
                     self.setState({
                         [parameter[i].name]:parameter[i].val,
+                    }, () => {
+                        setTimeout(()=>{
+                            self.buildFullUrl();
+                        },1500);
                     })
                 }
             })
@@ -70,8 +74,9 @@ class Manipulate extends React.Component {
     }
 
     render () {
+        console.log(this.state.fullUrl)
         return (
-            <div style={{width:'80%', marginLeft: '10%', marginTop: '10%'}}>
+            <div style={{width:'80%', marginLeft: '10%'}}>
                 {this.state.binding.sourcecode.parameter.map(parameter => (
                     <div style={{marginTop:'5%'}} key={uuid()}>                
                         <Typography variant='caption'>
@@ -86,7 +91,8 @@ class Manipulate extends React.Component {
                             step={parameter.uiWidget.stepSize}
                             min={parameter.uiWidget.minValue}
                             max={parameter.uiWidget.maxValue}
-                            marks={[{value: parameter.uiWidget.minValue, label: parameter.uiWidget.minValue},{value: parameter.uiWidget.maxValue, label: parameter.uiWidget.maxValue}]}
+                            marks={[{value: parameter.uiWidget.minValue, label: parameter.uiWidget.minValue},
+                                    {value: parameter.uiWidget.maxValue, label: parameter.uiWidget.maxValue}]}
                         /> 
                     </div>
                 ))}

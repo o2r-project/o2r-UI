@@ -9,7 +9,7 @@ class SliderSetting extends Component {
                 id={this.props.id}
                 type={this.props.type}
                 label={this.props.label}
-                onChange={this.props.handleSlider}
+                onBlur={this.props.handleSlider}
                 InputLabelProps={{
                     shrink: true,
                 }}

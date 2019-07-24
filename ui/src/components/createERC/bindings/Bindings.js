@@ -222,11 +222,11 @@ class Bindings extends Component {
             type: null,
             result: null,
           },
-          port:5010,
+          port:5023,
           sourcecode: {
             file: props.metadata.mainfile,
             plotFunction: '',
-            codelines: [{"start":30,"end":429}],
+            codelines: [{"start":30,"end":430}],
             parameter: [],
             uiWidget: [],
             }
@@ -328,7 +328,7 @@ class Bindings extends Component {
       <div className="bindingsView">
         {this.state.codeview ?
           <div>
-            <h3>Create an interactive figure</h3>
+            <h4>Create an interactive figure</h4>
             <div className='codeView'
               onMouseUp={this.handleMouseUp.bind(this)}
             >
@@ -337,7 +337,7 @@ class Bindings extends Component {
           </div>
           : 
           <div>
-            <h3>Preview of the interactive figure</h3>
+            <h4>Preview of the interactive figure</h4>
             <div className='codeView'>
               <Manipulate binding={this.state.binding}></Manipulate>
               <Button variant="contained" color="primary"
