@@ -60,6 +60,9 @@ function runManipulationService(binding){
     return axios.post(_env.api + 'bindings/runPlumberService', binding);
 }
 
+function getCodelines(binding){
+    return axios.post(_env.api + 'bindings/extractR', binding);
+}
 
 module.exports = {
     getUser: getUser,
@@ -74,5 +77,6 @@ module.exports = {
     getSingleJob: getSingleJob,
     getLogs: getLogs,
     sendBinding: sendBinding,
-    runManipulationService: runManipulationService
+    runManipulationService: runManipulationService,
+    getCodelines: getCodelines,
 };

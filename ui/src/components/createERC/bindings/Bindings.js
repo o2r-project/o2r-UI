@@ -84,6 +84,7 @@ function VerticalLinearStepper(props) {
     setActiveStep(prevActiveStep => prevActiveStep + 1);
     props.setStep(activeStep + 1);
     disable(true);
+    activeStep === 2 ? props.setParameter(props.tmpParam) : '';
     activeStep === 3 ? props.saveBinding() : '';
   }
 
@@ -145,7 +146,7 @@ function VerticalLinearStepper(props) {
                 <SelectedCode id="plotfunction" label="plot() function" handleChange={handlePlotChange} value={plot} />
               : ''}
               {activeStep === 2 ?
-                <SelectedCode id="parameter" label="Parameter" handleChange={handleParameterChange} value={parameter} />
+                <SelectedCode id="parameter" label="Parameter" handleChange={handleParameterChange} value={props.tmpParam} />
               : ''}
               {activeStep === 3 ?
                 <div>
@@ -221,7 +222,7 @@ class Bindings extends Component {
             type: null,
             result: null,
           },
-          port:5006,
+          port:5010,
           sourcecode: {
             file: props.metadata.mainfile,
             plotFunction: '',
@@ -231,6 +232,7 @@ class Bindings extends Component {
             }
         },
       codeview:true,
+      tmpParam: '',
     }
   }
 
@@ -238,7 +240,9 @@ class Bindings extends Component {
     if (this.state.creationStep === 1) {
       this.setCode(window.getSelection().getRangeAt(0).toString());
     } else if (this.state.creationStep === 2) {
-      this.setParameter(window.getSelection().getRangeAt(0).toString());
+      this.setState({
+        tmpParam: window.getSelection().getRangeAt(0).toString(),
+      });
     }
   }
 
@@ -273,7 +277,15 @@ class Bindings extends Component {
   setCode ( code ) {
     let state = this.state;
     state.binding.sourcecode.plotFunction = code;
-    this.setState(state);
+    this.setState(state, () => {
+      /*httpRequests.getCodelines(state.binding)
+      .then( function ( res ) {
+        console.log(res);
+      })
+      .catch( function (res) {
+        console.log(res)
+      })*/
+    });
   }
 
   setSlider ( key, val ) {
@@ -344,6 +356,8 @@ class Bindings extends Component {
             setSlider={this.setSlider.bind(this)}
             saveBinding={this.saveBinding.bind(this)}
             switchCodePreview={this.switchCodePreview.bind(this)}
+            setParameter={this.setParameter.bind(this)}
+            tmpParam={this.state.tmpParam}
           />
         </div>
       </div>
