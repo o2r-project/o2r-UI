@@ -1,8 +1,9 @@
 import React from 'react';
-import { Slider, Typography} from '@material-ui/core';
+import { Slider, Typography, Button} from '@material-ui/core';
 import uuid from 'uuid/v1';
 
 import httpRequests from '../../../helpers/httpRequests';
+import FigureComparison from './FigureComparison/FigureComparison';
 
 class Manipulate extends React.Component {
 
@@ -13,6 +14,7 @@ class Manipulate extends React.Component {
             baseUrl: this.buildBaseUrl(props.binding),
             params: this.getParams(props.binding.sourcecode.parameter),
             fullUrl: '',
+            settings:[],
         }
     }
 
@@ -61,9 +63,7 @@ class Manipulate extends React.Component {
         return params;
     }
 
-    componentDidMount () {
-        this.runManipulateService()
-    }
+    componentDidMount = () => this.runManipulateService();
 
     handleChange = name => ( evt, newVal ) => {
         this.setState({
@@ -73,8 +73,18 @@ class Manipulate extends React.Component {
         });
     }
 
+    saveForComparison = () => {
+        let state = this.state;
+        let settings = state.settings;
+        let include = true;
+        settings.forEach( function (elem) {
+            elem === state.fullUrl ? include = false : '';
+        });
+        include ? state.settings.push(state.fullUrl) : console.log("already included");
+        this.setState(state);
+    }
+
     render () {
-        console.log(this.state.fullUrl)
         return (
             <div style={{width:'80%', marginLeft: '10%'}}>
                 {this.state.binding.sourcecode.parameter.map(parameter => (
@@ -97,6 +107,12 @@ class Manipulate extends React.Component {
                     </div>
                 ))}
                 <img src={this.state.fullUrl} />
+                <Button variant="contained" color="primary" 
+                    onClick={this.saveForComparison.bind(this)}
+                >
+                    Save for comparison
+                </Button>
+                <FigureComparison />
             </div>
         )
     }
