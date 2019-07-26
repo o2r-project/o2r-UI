@@ -38,7 +38,10 @@ function ComparisonView(props) {
                 </AppBar>
                 <div className="compare">
                     {props.settings.map(setting => (
-                        <img src={setting} className="img"/>
+                        <figure className="img">
+                            <figcaption>{setting}</figcaption>
+                            <img src={setting} />
+                        </figure>
                     ))}
                 </div>
             </Dialog>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Slider, Typography, Button} from '@material-ui/core';
 import uuid from 'uuid/v1';
+import ReactCompareImage from 'react-compare-image';
 
 import httpRequests from '../../../helpers/httpRequests';
 import FigureComparison from './FigureComparison/FigureComparison';
@@ -109,7 +110,7 @@ class Manipulate extends React.Component {
                 <img src={this.state.fullUrl} />
                 <Button variant="contained" color="primary" 
                     onClick={this.saveForComparison.bind(this)}
-                    disabled={this.state.settings===2}
+                    disabled={this.state.settings.length===2}
                 >
                     Save for comparison
                 </Button>
