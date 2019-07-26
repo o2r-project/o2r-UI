@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Button, Dialog, AppBar, Toolbar, Slide } from "@material-ui/core";
+import { Button, Dialog, AppBar, Toolbar, Slide, Tabs, Tab } from "@material-ui/core";
+import ReactCompareImage from 'react-compare-image';
 
 import './figureComparison.css'
 
@@ -9,13 +10,18 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 function ComparisonView(props) {
     const [open, setOpen] = React.useState(false);
+    const [tabValue, setTab] = React.useState(0);
 
-    function handleClickOpen() {
+    const handleClickOpen = () => {
       setOpen(true);
     }
   
-    function handleClose() {
+    const handleClose = () => {
       setOpen(false);
+    }
+
+    const handleTabChange = (evt, newValue) => {
+        setTab(newValue);
     }
   
     return (
@@ -36,13 +42,26 @@ function ComparisonView(props) {
                         <Button color="inherit" onClick={handleClose}>Close</Button>
                     </Toolbar>
                 </AppBar>
-                <div className="compare">
-                    {props.settings.map(setting => (
-                        <figure className="img">
-                            <figcaption>{setting}</figcaption>
-                            <img src={setting} />
-                        </figure>
-                    ))}
+                <div>
+                    <Tabs indicatorColor="primary" textColor="primary" className="comparisonTabs"
+                    onChange={handleTabChange}
+                    value={tabValue}
+                    >
+                        <Tab label="Side-by-Side" />
+                        <Tab label="Overlay" />
+                    </Tabs>
+                    {tabValue === 0 &&
+                        props.settings.map(setting => (
+                            <figure className="img">
+                                <figcaption>{setting}</figcaption>
+                                <img src={setting} />
+                            </figure>
+                        ))}
+                    {tabValue === 1 &&
+                        <div className="overlay">
+                            <ReactCompareImage leftImage={props.settings[0]} rightImage={props.settings[1]} />
+                        </div>
+                    }
                 </div>
             </Dialog>
         </div>

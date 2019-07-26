@@ -1,7 +1,6 @@
 import React from 'react';
 import { Slider, Typography, Button} from '@material-ui/core';
 import uuid from 'uuid/v1';
-import ReactCompareImage from 'react-compare-image';
 
 import httpRequests from '../../../helpers/httpRequests';
 import FigureComparison from './FigureComparison/FigureComparison';
