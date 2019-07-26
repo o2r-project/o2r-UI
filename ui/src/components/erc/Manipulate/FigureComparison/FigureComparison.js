@@ -36,7 +36,7 @@ function ComparisonView(props) {
                     </Toolbar>
                 </AppBar>
                     <div className="compare">
-                        test
+                        <img src={props.fullUrl[0]} />
                     </div>
             </Dialog>
         </div>
@@ -47,7 +47,7 @@ class FigureComparison extends Component {
 
     render() {
         return (
-            <ComparisonView />
+            <ComparisonView settings={this.props.settings} />
         );
     }
 }

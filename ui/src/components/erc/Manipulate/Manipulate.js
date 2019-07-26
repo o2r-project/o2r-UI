@@ -112,7 +112,7 @@ class Manipulate extends React.Component {
                 >
                     Save for comparison
                 </Button>
-                <FigureComparison />
+                <FigureComparison settings={this.state.settings} />
             </div>
         )
     }
