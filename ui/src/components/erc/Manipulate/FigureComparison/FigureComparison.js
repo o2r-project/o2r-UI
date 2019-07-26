@@ -23,6 +23,7 @@ function ComparisonView(props) {
             <Button variant="contained" color="primary" 
                 onClick={handleClickOpen}
                 style={{marginTop: "5%"}}
+                disabled={props.settings.length!==2}
             >
                 Show comparison
             </Button>
@@ -35,9 +36,11 @@ function ComparisonView(props) {
                         <Button color="inherit" onClick={handleClose}>Close</Button>
                     </Toolbar>
                 </AppBar>
-                    <div className="compare">
-                        <img src={props.fullUrl[0]} />
-                    </div>
+                <div className="compare">
+                    {props.settings.map(setting => (
+                        <img src={setting} className="img"/>
+                    ))}
+                </div>
             </Dialog>
         </div>
     );

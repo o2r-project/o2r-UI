@@ -109,6 +109,7 @@ class Manipulate extends React.Component {
                 <img src={this.state.fullUrl} />
                 <Button variant="contained" color="primary" 
                     onClick={this.saveForComparison.bind(this)}
+                    disabled={this.state.settings===2}
                 >
                     Save for comparison
                 </Button>
