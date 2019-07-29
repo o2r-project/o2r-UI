@@ -353,6 +353,14 @@ class RequriedMetadata extends Component {
                  console.log(response)
              })
      }
+
+     updateMetadata = ( metadata ) => {
+        const self = this;
+        httpRequests.updateMetadata(self.state.compendium_id, metadata)
+            .catch(function(res2) {
+                console.log(res2)
+            })
+    }
      
 
     componentDidMount() {
@@ -394,6 +402,25 @@ class RequriedMetadata extends Component {
                                 alert(JSON.stringify(values, null, 2));
                                 actions.setSubmitting(false);
                             }, 1000);
+                            console.log(values.title)
+                            
+                            this.updateMetadata(
+                                {
+                                        "title": values.title,
+                                        "description": values.abstract,
+                                        "creators": this.state.authors,
+                                        "publication_date": values.publicationDate,
+                                        "displayfile": values.displayFile,
+                                        "mainfile": values.mainFile,
+                                        "license":
+                                        {
+                                            "code": values.codeLicense.id,
+                                            "text": values.textLicense.id,
+                                            "data": values.dataLicense.id
+                                        }
+                                    
+                                }
+                            )
                         }}
                         render={props => <Form{...props} authors={this.state.authors}
                                               displayCandidates={this.state.displayCandidates}

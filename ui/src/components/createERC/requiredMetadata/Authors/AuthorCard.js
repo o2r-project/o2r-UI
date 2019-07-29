@@ -3,7 +3,6 @@ import {Formik} from "formik";
 import React from "react";
 import {AuthorForm, authorValidationSchema} from "./AuthorForm";
 import DeleteIcon from '@material-ui/icons/Delete';
-import "./authorCard.css";
 
 
 function AuthorCard(props) {

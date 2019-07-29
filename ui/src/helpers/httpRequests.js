@@ -12,6 +12,12 @@ function getUser() {
 function listAllCompendia() {
     return axios.get(_env.api + 'compendium');
 }
+function updateMetadata(id, data){
+    var _url = _env.api + 'compendium/' + id + '/metadata';
+    var body = {o2r: data};
+    console.log (body);
+    return axios.put(_url, body);
+}
 
 function uploadViaSciebo(url, folder) {
     return axios.post(_env.api + 'compendium', {content_type:'workspace', share_url: url, path:folder});
@@ -33,5 +39,6 @@ module.exports = {
     listAllCompendia: listAllCompendia,
     uploadViaSciebo: uploadViaSciebo,
     uploadWorkspace: uploadWorkspace,
-    singleCompendium: singleCompendium
+    singleCompendium: singleCompendium,
+    updateMetadata: updateMetadata
 };
