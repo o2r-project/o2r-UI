@@ -1,8 +1,10 @@
 import React from 'react';
-import { Slider, Typography} from '@material-ui/core';
+import { Slider, Typography, Button } from '@material-ui/core';
 import uuid from 'uuid/v1';
 
 import httpRequests from '../../../helpers/httpRequests';
+import FigureComparison from './FigureComparison/FigureComparison';
+import SelectedSettings from './SelectedSettings/SelectedSettings';
 
 class Manipulate extends React.Component {
 
@@ -12,7 +14,8 @@ class Manipulate extends React.Component {
             binding: props.binding,
             baseUrl: this.buildBaseUrl(props.binding),
             params: this.getParams(props.binding.sourcecode.parameter),
-            fullUrl: this.buildFullUrl,
+            fullUrl: '',
+            settings:[],
         }
     }
 
@@ -24,6 +27,10 @@ class Manipulate extends React.Component {
                 for (let i=0; i<parameter.length; i++) {
                     self.setState({
                         [parameter[i].name]:parameter[i].val,
+                    }, () => {
+                        setTimeout(()=>{
+                            self.buildFullUrl();
+                        },1500);
                     })
                 }
             })
@@ -57,9 +64,7 @@ class Manipulate extends React.Component {
         return params;
     }
 
-    componentDidMount () {
-        this.runManipulateService()
-    }
+    componentDidMount = () => this.runManipulateService();
 
     handleChange = name => ( evt, newVal ) => {
         this.setState({
@@ -69,9 +74,30 @@ class Manipulate extends React.Component {
         });
     }
 
+    saveForComparison = () => {
+        let state = this.state;
+        let settings = state.settings;
+        let include = true;
+        settings.forEach( function (elem) {
+            elem === state.fullUrl ? include = false : '';
+        });
+        include ? state.settings.push(state.fullUrl) : console.log("already included");
+        this.setState(state);
+    }
+
+    removeItem ( setting ) {
+        let items = this.state.settings;
+        var filtered = items.filter(function(value, index, arr){
+            return value !== setting;
+        });
+        this.setState({
+            settings: filtered
+        });
+    }
+
     render () {
         return (
-            <div style={{width:'80%', marginLeft: '10%', marginTop: '10%'}}>
+            <div style={{width:'80%', marginLeft: '10%'}}>
                 {this.state.binding.sourcecode.parameter.map(parameter => (
                     <div style={{marginTop:'5%'}} key={uuid()}>                
                         <Typography variant='caption'>
@@ -86,11 +112,24 @@ class Manipulate extends React.Component {
                             step={parameter.uiWidget.stepSize}
                             min={parameter.uiWidget.minValue}
                             max={parameter.uiWidget.maxValue}
-                            marks={[{value: parameter.uiWidget.minValue, label: parameter.uiWidget.minValue},{value: parameter.uiWidget.maxValue, label: parameter.uiWidget.maxValue}]}
+                            marks={[{value: parameter.uiWidget.minValue, label: parameter.uiWidget.minValue},
+                                    {value: parameter.uiWidget.maxValue, label: parameter.uiWidget.maxValue}]}
                         /> 
                     </div>
                 ))}
-                <img src={this.state.fullUrl} />
+                <img src={this.state.fullUrl} alt="" />
+                <Button variant="contained" color="primary" 
+                    onClick={this.saveForComparison.bind(this)}
+                    disabled={this.state.settings.length===2}
+                >
+                    Save for comparison
+                </Button>
+                {this.state.settings.length>0 ?
+                    <SelectedSettings 
+                        settings={this.state.settings}
+                        removeItem={this.removeItem.bind(this)} />                
+                :''}
+                <FigureComparison settings={this.state.settings} />
             </div>
         )
     }
