@@ -1,10 +1,13 @@
-import React, { Component } from 'react';
-import { Card, CardContent, TextField, CardActions, IconButton, Button, MenuItem, Collapse } from "@material-ui/core";
-import { Formik } from 'formik';
+import React, {Component} from 'react';
+import {Card, TextField, Button, MenuItem, CardContent} from "@material-ui/core";
+import {Formik} from 'formik';
 import * as Yup from 'yup';
 
 import licensesData from '../../../helpers/licenses.json'
+import Authors from './Authors/Authors';
+
 import './requiredMetadata.css';
+
 import httpRequests from '../../../helpers/httpRequests';
 
 
@@ -17,9 +20,18 @@ const leastRestrictiveData = [];
 function prepareLicense() {
 
     for (var i in licensesData) {
-        if (licensesData[i].domain_content) { textLicenses.push(licensesData[i]) };
-        if (licensesData[i].domain_data) { dataLicenses.push(licensesData[i]) };
-        if (licensesData[i].domain_software) { codeLicenses.push(licensesData[i]) };
+        if (licensesData[i].domain_content) {
+            textLicenses.push(licensesData[i])
+        }
+        ;
+        if (licensesData[i].domain_data) {
+            dataLicenses.push(licensesData[i])
+        }
+        ;
+        if (licensesData[i].domain_software) {
+            codeLicenses.push(licensesData[i])
+        }
+        ;
     }
     mostRestrictiveData.push(textLicenses[3]);
     mostRestrictiveData.push(codeLicenses[28]);
@@ -29,138 +41,6 @@ function prepareLicense() {
     leastRestrictiveData.push(dataLicenses[4]);
 
 }
-
-const authorValidationSchma = Yup.object({
-
-    author: Yup.string()
-        .required('Author is required'),
-
-})
-
-const AuthorForm = props => {
-    const {
-        values: { author, affiliation, orcid },
-        errors,
-        touched,
-        handleChange,
-        isValid,
-        setFieldTouched,
-        setFieldValue
-    } = props
-
-    const change = (name, e) => {
-        e.persist();
-        e.target.name = name;
-        handleChange(e);
-        setFieldTouched(name, true, false)
-    }
-
-    return (
-        <form
-            onSubmit={() => {
-                alert('submit');
-            }} >
-            <br />
-            >
-             <TextField
-                id="author"
-                label="Author"
-                type="text"
-                style={{ margin: 8 }}
-                required
-                helperText={touched.author ? errors.author : ""}
-                error={touched.author && Boolean(errors.author)}
-                value={author}
-                onChange={change.bind(null, "author")}
-                margin="normal"
-                variant="outlined"
-                InputLabelProps={{
-                    shrink: true,
-                }} />
-            <TextField
-                id="affiliation"
-                label="Affiliation"
-                type="text"
-                style={{ margin: 8 }}
-                helperText={touched.affiliation ? errors.affiliation : ""}
-                error={touched.affiliation && Boolean(errors.affiliation)}
-                value={affiliation}
-                onChange={change.bind(null, "affiliation")}
-                margin="normal"
-                variant="outlined"
-                InputLabelProps={{
-                    shrink: true,
-                }} />
-            <TextField
-                id="orcId"
-                label="ORCID"
-                type="text"
-                style={{ margin: 8 }}
-                helperText={touched.orcid ? errors.orcid : ""}
-                error={touched.orcid && Boolean(errors.orcid)}
-                value={orcid}
-                onChange={change.bind(null, "orcid")}
-                margin="normal"
-                variant="outlined"
-                InputLabelProps={{
-                    shrink: true,
-                }} />
-            <Button
-                type="submit"
-                fullWidth
-                variant="raised"
-                color="primary"
-                disabled={!isValid}
-            >
-                Update Author
-            </Button>
-
-        </form>
-
-    )
-}
-function Authors(props) {
-    const [expanded, setExpanded] = React.useState(false);
-    const listItems = props.authors.authors.map((author) => {
-
-
-
-        function handleExpandClick() {
-            setExpanded(!expanded);
-        }
-
-        return (
-            <Card key={author} id="authorcard">
-                <CardContent>
-                    <p>Max Power</p>
-                    <p>Institute for Geoinformatics</p>
-                    <p>0000 000 000 1</p>
-                </CardContent>
-                <CardActions disableSpacing>
-                    <IconButton aria-Label="Edit"
-                        onClick={handleExpandClick}
-                        aria-expanded={expanded}
-                    >
-                        <i>Edit</i>
-                    </IconButton>
-                </CardActions>
-                <Collapse in={expanded}>
-                    <CardContent>
-                        <Formik>
-                            render={props => <AuthorForm{...props} />}
-                            initialValues={this.state}
-                            validationSchema={validationSchema}
-                        </Formik>
-                    </CardContent>
-                </Collapse>
-            </Card>
-        );
-
-
-    });
-    return listItems;
-}
-
 
 
 const validationSchema = Yup.object({
@@ -180,20 +60,19 @@ const validationSchema = Yup.object({
         .required('License is requires'),
     dataLicense: Yup.string()
         .required('License is requires')
-})
-
+});
 
 
 const Form = props => {
     const {
-        values: { title, abstract, publicationDate, displayFile, mainFile, textLicense, dataLicense, codeLicense },
+        values: {title, abstract, publicationDate, displayFile, mainFile, textLicense, dataLicense, codeLicense},
         errors,
         touched,
         handleChange,
         isValid,
         setFieldTouched,
         setFieldValue
-    } = props
+    } = props;
 
 
     const change = (name, e) => {
@@ -201,201 +80,223 @@ const Form = props => {
         e.target.name = name;
         handleChange(e);
         setFieldTouched(name, true, false)
-    }
+    };
 
     const handleClick = (name, e) => {
-        console.log(name);
         if (name === "mostRestrictive") {
             setFieldValue('textLicense', mostRestrictiveData[0]);
             setFieldValue('codeLicense', mostRestrictiveData[1]);
             setFieldValue('dataLicense', mostRestrictiveData[2]);
-        }
-        else if (name === "leastRestrictive") {
+        } else if (name === "leastRestrictive") {
             setFieldValue('textLicense', leastRestrictiveData[0]);
             setFieldValue('codeLicense', leastRestrictiveData[1]);
             setFieldValue('dataLicense', leastRestrictiveData[2]);
         }
-    }
+    };
 
     return (
-        <form
-            onSubmit={() => {
-                alert('submit');
-            }} >
-            <br />
+        <form id="form" onSubmit={props.handleSubmit}>
+            <br/>
             <Card>
-                <h4>Title</h4>
-                <TextField
-                    id="title"
-                    label="Required"
-                    style={{ margin: 8 }}
-                    placeholder="Title"
-                    fullWidth
-                    required
-                    helperText={touched.title ? errors.title : ""}
-                    error={touched.title && Boolean(errors.title)}
-                    value={title}
-                    onChange={change.bind(null, "title")}
-                    margin="normal"
-                    variant="outlined"
-                    InputLabelProps={{
-                        shrink: true,
-                    }} />
+                <CardContent>
+                    <h4>Title</h4>
+                    <TextField
+                        id="title"
+                        label="Required"
+                        style={{margin: 8, width: '80%'}}
+                        placeholder="Title"
+                        required
+                        helperText={touched.title ? errors.title : ""}
+                        error={touched.title && Boolean(errors.title)}
+                        value={title}
+                        onChange={change.bind(null, "title")}
+                        margin="normal"
+                        variant="outlined"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}/>
+                </CardContent>
             </Card>
-            <br />
+            <br/>
             <Card>
-                <h4>Abstract</h4>
-                <TextField
-                    id="abstract"
-                    label="Required"
-                    style={{ margin: 8 }}
-                    placeholder="Abstract"
-                    fullWidth
-                    required
-                    helperText={touched.abstract ? errors.abstract : ""}
-                    error={touched.abstract && Boolean(errors.abstract)}
-                    value={abstract}
-                    onChange={change.bind(null, "abstract")}
-                    margin="normal"
-                    variant="outlined"
-                    InputLabelProps={{
-                        shrink: true,
-                    }} />
+                <CardContent>
+                    <h4>Abstract</h4>
+                    <TextField
+                        id="abstract"
+                        label="Required"
+                        style={{margin: 8, width: '80%'}}
+                        placeholder="Abstract"
+                        required
+                        multiline
+                        rows={3}
+                        helperText={touched.abstract ? errors.abstract : ""}
+                        error={touched.abstract && Boolean(errors.abstract)}
+                        value={abstract}
+                        onChange={change.bind(null, "abstract")}
+                        margin="normal"
+                        variant="outlined"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}/>
+                </CardContent>
             </Card>
-            <br />
+            <br/>
+            <Authors authors={props.authors} onUpdate={props.onUpdate}></Authors>
+            <br/>
             <Card>
-                <h4>Publication Date</h4>
-                <TextField
-                    id="publicationDate"
-                    label="Publication date"
-                    type="date"
-                    style={{ margin: 8 }}
-                    required
-                    helperText={touched.publicationDate ? errors.publicationDate : ""}
-                    error={touched.publicationDate && Boolean(errors.publicationDate)}
-                    value={publicationDate}
-                    onChange={change.bind(null, "publicationDate")}
-                    margin="normal"
-                    variant="outlined"
-                    InputLabelProps={{
-                        shrink: true,
-                    }} />
+                <CardContent>
+                    <h4>Publication Date</h4>
+                    <TextField
+                        id="publicationDate"
+                        label="Publication date"
+                        type="date"
+                        style={{margin: 8}}
+                        required
+                        helperText={touched.publicationDate ? errors.publicationDate : ""}
+                        error={touched.publicationDate && Boolean(errors.publicationDate)}
+                        value={publicationDate}
+                        onChange={change.bind(null, "publicationDate")}
+                        margin="normal"
+                        variant="outlined"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}/>
+                </CardContent>
             </Card>
-            <br />
+            <br/>
             <Card>
-                <h4>Display File</h4>
-                <TextField
-                    id="displayFile"
-                    label="displayFile"
-                    style={{ margin: 8 }}
-                    placeholder="display.html"
-                    fullWidth
-                    required
-                    helperText={touched.displayFile ? errors.displayFile : ""}
-                    error={touched.displayFile && Boolean(errors.displayFile)}
-                    value={displayFile}
-                    onChange={change.bind(null, "displayFile")}
-                    margin="normal"
-                    variant="outlined"
-                    InputLabelProps={{
-                        shrink: true,
-                    }} />
+                <CardContent>
+                    <h4>Display File</h4>
+                    <TextField
+                        id="displayFile"
+                        label="displayFile"
+                        style={{margin: 8, width: '10%'}}
+                        placeholder="display.html"
+                        required
+                        select
+                        helperText={touched.displayFile ? errors.displayFile : ""}
+                        error={touched.displayFile && Boolean(errors.displayFile)}
+                        value={displayFile}
+                        onChange={change.bind(null, "displayFile")}
+                        margin="normal"
+                        variant="outlined"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}>
+                        {props.displayCandidates.map(option => (
+                            <MenuItem key={option} value={option}>
+                                {option}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </CardContent>
             </Card>
-            <br />
+            <br/>
             <Card>
-                <h4>Main File</h4>
-                <TextField
-                    id="mainFile"
-                    label="mainFile"
-                    style={{ margin: 8 }}
-                    placeholder="main.Rmd"
-                    fullWidth
-                    required
-                    helperText={touched.mainFile ? errors.mainFile : ""}
-                    error={touched.mainFile && Boolean(errors.mainFile)}
-                    value={mainFile}
-                    onChange={change.bind(null, "mainFile")}
-                    margin="normal"
-                    variant="outlined"
-                    InputLabelProps={{
-                        shrink: true,
-                    }} />
+                <CardContent>
+                    <h4>Main File</h4>
+                    <TextField
+                        id="mainFile"
+                        label="mainFile"
+                        select
+                        style={{margin: 8, width: '10%'}}
+                        placeholder="main.Rmd"
+                        required
+                        helperText={touched.mainFile ? errors.mainFile : ""}
+                        error={touched.mainFile && Boolean(errors.mainFile)}
+                        value={mainFile}
+                        onChange={change.bind(null, "mainFile")}
+                        margin="normal"
+                        variant="outlined"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}>
+                        {props.mainFileCandidates.map(option => (
+                            <MenuItem key={option} value={option}>
+                                {option}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </CardContent>
             </Card>
-            <br />
+            <br/>
             <Card>
-                <h4>Licenses</h4>
-                <p>Templates</p>
-                <Button onClick={handleClick.bind(null, "mostRestrictive")}
-                >MOST RESTRICTIVE</Button>
-                <Button onClick={handleClick.bind(null, "leastRestrictive")}
-                >LEAST RESTRICTIVE</Button>
-                <TextField
-                    id="textLicense"
-                    select
-                    label="Text License"
-                    style={{ margin: 8 }}
-                    required
-                    fullWidth
-                    helperText={touched.textLicense ? errors.textLicense : ""}
-                    error={touched.textLicense && Boolean(errors.textLicense)}
-                    value={textLicense}
-                    onChange={change.bind(null, "textLicense")}
-                    margin="normal"
-                    variant="outlined"
-                >
-                    {textLicenses.map(option => (
-                        <MenuItem key={option.id} value={option}>
-                            {option.title}
-                        </MenuItem>
-                    ))}
-                </TextField>
-                <TextField
-                    id="codeLicense"
-                    select
-                    label="Code License"
-                    style={{ margin: 8 }}
-                    required
-                    fullWidth
-                    helperText={touched.codeLicense ? errors.codeLicense : ""}
-                    error={touched.codeLicense && Boolean(errors.codeLicense)}
-                    value={codeLicense}
-                    onChange={change.bind(null, "codeLicense")}
-                    margin="normal"
-                    variant="outlined"
-                >
-                    {codeLicenses.map(option => (
-                        <MenuItem key={option.id} value={option}>
-                            {option.title}
-                        </MenuItem>
-                    ))}
-                </TextField>
-                <TextField
-                    id="dataLicense"
-                    select
-                    label="Data License"
-                    style={{ margin: 8 }}
-                    required
-                    fullWidth
-                    helperText={touched.dataLicense ? errors.dataLicense : ""}
-                    error={touched.dataLicense && Boolean(errors.dataLicense)}
-                    value={dataLicense}
-                    onChange={change.bind(null, "dataLicense")}
-                    margin="normal"
-                    variant="outlined"
-                >
-                    {dataLicenses.map(option => (
-                        <MenuItem key={option.id} value={option}>
-                            {option.title}
-                        </MenuItem>
-                    ))}
-                </TextField>
+                <CardContent>
+                    <h4>Licenses</h4>
+                    <div>
+                        <p>Templates</p>
+                        <Button variant="contained" color="primary" style={{margin: "8px"}}
+                                onClick={handleClick.bind(null, "mostRestrictive")}
+                        >MOST RESTRICTIVE</Button>
+                        <Button variant="contained" color="primary" style={{margin: "8px"}}
+                                onClick={handleClick.bind(null, "leastRestrictive")}
+                        >LEAST RESTRICTIVE</Button>
+                    </div>
+
+                    <TextField
+                        id="textLicense"
+                        select
+                        label="Text License"
+                        style={{margin: 8, width: '80%'}}
+                        required
+                        helperText={touched.textLicense ? errors.textLicense : ""}
+                        error={touched.textLicense && Boolean(errors.textLicense)}
+                        value={textLicense}
+                        onChange={change.bind(null, "textLicense")}
+                        margin="normal"
+                        variant="outlined"
+                    >
+                        {textLicenses.map(option => (
+                            <MenuItem key={option.id} value={option}>
+                                {option.title}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                    <TextField
+                        id="codeLicense"
+                        select
+                        label="Code License"
+                        style={{margin: 8, width: '80%'}}
+                        required
+                        helperText={touched.codeLicense ? errors.codeLicense : ""}
+                        error={touched.codeLicense && Boolean(errors.codeLicense)}
+                        value={codeLicense}
+                        onChange={change.bind(null, "codeLicense")}
+                        margin="normal"
+                        variant="outlined"
+                    >
+                        {codeLicenses.map(option => (
+                            <MenuItem key={option.id} value={option}>
+                                {option.title}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                    <TextField
+                        id="dataLicense"
+                        select
+                        label="Data License"
+                        style={{margin: 8, width: '80%'}}
+                        required
+                        helperText={touched.dataLicense ? errors.dataLicense : ""}
+                        error={touched.dataLicense && Boolean(errors.dataLicense)}
+                        value={dataLicense}
+                        onChange={change.bind(null, "dataLicense")}
+                        margin="normal"
+                        variant="outlined"
+                    >
+                        {dataLicenses.map(option => (
+                            <MenuItem key={option.id} value={option}>
+                                {option.title}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </CardContent>
             </Card>
             <Button
                 type="submit"
-                fullWidth
-                variant="raised"
+                variant="contained"
                 color="primary"
-                disabled={!isValid}
+                disabled={!isValid || !props.authorsValid}
             >
                 Submit
             </Button>
@@ -403,7 +304,7 @@ const Form = props => {
     )
 }
 
-class RequiredMetadata extends Component {
+class RequriedMetadata extends Component {
     constructor(props) {
         super(props);
 
@@ -416,52 +317,98 @@ class RequiredMetadata extends Component {
             mainFile: "",
             dataLicense: "",
             textLicense: "",
-            codeLicense: ""
+            codeLicense: "",
+            displayCandidates: null,
+            mainFileCandidates: null,
+            authors: [{
+                author: "",
+                affiliation: "",
+                orcid: ""
+            }],
+            authorsValid: false,
         }
     };
 
-    getMetadata() {
-        const self = this;
-        httpRequests.singleCompendium(this.props.metadata.data.data.id)
-            .then(function (response) {
-                const data = response.data.metadata.o2r;
-                self.setState({
-                    metadata: data,
-                    title: data.title,
-                    abstract: data.description,
-                    publicationDate: data.publication_date,
-                    displayFile: data.displayfile,
-                    mainFile: data.mainfile,
-                    dataLicense: data.license.data,
-                    textLicense: data.license.text,
-                    codeLicense: data.license.code,
-                });
-            })
-            .catch(function (response) {
-                console.log(response)
-            })
-    }
+     getMetadata() {
+         const self = this;
+         httpRequests.singleCompendium(this.props.metadata.data.data.id)
+             .then(function (response) {
+                 const data = response.data.metadata.o2r;
+                 self.setState({
+                     metadata: data,
+                     title: data.title,
+                     abstract: data.description,
+                     authors: data.creators,
+                     publicationDate: data.publication_date,
+                     displayFile: data.displayfile,
+                     mainFile: data.mainfile,
+                     dataLicense: data.license.data,
+                     textLicense: data.license.text,
+                     codeLicense: data.license.code,
+                     displayCandidates: data.displayfile_candidates,
+                     mainFileCandidates: data.mainfile_candidates
+                 });
+             })
+             .catch(function (response) {
+                 console.log(response)
+             })
+     }
+     
 
     componentDidMount() {
         this.getMetadata()
+        prepareLicense();
+        this.authorsNotNull();
     }
 
+    updateAuthors = (value) => {
+        this.setState({authors: value}, () => {
+            this.authorsNotNull()
+        })
+    };
+
+    authorsNotNull = () => {
+
+        let valid = true;
+        if (this.state.authors.length === 0 || this.state.authors === null) {
+            valid = false;
+        }
+        for (var i in  this.state.authors) {
+            if (this.state.authors[i].name === "") {
+                valid = false;
+            }
+        }
+        this.setState({authorsValid: valid});
+    };
+
     render() {
-        prepareLicense();
+
 
         return (
             <div>
-                <h4>Authors</h4>
+
                 {this.state.metadata &&
                     <Formik
-                        render={props => <Form{...props} />}
+                        onSubmit={(values, actions) => {
+                            setTimeout(() => {
+                                alert(JSON.stringify(values, null, 2));
+                                actions.setSubmitting(false);
+                            }, 1000);
+                        }}
+                        render={props => <Form{...props} authors={this.state.authors}
+                                              displayCandidates={this.state.displayCandidates}
+                                              mainFileCandidates={this.state.mainFileCandidates}
+                                              onUpdate={this.updateAuthors}
+                                              authorsValid={this.state.authorsValid}/>}
                         initialValues={this.state}
                         validationSchema={validationSchema}
                     />
                 }
             </div>
+
+
         );
     }
 }
 
-export default RequiredMetadata;
+export default RequriedMetadata;
