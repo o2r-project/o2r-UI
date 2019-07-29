@@ -222,7 +222,7 @@ class Bindings extends Component {
             type: null,
             result: null,
           },
-          port:5001,
+          port:5003,
           sourcecode: {
             file: props.metadata.mainfile,
             plotFunction: '',

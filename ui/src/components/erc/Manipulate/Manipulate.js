@@ -1,9 +1,10 @@
 import React from 'react';
-import { Slider, Typography, Button} from '@material-ui/core';
+import { Slider, Typography, Button } from '@material-ui/core';
 import uuid from 'uuid/v1';
 
 import httpRequests from '../../../helpers/httpRequests';
 import FigureComparison from './FigureComparison/FigureComparison';
+import SelectedSettings from './SelectedSettings/SelectedSettings';
 
 class Manipulate extends React.Component {
 
@@ -84,6 +85,16 @@ class Manipulate extends React.Component {
         this.setState(state);
     }
 
+    removeItem ( setting ) {
+        let items = this.state.settings;
+        var filtered = items.filter(function(value, index, arr){
+            return value !== setting;
+        });
+        this.setState({
+            settings: filtered
+        });
+    }
+
     render () {
         return (
             <div style={{width:'80%', marginLeft: '10%'}}>
@@ -113,6 +124,11 @@ class Manipulate extends React.Component {
                 >
                     Save for comparison
                 </Button>
+                {this.state.settings.length>0 ?
+                    <SelectedSettings 
+                        settings={this.state.settings}
+                        removeItem={this.removeItem.bind(this)} />                
+                :''}
                 <FigureComparison settings={this.state.settings} />
             </div>
         )
