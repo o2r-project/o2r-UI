@@ -222,7 +222,7 @@ class Bindings extends Component {
             type: null,
             result: null,
           },
-          port:5003,
+          port:5001,
           sourcecode: {
             file: props.metadata.mainfile,
             plotFunction: '',
@@ -238,7 +238,10 @@ class Bindings extends Component {
 
   handleMouseUp ( e ) {
     if (this.state.creationStep === 1) {
-      this.setCode(window.getSelection().getRangeAt(0).toString());
+      try {
+        this.setCode(window.getSelection().getRangeAt(0).toString()); 
+      } catch (error) {     
+      }
     } else if (this.state.creationStep === 2) {
       this.setState({
         tmpParam: window.getSelection().getRangeAt(0).toString(),

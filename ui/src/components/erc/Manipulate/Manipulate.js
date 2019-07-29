@@ -117,7 +117,7 @@ class Manipulate extends React.Component {
                         /> 
                     </div>
                 ))}
-                <img src={this.state.fullUrl} />
+                <img src={this.state.fullUrl} alt="" />
                 <Button variant="contained" color="primary" 
                     onClick={this.saveForComparison.bind(this)}
                     disabled={this.state.settings.length===2}

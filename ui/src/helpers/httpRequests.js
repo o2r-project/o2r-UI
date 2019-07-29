@@ -64,6 +64,10 @@ function getCodelines(binding){
     return axios.post(_env.api + 'bindings/extractR', binding);
 }
 
+function searchBinding(term){
+    return axios.post(_env.api + 'bindings/searchBinding', {term:term});
+}
+
 module.exports = {
     getUser: getUser,
     listAllCompendia: listAllCompendia,
@@ -79,4 +83,5 @@ module.exports = {
     sendBinding: sendBinding,
     runManipulationService: runManipulationService,
     getCodelines: getCodelines,
+    searchBinding: searchBinding,
 };
