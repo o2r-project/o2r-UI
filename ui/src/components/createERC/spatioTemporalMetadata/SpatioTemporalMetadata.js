@@ -15,7 +15,9 @@ class OwnMap extends React.Component {
   constructor(props){
     super(props);
     this.state = {
+      metadata:props.metadata,
       drawn: false,
+      GeoJSON: null
     };
   };
 
@@ -25,7 +27,7 @@ class OwnMap extends React.Component {
     e.layers.eachLayer( (layer) => {
     
       GeoJSON = layer.toGeoJSON();
-      console.log(GeoJSON)
+      
     });
     
 
@@ -34,21 +36,18 @@ class OwnMap extends React.Component {
   _onCreated = (e) => {
     this.setState({drawn: true});
       GeoJSON = e.layer.toGeoJSON();
-      console.log(GeoJSON)
-      
+          
      
   }
 
   _onDeleted = (e) => {
     this.setState({drawn: false});
       GeoJSON = null;
-      console.log(GeoJSON)
   }
 
   
   render() {
     const position = [52, 7.6]
-  console.log(this.state);
   return(
     <Map center={position} zoom={13}>
     <TileLayer
@@ -95,14 +94,29 @@ class SpatioTemporalMetadata extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      
+      from: props.metadata.temporal.beginn,
+      to: props.metadata.temporal.end
     };
   };
 
-  getInitialState = () => {
-    return {
-        textFieldValue: ''
-    };
+handleChange= (e, name) =>
+{
+this.setState({
+  [name]: e.target.value
+})
+
+const updatedMetadata = this.props.metadata;
+
+if (name==="from")
+{
+updatedMetadata.temporal.beginn = e.target.value;
+}
+else {
+  updatedMetadata.temporal.end = e.target.value;
+}
+
+this.props.setMetadata(updatedMetadata, false);
+
 }
 
 
@@ -118,34 +132,31 @@ class SpatioTemporalMetadata extends React.Component {
       
       <TextField
                         id="date"
-                        label="From"
+                        label="Beginn"
                         type="date"
-                        //defaultValue="2017-05-24"
+                        //defaultValue={this.props.metadata.temporal.beginn}
                         //className={classes.textField}
                         InputLabelProps={{
                           required: true,
                         shrink: true,
                         }}
                         value={this.state.from}
-                        onChange={(e) => this.setState({
-                          from: e.target.value
-                      })}
+                        onChange={(e) => this.handleChange(e, "from")}
                     />
                 
         <TextField
                         id="date"
-                        label="To"
+                        label="End"
                         type="date"
-                        //defaultValue="2017-05-24"
+                        //defaultValue={this.props.metadata.temporal.end}
                         //className={classes.textField}
                         InputLabelProps={{
                         required: true,
                         shrink: true,
                         }}
                         value={this.state.to}
-                        onChange={(e) => this.setState({
-                          to: e.target.value
-                      })}
+                        onChange={(e) => this.handleChange(e, "to")
+                      }
                     />
                 </Card>
       </div>

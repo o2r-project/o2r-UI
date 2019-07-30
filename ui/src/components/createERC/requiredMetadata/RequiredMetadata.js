@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {Card, TextField, Button, MenuItem, CardContent} from "@material-ui/core";
-import {Formik} from 'formik';
+import React, { Component } from 'react';
+import { Card, TextField, Button, MenuItem, CardContent } from "@material-ui/core";
+import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { withRouter } from 'react-router-dom';
 
@@ -8,6 +8,7 @@ import licensesData from '../../../helpers/licenses.json'
 import Authors from './Authors/Authors';
 
 import './requiredMetadata.css';
+import { runInThisContext } from 'vm';
 
 const textLicenses = [];
 const dataLicenses = [];
@@ -31,12 +32,12 @@ function prepareLicense() {
         }
         ;
     }
-    mostRestrictiveData.push(textLicenses[3]);
-    mostRestrictiveData.push(codeLicenses[28]);
-    mostRestrictiveData.push(dataLicenses[1]);
-    leastRestrictiveData.push(textLicenses[5]);
-    leastRestrictiveData.push(codeLicenses[39]);
-    leastRestrictiveData.push(dataLicenses[4]);
+    mostRestrictiveData.push(textLicenses[3].id);
+    mostRestrictiveData.push(codeLicenses[28].id);
+    mostRestrictiveData.push(dataLicenses[1].id);
+    leastRestrictiveData.push(textLicenses[5].id);
+    leastRestrictiveData.push(codeLicenses[39].id);
+    leastRestrictiveData.push(dataLicenses[4]).id;
 
 }
 
@@ -63,7 +64,7 @@ const validationSchema = Yup.object({
 
 const Form = props => {
     const {
-        values: {title, abstract, publicationDate, displayFile, mainFile, textLicense, dataLicense, codeLicense},
+        values: { title, abstract, publicationDate, displayFile, mainFile, textLicense, dataLicense, codeLicense },
         errors,
         touched,
         handleChange,
@@ -76,8 +77,12 @@ const Form = props => {
         e.persist();
         e.target.name = name;
         handleChange(e);
-        setFieldTouched(name, true, false)
+        setFieldTouched(name, true, false);
     };
+
+    const blur = () => {
+        props.setFieldValues(props.values);
+    }
 
     const handleClick = (name, e) => {
         if (name === "mostRestrictive") {
@@ -93,35 +98,36 @@ const Form = props => {
 
     return (
         <form id="form" onSubmit={props.handleSubmit}>
-            <br/>
+            <br />
             <Card>
                 <CardContent>
                     <h4>Title</h4>
                     <TextField
                         id="title"
                         label="Required"
-                        style={{margin: 8, width: '80%'}}
+                        style={{ margin: 8, width: '80%' }}
                         placeholder="Title"
                         required
                         helperText={touched.title ? errors.title : ""}
                         error={touched.title && Boolean(errors.title)}
                         value={title}
                         onChange={change.bind(null, "title")}
+                        onBlur={blur.bind(null)}
                         margin="normal"
                         variant="outlined"
                         InputLabelProps={{
                             shrink: true,
-                        }}/>
+                        }} />
                 </CardContent>
             </Card>
-            <br/>
+            <br />
             <Card>
                 <CardContent>
                     <h4>Abstract</h4>
                     <TextField
                         id="abstract"
                         label="Required"
-                        style={{margin: 8, width: '80%'}}
+                        style={{ margin: 8, width: '80%' }}
                         placeholder="Abstract"
                         required
                         multiline
@@ -130,16 +136,17 @@ const Form = props => {
                         error={touched.abstract && Boolean(errors.abstract)}
                         value={abstract}
                         onChange={change.bind(null, "abstract")}
+                        onBlur={blur.bind(null)}
                         margin="normal"
                         variant="outlined"
                         InputLabelProps={{
                             shrink: true,
-                        }}/>
+                        }} />
                 </CardContent>
             </Card>
-            <br/>
+            <br />
             <Authors authors={props.authors} onUpdate={props.onUpdate}></Authors>
-            <br/>
+            <br />
             <Card>
                 <CardContent>
                     <h4>Publication Date</h4>
@@ -147,27 +154,28 @@ const Form = props => {
                         id="publicationDate"
                         label="Publication date"
                         type="date"
-                        style={{margin: 8}}
+                        style={{ margin: 8 }}
                         required
                         helperText={touched.publicationDate ? errors.publicationDate : ""}
                         error={touched.publicationDate && Boolean(errors.publicationDate)}
                         value={publicationDate}
                         onChange={change.bind(null, "publicationDate")}
+                        onBlur={blur.bind(null)}
                         margin="normal"
                         variant="outlined"
                         InputLabelProps={{
                             shrink: true,
-                        }}/>
+                        }} />
                 </CardContent>
             </Card>
-            <br/>
+            <br />
             <Card>
                 <CardContent>
                     <h4>Display File</h4>
                     <TextField
                         id="displayFile"
                         label="displayFile"
-                        style={{margin: 8, width: '10%'}}
+                        style={{ margin: 8, width: '10%' }}
                         placeholder="display.html"
                         required
                         select
@@ -175,6 +183,7 @@ const Form = props => {
                         error={touched.displayFile && Boolean(errors.displayFile)}
                         value={displayFile}
                         onChange={change.bind(null, "displayFile")}
+                        onBlur={blur.bind(null)}
                         margin="normal"
                         variant="outlined"
                         InputLabelProps={{
@@ -188,7 +197,7 @@ const Form = props => {
                     </TextField>
                 </CardContent>
             </Card>
-            <br/>
+            <br />
             <Card>
                 <CardContent>
                     <h4>Main File</h4>
@@ -196,13 +205,14 @@ const Form = props => {
                         id="mainFile"
                         label="mainFile"
                         select
-                        style={{margin: 8, width: '10%'}}
+                        style={{ margin: 8, width: '10%' }}
                         placeholder="main.Rmd"
                         required
                         helperText={touched.mainFile ? errors.mainFile : ""}
                         error={touched.mainFile && Boolean(errors.mainFile)}
                         value={mainFile}
                         onChange={change.bind(null, "mainFile")}
+                        onBlur={blur.bind(null)}
                         margin="normal"
                         variant="outlined"
                         InputLabelProps={{
@@ -216,17 +226,17 @@ const Form = props => {
                     </TextField>
                 </CardContent>
             </Card>
-            <br/>
+            <br />
             <Card>
                 <CardContent>
                     <h4>Licenses</h4>
                     <div>
                         <p>Templates</p>
-                        <Button variant="contained" color="primary" style={{margin: "8px"}}
-                                onClick={handleClick.bind(null, "mostRestrictive")}
+                        <Button variant="contained" color="primary" style={{ margin: "8px" }}
+                            onClick={handleClick.bind(null, "mostRestrictive")}
                         >MOST RESTRICTIVE</Button>
-                        <Button variant="contained" color="primary" style={{margin: "8px"}}
-                                onClick={handleClick.bind(null, "leastRestrictive")}
+                        <Button variant="contained" color="primary" style={{ margin: "8px" }}
+                            onClick={handleClick.bind(null, "leastRestrictive")}
                         >LEAST RESTRICTIVE</Button>
                     </div>
 
@@ -234,17 +244,18 @@ const Form = props => {
                         id="textLicense"
                         select
                         label="Text License"
-                        style={{margin: 8, width: '80%'}}
+                        style={{ margin: 8, width: '80%' }}
                         required
                         helperText={touched.textLicense ? errors.textLicense : ""}
                         error={touched.textLicense && Boolean(errors.textLicense)}
                         value={textLicense}
                         onChange={change.bind(null, "textLicense")}
+                        onBlur={blur.bind(null)}
                         margin="normal"
                         variant="outlined"
                     >
                         {textLicenses.map(option => (
-                            <MenuItem key={option.id} value={option}>
+                            <MenuItem key={option.id} value={option.id}>
                                 {option.title}
                             </MenuItem>
                         ))}
@@ -253,17 +264,18 @@ const Form = props => {
                         id="codeLicense"
                         select
                         label="Code License"
-                        style={{margin: 8, width: '80%'}}
+                        style={{ margin: 8, width: '80%' }}
                         required
                         helperText={touched.codeLicense ? errors.codeLicense : ""}
                         error={touched.codeLicense && Boolean(errors.codeLicense)}
                         value={codeLicense}
                         onChange={change.bind(null, "codeLicense")}
+                        onBlur={blur.bind(null)}
                         margin="normal"
                         variant="outlined"
                     >
                         {codeLicenses.map(option => (
-                            <MenuItem key={option.id} value={option}>
+                            <MenuItem key={option.id} value={option.id}>
                                 {option.title}
                             </MenuItem>
                         ))}
@@ -272,17 +284,18 @@ const Form = props => {
                         id="dataLicense"
                         select
                         label="Data License"
-                        style={{margin: 8, width: '80%'}}
+                        style={{ margin: 8, width: '80%' }}
                         required
                         helperText={touched.dataLicense ? errors.dataLicense : ""}
                         error={touched.dataLicense && Boolean(errors.dataLicense)}
                         value={dataLicense}
                         onChange={change.bind(null, "dataLicense")}
+                        onBlur={blur.bind(null)}
                         margin="normal"
                         variant="outlined"
                     >
                         {dataLicenses.map(option => (
-                            <MenuItem key={option.id} value={option}>
+                            <MenuItem key={option.id} value={option.id}>
                                 {option.title}
                             </MenuItem>
                         ))}
@@ -301,80 +314,57 @@ const Form = props => {
     )
 }
 
-class RequriedMetadata extends Component {
+class RequiredMetadata extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            metadata: null,
-            title: "",
-            abstract: "",
-            publicationDate: "",
-            displayFile: "",
-            mainFile: "",
-            dataLicense: "",
-            textLicense: "",
-            codeLicense: "",
-            displayCandidates: null,
-            mainFileCandidates: null,
-            authors: [{
-                author: "",
-                affiliation: "",
-                orcid: ""
-            }],
+            metadata: props.metadata,
+            title: props.metadata.title,
+            abstract: props.metadata.description,
+            publicationDate: props.metadata.publication_date,
+            displayFile: props.metadata.displayfile,
+            mainFile: props.metadata.mainfile,
+            dataLicense: props.metadata.license.data,
+            textLicense: props.metadata.license.text,
+            codeLicense: props.metadata.license.code,
+            displayCandidates: props.metadata.displayfile_candidates,
+            mainFileCandidates: props.metadata.mainfile_candidates,
+            authors: props.metadata.creators,
             authorsValid: false,
+            formValues: null
         }
     };
 
-     getMetadata() {
-         const self = this;
-         httpRequests.singleCompendium(this.props.metadata.data.data.id)
-             .then(function (response) {
-                 const data = response.data.metadata.o2r;
-                 self.setState({
-                     metadata: data,
-                     title: data.title,
-                     abstract: data.description,
-                     authors: data.creators,
-                     publicationDate: data.publication_date,
-                     displayFile: data.displayfile,
-                     mainFile: data.mainfile,
-                     dataLicense: data.license.data,
-                     textLicense: data.license.text,
-                     codeLicense: data.license.code,
-                     displayCandidates: data.displayfile_candidates,
-                     mainFileCandidates: data.mainfile_candidates
-                 });
-             })
-             .catch(function (response) {
-                 console.log(response)
-             })
-     }
-
-     updateMetadata = ( metadata ) => {
-        const self = this;
-        httpRequests.updateMetadata(self.props.metadata.data.data.id, metadata)
-            .then(function(res2) {
-                console.log(res2);
-            
-            })
-            .catch(function(res2) {
-                console.log(res2)
-            })
-    }
-
-     
-
     componentDidMount() {
-        this.getMetadata()
         prepareLicense();
         this.authorsNotNull();
     }
 
+    componentWillUnmount() {
+
+        const values = this.state.fieldValues;
+        console.log(values);
+
+
+        const updatedMetadata = this.props.metadata;
+        updatedMetadata.title = values.title;
+        updatedMetadata.description = values.abstract;
+        updatedMetadata.creators = this.state.authors;
+        updatedMetadata.publication_date = values.publicationDate;
+        updatedMetadata.displayfile = values.displayFile;
+        updatedMetadata.mainfile = values.mainFile;
+        updatedMetadata.license.data = values.dataLicense;
+        updatedMetadata.license.text = values.textLicense;
+        updatedMetadata.license.code = values.codeLicense;
+        this.props.setMetadata(updatedMetadata, true);
+
+    }
+
     updateAuthors = (value) => {
-        this.setState({authors: value}, () => {
+        this.setState({ authors: value }, () => {
             this.authorsNotNull()
         })
-    };
+    }
 
     authorsNotNull = () => {
 
@@ -382,13 +372,17 @@ class RequriedMetadata extends Component {
         if (this.state.authors.length === 0 || this.state.authors === null) {
             valid = false;
         }
-        for (var i in  this.state.authors) {
+        for (var i in this.state.authors) {
             if (this.state.authors[i].name === "") {
                 valid = false;
             }
         }
-        this.setState({authorsValid: valid});
+        this.setState({ authorsValid: valid });
     };
+
+    setFieldValues = ( values ) =>{
+        this.setState({fieldValues: values})
+    }
 
     render() {
 
@@ -399,35 +393,28 @@ class RequriedMetadata extends Component {
                 {this.state.metadata &&
                     <Formik
                         onSubmit={(values, actions) => {
-                            setTimeout(() => {
-                                alert(JSON.stringify(values, null, 2));
-                                actions.setSubmitting(false);
-                            }, 1000);
-                            console.log(values.title)
-                            
-                            this.updateMetadata(
-                                {
-                                        "title": values.title,
-                                        "description": values.abstract,
-                                        "creators": this.state.authors,
-                                        "publication_date": values.publicationDate,
-                                        "displayfile": values.displayFile,
-                                        "mainfile": values.mainFile,
-                                        "license":
-                                        {
-                                            "code": values.codeLicense.id,
-                                            "text": values.textLicense.id,
-                                            "data": values.dataLicense.id
-                                        }
-                                    
-                                }
-                            )
-                        }}
+
+                            actions.setSubmitting(false);
+
+                            const updatedMetadata = this.props.metadata;
+                            updatedMetadata.title = values.title;
+                            updatedMetadata.description = values.abstract;
+                            updatedMetadata.creators = this.state.authors;
+                            updatedMetadata.publication_date = values.publicationDate;
+                            updatedMetadata.displayfile = values.displayFile;
+                            updatedMetadata.mainfile = values.mainFile;
+                            updatedMetadata.license.data = values.dataLicense;
+                            updatedMetadata.license.text = values.textLicense;
+                            updatedMetadata.license.code = values.codeLicense;
+                            this.props.setMetadata(updatedMetadata, true);
+                        }
+                        }
                         render={props => <Form{...props} authors={this.state.authors}
-                                              displayCandidates={this.state.displayCandidates}
-                                              mainFileCandidates={this.state.mainFileCandidates}
-                                              onUpdate={this.updateAuthors}
-                                              authorsValid={this.state.authorsValid}/>}
+                            displayCandidates={this.state.displayCandidates}
+                            mainFileCandidates={this.state.mainFileCandidates}
+                            onUpdate={this.updateAuthors}
+                            authorsValid={this.state.authorsValid}
+                            setFieldValues={this.setFieldValues} />}
                         initialValues={this.state}
                         validationSchema={validationSchema}
                     />

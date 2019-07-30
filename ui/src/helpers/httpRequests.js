@@ -47,12 +47,6 @@ function getSingleJob(id) {
     return axios.get(_env.api + "job/" + id );
 }
 
-function updateMetadata(id, data){
-    var _url = _env.api + 'compendium/' + id + '/metadata';
-    var body = {o2r: data};
-    return axios.put(_url, body);
-}
-
 function getLogs(id) {
     return axios.get( _env.api + 'job/' + id + '?steps=all' );
 }

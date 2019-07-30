@@ -37,7 +37,7 @@ class CreateERC extends Component {
         httpRequests.singleCompendium(this.state.compendium_id)
             .then(function(res) {
                 const metadata = res.data.metadata.o2r;
-                self.setMetadata(metadata);
+                self.setMetadata(metadata, false);
                 //self.updateMetadata();
                 httpRequests.getFile("compendium/" + self.state.compendium_id + "/data/" + metadata.mainfile)
                     .then(function( res ) {
@@ -51,13 +51,17 @@ class CreateERC extends Component {
             })
     }
 
-    setMetadata ( metadata ) {
+    setMetadata = ( metadata, submit ) => {
         this.setState({
             metadata:metadata,
+        }, () => {
+            if(submit){
+                this.updateMetadata()
+            }
         });
     }
 
-    updateMetadata = ( metadata ) => {
+    updateMetadata = ( ) => {
         const self = this;
         httpRequests.updateMetadata(self.state.compendium_id, self.state.metadata)
             .then(function(res2) {
@@ -91,14 +95,15 @@ class CreateERC extends Component {
                     <TabContainer>
                         {this.state.metadata!=null ?
                             <RequiredMetadata 
-                                metadata={this.state.metadata} 
+                                metadata={this.state.metadata}
+                                setMetadata={this.setMetadata} 
                             />
                         : '' }
                     </TabContainer>
                 }
                 {value === 1 && 
                     <TabContainer>
-                        <SpatioTemporalMetadata />
+                        <SpatioTemporalMetadata metadata={this.state.metadata} setMetadata={this.setMetadata}/>
                     </TabContainer>
                 }
                 {value === 2 && 

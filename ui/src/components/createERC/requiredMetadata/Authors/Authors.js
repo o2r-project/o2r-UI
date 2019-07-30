@@ -11,15 +11,12 @@ class Authors extends Component {
         super(props);
 
         this.state = {
-            expanded: false,
+            
             deletable: false
         };
-        this.handleExpandClick = this.handleExpandClick.bind(this);
+        
     }
 
-    handleExpandClick() {
-        this.setState({expanded: !this.state.expanded});
-    }
 
     componentDidMount() {
         if (this.props.authors.length > 1) {
