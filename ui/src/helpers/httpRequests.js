@@ -15,7 +15,6 @@ function listAllCompendia() {
 function updateMetadata(id, data){
     var _url = _env.api + 'compendium/' + id + '/metadata';
     var body = {o2r: data};
-    console.log (body);
     return axios.put(_url, body);
 }
 

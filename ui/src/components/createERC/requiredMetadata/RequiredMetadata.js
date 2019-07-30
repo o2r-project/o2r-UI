@@ -356,11 +356,16 @@ class RequriedMetadata extends Component {
 
      updateMetadata = ( metadata ) => {
         const self = this;
-        httpRequests.updateMetadata(self.state.compendium_id, metadata)
+        httpRequests.updateMetadata(self.props.metadata.data.data.id, metadata)
+            .then(function(res2) {
+                console.log(res2);
+            
+            })
             .catch(function(res2) {
                 console.log(res2)
             })
     }
+
      
 
     componentDidMount() {
