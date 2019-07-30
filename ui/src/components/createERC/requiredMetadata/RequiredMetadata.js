@@ -250,7 +250,7 @@ const Form = props => {
                         error={touched.textLicense && Boolean(errors.textLicense)}
                         value={textLicense}
                         onChange={change.bind(null, "textLicense")}
-                        onBlur={blur.bind(null)}
+                        onBlur={blur.bind(null) }
                         margin="normal"
                         variant="outlined"
                     >
