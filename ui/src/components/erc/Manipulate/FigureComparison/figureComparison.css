@@ -1,0 +1,25 @@
+.compare {
+    width: 100%;
+    height: 100%;
+    margin-top: 10%;
+}
+
+.img {
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 5%;
+    float: left;
+}
+
+.comparisonTabs {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+    width: 50%;
+}
+
+.overlay {
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}

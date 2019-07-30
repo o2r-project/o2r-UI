@@ -112,9 +112,9 @@ class SpatioTemporalMetadata extends React.Component {
     return (
       <div id="form">
         <Card>
-      <h1>Specify the spatial Propertys of your dataset</h1>
+      <h1>Specify the spatial properties of your dataset(s):</h1>
       <OwnMap/>
-      <h1> Specify the temporal properties of your dataset(s)</h1>
+      <h1> Specify the temporal properties of your dataset(s):</h1>
       
       <TextField
                         id="date"

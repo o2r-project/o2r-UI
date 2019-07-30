@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import httpRequests from '../../helpers/httpRequests';
+//import httpRequests from '../../helpers/httpRequests';
 
 class Author extends Component {
     render() {

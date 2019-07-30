@@ -2,14 +2,12 @@ import React, {Component} from 'react';
 import {Card, TextField, Button, MenuItem, CardContent} from "@material-ui/core";
 import {Formik} from 'formik';
 import * as Yup from 'yup';
+import { withRouter } from 'react-router-dom';
 
 import licensesData from '../../../helpers/licenses.json'
 import Authors from './Authors/Authors';
 
 import './requiredMetadata.css';
-
-import httpRequests from '../../../helpers/httpRequests';
-
 
 const textLicenses = [];
 const dataLicenses = [];
@@ -73,7 +71,6 @@ const Form = props => {
         setFieldTouched,
         setFieldValue
     } = props;
-
 
     const change = (name, e) => {
         e.persist();
@@ -307,7 +304,6 @@ const Form = props => {
 class RequriedMetadata extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             metadata: null,
             title: "",
@@ -443,4 +439,4 @@ class RequriedMetadata extends Component {
     }
 }
 
-export default RequriedMetadata;
+export default withRouter(RequiredMetadata);

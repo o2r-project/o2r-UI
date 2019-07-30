@@ -19,8 +19,7 @@ class Upload extends Component {
 
     upload = () => {
         this.props.history.push('/createERC');
-        httpRequests.
-            uploadViaSciebo(document.getElementById("scieboURL").value,
+        httpRequests.uploadViaSciebo(document.getElementById("scieboURL").value,
                             document.getElementById("scieboFolder").value)
             .then(
                 response=>console.log(response)
@@ -38,13 +37,13 @@ class Upload extends Component {
     }
 
     render() {
+        
         return (
             <div>
                 <h1>Create an ERC</h1>
                 <div className="option1">
                     <div>
                         <h3>Option 1: Upload via public share</h3>
-                        
                     </div>
                     <div>
                         <Input
