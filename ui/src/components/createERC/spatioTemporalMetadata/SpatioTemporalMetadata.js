@@ -93,12 +93,14 @@ let to;
 class SpatioTemporalMetadata extends React.Component {
   constructor(props){
     super(props);
-    const begin= props.metadata.temporal.begin
-    begin.substiring(0,9);
+    var begin= props.metadata.temporal.begin
+    begin = begin.substring(0,10);
+    var end = props.metadata.temporal.end
+    end = end.substring(0,10);
     console.log(begin)
     this.state = {
       from: begin,
-      to: props.metadata.temporal.end
+      to: end
     };
   };
 
