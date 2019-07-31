@@ -308,7 +308,7 @@ const Form = props => {
                 color="primary"
                 disabled={!isValid || !props.authorsValid}
             >
-                Submit
+                Save
             </Button>
         </form>
     )
@@ -345,6 +345,10 @@ class RequiredMetadata extends Component {
         const values = this.state.fieldValues;
         console.log(values);
 
+        if(values!=null)
+        {
+
+
 
         const updatedMetadata = this.props.metadata;
         updatedMetadata.title = values.title;
@@ -357,6 +361,8 @@ class RequiredMetadata extends Component {
         updatedMetadata.license.text = values.textLicense;
         updatedMetadata.license.code = values.codeLicense;
         this.props.setMetadata(updatedMetadata, true);
+
+        }
 
     }
 

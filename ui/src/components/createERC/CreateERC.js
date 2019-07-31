@@ -38,7 +38,6 @@ class CreateERC extends Component {
             .then(function(res) {
                 const metadata = res.data.metadata.o2r;
                 self.setMetadata(metadata, false);
-                //self.updateMetadata();
                 httpRequests.getFile("compendium/" + self.state.compendium_id + "/data/" + metadata.mainfile)
                     .then(function( res ) {
                         self.setState({
