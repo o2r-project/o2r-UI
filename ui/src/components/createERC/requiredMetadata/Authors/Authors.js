@@ -66,20 +66,20 @@ class Authors extends Component {
                             key={index}
                             id={index}
                             author={item}
-                            deletable={this.state.deletable}
+                            deleteable={this.state.deletable}
                             handleDelete={() => this.handleDelete(index)}
                             handleUpdate={this.handleUpdate}
                         />
                     )}
-                    <br/>
                 </CardContent>
-
-                <IconButton aria-label="Add"
-                            onClick={this.handleClick}
-                            color="primary"
-                >
-                   <AddIcon/>
-                </IconButton>
+                <div>
+                    <IconButton aria-label="Add"
+                        onClick={this.handleClick}
+                        color="primary"
+                    >
+                        <AddIcon />
+                    </IconButton>
+                </div>
 
             </Card>
 

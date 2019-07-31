@@ -1,5 +1,6 @@
 import * as Yup from "yup";
-import {TextField} from "@material-ui/core";
+import {TextField,IconButton} from "@material-ui/core";
+import DeleteIcon from '@material-ui/icons/Delete';
 import React from "react";
 
 export const authorValidationSchema = Yup.object({
@@ -30,7 +31,7 @@ export const AuthorForm = props => {
         props.onChange(props.index, props.values);
     }
 
-
+    self=props;
     return (
         <form id="authorForm">
 
@@ -79,7 +80,16 @@ export const AuthorForm = props => {
                 variant="outlined"
                 InputLabelProps={{
                     shrink: true,
-                }}/>
+                }} />
+
+            {props.deleteable ?
+                <IconButton aria-label="Delete"
+                    onClick={() => props.handleDelete()}
+                    color="primary"
+                >
+                    <DeleteIcon />
+                </IconButton>
+                : ''}
 
         </form>)
 };

@@ -29,20 +29,42 @@ class OwnMap extends React.Component {
       GeoJSON = layer.toGeoJSON();
       
     });
+
+    const metadata = this.state.metadata;
+
+    metadata.spatial.union.bbox[0]= GeoJSON.geometry.coordinates[0][0];
+    metadata.spatial.union.bbox[1]= GeoJSON.geometry.coordinates[0][1];
+    metadata.spatial.union.bbox[2]= GeoJSON.geometry.coordinates[0][2];
+    metadata.spatial.union.bbox[3]= GeoJSON.geometry.coordinates[0][3];
+    this.props.setMetadata(metadata);
+
+
+    this.setState({GeoJSON: GeoJSON});
     
 
   }
 
   _onCreated = (e) => {
-    this.setState({drawn: true});
+    
       GeoJSON = e.layer.toGeoJSON();
+      this.setState({drawn: true, GeoJSON: GeoJSON});
+      metadata.spatial.union.bbox[0]= GeoJSON.geometry.coordinates[0][0];
+      metadata.spatial.union.bbox[1]= GeoJSON.geometry.coordinates[0][1];
+      metadata.spatial.union.bbox[2]= GeoJSON.geometry.coordinates[0][2];
+      metadata.spatial.union.bbox[3]= GeoJSON.geometry.coordinates[0][3];
+      this.props.setMetadata(metadata);
+  
           
      
   }
 
   _onDeleted = (e) => {
-    this.setState({drawn: false});
-      GeoJSON = null;
+    this.setState({drawn: false, GeoJSON: null});
+    metadata.spatial.union.bbox[0]= [181,181]
+    metadata.spatial.union.bbox[1]= [-181,181]
+    metadata.spatial.union.bbox[2]= [-181,-181]
+    metadata.spatial.union.bbox[3]= [181,181]
+    this.props.setMetadata(metadata);
   }
 
   
@@ -74,12 +96,10 @@ class OwnMap extends React.Component {
           circlemarker: false,
           marker: false,
           polyline: false,
-          rectangle: false,
+          rectangle: true,
           point: false,
-          polygon: {
-            allowIntersection: false,
-            showArea: true
-          }}}/>
+          polygon: false}}/>
+          <Rectangle ></Rectangle>
 
     </FeatureGroup>
 
@@ -132,7 +152,7 @@ this.props.setMetadata(updatedMetadata, false);
       <div id="form">
         <Card>
       <h1>Specify the spatial properties of your dataset(s):</h1>
-      <OwnMap/>
+      <OwnMap metadata={this.props.metadata} setMetadata={this.props.setMetadata}/>
       <h1> Specify the temporal properties of your dataset(s):</h1>
       
       <TextField
