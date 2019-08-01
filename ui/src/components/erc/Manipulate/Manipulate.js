@@ -79,7 +79,7 @@ class Manipulate extends React.Component {
         let settings = state.settings;
         let include = true;
         settings.forEach( function (elem) {
-            elem === state.fullUrl ? include = false : '';
+            elem === state.fullUrl ? include = false : include = true;
         });
         include ? state.settings.push(state.fullUrl) : console.log("already included");
         this.setState(state);
