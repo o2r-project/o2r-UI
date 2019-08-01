@@ -84,8 +84,12 @@ function VerticalLinearStepper(props) {
     setActiveStep(prevActiveStep => prevActiveStep + 1);
     props.setStep(activeStep + 1);
     disable(true);
-    activeStep === 2 ? props.setParameter(props.tmpParam) : '';
-    activeStep === 3 ? props.saveBinding() : '';
+    if (activeStep === 2) {
+      props.setParameter(props.tmpParam)
+    }
+    if (activeStep === 3) {
+      props.saveBinding()
+    }
   }
 
   const handleBack = () => {

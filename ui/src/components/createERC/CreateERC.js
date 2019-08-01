@@ -3,7 +3,7 @@ import { Tabs, Tab, Typography, Button } from '@material-ui/core';
 
 import './createERC.css';
 import RequiredMetadata from './requiredMetadata/RequiredMetadata';
-import SpatioTemporalMetadata from './spatioTemporalMetadata/SpatioTemporalMetadata';
+//import SpatioTemporalMetadata from './spatioTemporalMetadata/SpatioTemporalMetadata';
 import Bindings from './bindings/Bindings';
 import httpRequests from '../../helpers/httpRequests';
 
@@ -98,7 +98,7 @@ class CreateERC extends Component {
                 }
                 {value === 1 && 
                     <TabContainer>
-                        <SpatioTemporalMetadata />
+                        ST
                     </TabContainer>
                 }
                 {value === 2 && 
