@@ -28,7 +28,7 @@ function ComparisonView(props) {
         <div>
             <Button variant="contained" color="primary" className="maniBtn"
                 onClick={handleClickOpen}
-                style={{marginTop: "5%"}}
+                style={{marginTop: "1%"}}
                 disabled={props.settings.length!==2}
             >
                 Show comparison

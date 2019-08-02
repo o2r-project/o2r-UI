@@ -79,7 +79,7 @@ class Manipulate extends React.Component {
         let state = this.state;
         let settings = state.settings;
         let include = true;
-        settings.forEach( function (elem) {
+        settings.forEach( (elem) => {
             elem === state.fullUrl ? include = false : include = true;
         });
         include ? state.settings.push(state.fullUrl) : console.log("already included");
@@ -96,22 +96,27 @@ class Manipulate extends React.Component {
         });
     }
 
-    setOriginalSettings () {
-        console.log(this.state)
+    setOriginalSettings ( name ) {
+        this.setState({
+            [name]: 24,
+        }, () => {
+            this.buildFullUrl();
+        });
     }
 
     render () {
+        console.log(this.state)
         return (
             <div className="view">
                 <Button variant='contained' color='primary'
-                    onClick={this.setOriginalSettings.bind(this)}
+                    onClick={this.setOriginalSettings.bind(this, "duration")}
                 >
                     Original settings
                 </Button>
                 {this.state.binding.sourcecode.parameter.map((parameter, index) => (
                     <div className="slider" key={index}>                
                         <Typography variant='caption'>
-                            {parameter.uiWidget.caption}
+                            {parameter.uiWidget.caption}{this.state[parameter.name]}
                         </Typography>
                         <Slider
                             onChange={this.handleChange(parameter.name)}
