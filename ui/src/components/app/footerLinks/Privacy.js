@@ -30,16 +30,16 @@ class Privacy extends Component {
             </p>
             <h4 id="login">Login</h4>
             <p>
-	            o2r uses <a href="https://oauth.net/2/" title="About OAuth 2.0">OAuth 2.0</a> to provide a login via <strong><a href="http://orcid.org/" title="ORCID website">ORCID</a></strong>. More information about the ORCID privacy policy <a href="http://orcid.org/content/orcid-privacy-policy#Information_we_collect" target="_blank">here</a>.
+	            o2r uses <a href="https://oauth.net/2/" title="About OAuth 2.0">OAuth 2.0</a> to provide a login via <strong><a href="http://orcid.org/" title="ORCID website">ORCID</a></strong>. More information about the ORCID privacy policy <a href="http://orcid.org/content/orcid-privacy-policy#Information_we_collect" target="_blank" rel="noopener noreferrer">here</a>.
             </p>
             <p>
-	            ORCID is known to cause issues when using ghostery and other tacking control software. More information <a href="http://support.orcid.org/forums/175591-orcid-ideas-forum/suggestions/5534995-allow-login-to-orcid-org-without-google-analytics" target="_blank">here</a>.
+	            ORCID is known to cause issues when using ghostery and other tacking control software. More information <a href="http://support.orcid.org/forums/175591-orcid-ideas-forum/suggestions/5534995-allow-login-to-orcid-org-without-google-analytics" target="_blank" rel="noopener noreferrer">here</a>.
             </p>
             <h4 id="tracking">Tracking</h4>
             <p>
 	            We use our own <a href="https://piwik.org/" title="Piwik website">Piwik</a> server to collect anonymous user statistics in a configuration that is conform with <a href="https://www.datenschutzzentrum.de/uploads/projekte/verbraucherdatenschutz/20110315-webanalyse-piwik.pdf" title="Datenschutzkonformes Webseitentracking mit Piwik">German privacy laws</a> and <a href="https://en.wikipedia.org/wiki/General_Data_Protection_Regulation" >GDPR</a>. <strong>We collect no personal data and do not share the visitor statistics with any third party.</strong> We only collect anonymised IPs (masking 3 bytes) to learn about the number of visitors on our site. The tracker honors the <a href="https://en.wikipedia.org/wiki/Do_Not_Track">Do Not Track (DNT)</a> header. If you do not want to be tracked, please use the option below. <em>If you are logged in</em>, we will store your user ID as part of the tracking data.
             </p>
-            <iframe frameborder="no" width="600px" height="200px" src="https://o2r.uni-muenster.de/piwik/index.php?module=CoreAdminHome&action=optOut"></iframe>
+            <iframe frameborder="no" width="600px" height="200px" src="https://o2r.uni-muenster.de/piwik/index.php?module=CoreAdminHome&action=optOut" title="uni"></iframe>
         </div>
         );
     }

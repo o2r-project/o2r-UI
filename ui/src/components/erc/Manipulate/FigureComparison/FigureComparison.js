@@ -54,7 +54,7 @@ function ComparisonView(props) {
                         props.settings.map(setting => (
                             <figure className="img">
                                 <figcaption>{setting}</figcaption>
-                                <img src={setting} />
+                                <img src={setting} alt=""/>
                             </figure>
                         ))}
                     {tabValue === 1 &&

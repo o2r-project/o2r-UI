@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Tab, Typography, Button } from '@material-ui/core';
+import { Tabs, Tab, Typography } from '@material-ui/core';
 
 import './createERC.css';
 import RequiredMetadata from './requiredMetadata/RequiredMetadata';

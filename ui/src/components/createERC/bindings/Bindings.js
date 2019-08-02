@@ -64,12 +64,8 @@ function VerticalLinearStepper(props) {
   const [disabled, disable] = React.useState(true);
   const params = props.binding.sourcecode.parameter;
   const plot = props.binding.sourcecode.plotFunction;
-  let parameter = '';
-  if ( params[0] !== undefined ) {
-    parameter = props.binding.sourcecode.parameter[params.length-1].text;
-    if ( disabled ) {
-      disable(false);
-    }
+  if ( params[0] !== undefined && disabled) {
+    disable(false);
   } 
   if (plot !== '' && disabled) {
     disable(false);

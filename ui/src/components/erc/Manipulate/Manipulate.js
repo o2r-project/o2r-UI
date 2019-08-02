@@ -5,6 +5,7 @@ import uuid from 'uuid/v1';
 import httpRequests from '../../../helpers/httpRequests';
 import FigureComparison from './FigureComparison/FigureComparison';
 import SelectedSettings from './SelectedSettings/SelectedSettings';
+import './manipulate.css'
 
 class Manipulate extends React.Component {
 
@@ -97,9 +98,9 @@ class Manipulate extends React.Component {
 
     render () {
         return (
-            <div style={{width:'80%', marginLeft: '10%'}}>
+            <div className="view">
                 {this.state.binding.sourcecode.parameter.map(parameter => (
-                    <div style={{marginTop:'5%'}} key={uuid()}>                
+                    <div className="slider" key={uuid()}>                
                         <Typography variant='caption'>
                             {parameter.uiWidget.caption}
                         </Typography>
@@ -117,8 +118,9 @@ class Manipulate extends React.Component {
                         /> 
                     </div>
                 ))}
-                <img src={this.state.fullUrl} alt="" />
-                <Button variant="contained" color="primary" 
+                <Button variant='contained' color='primary'>Original settings</Button>
+                <img src={this.state.fullUrl} alt="" className="image" />
+                <Button variant="contained" color="primary" className="saveComparison"
                     onClick={this.saveForComparison.bind(this)}
                     disabled={this.state.settings.length===2}
                 >

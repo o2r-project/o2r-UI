@@ -112,7 +112,7 @@ class ERC extends React.Component {
     }
   
     render () {
-
+        
         return (
             <div className="Erc" >
                 <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
