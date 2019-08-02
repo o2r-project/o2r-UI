@@ -96,11 +96,20 @@ class Manipulate extends React.Component {
         });
     }
 
+    setOriginalSettings () {
+        console.log(this.state)
+    }
+
     render () {
         return (
             <div className="view">
-                {this.state.binding.sourcecode.parameter.map(parameter => (
-                    <div className="slider" key={uuid()}>                
+                <Button variant='contained' color='primary'
+                    onClick={this.setOriginalSettings.bind(this)}
+                >
+                    Original settings
+                </Button>
+                {this.state.binding.sourcecode.parameter.map((parameter, index) => (
+                    <div className="slider" key={index}>                
                         <Typography variant='caption'>
                             {parameter.uiWidget.caption}
                         </Typography>
@@ -118,20 +127,21 @@ class Manipulate extends React.Component {
                         /> 
                     </div>
                 ))}
-                <Button variant='contained' color='primary'>Original settings</Button>
-                <img src={this.state.fullUrl} alt="" className="image" />
-                <Button variant="contained" color="primary" className="saveComparison"
-                    onClick={this.saveForComparison.bind(this)}
-                    disabled={this.state.settings.length===2}
-                >
-                    Save for comparison
-                </Button>
-                {this.state.settings.length>0 ?
+                <div className="image">
+                    <img src={this.state.fullUrl} alt="" />
+                    <Button variant="contained" color="primary" className="maniBtn"
+                        onClick={this.saveForComparison.bind(this)}
+                        disabled={this.state.settings.length===2}
+                    >
+                        Save for comparison
+                    </Button>
+                    {this.state.settings.length>0 ?
                     <SelectedSettings 
                         settings={this.state.settings}
                         removeItem={this.removeItem.bind(this)} />                
-                :''}
-                <FigureComparison settings={this.state.settings} />
+                    :''}
+                    <FigureComparison settings={this.state.settings} />
+                </div>
             </div>
         )
     }

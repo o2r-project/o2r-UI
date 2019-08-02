@@ -9,11 +9,9 @@
 }
 
 .image {
-
+    margin-right: 15%;
 }
 
-.saveComparison {
-    width: 30%;
-    margin-left: 35%;
-    margin-right: 35%
+.maniBtn {
+width: 30%;
 }
