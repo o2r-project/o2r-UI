@@ -103,7 +103,14 @@ class Manipulate extends React.Component {
         });
     }
 
+    getDerivedStateFromProps(someProp) {
+        console.log(someProp)
+        //this.setState({...this.state,someProp})
+      }
+
     render () {
+        console.log(this.state.binding)
+        console.log(this.props)
         return (
             <div className="view">
                 <Button variant='contained' color='primary'
