@@ -1,5 +1,5 @@
 import React from 'react';
-import { Slider, Typography, Button } from '@material-ui/core';
+import { Slider, Typography, Button, Tabs, Tab } from '@material-ui/core';
 
 import httpRequests from '../../../helpers/httpRequests';
 import FigureComparison from './FigureComparison/FigureComparison';
@@ -11,9 +11,10 @@ class Manipulate extends React.Component {
     constructor( props ) {
         super ( props );
         this.state={
-            binding: props.binding,
-            baseUrl: this.buildBaseUrl(props.binding),
-            params: this.getParams(props.binding.sourcecode.parameter),
+            bindings: props.bindings,
+            binding: props.bindings[0],
+            baseUrl: this.buildBaseUrl(props.bindings[0]),
+            params: this.getParams(props.bindings[0].sourcecode.parameter),
             fullUrl: '',
             settings:[],
         }
@@ -39,7 +40,7 @@ class Manipulate extends React.Component {
             })
     }
 
-    buildBaseUrl ( binding ) {
+    buildBaseUrl = ( binding ) => {
         return 'http://localhost:' + binding.port + '/' + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?';
     }
 
@@ -103,54 +104,70 @@ class Manipulate extends React.Component {
         });
     }
 
-    getDerivedStateFromProps(someProp) {
-        console.log(someProp)
-        //this.setState({...this.state,someProp})
-      }
+    changeFigure ( e, newVal ) {
+        console.log(newVal)
+        this.setState({
+            binding: this.state.bindings[newVal],
+            baseUrl: this.buildBaseUrl(this.state.bindings[newVal]),
+            params: this.getParams(this.state.bindings[newVal].sourcecode.parameter),
+        }, () => this.runManipulateService()
+        );
+    }
 
     render () {
-        console.log(this.state.binding)
-        console.log(this.props)
         return (
-            <div className="view">
-                <Button variant='contained' color='primary'
-                    onClick={this.setOriginalSettings.bind(this, "duration")}
+            <div>
+                <Tabs style={{flexGrow: '1'}}
+                    value={this.state.binding}
+                    onChange={this.changeFigure.bind(this)}
+                    indicatorColor="primary"
+                    textColor="primary"
+                    centered
                 >
-                    Original settings
-                </Button>
-                {this.state.binding.sourcecode.parameter.map((parameter, index) => (
-                    <div className="slider" key={index}>                
-                        <Typography variant='caption'>
-                            {parameter.uiWidget.caption}{this.state[parameter.name]}
-                        </Typography>
-                        <Slider
-                            onChange={this.handleChange(parameter.name)}
-                            defaultValue={parameter.val}
-                            value={this.state[parameter.name]}
-                            aria-labelledby="discrete-slider-custom"
-                            valueLabelDisplay="on"
-                            step={parameter.uiWidget.stepSize}
-                            min={parameter.uiWidget.minValue}
-                            max={parameter.uiWidget.maxValue}
-                            marks={[{value: parameter.uiWidget.minValue, label: parameter.uiWidget.minValue},
-                                    {value: parameter.uiWidget.maxValue, label: parameter.uiWidget.maxValue}]}
-                        /> 
-                    </div>
-                ))}
-                <div className="image">
-                    <img src={this.state.fullUrl} alt="" />
-                    <Button variant="contained" color="primary" className="maniBtn"
-                        onClick={this.saveForComparison.bind(this)}
-                        disabled={this.state.settings.length===2}
+                    {this.state.bindings.map((binding, index) => (
+                        <Tab label={binding.computationalResult.result} key={index}/>
+                    ))}
+                </Tabs>
+                <div className="view">
+                    <Button variant='contained' color='primary'
+                        onClick={this.setOriginalSettings.bind(this, "duration")}
                     >
-                        Save for comparison
+                        Original settings
                     </Button>
-                    {this.state.settings.length>0 ?
-                    <SelectedSettings 
-                        settings={this.state.settings}
-                        removeItem={this.removeItem.bind(this)} />                
-                    :''}
-                    <FigureComparison settings={this.state.settings} />
+                    {this.state.binding.sourcecode.parameter.map((parameter, index) => (
+                        <div className="slider" key={index}>                
+                            <Typography variant='caption'>
+                                {parameter.uiWidget.caption}{this.state[parameter.name]}
+                            </Typography>
+                            <Slider
+                                onChange={this.handleChange(parameter.name)}
+                                defaultValue={parameter.val}
+                                value={this.state[parameter.name]}
+                                aria-labelledby="discrete-slider-custom"
+                                valueLabelDisplay="on"
+                                step={parameter.uiWidget.stepSize}
+                                min={parameter.uiWidget.minValue}
+                                max={parameter.uiWidget.maxValue}
+                                marks={[{value: parameter.uiWidget.minValue, label: parameter.uiWidget.minValue},
+                                        {value: parameter.uiWidget.maxValue, label: parameter.uiWidget.maxValue}]}
+                            /> 
+                        </div>
+                    ))}
+                    <div className="image">
+                        <img src={this.state.fullUrl} alt="" />
+                        <Button variant="contained" color="primary" className="maniBtn"
+                            onClick={this.saveForComparison.bind(this)}
+                            disabled={this.state.settings.length===2}
+                        >
+                            Save for comparison
+                        </Button>
+                        {this.state.settings.length>0 ?
+                        <SelectedSettings 
+                            settings={this.state.settings}
+                            removeItem={this.removeItem.bind(this)} />                
+                        :''}
+                        <FigureComparison settings={this.state.settings} />
+                    </div>
                 </div>
             </div>
         )

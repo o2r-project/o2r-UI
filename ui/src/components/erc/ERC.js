@@ -107,7 +107,6 @@ class ERC extends React.Component {
     }
   
     render () {
-        console.log(this.state.binding)
         return (
             <div className="Erc" >
                 <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
@@ -145,7 +144,7 @@ class ERC extends React.Component {
                         {this.state.tabValue === 2 && 
                             <div>
                                 {this.state.metadata.interaction.length > 0 ?
-                                <Manipulate binding={this.state.binding}></Manipulate>
+                                <Manipulate bindings={this.state.metadata.interaction}></Manipulate>
                                 : 'No interactive figures were made for this paper'}
                             </div>
                         }
