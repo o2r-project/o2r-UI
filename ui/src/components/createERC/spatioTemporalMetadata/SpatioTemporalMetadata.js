@@ -99,7 +99,7 @@ class OwnMap extends React.Component {
           rectangle: true,
           point: false,
           polygon: false}}/>
-          <Rectangle ></Rectangle>
+          
 
     </FeatureGroup>
 

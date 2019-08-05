@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, TextField, Button, MenuItem, CardContent } from "@material-ui/core";
+import { Card, TextField, Button, MenuItem, CardContent,Grid } from "@material-ui/core";
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { withRouter } from 'react-router-dom';
@@ -37,7 +37,7 @@ function prepareLicense() {
     mostRestrictiveData.push(dataLicenses[1].id);
     leastRestrictiveData.push(textLicenses[5].id);
     leastRestrictiveData.push(codeLicenses[39].id);
-    leastRestrictiveData.push(dataLicenses[4]).id;
+    leastRestrictiveData.push(dataLicenses[4].id);
 
 }
 
@@ -99,6 +99,8 @@ const Form = props => {
     return (
         <form id="form" onSubmit={props.handleSubmit}>
             <br />
+            <Grid container spacing={2}>
+                <Grid item xs={10}>
             <Card>
                 <CardContent>
                     <h4>Title</h4>
@@ -118,11 +120,7 @@ const Form = props => {
                         InputLabelProps={{
                             shrink: true,
                         }} />
-                </CardContent>
-            </Card>
             <br />
-            <Card>
-                <CardContent>
                     <h4>Abstract</h4>
                     <TextField
                         id="abstract"
@@ -142,13 +140,9 @@ const Form = props => {
                         InputLabelProps={{
                             shrink: true,
                         }} />
-                </CardContent>
-            </Card>
             <br />
             <Authors authors={props.authors} onUpdate={props.onUpdate}></Authors>
             <br />
-            <Card>
-                <CardContent>
                     <h4>Publication Date</h4>
                     <TextField
                         id="publicationDate"
@@ -166,16 +160,12 @@ const Form = props => {
                         InputLabelProps={{
                             shrink: true,
                         }} />
-                </CardContent>
-            </Card>
             <br />
-            <Card>
-                <CardContent>
                     <h4>Display File</h4>
                     <TextField
                         id="displayFile"
                         label="displayFile"
-                        style={{ margin: 8, width: '10%' }}
+                        style={{ margin: 8, width: '20%' }}
                         placeholder="display.html"
                         required
                         select
@@ -195,17 +185,13 @@ const Form = props => {
                             </MenuItem>
                         ))}
                     </TextField>
-                </CardContent>
-            </Card>
             <br />
-            <Card>
-                <CardContent>
                     <h4>Main File</h4>
                     <TextField
                         id="mainFile"
                         label="mainFile"
                         select
-                        style={{ margin: 8, width: '10%' }}
+                        style={{ margin: 8, width: '20%' }}
                         placeholder="main.Rmd"
                         required
                         helperText={touched.mainFile ? errors.mainFile : ""}
@@ -224,14 +210,9 @@ const Form = props => {
                             </MenuItem>
                         ))}
                     </TextField>
-                </CardContent>
-            </Card>
             <br />
-            <Card>
-                <CardContent>
                     <h4>Licenses</h4>
                     <div>
-                        <p>Templates</p>
                         <Button variant="contained" color="primary" style={{ margin: "8px" }}
                             onClick={handleClick.bind(null, "mostRestrictive")}
                         >MOST RESTRICTIVE</Button>
@@ -244,7 +225,7 @@ const Form = props => {
                         id="textLicense"
                         select
                         label="Text License"
-                        style={{ margin: 8, width: '80%' }}
+                        style={{ margin: 8, width: '30%' }}
                         required
                         helperText={touched.textLicense ? errors.textLicense : ""}
                         error={touched.textLicense && Boolean(errors.textLicense)}
@@ -264,7 +245,7 @@ const Form = props => {
                         id="codeLicense"
                         select
                         label="Code License"
-                        style={{ margin: 8, width: '80%' }}
+                        style={{ margin: 8, width: '30%' }}
                         required
                         helperText={touched.codeLicense ? errors.codeLicense : ""}
                         error={touched.codeLicense && Boolean(errors.codeLicense)}
@@ -284,7 +265,7 @@ const Form = props => {
                         id="dataLicense"
                         select
                         label="Data License"
-                        style={{ margin: 8, width: '80%' }}
+                        style={{ margin: 8, width: '30%' }}
                         required
                         helperText={touched.dataLicense ? errors.dataLicense : ""}
                         error={touched.dataLicense && Boolean(errors.dataLicense)}
@@ -302,6 +283,10 @@ const Form = props => {
                     </TextField>
                 </CardContent>
             </Card>
+            </Grid>
+            <Grid item xs={2} >
+                <Card style={{"margin-top":"10%", position: "fixed" }}>
+
             <Button
                 type="submit"
                 variant="contained"
@@ -310,6 +295,11 @@ const Form = props => {
             >
                 Save
             </Button>
+            </Card>
+
+            </Grid>
+            </Grid>
+            
         </form>
     )
 }
@@ -331,7 +321,8 @@ class RequiredMetadata extends Component {
             mainFileCandidates: props.metadata.mainfile_candidates,
             authors: props.metadata.creators,
             authorsValid: false,
-            formValues: null
+            formValues: null,
+            isValid: true,
         }
     };
 
@@ -395,7 +386,7 @@ class RequiredMetadata extends Component {
 
         return (
             <div>
-
+               
                 {this.state.metadata &&
                     <Formik
                         onSubmit={(values, actions) => {
@@ -425,6 +416,9 @@ class RequiredMetadata extends Component {
                         validationSchema={validationSchema}
                     />
                 }
+            
+           
+            
             </div>
 
 

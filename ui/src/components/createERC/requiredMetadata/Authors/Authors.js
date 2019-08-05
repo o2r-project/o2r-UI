@@ -58,8 +58,8 @@ class Authors extends Component {
 
     render() {
         return (
-            <Card>
-                <CardContent>
+            
+               <div>
                     <h4>Authors</h4>
                     {this.props.authors.map((item, index) =>
                         <AuthorCard
@@ -71,7 +71,7 @@ class Authors extends Component {
                             handleUpdate={this.handleUpdate}
                         />
                     )}
-                </CardContent>
+                
                 <div>
                     <IconButton aria-label="Add"
                         onClick={this.handleClick}
@@ -80,8 +80,8 @@ class Authors extends Component {
                         <AddIcon />
                     </IconButton>
                 </div>
-
-            </Card>
+</div>
+        
 
         )
     }

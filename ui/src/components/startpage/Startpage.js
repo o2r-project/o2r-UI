@@ -21,14 +21,14 @@ class Startpage extends Component {
             justify="center"
             spacing={Number(spacing)}>
               <Grid item>
-              <Card id="uploadCard">
+              <Card id="uploadCard1">
                 <CardContent>
                     <Upload></Upload>
                 </CardContent>
               </Card>
               </Grid>
               <Grid item>
-              <Card id="uploadCard">    
+              <Card id="uploadCard2">    
               <CardContent>
                   <InspectExamples></InspectExamples>
               </CardContent>

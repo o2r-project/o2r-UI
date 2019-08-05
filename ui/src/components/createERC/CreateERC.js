@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Tab, Typography, Button } from '@material-ui/core';
+import { Tabs, Tab, Typography, AppBar } from '@material-ui/core';
 
 import './createERC.css';
 import RequiredMetadata from './requiredMetadata/RequiredMetadata';
@@ -82,7 +82,8 @@ class CreateERC extends Component {
         const { value } = this.state;
         return (
             <div>
-                <Tabs scrollButtons="on" indicatorColor="primary" centered textColor="primary"
+                <AppBar position="fixed" color = "default" id="appBar">
+                <Tabs scrollButtons="on"  variant="standard" indicatorColor="primary" centered  textColor="primary"
                     value={value}
                     onChange={this.handleChange}
                 >
@@ -90,6 +91,8 @@ class CreateERC extends Component {
                     <Tab label="Spatiotemporal Metadata"/>
                     <Tab label="Create bindings"/>
                 </Tabs>
+                </AppBar>
+            
                 {value === 0 && 
                     <TabContainer>
                         {this.state.metadata!=null ?
