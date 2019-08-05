@@ -1,6 +1,5 @@
 import React from 'react';
 import { Slider, Typography, Button } from '@material-ui/core';
-import uuid from 'uuid/v1';
 
 import httpRequests from '../../../helpers/httpRequests';
 import FigureComparison from './FigureComparison/FigureComparison';
@@ -105,7 +104,6 @@ class Manipulate extends React.Component {
     }
 
     render () {
-        console.log(this.state)
         return (
             <div className="view">
                 <Button variant='contained' color='primary'
