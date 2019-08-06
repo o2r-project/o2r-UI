@@ -25,9 +25,7 @@ class ERC extends React.Component {
         };  
     }
 
-    componentDidMount() {
-        this.getMetadata();
-    }
+    componentDidMount = () => this.getMetadata();
 
     setDataFile(datafile) {
         const self = this;
@@ -74,15 +72,11 @@ class ERC extends React.Component {
         });        
     }
 
-    handleDataChange(evt) {
-        this.setDataFile(evt.target.value)
-    } 
+    handleDataChange = ( evt ) => this.setDataFile(evt.target.value);
 
-    handleCodeChange(evt) {
-        this.setCodeFile(evt.target.value)
-    }
+    handleCodeChange = ( evt ) => this.setCodeFile(evt.target.value);
 
-    getMetadata() {
+    getMetadata () {
         const self = this;
         httpRequests.singleCompendium(this.state.id)
             .then(function(response) {
@@ -93,6 +87,7 @@ class ERC extends React.Component {
                     datafiles: data.inputfiles,
                     dataset: data.inputfiles[0],
                     codefiles: data.codefiles,
+                    binding:data.interaction[0],
                 });
                 self.setDisplayFile(data.displayfile);
                 if ( data.inputfiles.length > 0 ) {
@@ -105,14 +100,13 @@ class ERC extends React.Component {
             })
     }
 
-    handleTabChange(evt, newValue) {
+    handleTabChange ( e, newValue ) {
         this.setState({
             tabValue: newValue,
         })
     }
   
     render () {
-
         return (
             <div className="Erc" >
                 <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
@@ -150,7 +144,7 @@ class ERC extends React.Component {
                         {this.state.tabValue === 2 && 
                             <div>
                                 {this.state.metadata.interaction.length > 0 ?
-                                <Manipulate binding={this.state.metadata.interaction[0]}></Manipulate>
+                                <Manipulate bindings={this.state.metadata.interaction}></Manipulate>
                                 : 'No interactive figures were made for this paper'}
                             </div>
                         }

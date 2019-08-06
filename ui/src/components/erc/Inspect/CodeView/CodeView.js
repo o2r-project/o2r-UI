@@ -1,7 +1,7 @@
 import React from 'react';
 import Highlight from 'react-highlight.js';
 
-import httpRequests from '../../../helpers/httpRequests';
+import httpRequests from '../../../../helpers/httpRequests';
 import './codeview.css' 
 
 class CodeView extends React.Component {

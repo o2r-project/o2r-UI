@@ -5,7 +5,7 @@ import {
 } from "@material-ui/core";
 
 import httpRequests from '../../../helpers/httpRequests';
-import CodeView from '../../erc/CodeView/CodeView';
+import CodeView from '../../erc/Inspect/CodeView/CodeView';
 import Manipulate from '../../erc/Manipulate/Manipulate';
 import ComputationalResult from './ComputationalResult/ComputationalResult';
 import SelectedCode from './SelectedCode/SelectedCode';
@@ -62,18 +62,15 @@ function VerticalLinearStepper(props) {
   const [result, setResult] = React.useState();
   const [widget, setWidget] = React.useState('slider');
   const [disabled, disable] = React.useState(true);
-  const params = props.binding.sourcecode.parameter;
-  const plot = props.binding.sourcecode.plotFunction;
-  let parameter = '';
-  if ( params[0] !== undefined ) {
-    parameter = props.binding.sourcecode.parameter[params.length-1].text;
-    if ( disabled ) {
-      disable(false);
-    }
-  } 
-  if (plot !== '' && disabled) {
+  const params = props.tmpParam;
+  const plot = props.tmpPlotFunction;
+  console.log(activeStep, disabled, params)
+  if (plot !== '' && disabled && activeStep === 1) {
     disable(false);
   }
+  if ( params !== '' && disabled && activeStep === 2) {
+    disable(false);
+  } 
 
   const handlePlotChange = ( e ) => disable(false);
   const handleParameterChange = ( e ) => disable(false);
@@ -85,10 +82,10 @@ function VerticalLinearStepper(props) {
     props.setStep(activeStep + 1);
     disable(true);
     if (activeStep === 2) {
-      props.setParameter(props.tmpParam)
+      props.setParameter(props.tmpParam);
     }
     if (activeStep === 3) {
-      props.saveBinding()
+      props.saveBinding();
     }
   }
 
@@ -100,7 +97,9 @@ function VerticalLinearStepper(props) {
 
   const handleReset = () => {
     setActiveStep(0);
-    props.setStep(0)
+    props.setStep(0);
+    props.clearBinding();
+    setResult('');
   }
 
   const handleResultChange = ( e ) => {
@@ -115,26 +114,30 @@ function VerticalLinearStepper(props) {
   }
 
   const showPreview = () => {
-    httpRequests.sendBinding(props.binding)
+    let binding = props.createBinding();
+    httpRequests.sendBinding(binding)
       .then(function (res) {
-        console.log("created binding")
-        httpRequests.runManipulationService(props.binding)
+        httpRequests.runManipulationService(binding)
           .then(function (res2) {
             props.switchCodePreview();
+            disable(false);
           })
           .catch(function (res2) {
-            console.log(res2)
+            console.log(res2);
           })
       })
       .catch(function (res) {
-        console.log(res)
+        console.log(res);
       })
   }
 
   const addParameter = () => {
+    props.clearParam();
     setActiveStep(2);
     props.setStep(2);
   }
+
+  const saveErc = () => props.saveErc();
 
   return (
     <div className={classes.root}>
@@ -165,16 +168,16 @@ function VerticalLinearStepper(props) {
                       <SliderSetting id="min" label="Minimum value" type="number" handleSlider={(e) => handleSlider(e, 'minValue')} styles={classes.numField} />
                       <SliderSetting id="max" label="Maximum value" type="number" handleSlider={(e) => handleSlider(e, 'maxValue')} styles={classes.numField} />
                       <SliderSetting id="step" label="Step size" type="number" handleSlider={(e) => handleSlider(e, 'stepSize')} styles={classes.numField} />
-                      <SliderSetting id="caption" label="Caption" type="text" handleSlider={(e) => handleSlider(e, 'caption')} styles={classes.textField} />
+                      <SliderSetting id="caption" label="Description" type="text" handleSlider={(e) => handleSlider(e, 'caption')} styles={classes.textField} />
                       <Button variant="contained" color="primary"
-                        onClick={showPreview}
-                      >
-                        Preview
-                      </Button>
-                      <Button variant="contained" color="primary" style={{marginLeft:'5%'}}
                         onClick={addParameter}
                       >
                         Add paramater
+                      </Button>
+                      <Button variant="contained" color="primary" style={{marginLeft:'5%'}}
+                        onClick={showPreview}
+                      >
+                        Preview
                       </Button>
                     </div>
                     : <div>
@@ -194,7 +197,7 @@ function VerticalLinearStepper(props) {
                   onClick={handleNext}
                   disabled={disabled}
                   >
-                  {activeStep === steps.length - 1 ? 'Save' : 'Next'}
+                  {activeStep === steps.length - 1 ? 'Save binding' : 'Next'}
                 </Button>
               </div>
             </StepContent>
@@ -203,9 +206,12 @@ function VerticalLinearStepper(props) {
       </Stepper>
       {activeStep === steps.length && (
         <Paper square elevation={0} className={classes.resetContainer}>
-          <Typography>All steps completed - you&apos;re finished</Typography>
-          <Button onClick={handleReset} className={classes.button}>
-            Reset
+          <Typography>All steps completed - Feel free to create another binding</Typography>
+          <Button onClick={handleReset} className={classes.button} variant="contained" color="primary">
+            Create another binding
+          </Button>
+          <Button onClick={saveErc} className={classes.button} variant="contained" color="primary">
+            Save and go to ERC
           </Button>
         </Paper>
       )}
@@ -220,23 +226,27 @@ class Bindings extends Component {
         metadata:props.metadata,
         creationStep:0,
         bindings: [],
-        binding:{
-          id: props.compendium_id,
-          computationalResult: {
-            type: null,
-            result: null,
-          },
-          port:5001,
-          sourcecode: {
-            file: props.metadata.mainfile,
-            plotFunction: '',
-            codelines: [{"start":30,"end":430}],
-            parameter: [],
-            uiWidget: [],
-            }
-        },
-      codeview:true,
-      tmpParam: '',
+        codeview:true,
+        tmpCompId: props.compendium_id,
+        tmpComputResult: {},
+        tmpParam: '',
+        tmpParams: [],
+        tmpPort:5009,
+        tmpCodelines: [{"start":30,"end":430}],
+        tmpPlotFunction: '',
+        tmpFile: props.metadata.mainfile,
+        tmpBinding: '',
+      }
+    }
+
+  setResult ( result ) {
+    if (result.indexOf("Figure") >= 0) {
+      let state = this.state;
+      state.tmpComputResult = {
+        type: 'figure',
+        result: result,
+      }
+      this.setState(state);
     }
   }
 
@@ -253,17 +263,6 @@ class Bindings extends Component {
     }
   }
 
-  setResult ( result ) {
-    if (result.indexOf("Figure") >= 0) {
-      let state = this.state;
-      state.binding.computationalResult = {
-        type: 'figure',
-        result: result,
-      }
-      this.setState(state);
-    }
-  }
-
   setStep ( step ) {
     this.setState({
       creationStep: step
@@ -277,14 +276,17 @@ class Bindings extends Component {
       name: param.split('<-')[0].trim(),
       val: Number(param.split('<-')[1].trim()),      
     }
-    state.binding.sourcecode.parameter.push(parameter);
-    this.setState(state);
+    state.tmpParams.push(parameter);
+    this.setState(state,()=>{
+      console.log(this.state)
+    });
   }
 
   setCode ( code ) {
     let state = this.state;
-    state.binding.sourcecode.plotFunction = code;
+    state.tmpPlotFunction = code;
     this.setState(state, () => {
+      console.log(this.state)
       /*httpRequests.getCodelines(state.binding)
       .then( function ( res ) {
         console.log(res);
@@ -298,7 +300,7 @@ class Bindings extends Component {
   setSlider ( key, val ) {
     let state = this.state;
     let newVal = val;
-    let params = state.binding.sourcecode.parameter;
+    let params = state.tmpParams;
     if (!isNaN(newVal)) {
       newVal = Number(newVal)
     }
@@ -312,15 +314,31 @@ class Bindings extends Component {
         params[0].uiWidget = {};
       }
       params[0].uiWidget[key] = newVal;
-    }
-    
+    }   
     this.setState(state);
+  }
+
+  createBinding () {
+    let binding = {
+      "id": this.state.tmpCompId,
+      "computationalResult": this.state.tmpComputResult,
+      "sourcecode": {
+        "file": this.state.tmpFile,
+        "codelines": [{"start":30,"end":430}],
+        "parameter": this.state.tmpParams,
+      },
+      "port": this.state.tmpPort,
+    };
+    this.setState({tmpBinding:binding});
+    return binding;
   }
 
   saveBinding () {
     let state = this.state;
-    state.metadata.interaction.push(this.state.binding);
-    this.setState(state, this.props.updateMetadata(this.state.metadata));
+    let binding = this.createBinding();
+    state.bindings.push(binding);
+    state.metadata.interaction.push(binding);
+    this.setState(state);
   }
 
   switchCodePreview () {
@@ -329,8 +347,32 @@ class Bindings extends Component {
     });
   }
 
+  clearParam () {
+    this.setState({
+      tmpParam:'',
+    })
+  }
+
+  saveErc () {
+    console.log(this.state.metadata)
+    this.props.updateMetadata(this.state.metadata);
+  }
+
+  clearBinding () {
+    let state = this.state;
+    state.codeview=true;
+    state.tmpComputResult={};
+    state.tmpParam='';
+    state.tmpParams=[];
+    state.tmpPlotFunction='';
+    state.tmpBinding='';
+    this.setState(state);
+    state.tmpPort=state.tmpPort+1;
+  }
+
   render() {
-    console.log(this.state)
+    console.log(this.state.tmpParams)
+    
     return (
       <div className="bindingsView">
         {this.state.codeview ?
@@ -346,7 +388,7 @@ class Bindings extends Component {
           <div>
             <h4>Preview of the interactive figure</h4>
             <div className='codeView'>
-              <Manipulate binding={this.state.binding}></Manipulate>
+              <Manipulate bindings={[this.state.tmpBinding]}></Manipulate>
               <Button variant="contained" color="primary"
                 onClick={this.switchCodePreview.bind(this)}
                 >
@@ -358,13 +400,18 @@ class Bindings extends Component {
         <div className="steps">
           <VerticalLinearStepper
             setResult={this.setResult.bind(this)}
-            binding={this.state.binding}
             setStep={this.setStep.bind(this)}
             setSlider={this.setSlider.bind(this)}
-            saveBinding={this.saveBinding.bind(this)}
             switchCodePreview={this.switchCodePreview.bind(this)}
             setParameter={this.setParameter.bind(this)}
             tmpParam={this.state.tmpParam}
+            tmpParams={this.state.tmpParams}
+            tmpPlotFunction={this.state.tmpPlotFunction}
+            createBinding={this.createBinding.bind(this)}
+            clearParam={this.clearParam.bind(this)}
+            saveBinding={this.saveBinding.bind(this)}
+            saveErc={this.saveErc.bind(this)}
+            clearBinding={this.clearBinding.bind(this)}
           />
         </div>
       </div>
