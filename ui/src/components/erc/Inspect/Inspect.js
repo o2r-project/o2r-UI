@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 
-import CodeView from '../CodeView/CodeView';
+import CodeView from './CodeView/CodeView';
 import DataView from './DataView/DataView';
 import SelectFile from './SelectFile/SelectFile';
 

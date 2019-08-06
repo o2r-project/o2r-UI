@@ -5,7 +5,7 @@ import {
 } from "@material-ui/core";
 
 import httpRequests from '../../../helpers/httpRequests';
-import CodeView from '../../erc/CodeView/CodeView';
+import CodeView from '../../erc/Inspect/CodeView/CodeView';
 import Manipulate from '../../erc/Manipulate/Manipulate';
 import ComputationalResult from './ComputationalResult/ComputationalResult';
 import SelectedCode from './SelectedCode/SelectedCode';
@@ -388,7 +388,7 @@ class Bindings extends Component {
           <div>
             <h4>Preview of the interactive figure</h4>
             <div className='codeView'>
-              <Manipulate binding={this.state.tmpBinding}></Manipulate>
+              <Manipulate bindings={[this.state.tmpBinding]}></Manipulate>
               <Button variant="contained" color="primary"
                 onClick={this.switchCodePreview.bind(this)}
                 >

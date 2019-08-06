@@ -17,6 +17,7 @@ class Manipulate extends React.Component {
             params: this.getParams(props.bindings[0].sourcecode.parameter),
             fullUrl: '',
             settings:[],
+            index:0,
         }
     }
 
@@ -105,29 +106,35 @@ class Manipulate extends React.Component {
     }
 
     changeFigure ( e, newVal ) {
-        console.log(newVal)
+        this.setState({
+            index: newVal,
+            binding: this.state.bindings[newVal],
+        })
+        /*console.log(newVal)
         this.setState({
             binding: this.state.bindings[newVal],
             baseUrl: this.buildBaseUrl(this.state.bindings[newVal]),
             params: this.getParams(this.state.bindings[newVal].sourcecode.parameter),
         }, () => this.runManipulateService()
-        );
+        );*/
     }
 
     render () {
         return (
             <div>
-                <Tabs style={{flexGrow: '1'}}
-                    value={this.state.binding}
+                {this.state.bindings.length>1 ?
+                    <Tabs
+                    value={this.state.index}
                     onChange={this.changeFigure.bind(this)}
                     indicatorColor="primary"
                     textColor="primary"
                     centered
-                >
+                    >
                     {this.state.bindings.map((binding, index) => (
                         <Tab label={binding.computationalResult.result} key={index}/>
                     ))}
-                </Tabs>
+                    </Tabs>
+                : ''}
                 <div className="view">
                     <Button variant='contained' color='primary'
                         onClick={this.setOriginalSettings.bind(this, "duration")}

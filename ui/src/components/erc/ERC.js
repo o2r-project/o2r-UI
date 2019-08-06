@@ -1,7 +1,7 @@
 import React from 'react';
 import 'react-reflex/styles.css';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
-import { Paper, Tabs, Tab, Button } from "@material-ui/core";
+import { Paper, Tabs, Tab } from "@material-ui/core";
 
 import config from '../../helpers/config';
 import './erc.css';
