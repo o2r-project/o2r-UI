@@ -6,7 +6,7 @@ import L from 'leaflet'
 import React from 'react'
 import { Map, TileLayer, FeatureGroup } from 'react-leaflet'
 import { EditControl } from 'react-leaflet-draw'
-import { Card, CardContent, TextField } from "@material-ui/core";
+import { Card, TextField } from "@material-ui/core";
 
 
 
@@ -38,7 +38,7 @@ class OwnMap extends React.Component {
     metadata.spatial.union.bbox[1] = GeoJSON.geometry.coordinates[0][1];
     metadata.spatial.union.bbox[2] = GeoJSON.geometry.coordinates[0][2];
     metadata.spatial.union.bbox[3] = GeoJSON.geometry.coordinates[0][3];
-    this.props.setMetadata(metadata);
+    this.props.setMetadata(metadata, false);
 
 
     this.setState({ GeoJSON: GeoJSON });
@@ -56,7 +56,7 @@ class OwnMap extends React.Component {
     metadata.spatial.union.bbox[1] = GeoJSON.geometry.coordinates[0][1];
     metadata.spatial.union.bbox[2] = GeoJSON.geometry.coordinates[0][2];
     metadata.spatial.union.bbox[3] = GeoJSON.geometry.coordinates[0][3];
-    this.props.setMetadata(metadata);
+    this.props.setMetadata(metadata, false);
 
 
 
@@ -70,7 +70,7 @@ class OwnMap extends React.Component {
     metadata.spatial.union.bbox[1] = [-181, 181]
     metadata.spatial.union.bbox[2] = [-181, -181]
     metadata.spatial.union.bbox[3] = [181, 181]
-    this.props.setMetadata(metadata);
+    this.props.setMetadata(metadata, false);
   }
 
   _onFeatureGroupReady = (ref) => {

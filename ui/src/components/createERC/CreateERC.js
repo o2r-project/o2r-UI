@@ -61,6 +61,7 @@ class CreateERC extends Component {
     }
 
     updateMetadata = ( ) => {
+        console.log('update');
         const self = this;
         httpRequests.updateMetadata(self.state.compendium_id, self.state.metadata)
             .then(function(res2) {

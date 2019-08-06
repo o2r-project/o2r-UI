@@ -147,7 +147,7 @@ const Form = props => {
                                 id="publicationDate"
                                 label="Publication date"
                                 type="date"
-                                style={{ margin: 8 }}
+                                style={{ margin: 8, width: '20%' }}
                                 required
                                 helperText={touched.publicationDate ? errors.publicationDate : ""}
                                 error={touched.publicationDate && Boolean(errors.publicationDate)}
