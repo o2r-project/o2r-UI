@@ -79,7 +79,17 @@ class OwnMap extends React.Component {
       return;
     }
     this._editableFG = ref;
-    let leafletGeoJSON = new L.GeoJSON(this.getGeoJson());
+    GeoJSON=this.getGeoJson()
+    const metadata = this.state.metadata;
+    
+    for(var i=0; i<4; i++)
+    {
+    GeoJSON.geometry.coordinates[0][i] = metadata.spatial.union.bbox[i];
+    }
+
+    GeoJSON.geometry.coordinates[0][4] = metadata.spatial.union.bbox[0];
+
+    let leafletGeoJSON = new L.GeoJSON(GeoJSON);
     let leafletFG = this._editableFG.leafletElement;
     leafletGeoJSON.eachLayer(layer => leafletFG.addLayer(layer));
     firstTime = false;
