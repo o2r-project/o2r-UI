@@ -144,7 +144,7 @@ class Manipulate extends React.Component {
                     {this.state.binding.sourcecode.parameter.map((parameter, index) => (
                         <div className="slider" key={index}>                
                             <Typography variant='caption'>
-                                {parameter.uiWidget.caption}{this.state[parameter.name]}
+                                {parameter.uiWidget.caption}
                             </Typography>
                             {parameter.uiWidget.type === 'slider' 
                             ?<Slider
@@ -163,11 +163,11 @@ class Manipulate extends React.Component {
                             {parameter.uiWidget.type === 'radio' 
                             ?<RadioGroup aria-label="position" name="position" value={this.state[parameter.name]} onChange={this.handleChange(parameter.name)} row>
                                 {parameter.uiWidget.options.map((option, index) => (
-                                    <FormControlLabel
-                                    value={option}
-                                    control={<Radio color="primary" />}
-                                    label={option}
-                                    //labelPlacement="start"
+                                    <FormControlLabel key={index}
+                                        value={option}
+                                        control={<Radio color="primary" />}
+                                        label={option}
+                                        //checked={parameter.val === Number(option)}
                                   />
                                 ))}
                             </RadioGroup> 

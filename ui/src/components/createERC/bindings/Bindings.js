@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import {
-  makeStyles, Stepper, Step, StepLabel, StepContent,
-  Button, Typography, Paper, RadioGroup, FormControl
-} from "@material-ui/core";
+import { makeStyles, Stepper, Step, StepLabel, StepContent, Button, Typography, Paper, RadioGroup, FormControl} from "@material-ui/core";
+import ChipInput from 'material-ui-chip-input';
 
 import httpRequests from '../../../helpers/httpRequests';
 import CodeView from '../../erc/Inspect/CodeView/CodeView';
@@ -12,7 +10,6 @@ import SelectedCode from './SelectedCode/SelectedCode';
 import SliderSetting from './SliderSetting/SliderSetting';
 import WidgetSelector from './WidgetSelector/WidgetSelector';
 import './bindings.css';
-import ChipInput from 'material-ui-chip-input'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -72,8 +69,8 @@ function VerticalLinearStepper(props) {
     disable(false);
   } 
 
-  const handlePlotChange = ( e ) => disable(false);
-  const handleParameterChange = ( e ) => disable(false);
+  const handlePlotChange = () => disable(false);
+  const handleParameterChange = () => disable(false);
   const handleSlider =  ( val, field ) => props.setWidget(field, val, widget);
   const handleWidgetChange = ( e ) => setWidget(e.target.value);
 
