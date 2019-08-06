@@ -12,6 +12,7 @@ import SelectedCode from './SelectedCode/SelectedCode';
 import SliderSetting from './SliderSetting/SliderSetting';
 import WidgetSelector from './WidgetSelector/WidgetSelector';
 import './bindings.css';
+import ChipInput from 'material-ui-chip-input'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -64,7 +65,6 @@ function VerticalLinearStepper(props) {
   const [disabled, disable] = React.useState(true);
   const params = props.tmpParam;
   const plot = props.tmpPlotFunction;
-  console.log(activeStep, disabled, params)
   if (plot !== '' && disabled && activeStep === 1) {
     disable(false);
   }
@@ -74,8 +74,8 @@ function VerticalLinearStepper(props) {
 
   const handlePlotChange = ( e ) => disable(false);
   const handleParameterChange = ( e ) => disable(false);
+  const handleSlider =  ( val, field ) => props.setWidget(field, val, widget);
   const handleWidgetChange = ( e ) => setWidget(e.target.value);
-  const handleSlider =  ( e, field ) => props.setSlider(field, e.target.value);
 
   const handleNext = () => {
     setActiveStep(prevActiveStep => prevActiveStep + 1);
@@ -163,12 +163,21 @@ function VerticalLinearStepper(props) {
                       <WidgetSelector value="radio" label="Radio"/>
                     </RadioGroup>
                   </FormControl>
-                  {widget === 'slider' ?
-                    <div>
-                      <SliderSetting id="min" label="Minimum value" type="number" handleSlider={(e) => handleSlider(e, 'minValue')} styles={classes.numField} />
-                      <SliderSetting id="max" label="Maximum value" type="number" handleSlider={(e) => handleSlider(e, 'maxValue')} styles={classes.numField} />
-                      <SliderSetting id="step" label="Step size" type="number" handleSlider={(e) => handleSlider(e, 'stepSize')} styles={classes.numField} />
-                      <SliderSetting id="caption" label="Description" type="text" handleSlider={(e) => handleSlider(e, 'caption')} styles={classes.textField} />
+                  {widget === 'slider' 
+                  ? <div>
+                      <SliderSetting id="min" label="Minimum value" type="number" handleSlider={(e) => handleSlider(e.target.value, 'minValue')} styles={classes.numField} />
+                      <SliderSetting id="max" label="Maximum value" type="number" handleSlider={(e) => handleSlider(e.target.value, 'maxValue')} styles={classes.numField} />
+                      <SliderSetting id="step" label="Step size" type="number" handleSlider={(e) => handleSlider(e.target.value, 'stepSize')} styles={classes.numField} />
+                      <SliderSetting id="captionSlider" label="Description" type="text" handleSlider={(e) => handleSlider(e.target.value, 'caption')} styles={classes.textField} />
+                    </div>
+                  : <div>
+                        <ChipInput style={{marginBottom:'3%'}}
+                          onChange={(chips) => handleSlider(chips, 'options')}
+                          placeholder="Type and enter at least two options"
+                        />
+                        <SliderSetting id="captionRadio" label="Description" type="text" handleSlider={(e) => handleSlider(e.target.value, 'caption')} styles={classes.textField} />
+                    </div>
+                  }
                       <Button variant="contained" color="primary"
                         onClick={addParameter}
                       >
@@ -179,11 +188,6 @@ function VerticalLinearStepper(props) {
                       >
                         Preview
                       </Button>
-                    </div>
-                    : <div>
-                        radio
-                      </div>
-                  }
                 </div>
               : ''}
               <div className={classes.actionsContainer} style={{ marginTop: '5%' }}>
@@ -277,9 +281,7 @@ class Bindings extends Component {
       val: Number(param.split('<-')[1].trim()),      
     }
     state.tmpParams.push(parameter);
-    this.setState(state,()=>{
-      console.log(this.state)
-    });
+    this.setState(state);
   }
 
   setCode ( code ) {
@@ -297,7 +299,8 @@ class Bindings extends Component {
     });
   }
 
-  setSlider ( key, val ) {
+  setWidget ( key, val, type ) {
+    console.log(key, val, type)
     let state = this.state;
     let newVal = val;
     let params = state.tmpParams;
@@ -309,11 +312,13 @@ class Bindings extends Component {
         params[params.length-1].uiWidget = {};
       }
       params[params.length-1].uiWidget[key] = newVal;
+      params[params.length-1].uiWidget.type = type;
     } else {
       if ( params[0].uiWidget === undefined ){
         params[0].uiWidget = {};
       }
       params[0].uiWidget[key] = newVal;
+      params[params.length-1].uiWidget.type = type;
     }   
     this.setState(state);
   }
@@ -354,7 +359,6 @@ class Bindings extends Component {
   }
 
   saveErc () {
-    console.log(this.state.metadata)
     this.props.updateMetadata(this.state.metadata);
   }
 
@@ -371,8 +375,6 @@ class Bindings extends Component {
   }
 
   render() {
-    console.log(this.state.tmpParams)
-    
     return (
       <div className="bindingsView">
         {this.state.codeview ?
@@ -401,7 +403,7 @@ class Bindings extends Component {
           <VerticalLinearStepper
             setResult={this.setResult.bind(this)}
             setStep={this.setStep.bind(this)}
-            setSlider={this.setSlider.bind(this)}
+            setWidget={this.setWidget.bind(this)}
             switchCodePreview={this.switchCodePreview.bind(this)}
             setParameter={this.setParameter.bind(this)}
             tmpParam={this.state.tmpParam}

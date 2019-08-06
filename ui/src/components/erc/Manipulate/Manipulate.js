@@ -1,5 +1,5 @@
 import React from 'react';
-import { Slider, Typography, Button, Tabs, Tab } from '@material-ui/core';
+import { Slider, Typography, Button, Tabs, Tab, Radio, RadioGroup, FormControlLabel } from '@material-ui/core';
 
 import httpRequests from '../../../helpers/httpRequests';
 import FigureComparison from './FigureComparison/FigureComparison';
@@ -146,7 +146,8 @@ class Manipulate extends React.Component {
                             <Typography variant='caption'>
                                 {parameter.uiWidget.caption}{this.state[parameter.name]}
                             </Typography>
-                            <Slider
+                            {parameter.uiWidget.type === 'slider' 
+                            ?<Slider
                                 onChange={this.handleChange(parameter.name)}
                                 defaultValue={parameter.val}
                                 value={this.state[parameter.name]}
@@ -158,6 +159,20 @@ class Manipulate extends React.Component {
                                 marks={[{value: parameter.uiWidget.minValue, label: parameter.uiWidget.minValue},
                                         {value: parameter.uiWidget.maxValue, label: parameter.uiWidget.maxValue}]}
                             /> 
+                            :''}
+                            {parameter.uiWidget.type === 'radio' 
+                            ?<RadioGroup aria-label="position" name="position" value={this.state[parameter.name]} onChange={this.handleChange(parameter.name)} row>
+                                {parameter.uiWidget.options.map((option, index) => (
+                                    <FormControlLabel
+                                    value={option}
+                                    control={<Radio color="primary" />}
+                                    label={option}
+                                    //labelPlacement="start"
+                                  />
+                                ))}
+                            </RadioGroup> 
+                            :''}
+
                         </div>
                     ))}
                     <div className="image">
