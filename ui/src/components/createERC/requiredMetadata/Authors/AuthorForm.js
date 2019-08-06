@@ -31,7 +31,6 @@ export const AuthorForm = props => {
         props.onChange(props.index, props.values);
     }
 
-    self = props;
     return (
         <form id="authorForm">
 

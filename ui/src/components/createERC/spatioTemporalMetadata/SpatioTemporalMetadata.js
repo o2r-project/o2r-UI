@@ -2,10 +2,10 @@
 
 import './spatioTemporalMetadata.css';
 
-import L from 'leaflet'
+//import L from 'leaflet'
 import React from 'react'
-import { Map, TileLayer, FeatureGroup } from 'react-leaflet'
-import { EditControl } from 'react-leaflet-draw'
+//import { Map, TileLayer, FeatureGroup } from 'react-leaflet'
+//import { EditControl } from 'react-leaflet-draw'
 import { Card, TextField } from "@material-ui/core";
 
 

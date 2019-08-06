@@ -107,7 +107,7 @@ class CreateERC extends Component {
                 }
                 {value === 1 && 
                     <TabContainer>
-                        <SpatioTemporalMetadata metadata={this.state.metadata} setMetadata={this.setMetadata}/>
+                       ST
                     </TabContainer>
                 }
                 {value === 2 && 

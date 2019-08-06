@@ -333,24 +333,22 @@ class RequiredMetadata extends Component {
     componentWillUnmount() {
 
         const values = this.state.fieldValues;
+        const updatedMetadata = this.props.metadata;
 
         if (values != null) {
-
-
-
-            const updatedMetadata = this.props.metadata;
             updatedMetadata.title = values.title;
             updatedMetadata.description = values.abstract;
-            updatedMetadata.creators = this.state.authors;
             updatedMetadata.publication_date = values.publicationDate;
             updatedMetadata.displayfile = values.displayFile;
             updatedMetadata.mainfile = values.mainFile;
             updatedMetadata.license.data = values.dataLicense;
             updatedMetadata.license.text = values.textLicense;
             updatedMetadata.license.code = values.codeLicense;
-            this.props.setMetadata(updatedMetadata, true);
-
+            this.props.setMetadata(updatedMetadata, false);
         }
+
+        updatedMetadata.creators = this.state.authors;
+        this.props.setMetadata(updatedMetadata, false);
 
     }
 
