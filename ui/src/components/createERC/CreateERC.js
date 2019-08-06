@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Tabs, Tab, Typography, AppBar } from '@material-ui/core';
 
+
 import './createERC.css';
 import RequiredMetadata from './requiredMetadata/RequiredMetadata';
-import SpatioTemporalMetadata from './spatioTemporalMetadata/SpatioTemporalMetadata';
+//import SpatioTemporalMetadata from './spatioTemporalMetadata/SpatioTemporalMetadata';
 import Bindings from './bindings/Bindings';
 import httpRequests from '../../helpers/httpRequests';
 

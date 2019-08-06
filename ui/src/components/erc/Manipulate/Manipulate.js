@@ -1,21 +1,23 @@
 import React from 'react';
-import { Slider, Typography, Button } from '@material-ui/core';
-import uuid from 'uuid/v1';
+import { Slider, Typography, Button, Tabs, Tab } from '@material-ui/core';
 
 import httpRequests from '../../../helpers/httpRequests';
 import FigureComparison from './FigureComparison/FigureComparison';
 import SelectedSettings from './SelectedSettings/SelectedSettings';
+import './manipulate.css'
 
 class Manipulate extends React.Component {
 
     constructor( props ) {
         super ( props );
         this.state={
-            binding: props.binding,
-            baseUrl: this.buildBaseUrl(props.binding),
-            params: this.getParams(props.binding.sourcecode.parameter),
+            bindings: props.bindings,
+            binding: props.bindings[0],
+            baseUrl: this.buildBaseUrl(props.bindings[0]),
+            params: this.getParams(props.bindings[0].sourcecode.parameter),
             fullUrl: '',
             settings:[],
+            index:0,
         }
     }
 
@@ -39,7 +41,7 @@ class Manipulate extends React.Component {
             })
     }
 
-    buildBaseUrl ( binding ) {
+    buildBaseUrl = ( binding ) => {
         return 'http://localhost:' + binding.port + '/' + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?';
     }
 
@@ -78,8 +80,8 @@ class Manipulate extends React.Component {
         let state = this.state;
         let settings = state.settings;
         let include = true;
-        settings.forEach( function (elem) {
-            elem === state.fullUrl ? include = false : '';
+        settings.forEach( (elem) => {
+            elem === state.fullUrl ? include = false : include = true;
         });
         include ? state.settings.push(state.fullUrl) : console.log("already included");
         this.setState(state);
@@ -95,41 +97,85 @@ class Manipulate extends React.Component {
         });
     }
 
+    setOriginalSettings ( name ) {
+        this.setState({
+            [name]: 24,
+        }, () => {
+            this.buildFullUrl();
+        });
+    }
+
+    changeFigure ( e, newVal ) {
+        this.setState({
+            index: newVal,
+            binding: this.state.bindings[newVal],
+        })
+        /*console.log(newVal)
+        this.setState({
+            binding: this.state.bindings[newVal],
+            baseUrl: this.buildBaseUrl(this.state.bindings[newVal]),
+            params: this.getParams(this.state.bindings[newVal].sourcecode.parameter),
+        }, () => this.runManipulateService()
+        );*/
+    }
+
     render () {
         return (
-            <div style={{width:'80%', marginLeft: '10%'}}>
-                {this.state.binding.sourcecode.parameter.map(parameter => (
-                    <div style={{marginTop:'5%'}} key={uuid()}>                
-                        <Typography variant='caption'>
-                            {parameter.uiWidget.caption}
-                        </Typography>
-                        <Slider
-                            onChange={this.handleChange(parameter.name)}
-                            defaultValue={parameter.val}
-                            value={this.state[parameter.name]}
-                            aria-labelledby="discrete-slider-custom"
-                            valueLabelDisplay="on"
-                            step={parameter.uiWidget.stepSize}
-                            min={parameter.uiWidget.minValue}
-                            max={parameter.uiWidget.maxValue}
-                            marks={[{value: parameter.uiWidget.minValue, label: parameter.uiWidget.minValue},
-                                    {value: parameter.uiWidget.maxValue, label: parameter.uiWidget.maxValue}]}
-                        /> 
+            <div>
+                {this.state.bindings.length>1 ?
+                    <Tabs
+                    value={this.state.index}
+                    onChange={this.changeFigure.bind(this)}
+                    indicatorColor="primary"
+                    textColor="primary"
+                    centered
+                    >
+                    {this.state.bindings.map((binding, index) => (
+                        <Tab label={binding.computationalResult.result} key={index}/>
+                    ))}
+                    </Tabs>
+                : ''}
+                <div className="view">
+                    <Button variant='contained' color='primary'
+                        onClick={this.setOriginalSettings.bind(this, "duration")}
+                    >
+                        Original settings
+                    </Button>
+                    {this.state.binding.sourcecode.parameter.map((parameter, index) => (
+                        <div className="slider" key={index}>                
+                            <Typography variant='caption'>
+                                {parameter.uiWidget.caption}{this.state[parameter.name]}
+                            </Typography>
+                            <Slider
+                                onChange={this.handleChange(parameter.name)}
+                                defaultValue={parameter.val}
+                                value={this.state[parameter.name]}
+                                aria-labelledby="discrete-slider-custom"
+                                valueLabelDisplay="on"
+                                step={parameter.uiWidget.stepSize}
+                                min={parameter.uiWidget.minValue}
+                                max={parameter.uiWidget.maxValue}
+                                marks={[{value: parameter.uiWidget.minValue, label: parameter.uiWidget.minValue},
+                                        {value: parameter.uiWidget.maxValue, label: parameter.uiWidget.maxValue}]}
+                            /> 
+                        </div>
+                    ))}
+                    <div className="image">
+                        <img src={this.state.fullUrl} alt="" />
+                        <Button variant="contained" color="primary" className="maniBtn"
+                            onClick={this.saveForComparison.bind(this)}
+                            disabled={this.state.settings.length===2}
+                        >
+                            Save for comparison
+                        </Button>
+                        {this.state.settings.length>0 ?
+                        <SelectedSettings 
+                            settings={this.state.settings}
+                            removeItem={this.removeItem.bind(this)} />                
+                        :''}
+                        <FigureComparison settings={this.state.settings} />
                     </div>
-                ))}
-                <img src={this.state.fullUrl} alt="" />
-                <Button variant="contained" color="primary" 
-                    onClick={this.saveForComparison.bind(this)}
-                    disabled={this.state.settings.length===2}
-                >
-                    Save for comparison
-                </Button>
-                {this.state.settings.length>0 ?
-                    <SelectedSettings 
-                        settings={this.state.settings}
-                        removeItem={this.removeItem.bind(this)} />                
-                :''}
-                <FigureComparison settings={this.state.settings} />
+                </div>
             </div>
         )
     }

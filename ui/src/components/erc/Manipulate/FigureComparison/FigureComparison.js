@@ -26,9 +26,9 @@ function ComparisonView(props) {
   
     return (
         <div>
-            <Button variant="contained" color="primary" 
+            <Button variant="contained" color="primary" className="maniBtn"
                 onClick={handleClickOpen}
-                style={{marginTop: "5%"}}
+                style={{marginTop: "1%"}}
                 disabled={props.settings.length!==2}
             >
                 Show comparison
@@ -54,7 +54,7 @@ function ComparisonView(props) {
                         props.settings.map(setting => (
                             <figure className="img">
                                 <figcaption>{setting}</figcaption>
-                                <img src={setting} />
+                                <img src={setting} alt=""/>
                             </figure>
                         ))}
                     {tabValue === 1 &&
