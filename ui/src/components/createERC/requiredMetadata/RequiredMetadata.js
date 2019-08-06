@@ -60,17 +60,30 @@ const validationSchema = Yup.object({
         .required('License is requires')
 });
 
-
+const originalAuthors= [];
 const Form = props => {
     const {
         values: { title, abstract, publicationDate, displayFile, mainFile, textLicense, dataLicense, codeLicense },
         errors,
+        resetForm,
         touched,
         handleChange,
         isValid,
         setFieldTouched,
         setFieldValue
     } = props;
+
+    
+    originalAuthors.push(props.authors)
+
+    const handleReset = (resetForm) => {
+        if (window.confirm('Reset?')) {
+            resetForm();
+        }
+        props.onUpdate(originalAuthors[0]);
+        console.log(originalAuthors[0]);
+    };
+
 
     const change = (name, e) => {
         e.persist();
@@ -84,6 +97,7 @@ const Form = props => {
     }
 
     const handleClick = (name, e) => {
+
         if (name === "mostRestrictive") {
             setFieldValue('textLicense', mostRestrictiveData[0]);
             setFieldValue('codeLicense', mostRestrictiveData[1]);
@@ -92,6 +106,9 @@ const Form = props => {
             setFieldValue('textLicense', leastRestrictiveData[0]);
             setFieldValue('codeLicense', leastRestrictiveData[1]);
             setFieldValue('dataLicense', leastRestrictiveData[2]);
+        }
+        else if (name === "ERC") {
+            props.goToERC();
         }
     };
 
@@ -285,7 +302,12 @@ const Form = props => {
                 </Grid>
                 <Grid item xs={2} >
                     <Card style={{ "margin-top": "10%", position: "fixed" }}>
-
+                        <Button
+                            onClick={handleReset.bind(null, props.resetForm)}
+                            type="button"
+                        >
+                            Reset
+            </Button>
                         <Button
                             type="submit"
                             variant="contained"
@@ -293,7 +315,13 @@ const Form = props => {
                             disabled={!isValid || !props.authorsValid}
                         >
                             Save
-            </Button>
+                         </Button>
+                        <Button
+                            type="button"
+                            disabled={!props.saved}
+                            onClick={handleClick.bind(null, "ERC")}>
+                            Go To ERC
+                            </Button>
                     </Card>
 
                 </Grid>
@@ -378,7 +406,6 @@ class RequiredMetadata extends Component {
 
     render() {
 
-
         return (
             <div>
 
@@ -406,7 +433,9 @@ class RequiredMetadata extends Component {
                             mainFileCandidates={this.state.mainFileCandidates}
                             onUpdate={this.updateAuthors}
                             authorsValid={this.state.authorsValid}
-                            setFieldValues={this.setFieldValues} />}
+                            setFieldValues={this.setFieldValues}
+                            goToERC={this.props.goToErc}
+                            saved={this.props.saved} />}
                         initialValues={this.state}
                         validationSchema={validationSchema}
                     />
