@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import {TextField,IconButton} from "@material-ui/core";
+import { TextField, IconButton } from "@material-ui/core";
 import DeleteIcon from '@material-ui/icons/Delete';
 import React from "react";
 
@@ -13,7 +13,7 @@ export const authorValidationSchema = Yup.object({
 export const AuthorForm = props => {
 
     const {
-        values: {name, affiliation, orcid},
+        values: { name, affiliation, orcid },
         errors,
         touched,
         handleChange,
@@ -31,7 +31,7 @@ export const AuthorForm = props => {
         props.onChange(props.index, props.values);
     }
 
-    self=props;
+    self = props;
     return (
         <form id="authorForm">
 
@@ -39,7 +39,7 @@ export const AuthorForm = props => {
                 id="name"
                 label="Author"
                 type="text"
-                style={{margin: 8}}
+                style={{ margin: 8 }}
                 required
                 helperText={touched.name ? errors.name : ""}
                 error={touched.name && Boolean(errors.name)}
@@ -50,12 +50,12 @@ export const AuthorForm = props => {
                 variant="outlined"
                 InputLabelProps={{
                     shrink: true,
-                }}/>
+                }} />
             <TextField
                 id="affiliation"
                 label="Affiliation"
                 type="text"
-                style={{margin: 8}}
+                style={{ margin: 8 }}
                 helperText={touched.affiliation ? errors.affiliation : ""}
                 error={touched.affiliation && Boolean(errors.affiliation)}
                 value={affiliation}
@@ -65,12 +65,12 @@ export const AuthorForm = props => {
                 variant="outlined"
                 InputLabelProps={{
                     shrink: true,
-                }}/>
+                }} />
             <TextField
                 id="orcId"
                 label="ORCID"
                 type="text"
-                style={{margin: 8}}
+                style={{ margin: 8 }}
                 helperText={touched.orcid ? errors.orcid : ""}
                 error={touched.orcid && Boolean(errors.orcid)}
                 value={orcid}
