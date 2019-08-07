@@ -52,7 +52,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function VerticalLinearStepper(props) {
+function VerticalLinearStepper ( props ) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const steps = ['Select result from the list below', 'Mark the plot()-Function in the code', 'Select the parameter by marking it in the code on the left', 
@@ -326,7 +326,7 @@ class Bindings extends Component {
       "computationalResult": this.state.tmpComputResult,
       "sourcecode": {
         "file": this.state.tmpFile,
-        "codelines": [{"start":30,"end":430}],
+        "codelines": [{"start":30,"end":431}],
         "parameter": this.state.tmpParams,
       },
       "port": this.state.tmpPort,

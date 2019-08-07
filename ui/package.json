@@ -21,6 +21,7 @@
     "react-reflex": "^3.0.16",
     "react-router-dom": "^5.0.0",
     "react-scripts": "3.0.1",
+    "react-share": "^3.0.0",
     "react-visual-diff": "^0.4.3",
     "socket.io-client": "^2.2.0",
     "update": "^0.7.4",
