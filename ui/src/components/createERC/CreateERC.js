@@ -108,6 +108,7 @@ class CreateERC extends Component {
                                 metadata={this.state.metadata}
                                 setMetadata={this.setMetadata}
                                 goToErc={this.goToErc}
+                                originalMetadata={this.state.originalMetadata}
                                 saved={this.state.saved}
                             />
                             : ''}

@@ -8,7 +8,7 @@ import licensesData from '../../../helpers/licenses.json'
 import Authors from './Authors/Authors';
 
 import './requiredMetadata.css';
-import { SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS } from 'constants';
+
 
 const textLicenses = [];
 const dataLicenses = [];
@@ -76,15 +76,8 @@ const Form = props => {
     } = props;
 
 
-    originalAuthors.push(props.authors);
-
-
     const handleReset = (resetForm) => {
-        if (window.confirm('Reset?')) {
-            resetForm();
-        }
-        props.onUpdate(originalAuthors[0]);
-        console.log(originalAuthors[0]);
+       window.location.reload()
     };
 
 
@@ -412,6 +405,8 @@ class RequiredMetadata extends Component {
         this.setState({ fieldValues: values })
     }
 
+
+
     render() {
 
         return (
@@ -443,7 +438,8 @@ class RequiredMetadata extends Component {
                             authorsValid={this.state.authorsValid}
                             setFieldValues={this.setFieldValues}
                             goToERC={this.props.goToErc}
-                            saved={this.props.saved} />}
+                            saved={this.props.saved}
+                            reset={this.props.reset} />}
                         initialValues={this.state}
                         validationSchema={validationSchema}
                     />
