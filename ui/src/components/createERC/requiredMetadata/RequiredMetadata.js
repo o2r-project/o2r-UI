@@ -8,6 +8,7 @@ import licensesData from '../../../helpers/licenses.json'
 import Authors from './Authors/Authors';
 
 import './requiredMetadata.css';
+import { SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS } from 'constants';
 
 const textLicenses = [];
 const dataLicenses = [];
@@ -52,15 +53,15 @@ const validationSchema = Yup.object({
         .required('DisplayFile is required'),
     mainFile: Yup.string()
         .required('MainFile is required'),
-    textLicense: Yup.string()
-        .required('License is requires'),
-    codeLicense: Yup.string()
-        .required('License is requires'),
-    dataLicense: Yup.string()
-        .required('License is requires')
+    textLicense: Yup.mixed()
+        .required(),
+    codeLicense: Yup.mixed()
+        .required(),
+    dataLicense: Yup.mixed()
+        .required()
 });
 
-const originalAuthors= [];
+const originalAuthors = [];
 const Form = props => {
     const {
         values: { title, abstract, publicationDate, displayFile, mainFile, textLicense, dataLicense, codeLicense },
@@ -70,11 +71,13 @@ const Form = props => {
         handleChange,
         isValid,
         setFieldTouched,
-        setFieldValue
+        setFieldValue,
+        validateForm
     } = props;
 
-    
-    originalAuthors.push(props.authors)
+
+    originalAuthors.push(props.authors);
+
 
     const handleReset = (resetForm) => {
         if (window.confirm('Reset?')) {
@@ -312,7 +315,7 @@ const Form = props => {
                             type="submit"
                             variant="contained"
                             color="primary"
-                            disabled={!isValid || !props.authorsValid}
+                            disabled={Object.entries(errors).length !== 0 || !props.authorsValid}
                         >
                             Save
                          </Button>
@@ -350,14 +353,19 @@ class RequiredMetadata extends Component {
             authorsValid: false,
             formValues: null,
             isValid: true,
+            
         }
+        this.form = React.createRef();
     };
 
     componentDidMount() {
         prepareLicense();
         this.authorsNotNull();
+        this.form.current.validateForm();
     }
 
+
+    
     componentWillUnmount() {
 
         const values = this.state.fieldValues;
@@ -410,7 +418,7 @@ class RequiredMetadata extends Component {
             <div>
 
                 {this.state.metadata &&
-                    <Formik
+                    <Formik ref={this.form}
                         onSubmit={(values, actions) => {
 
                             actions.setSubmitting(false);
