@@ -1,0 +1,28 @@
+{
+  "name": "o2r-bindings",
+  "version": "0.0.1",
+  "description": "Microservice for linking text, data, and code.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "requests": "node bindings.js"
+  },
+  "author": "Markus Konkol (https://o2r.info)",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "assertthat": "^1.0.0",
+    "body-parser": "^1.18.2",
+    "debug": "^3.1.0",
+    "eslint-config-angular": "^0.5.0",
+    "eslint-plugin-angular": "^3.2.0",
+    "express": "^4.16.2",
+    "fs": "0.0.1-security",
+    "net": "^1.0.2",
+    "r-script": "git+https://github.com/MarkusKonk/r-script.git"
+  },
+  "devDependencies": {
+    "eslint": "^4.16.0",
+    "eslint-config-es": "0.9.1",
+    "eslint-config-google": "^0.9.1"
+  }
+}

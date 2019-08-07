@@ -8,7 +8,7 @@ class CodeView extends React.Component {
 
     handleMouseUp ( e ) {
         try {
-            httpRequests.searchBinding(window.getSelection().getRangeAt(0).toString())
+            httpRequests.searchBinding(window.getSelection().getRangeAt(0).toString(), this.props.metadata)
             .then(function(res){
                console.log(res)
             })
