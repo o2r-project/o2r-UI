@@ -232,13 +232,43 @@ class Bindings extends Component {
         tmpComputResult: {},
         tmpParam: '',
         tmpParams: [],
-        tmpPort:5009,
+        tmpPort:'',
         tmpCodelines: [{"start":30,"end":430}],
         tmpPlotFunction: '',
         tmpFile: props.metadata.mainfile,
         tmpBinding: '',
       }
+      this.getPort = this.getPort.bind(this);
     }
+
+  componentDidMount () {
+    this.getPort();
+  }
+
+  getPort () {
+    let existingPort = 5000;
+    httpRequests.listAllCompendia()
+    .then ( ( res ) => {
+      let ercs = res.data.results;
+      for ( let i=0;i<ercs.length;i++ ){
+        httpRequests.singleCompendium(ercs[i])
+        .then ( ( res2 ) => {
+          existingPort += res2.data.metadata.o2r.interaction.length;
+          if ( i+1 === ercs.length ){
+            this.setState({
+              tmpPort:existingPort,
+            },()=>console.log(this.state));
+          }
+        })
+        .catch ( ( res2 ) => {
+            console.log(res2)
+        })
+      } 
+    })
+    .catch ( ( res ) => {
+      console.log(res)
+    })
+  }
 
   setResult ( result ) {
     if (result.indexOf("Figure") >= 0) {
@@ -285,7 +315,7 @@ class Bindings extends Component {
     let state = this.state;
     state.tmpPlotFunction = code;
     this.setState(state, () => {
-      console.log(this.state)
+      //console.log(this.state)
       /*httpRequests.getCodelines(state.binding)
       .then( function ( res ) {
         console.log(res);
@@ -297,7 +327,6 @@ class Bindings extends Component {
   }
 
   setWidget ( key, val, type ) {
-    console.log(key, val, type)
     let state = this.state;
     let newVal = val;
     let params = state.tmpParams;
@@ -372,6 +401,7 @@ class Bindings extends Component {
   }
 
   render() {
+    console.log(this.state)
     return (
       <div className="bindingsView">
         {this.state.codeview ?
