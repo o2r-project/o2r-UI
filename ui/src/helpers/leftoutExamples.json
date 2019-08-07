@@ -1,0 +1,110 @@
+    {//
+        "title": "A Bayesian posterior predictive framework for weighting ensemble regional climate models",
+        "figure": "Figure 3",
+        "lines" : [{"start":27,"end":32}, {"start":36,"end":39}, {"start":41,"end":42}, {"start":51,"end":57}, {"start":64,"end":78}, {"start":81,"end":96}, {"start":99,"end":117}, {"start":123,"end":179}, {"start":192,"end":195}]
+        },
+        {//
+        "title": "A Bayesian posterior predictive framework for weighting ensemble regional climate models",
+        "figure": "Figure 6",
+        "lines" : [{"start":27,"end":32}, {"start":36,"end":39}, {"start":41,"end":42}, {"start":51,"end":78}, {"start":81,"end":96}, {"start":99,"end":124}, {"start":195,"end":225}, {"start":228,"end":237}, {"start":247,"end":247}, {"start":283,"end":283}, {"start":286,"end":295}, {"start":301,"end":348}, {"start":350,"end":354}, {"start":356,"end":358}]
+        },
+        {
+        "title": "A Bayesian posterior predictive framework for weighting ensemble regional climate models",
+        "figure": "All",
+        "lines" : [{"start":27,"end":32}, {"start":36,"end":42}, {"start":51,"end":247}, {"start":251,"end":275}, {"start":283,"end":358}]
+        },
+        {//
+        "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+        "figure": "Figure 6",
+        "lines": [{"start":24,"end":27}, {"start":46,"end":47}, {"start":60,"end":63}, {"start":98,"end":112}, {"start":711,"end":711}, {"start":805,"end":812}, {"start":1499,"end":1513}, {"start":1520,"end":1542}, {"start":1548,"end":1556}, {"start":1565,"end":2168}, {"start":2174,"end":2200}, {"start":2205,"end":2271}, {"start":2278,"end":2285}, {"start":2310,"end":2321}, {"start":2328,"end":2344}]
+        },
+        {//
+        "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+        "figure": "Figure 8a",
+        "lines": [{"start":24,"end":29}, {"start":46,"end":51}, {"start":60,"end":69}, {"start":81,"end":82}, {"start":98,"end":112}, {"start":118,"end":119}, {"start":151,"end":672}, {"start":678,"end":704}, {"start":710,"end":784}, {"start":790,"end":799}, {"start":805,"end":812}, {"start":835,"end":1356}, {"start":1362,"end":1388}, {"start":1393,"end":1460}, {"start":1466,"end":1473}, {"start":1499,"end":1513}, {"start":1520,"end":1542}, {"start":1548,"end":1556}, {"start":1565,"end":2168}, {"start":2174,"end":2200}, {"start":2205,"end":2271}, {"start":2278,"end":2285}, {"start":2310,"end":2321}, {"start":2351,"end":2377}, {"start":2385,"end":2405}, {"start":2413,"end":2437}, {"start":2447,"end":2450}, {"start":2499,"end":2531}, {"start":2566,"end":2590}, {"start":2595,"end":2601}, {"start":2608,"end":2609}, {"start":2617,"end":2618}, {"start":2675,"end":2686}]
+        },                        
+        {//
+        "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+        "figure": "Figure 8b",
+        "lines": [{"start":24,"end":29}, {"start":46,"end":51}, {"start":60,"end":69}, {"start":81,"end":82}, {"start":98,"end":112}, {"start":118,"end":119}, {"start":151,"end":672}, {"start":678,"end":704}, {"start":710,"end":784}, {"start":790,"end":799}, {"start":805,"end":812}, {"start":835,"end":1356}, {"start":1362,"end":1388}, {"start":1393,"end":1460}, {"start":1466,"end":1473}, {"start":1499,"end":1513}, {"start":1520,"end":1542}, {"start":1548,"end":1556}, {"start":1565,"end":2168}, {"start":2174,"end":2200}, {"start":2205,"end":2271}, {"start":2278,"end":2285}, {"start":2310,"end":2321}, {"start":2351,"end":2377}, {"start":2385,"end":2405}, {"start":2413,"end":2437}, {"start":2447,"end":2450}, {"start":2499,"end":2531}, {"start":2566,"end":2590}, {"start":2595,"end":2601}, {"start":2608,"end":2609}, {"start":2617,"end":2618}, {"start":2687,"end":2698}]
+        },
+        {//
+        "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+        "figure": "Figure 9a",
+        "lines": [{"start":24,"end":29}, {"start":46,"end":51}, {"start":60,"end":69}, {"start":81,"end":82}, {"start":98,"end":112}, {"start":118,"end":119}, {"start":151,"end":672}, {"start":678,"end":704}, {"start":710,"end":784}, {"start":790,"end":799}, {"start":805,"end":812}, {"start":835,"end":1356}, {"start":1362,"end":1388}, {"start":1393,"end":1460}, {"start":1466,"end":1473}, {"start":1499,"end":1513}, {"start":1520,"end":1542}, {"start":1548,"end":1556}, {"start":1565,"end":2168}, {"start":2174,"end":2200}, {"start":2205,"end":2271}, {"start":2278,"end":2285}, {"start":2310,"end":2321}, {"start":2351,"end":2377}, {"start":2385,"end":2405}, {"start":2413,"end":2437}, {"start":2447,"end":2450}, {"start":2499,"end":2531}, {"start":2566,"end":2590}, {"start":2595,"end":2601}, {"start":2608,"end":2609}, {"start":2617,"end":2618}, {"start":2742,"end":2751}, {"start":2760,"end":2765}, {"start":2772,"end":2792}]
+        },
+        {//
+        "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+        "figure": "Figure 9b",
+        "lines": [{"start":24,"end":29}, {"start":46,"end":51}, {"start":60,"end":69}, {"start":81,"end":82}, {"start":98,"end":112}, {"start":118,"end":119}, {"start":151,"end":672}, {"start":678,"end":704}, {"start":710,"end":784}, {"start":790,"end":799}, {"start":805,"end":812}, {"start":835,"end":1356}, {"start":1362,"end":1388}, {"start":1393,"end":1460}, {"start":1466,"end":1473}, {"start":1499,"end":1513}, {"start":1520,"end":1542}, {"start":1548,"end":1556}, {"start":1565,"end":2168}, {"start":2174,"end":2200}, {"start":2205,"end":2271}, {"start":2278,"end":2285}, {"start":2310,"end":2321}, {"start":2351,"end":2377}, {"start":2385,"end":2405}, {"start":2413,"end":2437}, {"start":2447,"end":2450}, {"start":2499,"end":2531}, {"start":2566,"end":2590}, {"start":2595,"end":2601}, {"start":2608,"end":2609}, {"start":2617,"end":2618}, {"start":2742,"end":2751}, {"start":2760,"end":2765}, {"start":2799,"end":2823}]
+        },
+        {//
+        "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+        "figure": "Figure 10a",
+        "lines": [{"start":24,"end":29}, {"start":46,"end":51}, {"start":60,"end":69}, {"start":81,"end":82}, {"start":98,"end":99}, {"start":118,"end":119}, {"start":151,"end":672}, {"start":678,"end":704}, {"start":710,"end":784}, {"start":790,"end":799}, {"start":805,"end":812}, {"start":835,"end":1356}, {"start":1362,"end":1388}, {"start":1393,"end":1460}, {"start":1466,"end":1473}, {"start":1499,"end":1513}, {"start":1520,"end":1542}, {"start":1548,"end":1556}, {"start":1565,"end":2168}, {"start":2174,"end":2200}, {"start":2205,"end":2271}, {"start":2278,"end":2285}, {"start":2310,"end":2321}, {"start":2351,"end":2377}, {"start":2385,"end":2405}, {"start":2413,"end":2437}, {"start":2447,"end":2450}, {"start":2499,"end":2531}, {"start":2566,"end":2590}, {"start":2595,"end":2601}, {"start":2608,"end":2609}, {"start":2617,"end":2618}, {"start":2701,"end":2712}]
+        },
+        {//
+        "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+        "figure": "Figure 10b",
+        "lines": [{"start":24,"end":29}, {"start":46,"end":51}, {"start":60,"end":69}, {"start":81,"end":82}, {"start":98,"end":99}, {"start":118,"end":119}, {"start":151,"end":672}, {"start":678,"end":704}, {"start":710,"end":784}, {"start":790,"end":799}, {"start":805,"end":812}, {"start":835,"end":1356}, {"start":1362,"end":1388}, {"start":1393,"end":1460}, {"start":1466,"end":1473}, {"start":1499,"end":1513}, {"start":1520,"end":1542}, {"start":1548,"end":1556}, {"start":1565,"end":2168}, {"start":2174,"end":2200}, {"start":2205,"end":2271}, {"start":2278,"end":2285}, {"start":2310,"end":2321}, {"start":2351,"end":2377}, {"start":2385,"end":2405}, {"start":2413,"end":2437}, {"start":2447,"end":2450}, {"start":2499,"end":2531}, {"start":2566,"end":2590}, {"start":2595,"end":2601}, {"start":2608,"end":2609}, {"start":2617,"end":2618}, {"start":2713,"end":2724}]
+        },
+        {//
+        "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+        "figure": "Figure 10c",
+        "lines": [{"start":24,"end":29}, {"start":46,"end":51}, {"start":60,"end":69}, {"start":81,"end":82}, {"start":98,"end":99}, {"start":118,"end":119}, {"start":151,"end":672}, {"start":678,"end":704}, {"start":710,"end":784}, {"start":790,"end":799}, {"start":805,"end":812}, {"start":835,"end":1356}, {"start":1362,"end":1388}, {"start":1393,"end":1460}, {"start":1466,"end":1473}, {"start":1499,"end":1513}, {"start":1520,"end":1542}, {"start":1548,"end":1556}, {"start":1565,"end":2168}, {"start":2174,"end":2200}, {"start":2205,"end":2271}, {"start":2278,"end":2285}, {"start":2310,"end":2321}, {"start":2351,"end":2377}, {"start":2385,"end":2405}, {"start":2413,"end":2437}, {"start":2447,"end":2450}, {"start":2499,"end":2531}, {"start":2566,"end":2590}, {"start":2595,"end":2601}, {"start":2608,"end":2609}, {"start":2617,"end":2618}, {"start":2725,"end":2736}]
+        },
+        {
+        "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+        "figure": "All",
+        "lines": [{"start":24,"end":29}, {"start":35,"end":41}, {"start":46,"end":55}, {"start":60,"end":77}, {"start":81,"end":93}, {"start":98,"end":112}, {"start":118,"end":143}, {"start":151,"end":672}, {"start":678,"end":704}, {"start":710,"end":784}, {"start":790,"end":799}, {"start":805,"end":827}, {"start":835,"end":1356}, {"start":1362,"end":1388}, {"start":1393,"end":1460}, {"start":1466,"end":1473}, {"start":1480,"end":1492}, {"start":1499,"end":1513}, {"start":1520,"end":1542}, {"start":1548,"end":1556}, {"start":1565,"end":2168}, {"start":2174,"end":2200}, {"start":2205,"end":2271}, {"start":2278,"end":2285}, {"start":2291,"end":2303}, {"start":2310,"end":2321}, {"start":2328,"end":2344}, {"start":2351,"end":2377}, {"start":2385,"end":2405}, {"start":2413,"end":2437}, {"start":2447,"end":2467}, {"start":2474,"end":2492}, {"start":2499,"end":2547}, {"start":2554,"end":2561}, {"start":2566,"end":2590}, {"start":2595,"end":2601}, {"start":2608,"end":2610}, {"start":2617,"end":2638}, {"start":2645,"end":2668}, {"start":2675,"end":2736}, {"start":2742,"end":2751}, {"start":2760,"end":2765}, {"start":2772,"end":2792}, {"start":2799,"end":2825}]
+        },
+        {
+        "title": "Assembly processes of gastropod community change with horizontal and vertical zonation in ancient Lake Ohrid: a metacommunity speciation perspective",
+        "figure": "All",
+        "lines": [{"start":39,"end":80}, {"start":112,"end":1036}, {"start":1047,"end":1080}, {"start":1084,"end":1150}, {"start":1160,"end":1176}, {"start":1186,"end":1223}, {"start":1235,"end":1272}, {"start":1282,"end":1313}, {"start":1331,"end":1355}, {"start":1365,"end":1394}, {"start":1402,"end":1411}, {"start":1420,"end":1445}, {"start":1452,"end":1466}]
+        },
+        {
+            "title": "Automatic landslide length and width estimation based on the geometric processing of the bounding box and the geomorphometric analysis of DEMs",
+            "figure": "All",
+            "lines": [{"start":58,"end":77}, {"start":94,"end":352}, {"start":360,"end":392}]
+            },
+            {
+                "title": "Development of a new gas-flaring emission dataset for southern West Africa",
+                "figure": "All",
+                "lines": [{"start":23,"end":45}, {"start":52,"end":89}, {"start":94,"end":114}]
+                },
+                    {//Not working properly, maps do not show any data
+    "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+    "figure": "Figure 5",
+    "lines": [{"start":24,"end":29}, {"start":46,"end":51}, {"start":60,"end":67}, {"start":81,"end":82}, {"start":98,"end":112}, {"start":118,"end":119}, {"start":151,"end":509}, {"start":805,"end":812}, {"start":1195,"end":1356}, {"start":1362,"end":1388}, {"start":1393,"end":1460}, {"start":1466,"end":1473}, {"start":1480,"end":1492}]
+    },
+        {//needs rationale numbers due to conf intervals
+            "title": "Automatic landslide length and width estimation based on the geometric processing of the bounding box and the geomorphometric analysis of DEMs",
+            "figure": "Figure 9a",
+            "lines": [{"start":58,"end":73}, {"start":94,"end":122}, {"start":126,"end":149}, {"start":158,"end":162}, {"start":169,"end":189}, {"start":201,"end":204}, {"start":208,"end":208}, {"start":212,"end":228}, {"start":236,"end":238}, {"start":249,"end":252}, {"start":255,"end":257}, {"start":263,"end":266}, {"start":271,"end":278}, {"start":347,"end":348}, {"start":361,"end":361}, {"start":363,"end":364}, {"start":367,"end":367}]
+            },
+            {//
+            "title": "Automatic landslide length and width estimation based on the geometric processing of the bounding box and the geomorphometric analysis of DEMs",
+            "figure": "Figure 9b",
+            "lines": [{"start":58,"end":73}, {"start":94,"end":122}, {"start":126,"end":149}, {"start":158,"end":162}, {"start":169,"end":189}, {"start":201,"end":204}, {"start":208,"end":208}, {"start":212,"end":228}, {"start":236,"end":238}, {"start":249,"end":252}, {"start":255,"end":257}, {"start":263,"end":266}, {"start":271,"end":278}, {"start":347,"end":348}, {"start":360,"end":360}, {"start":362,"end":362}, {"start":364,"end":365}]
+            },
+            {
+                "title": "Have precipitation extremes and annual totals been increasing in the world's dry regions over the last 60 years?",
+                "figure": "All",
+                "lines": [{"start":39,"end":111}]
+                },
+                {
+                    "title": "Technical note: A bootstrapped LOESS regression approach for comparing soil depth profiles",
+                    "figure": "All",
+                    "lines": [{"start":31,"end":85}, {"start":99,"end":146}]
+                    },
+                        {//the file figure.R created by the bindings service makes as.numeric out of parameter LU1, check later
+    "title": "Technical note: A bootstrapped LOESS regression approach for comparing soil depth profiles",
+    "figure": "Figure 2a",
+    "lines": [{"start":31,"end":31}, {"start":42,"end":85}]
+    },
+    {//the file figure.R created by the bindings service makes as.numeric out of parameter LU1
+    "title": "Technical note: A bootstrapped LOESS regression approach for comparing soil depth profiles",
+    "figure": "Figure 2b",
+    "lines": [{"start":31,"end":31}, {"start":99,"end":146}]
+    },
