@@ -10,6 +10,7 @@ import SelectedCode from './SelectedCode/SelectedCode';
 import SliderSetting from './SliderSetting/SliderSetting';
 import WidgetSelector from './WidgetSelector/WidgetSelector';
 import './bindings.css';
+import fakeBindings from '../../../helpers/bindingsExamples.json';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -143,8 +144,8 @@ function VerticalLinearStepper ( props ) {
           <Step key={label}>
             <StepLabel><h3>{label}</h3></StepLabel>
             <StepContent>
-              {activeStep === 0 ?
-                <ComputationalResult value={result} handleResultChange={handleResultChange} />
+              {activeStep === 0 && props.figures != '' ?
+                <ComputationalResult value={result} figures={props.figures} handleResultChange={handleResultChange} />
               : ''}
               {activeStep === 1 ?
                 <SelectedCode id="plotfunction" label="plot() function" handleChange={handlePlotChange} value={plot} />
@@ -232,13 +233,65 @@ class Bindings extends Component {
         tmpComputResult: {},
         tmpParam: '',
         tmpParams: [],
-        tmpPort:5009,
-        tmpCodelines: [{"start":30,"end":430}],
+        tmpPort:'',
+        tmpCodelines: '',
         tmpPlotFunction: '',
         tmpFile: props.metadata.mainfile,
         tmpBinding: '',
+        figures:'',
       }
+      this.getPort = this.getPort.bind(this);
+      this.getFakeData = this.getFakeData.bind(this);
     }
+
+  componentDidMount () {
+    this.getPort();
+    this.getFakeData();
+  }
+
+  getFakeData () {
+    let title = this.state.metadata.title;
+    let figures = [];
+    fakeBindings.forEach(element => {
+      if ( element.title === title ) {
+        figures.push(element)
+      }
+    });
+    this.setState({
+      figures:figures,
+    });
+  }
+
+  getPort () {
+    let existingPort = 5000;
+    httpRequests.listAllCompendia()
+    .then ( ( res ) => {
+      let ercs = res.data.results;
+      if ( ercs.length === 0) {
+        this.setState({
+          tmpPort:existingPort,
+        },()=>console.log(this.state));
+      }else{
+        for ( let i=0;i<ercs.length;i++ ){
+          httpRequests.singleCompendium(ercs[i])
+          .then ( ( res2 ) => {
+            existingPort += res2.data.metadata.o2r.interaction.length;
+            if ( i+1 === ercs.length ){
+              this.setState({
+                tmpPort:existingPort,
+              },()=>console.log(this.state));
+            }
+          })
+          .catch ( ( res2 ) => {
+              console.log(res2)
+          })
+        } 
+      }
+    })
+    .catch ( ( res ) => {
+      console.log(res)
+    })
+  }
 
   setResult ( result ) {
     if (result.indexOf("Figure") >= 0) {
@@ -247,7 +300,16 @@ class Bindings extends Component {
         type: 'figure',
         result: result,
       }
-      this.setState(state);
+      let codelines = '';
+      let figures = this.state.figures;
+      for(let i=0;i<figures.length;i++){
+        if (figures[i].figure === result){
+          state.tmpCodelines=figures[i].lines
+        }
+      }
+      this.setState(state, ()=>{
+        console.log(state)
+      });
     }
   }
 
@@ -271,11 +333,18 @@ class Bindings extends Component {
   }
 
   setParameter ( param ) {
+    let splittedParam = '';
+    if (param.indexOf("<-") >= 0) {
+      splittedParam = param.split("<-");
+    }
+    if (param.indexOf("=") >= 0) {
+      splittedParam = param.split("=");
+    }
     let state = this.state;
     let parameter = {
       text: param,
-      name: param.split('<-')[0].trim(),
-      val: Number(param.split('<-')[1].trim()),      
+      name: splittedParam[0].trim(),
+      val: Number(splittedParam[1].trim()),      
     }
     state.tmpParams.push(parameter);
     this.setState(state);
@@ -285,7 +354,7 @@ class Bindings extends Component {
     let state = this.state;
     state.tmpPlotFunction = code;
     this.setState(state, () => {
-      console.log(this.state)
+      //console.log(this.state)
       /*httpRequests.getCodelines(state.binding)
       .then( function ( res ) {
         console.log(res);
@@ -297,7 +366,6 @@ class Bindings extends Component {
   }
 
   setWidget ( key, val, type ) {
-    console.log(key, val, type)
     let state = this.state;
     let newVal = val;
     let params = state.tmpParams;
@@ -326,7 +394,7 @@ class Bindings extends Component {
       "computationalResult": this.state.tmpComputResult,
       "sourcecode": {
         "file": this.state.tmpFile,
-        "codelines": [{"start":30,"end":431}],
+        "codelines": this.state.tmpCodelines,
         "parameter": this.state.tmpParams,
       },
       "port": this.state.tmpPort,
@@ -372,6 +440,7 @@ class Bindings extends Component {
   }
 
   render() {
+    console.log(this.state)
     return (
       <div className="bindingsView">
         {this.state.codeview ?
@@ -411,6 +480,7 @@ class Bindings extends Component {
             saveBinding={this.saveBinding.bind(this)}
             saveErc={this.saveErc.bind(this)}
             clearBinding={this.clearBinding.bind(this)}
+            figures={this.state.figures}
           />
         </div>
       </div>

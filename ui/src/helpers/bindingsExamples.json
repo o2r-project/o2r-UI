@@ -1,0 +1,127 @@
+[
+    {
+    "title": "INSYDE: a synthetic, probabilistic flood damage model based on explicit cost analysis",
+    "figure": "Figure 3",
+    "lines": [{"start":30,"end":431}]
+    }, 
+    {
+    "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+    "figure": "Figure 1",
+    "lines": [{"start":24,"end":29}, {"start":35,"end":36}, {"start":46,"end":51}, {"start":60,"end":67}, {"start":70,"end":77}, {"start":81,"end":84}, {"start":86,"end":93}, {"start":98,"end":112}, {"start":118,"end":143}]
+    },
+    {
+    "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+    "figure": "Figure 2a",
+    "lines": [{"start":24,"end":29}, {"start":46,"end":51}, {"start":60,"end":63}, {"start":81,"end":82}, {"start":98,"end":112}, {"start":118,"end":119}, {"start":2447,"end":2447}, {"start":2618,"end":2622}, {"start":2625,"end":2638}]
+    },
+    {
+    "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+    "figure": "Figure 2b",
+    "lines": [{"start":24,"end":29}, {"start":35,"end":41}, {"start":46,"end":55}, {"start":60,"end":63}, {"start":81,"end":82}, {"start":98,"end":112}, {"start":118,"end":119}, {"start":2447,"end":2447}, {"start":2618,"end":2622},{"start":2645,"end":2666}]
+    },
+    {
+    "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+    "figure": "Figure 3a",
+    "lines": [{"start":24,"end":29}, {"start":46,"end":51}, {"start":60,"end":67}, {"start":81,"end":82}, {"start":98,"end":99}, {"start":151,"end":672}, {"start":678,"end":704}, {"start":2007,"end":2168}, {"start":1195,"end":1356}, {"start":1362,"end":1388}, {"start":1394,"end":1394}, {"start":2174,"end":2200}, {"start":2205,"end":2271}, {"start":2351,"end":2377}, {"start":2554,"end":2559}]
+    },
+    {
+    "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+    "figure": "Figure 3b",
+    "lines": [{"start":24,"end":29}, {"start":46,"end":51}, {"start":60,"end":67}, {"start":82,"end":82}, {"start":98,"end":112}, {"start":2447,"end":2447}, {"start":2477,"end":2492}]
+    },
+    {
+    "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+    "figure": "Figure 4",
+    "lines": [{"start":24,"end":29}, {"start":46,"end":51}, {"start":60,"end":67}, {"start":81,"end":82}, {"start":98,"end":112}, {"start":151,"end":672}, {"start":678,"end":704}, {"start":710,"end":784}, {"start":790,"end":799}, {"start":805,"end":827}]
+    },
+    {
+    "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+    "figure": "Figure 11",
+    "lines": [{"start":24,"end":29}, {"start":46,"end":51}, {"start":60,"end":67}, {"start":81,"end":82}, {"start":98,"end":99}, {"start":118,"end":119}, {"start":151,"end":672}, {"start":2450,"end":2450}, {"start":2499,"end":2547}]
+    },
+    {
+    "title": "Geochronological database and classification system for age uncertainties in Neotropical pollen records",
+    "figure": "Figure 2",
+    "lines" : [{"start":29,"end":1350}, {"start":1355,"end":1369}, {"start":1375,"end":1375}]
+    },
+    {
+    "title": "A question driven socio-hydrological modeling process",
+    "figure": "Figure 6",
+    "lines": [{"start":28,"end":53}, {"start":59,"end":144}]
+    },
+    {
+    "title": "Geochronological database and classification system for age uncertainties in Neotropical pollen records",
+    "figure": "All",
+    "lines" : [{"start":29,"end":1350}, {"start":1355,"end":1369}, {"start":1375,"end":1378}]
+    },
+    {
+    "title": "Assembly processes of gastropod community change with horizontal and vertical zonation in ancient Lake Ohrid: a metacommunity speciation perspective",
+    "figure": "Figure 3a",
+    "lines": [{"start":40,"end":46}, {"start":1056,"end":1080}, {"start":1086,"end":1086}, {"start":1149,"end":1149}, {"start":1160,"end":1163}, {"start":1186,"end":1186}, {"start":1190,"end":1201}]
+    },
+    {
+    "title": "Assembly processes of gastropod community change with horizontal and vertical zonation in ancient Lake Ohrid: a metacommunity speciation perspective",
+    "figure": "Figure 3b",
+    "lines": [{"start":40,"end":46}, {"start":1056,"end":1080}, {"start":1086,"end":1086}, {"start":1149,"end":1149}, {"start":1160,"end":1163}, {"start":1187,"end":1187}, {"start":1203,"end":1214}]
+    },
+    {
+    "title": "Assembly processes of gastropod community change with horizontal and vertical zonation in ancient Lake Ohrid: a metacommunity speciation perspective",
+    "figure": "Figure 3c",
+    "lines": [{"start":40,"end":46}, {"start":1056,"end":1080}, {"start":1086,"end":1086}, {"start":1149,"end":1149}, {"start":1160,"end":1163}, {"start":1187,"end":1187}, {"start":1215,"end":1223}]
+    }, 
+    {
+    "title": "Development of a new gas-flaring emission dataset for southern West Africa",
+    "figure": "Figure 2",
+    "lines": [{"start":23,"end":26}, {"start":44,"end":45}, {"start":54,"end":55}, {"start":94,"end":109}]
+    },
+    {
+    "title": "Have precipitation extremes and annual totals been increasing in the world's dry regions over the last 60 years?",
+    "figure": "Figure 1a",
+    "lines": [{"start":39,"end":39}, {"start":49,"end":72}]
+    },
+    {
+    "title": "Have precipitation extremes and annual totals been increasing in the world's dry regions over the last 60 years?",
+    "figure": "Figure 1b",
+    "lines": [{"start":39,"end":45}, {"start":79,"end":111}]
+    },
+    {
+    "title": "Technical note: Fourier approach for estimating the thermal attributes of streams",
+    "figure": "Figure 2a",
+    "lines": [{"start":48,"end":58}, {"start":75,"end":86}, {"start":92,"end":92}, {"start":97,"end":97}, {"start":109,"end":109}]
+    },
+    {
+    "title": "Technical note: Fourier approach for estimating the thermal attributes of streams",
+    "figure": "Figure 2b",
+    "lines": [{"start":48,"end":58}, {"start":75,"end":75}, {"start":81,"end":83}, {"start":87,"end":88}, {"start":93,"end":93}, {"start":98,"end":98}, {"start":110,"end":110}]
+    },   
+    {
+    "title": "Tidy Data",
+    "figure": "Figure 2a",
+    "lines": [{"start":20,"end":20},{"start":22,"end":22}, {"start":283,"end":283}, {"start":299,"end":299}, {"start":304,"end":308}, {"start":317,"end":326}, {"start":340,"end":342}, {"start":350,"end":350}]
+    },
+    {
+    "title": "Tidy Data",
+    "figure": "Figure 2b",
+    "lines": [{"start":22,"end":22}, {"start":283,"end":284}, {"start":299,"end":299}, {"start":304,"end":304}, {"start":307,"end":308}, {"start":317,"end":326}, {"start":340,"end":348}, {"start":352,"end":352}]
+    },
+    {
+    "title": "Tidy Data",
+    "figure": "Figure 3",
+    "lines": [{"start":20,"end":20}, {"start":22,"end":22}, {"start":283,"end":284}, {"start":299,"end":299}, {"start":304,"end":308}, {"start":317,"end":326}, {"start":340,"end":346}, {"start":355,"end":355}, {"start":357,"end":358}]
+    },
+    {
+    "title": "Tidy Data",
+    "figure": "Figure 4a",
+    "lines": [{"start":20,"end":20}, {"start":22,"end":22}, {"start":283,"end":284}, {"start":299,"end":299}, {"start":304,"end":308}, {"start":317,"end":326}, {"start":340,"end":342}, {"start":355,"end":355}, {"start":361,"end":363}, {"start":367,"end":368}]
+    },
+    {
+    "title": "Tidy Data",
+    "figure": "Figure 4b",
+    "lines": [{"start":20,"end":20}, {"start":22,"end":22}, {"start":283,"end":284}, {"start":299,"end":299}, {"start":304,"end":308}, {"start":317,"end":326}, {"start":340,"end":342}, {"start":355,"end":355}, {"start":361,"end":370}]
+    },                
+    {
+    "title": "The Split-Apply-Combine Strategy for Data Analysis",
+    "figure": "Figure 9",
+    "lines": [{"start":20,"end":23}, {"start":43,"end":46}, {"start":51,"end":52}, {"start":59,"end":59}, {"start":80,"end":91}, {"start":103,"end":105}]
+    }
+]
