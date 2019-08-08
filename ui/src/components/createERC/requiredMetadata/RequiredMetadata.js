@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Card, TextField, Button, MenuItem, CardContent, Grid } from "@material-ui/core";
 import { Formik } from 'formik';
+import { Persist } from 'formik-persist'
 import * as Yup from 'yup';
 import { withRouter } from 'react-router-dom';
 
@@ -81,8 +82,10 @@ const Form = props => {
 
     const reset = props.changed || dirty
 
+    originalAuthors.push(props.authors);
     const handleReset = (resetForm) => {
-        window.location.reload()
+        resetForm();
+        props.onUpdate(originalAuthors[0]);
     };
 
 
@@ -324,6 +327,7 @@ const Form = props => {
                             onClick={handleClick.bind(null, "ERC")}>
                             Go To ERC
                             </Button>
+                            <Persist name="form" />
                     </Card>
 
                 </Grid>
@@ -360,33 +364,21 @@ class RequiredMetadata extends Component {
     componentDidMount() {
         prepareLicense();
         this.authorsNotNull();
-        this.metadata.push[this.state.metadata];
     }
 
 
 
     componentWillUnmount() {
 
-        const values = this.state.fieldValues;
         const updatedMetadata = this.props.metadata;
 
-        if (values != null) {
-            updatedMetadata.title = values.title;
-            updatedMetadata.description = values.abstract;
-            updatedMetadata.publication_date = values.publicationDate;
-            updatedMetadata.displayfile = values.displayFile;
-            updatedMetadata.mainfile = values.mainFile;
-            updatedMetadata.license.data = values.dataLicense;
-            updatedMetadata.license.text = values.textLicense;
-            updatedMetadata.license.code = values.codeLicense;
-        }
-
-        if (this.state.changed == true || values != null) {
+        if (this.state.changed == true) {
             updatedMetadata.creators = this.state.authors;
             this.props.setMetadata(updatedMetadata, false);
         }
 
     }
+    
 
     updateAuthors = (value) => {
         this.setState({ authors: value, changed: true }, () => {
