@@ -24,7 +24,7 @@ class CreateERC extends Component {
             metadata: null,
             compendium_id: props.match.params.id,
             codefile: null,
-            saved: false,
+            changed: false,
         }
     }
 
@@ -39,7 +39,9 @@ class CreateERC extends Component {
         httpRequests.singleCompendium(this.state.compendium_id)
             .then(function (res) {
                 const metadata = res.data.metadata.o2r;
-                self.setMetadata(metadata, false);
+                self.setState({
+                    metadata: metadata,
+                })
                 httpRequests.getFile("compendium/" + self.state.compendium_id + "/data/" + metadata.mainfile)
                     .then(function (res) {
                         self.setState({
@@ -55,6 +57,7 @@ class CreateERC extends Component {
     setMetadata = (metadata, submit) => {
         this.setState({
             metadata: metadata,
+            changed: true,
         }, () => {
             if (submit) {
                 this.updateMetadata()
@@ -63,7 +66,11 @@ class CreateERC extends Component {
     }
 
     updateMetadata = () => {
+
         const self = this;
+        this.setState({
+            changed: false,
+        })
         httpRequests.updateMetadata(self.state.compendium_id, self.state.metadata)
             .then(function (res2) {
                 self.setState({saved: true})
@@ -109,7 +116,7 @@ class CreateERC extends Component {
                                 setMetadata={this.setMetadata}
                                 goToErc={this.goToErc}
                                 originalMetadata={this.state.originalMetadata}
-                                saved={this.state.saved}
+                                changed={this.state.changed}
                             />
                             : ''}
                     </TabContainer>

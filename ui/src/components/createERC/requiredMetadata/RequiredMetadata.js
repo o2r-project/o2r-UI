@@ -67,6 +67,7 @@ const Form = props => {
         values: { title, abstract, publicationDate, displayFile, mainFile, textLicense, dataLicense, codeLicense },
         errors,
         resetForm,
+        dirty,
         touched,
         handleChange,
         isValid,
@@ -76,12 +77,17 @@ const Form = props => {
     } = props;
 
 
+    const valid = props.changed || isValid
+
+    const reset = props.changed || dirty
+
     const handleReset = (resetForm) => {
-       window.location.reload()
+        window.location.reload()
     };
 
 
     const change = (name, e) => {
+        console.log(dirty)
         e.persist();
         e.target.name = name;
         handleChange(e);
@@ -301,6 +307,7 @@ const Form = props => {
                         <Button
                             onClick={handleReset.bind(null, props.resetForm)}
                             type="button"
+                            disabled={!reset}
                         >
                             Reset
             </Button>
@@ -308,13 +315,12 @@ const Form = props => {
                             type="submit"
                             variant="contained"
                             color="primary"
-                            disabled={Object.entries(errors).length !== 0 || !props.authorsValid}
+                            disabled={!valid || !props.authorsValid}
                         >
                             Save
                          </Button>
                         <Button
                             type="button"
-                            disabled={!props.saved}
                             onClick={handleClick.bind(null, "ERC")}>
                             Go To ERC
                             </Button>
@@ -346,19 +352,19 @@ class RequiredMetadata extends Component {
             authorsValid: false,
             formValues: null,
             isValid: true,
-            
+            changed: props.changed,
+
         }
-        this.form = React.createRef();
     };
 
     componentDidMount() {
         prepareLicense();
         this.authorsNotNull();
-        this.form.current.validateForm();
+        this.metadata.push[this.state.metadata];
     }
 
 
-    
+
     componentWillUnmount() {
 
         const values = this.state.fieldValues;
@@ -373,16 +379,17 @@ class RequiredMetadata extends Component {
             updatedMetadata.license.data = values.dataLicense;
             updatedMetadata.license.text = values.textLicense;
             updatedMetadata.license.code = values.codeLicense;
-            this.props.setMetadata(updatedMetadata, false);
         }
 
-        updatedMetadata.creators = this.state.authors;
-        this.props.setMetadata(updatedMetadata, false);
+        if (this.state.changed == true || values != null) {
+            updatedMetadata.creators = this.state.authors;
+            this.props.setMetadata(updatedMetadata, false);
+        }
 
     }
 
     updateAuthors = (value) => {
-        this.setState({ authors: value }, () => {
+        this.setState({ authors: value, changed: true }, () => {
             this.authorsNotNull()
         })
     }
@@ -417,6 +424,7 @@ class RequiredMetadata extends Component {
                         onSubmit={(values, actions) => {
 
                             actions.setSubmitting(false);
+                            
 
                             const updatedMetadata = this.props.metadata;
                             updatedMetadata.title = values.title;
@@ -438,8 +446,8 @@ class RequiredMetadata extends Component {
                             authorsValid={this.state.authorsValid}
                             setFieldValues={this.setFieldValues}
                             goToERC={this.props.goToErc}
-                            saved={this.props.saved}
-                            reset={this.props.reset} />}
+                            reset={this.props.reset}
+                            changed={this.state.changed} />}
                         initialValues={this.state}
                         validationSchema={validationSchema}
                     />
