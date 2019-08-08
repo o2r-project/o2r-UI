@@ -12,8 +12,9 @@ class ComputationalResult extends Component {
                   value={this.props.value}
                   onChange={this.props.handleResultChange}
                 >
+                  <option value=''></option>
                   {this.props.figures.map((figure,index) => (
-                    <option value={figure}>{figure}</option>
+                    <option value={figure.figure} key={index}>{figure.figure}</option>
                   ))}
                 </Select>
             </div>

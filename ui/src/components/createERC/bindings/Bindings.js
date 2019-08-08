@@ -234,7 +234,7 @@ class Bindings extends Component {
         tmpParam: '',
         tmpParams: [],
         tmpPort:'',
-        tmpCodelines: [{"start":46,"end":46}, {"start":71,"end":71}, {"start":308,"end":313}, {"start":320,"end":320}, {"start":366,"end":366}, {"start":517,"end":536}, {"start":556,"end":556}, {"start":574,"end":574}, {"start":604,"end":622}],
+        tmpCodelines: '',
         tmpPlotFunction: '',
         tmpFile: props.metadata.mainfile,
         tmpBinding: '',
@@ -252,15 +252,14 @@ class Bindings extends Component {
   getFakeData () {
     let title = this.state.metadata.title;
     let figures = [];
-    let codelines
     fakeBindings.forEach(element => {
       if ( element.title === title ) {
-        figures.push(element.figure)
+        figures.push(element)
       }
     });
     this.setState({
       figures:figures,
-    })
+    });
   }
 
   getPort () {
@@ -301,7 +300,16 @@ class Bindings extends Component {
         type: 'figure',
         result: result,
       }
-      this.setState(state);
+      let codelines = '';
+      let figures = this.state.figures;
+      for(let i=0;i<figures.length;i++){
+        if (figures[i].figure === result){
+          state.tmpCodelines=figures[i].lines
+        }
+      }
+      this.setState(state, ()=>{
+        console.log(state)
+      });
     }
   }
 
