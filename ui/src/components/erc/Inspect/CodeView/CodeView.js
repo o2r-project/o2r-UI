@@ -40,8 +40,6 @@ class CodeView extends React.Component {
     }
 
     render() {
-        const open = Boolean(this.state.anchorEl);
-        const id = open ? 'simple-popover' : undefined;
         return (
             <div onMouseUp={this.handleMouseUp.bind(this)}>
                 <Highlight language="R" className="code">
