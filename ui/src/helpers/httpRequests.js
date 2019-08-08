@@ -65,8 +65,6 @@ function getCodelines(binding){
 }
 
 function searchBinding(term, metadata){
-    console.log(metadata);
-    console.log(term);
     return axios.post(_env.api + 'bindings/searchBinding', {term:term, metadata: metadata});
 }
 

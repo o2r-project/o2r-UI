@@ -114,7 +114,7 @@ bindings.searchBinding = function ( req, res) {
 
         }
         else{
-            debug( 'Found ', searchTerm, ' not in ', metadata.interaction[i].computationalResult.result)
+            debug( 'Not Found ', searchTerm, ' in ', metadata.interaction[i].computationalResult.result)
         }
     }
 
