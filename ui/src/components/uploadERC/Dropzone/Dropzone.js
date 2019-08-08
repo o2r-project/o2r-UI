@@ -41,7 +41,10 @@ class Dropzone extends Component{
   render(){
     return (
       <div>
-        <DropzoneArea onChange={this.handleChange.bind(this)} />
+        <DropzoneArea 
+          onChange={this.handleChange.bind(this)} 
+          maxFileSize={262144000}
+        />
         <Button 
           className="uploadButton" variant="contained" color="primary"
           onClick={this.uploadFolder.bind(this)}>

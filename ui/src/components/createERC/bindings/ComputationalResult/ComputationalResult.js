@@ -4,6 +4,7 @@ import { Select } from "@material-ui/core";
 class ComputationalResult extends Component {
 
     render() {
+      console.log(this.props)
         return (
             <div>
                 <Select
@@ -11,10 +12,10 @@ class ComputationalResult extends Component {
                   value={this.props.value}
                   onChange={this.props.handleResultChange}
                 >
-                  <option value='' />
-                  <option value='Figure 1'>Figure 1</option>
-                  <option value='Figure 2'>Figure 2</option>
-                  <option value='Figure 3'>Figure 3</option>
+                  <option value=''></option>
+                  {this.props.figures.map((figure,index) => (
+                    <option value={figure.figure} key={index}>{figure.figure}</option>
+                  ))}
                 </Select>
             </div>
         );

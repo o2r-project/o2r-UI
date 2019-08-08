@@ -1,5 +1,5 @@
 import React from 'react';
-import { Slider, Typography, Button, Tabs, Tab } from '@material-ui/core';
+import { Slider, Typography, Button, Tabs, Tab, Radio, RadioGroup, FormControlLabel } from '@material-ui/core';
 
 import httpRequests from '../../../helpers/httpRequests';
 import FigureComparison from './FigureComparison/FigureComparison';
@@ -13,40 +13,42 @@ class Manipulate extends React.Component {
         this.state={
             bindings: props.bindings,
             binding: props.bindings[0],
-            baseUrl: this.buildBaseUrl(props.bindings[0]),
             params: this.getParams(props.bindings[0].sourcecode.parameter),
             fullUrl: '',
             settings:[],
             index:0,
         }
+        this.setParameter = this.setParameter.bind(this);
     }
 
     runManipulateService () {
         const self = this;
-        httpRequests.runManipulationService(self.state.binding)
+        self.state.bindings.forEach((binding)=>{
+            httpRequests.runManipulationService(binding)
             .then(function(res){
-                let parameter = res.data.data.sourcecode.parameter;
-                for (let i=0; i<parameter.length; i++) {
-                    self.setState({
-                        [parameter[i].name]:parameter[i].val,
-                    }, () => {
-                        setTimeout(()=>{
-                            self.buildFullUrl();
-                        },1500);
-                    })
-                }
+                self.setParameter()
             })
             .catch(function(res){
                 console.log(res)
             })
+        })
     }
 
-    buildBaseUrl = ( binding ) => {
-        return 'http://localhost:' + binding.port + '/' + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?';
+    setParameter () {
+        let parameter = this.state.binding.sourcecode.parameter;
+        for (let i=0; i<parameter.length; i++) {
+            this.setState({
+                [parameter[i].name]:parameter[i].val,
+            }, () => {
+                setTimeout(()=>{
+                    this.buildFullUrl(this.state.binding);
+                },1500);
+            })
+        }
     }
 
-    buildFullUrl () {
-        let url = this.state.baseUrl;
+    buildFullUrl ( binding ) {
+        let url = 'http://localhost:' + binding.port + '/' + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?';
         for (let i=0; i<this.state.params.length;i++) {
             url = url + 'newValue' + i + '=' + this.state[this.state.params[i]];
             if (i+1!==this.state.params.length) {
@@ -72,7 +74,7 @@ class Manipulate extends React.Component {
         this.setState({
             [name]: newVal,
         }, () => {
-            this.buildFullUrl();
+            this.buildFullUrl(this.state.binding);
         });
     }
 
@@ -101,7 +103,7 @@ class Manipulate extends React.Component {
         this.setState({
             [name]: 24,
         }, () => {
-            this.buildFullUrl();
+            this.buildFullUrl(this.state.binding);
         });
     }
 
@@ -109,7 +111,7 @@ class Manipulate extends React.Component {
         this.setState({
             index: newVal,
             binding: this.state.bindings[newVal],
-        })
+        }, ()=>this.setParameter());
         /*console.log(newVal)
         this.setState({
             binding: this.state.bindings[newVal],
@@ -120,6 +122,7 @@ class Manipulate extends React.Component {
     }
 
     render () {
+        console.log(this.state.fullUrl)
         return (
             <div>
                 {this.state.bindings.length>1 ?
@@ -144,9 +147,10 @@ class Manipulate extends React.Component {
                     {this.state.binding.sourcecode.parameter.map((parameter, index) => (
                         <div className="slider" key={index}>                
                             <Typography variant='caption'>
-                                {parameter.uiWidget.caption}{this.state[parameter.name]}
+                                {parameter.uiWidget.caption}
                             </Typography>
-                            <Slider
+                            {parameter.uiWidget.type === 'slider' 
+                            ?<Slider
                                 onChange={this.handleChange(parameter.name)}
                                 defaultValue={parameter.val}
                                 value={this.state[parameter.name]}
@@ -158,6 +162,20 @@ class Manipulate extends React.Component {
                                 marks={[{value: parameter.uiWidget.minValue, label: parameter.uiWidget.minValue},
                                         {value: parameter.uiWidget.maxValue, label: parameter.uiWidget.maxValue}]}
                             /> 
+                            :''}
+                            {parameter.uiWidget.type === 'radio' 
+                            ?<RadioGroup aria-label="position" name="position" value={this.state[parameter.name]} onChange={this.handleChange(parameter.name)} row>
+                                {parameter.uiWidget.options.map((option, index) => (
+                                    <FormControlLabel key={index}
+                                        value={option}
+                                        control={<Radio color="primary" />}
+                                        label={option}
+                                        //checked={parameter.val === Number(option)}
+                                  />
+                                ))}
+                            </RadioGroup> 
+                            :''}
+
                         </div>
                     ))}
                     <div className="image">
