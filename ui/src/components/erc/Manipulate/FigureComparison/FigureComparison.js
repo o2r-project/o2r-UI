@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Button, Dialog, AppBar, Toolbar, Slide, Tabs, Tab } from "@material-ui/core";
 import ReactCompareImage from 'react-compare-image';
+//import VisualDiff from 'react-visual-diff'; Interesting for later when bindings are used for numbers in the text
 
 import './figureComparison.css'
 

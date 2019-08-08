@@ -1,7 +1,7 @@
 import React from 'react';
 import 'react-reflex/styles.css';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
-import { Paper, Tabs, Tab } from "@material-ui/core";
+import { Paper, Tabs, Tab, Button } from "@material-ui/core";
 
 import config from '../../helpers/config';
 import './erc.css';
@@ -22,6 +22,7 @@ class ERC extends React.Component {
             codefile: null,
             codefiles: null,
             tabValue: 0,
+            html:true,
         };  
     }
 
@@ -73,7 +74,6 @@ class ERC extends React.Component {
     }
 
     handleDataChange = ( evt ) => this.setDataFile(evt.target.value);
-
     handleCodeChange = ( evt ) => this.setCodeFile(evt.target.value);
 
     getMetadata () {
@@ -105,16 +105,26 @@ class ERC extends React.Component {
             tabValue: newValue,
         })
     }
+
+    handleDisplayFile () {
+        this.setState({
+            html: !this.state.html
+        })
+    }
   
     render () {
         return (
             <div className="Erc" >
                 <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
                     <ReflexElement>
-                        {this.state.displayfile!=null ? 
-                            <MainView 
-                               filePath={config.baseUrl + "compendium/" + this.state.id + "/data/" + this.state.displayfile}>
-                            </MainView> : <div>There is no file to display</div>}
+                        <Button onClick={this.handleDisplayFile.bind(this)}>{this.state.html ? 'Show PDf' : 'Show HTML'}</Button>
+                        {this.state.displayfile!=null 
+                        ?<MainView 
+                            filePath={this.state.html 
+                                ? config.baseUrl + "compendium/" + this.state.id + "/data/" + this.state.displayfile
+                                : this.state.metadata.identifier.doiurl}>
+                        </MainView> 
+                        :<div>There is no file to display</div>}
                     </ReflexElement>
                     <ReflexSplitter propagate={true} style={{ width: "10px" }} />                                 
                     <ReflexElement>
