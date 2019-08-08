@@ -1,0 +1,8 @@
+
+.MuiAppBar-positionFixed {
+    top: auto !important
+}
+
+#appBar{
+    margin-top: -0.7%;
+}

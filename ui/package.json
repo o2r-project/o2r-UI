@@ -8,6 +8,7 @@
     "core-js": "^3.1.4",
     "csv-string": "^3.1.6",
     "formik": "^1.5.8",
+    "formik-persist": "^1.1.0",
     "material-ui-chip-input": "^2.0.0-beta.1",
     "material-ui-dropzone": "^2.4.0",
     "react": "^16.8.6",
