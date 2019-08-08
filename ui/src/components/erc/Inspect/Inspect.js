@@ -16,7 +16,7 @@ class Inspect extends Component {
                     <SelectFile value={props.codefile.filename} handleChange={this.props.handleCodeChange} options={props.codefiles} name="codefile" />
                     : ''}
                     {props.codefile != null ? 
-                        <CodeView code={props.codefile.file.data} metadata={this.props.state.metadata}></CodeView> : <div>There is no data to display</div>}
+                        <CodeView code={props.codefile.file.data} handleTabChange={this.props.handleTabChange} metadata={this.props.state.metadata}></CodeView> : <div>There is no data to display</div>}
                 </ReflexElement>
                 <ReflexSplitter propagate={true} style={{ height: "10px" }} />
                 <ReflexElement>
