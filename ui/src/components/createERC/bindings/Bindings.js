@@ -234,7 +234,7 @@ class Bindings extends Component {
         tmpParam: '',
         tmpParams: [],
         tmpPort:'',
-        tmpCodelines: [{"start":31,"end":31}, {"start":42,"end":85}],
+        tmpCodelines: [{"start":46,"end":46}, {"start":71,"end":71}, {"start":308,"end":313}, {"start":320,"end":320}, {"start":366,"end":366}, {"start":517,"end":536}, {"start":556,"end":556}, {"start":574,"end":574}, {"start":604,"end":622}],
         tmpPlotFunction: '',
         tmpFile: props.metadata.mainfile,
         tmpBinding: '',
