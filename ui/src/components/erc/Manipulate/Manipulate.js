@@ -5,6 +5,7 @@ import httpRequests from '../../../helpers/httpRequests';
 import FigureComparison from './FigureComparison/FigureComparison';
 import SelectedSettings from './SelectedSettings/SelectedSettings';
 import './manipulate.css'
+import config from '../../../helpers/config';
 
 class Manipulate extends React.Component {
 
@@ -48,7 +49,7 @@ class Manipulate extends React.Component {
     }
 
     buildFullUrl ( binding ) {
-        let url = 'http://localhost:' + binding.port + '/' + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?';
+        let url = config.url + binding.port + '/' + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?';
         for (let i=0; i<this.state.params.length;i++) {
             url = url + 'newValue' + i + '=' + this.state[this.state.params[i]];
             if (i+1!==this.state.params.length) {
