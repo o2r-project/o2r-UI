@@ -63,8 +63,8 @@ function getCodelines(binding){
     return axios.post(_env.api + 'bindings/extractR', binding);
 }
 
-function searchBinding(term){
-    return axios.post(_env.api + 'bindings/searchBinding', {term:term});
+function searchBinding(term, metadata){
+    return axios.post(_env.api + 'bindings/searchBinding', {term:term, metadata: metadata});
 }
 
 module.exports = {
