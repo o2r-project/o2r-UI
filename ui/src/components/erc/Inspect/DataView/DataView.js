@@ -24,6 +24,7 @@ const DataTable = (props) => {
 class DataView extends React.Component {
 
     render () {
+        console.log(this.props)
         return (
             <div>
                 {this.props.data.data ? 

@@ -1,3 +1,4 @@
 {
+    "url": "http://localhost:",
     "baseUrl": "http://localhost/api/v1/"
 }
