@@ -64,12 +64,12 @@ class Upload extends Component {
                             onClick={this.upload}>
                             Load workspace
                         </Button>
-                        <Examples onClick={this.enterURL}></Examples>
+                        <Examples onClick={this.enterURL} />
                     </div>
                 </div>
                 <div>
                     <h3>Option 2: Upload your workspace (.zip)</h3>
-                    <Dropzone></Dropzone>
+                    <Dropzone />
                 </div>
             </div>
         );
