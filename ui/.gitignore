@@ -2,7 +2,7 @@
 
 # dependencies
 /node_modules
-/.pnp
+/bindings
 .pnp.js
 
 # testing

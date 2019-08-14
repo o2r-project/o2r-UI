@@ -10,6 +10,11 @@ function getUser() {
 function listAllCompendia() {
     return axios.get(_env.api + 'compendium');
 }
+function updateMetadata(id, data){
+    var _url = _env.api + 'compendium/' + id + '/metadata';
+    var body = {o2r: data};
+    return axios.put(_url, body);
+}
 
 function uploadViaSciebo(url, folder) {
     return axios.post(_env.api + 'compendium', {content_type:'workspace', share_url: url, path:folder});
@@ -42,12 +47,6 @@ function getSingleJob(id) {
     return axios.get(_env.api + "job/" + id );
 }
 
-function updateMetadata(id, data){
-    var _url = _env.api + 'compendium/' + id + '/metadata';
-    var body = {o2r: data};
-    return axios.put(_url, body);
-}
-
 function getLogs(id) {
     return axios.get( _env.api + 'job/' + id + '?steps=all' );
 }
@@ -64,8 +63,8 @@ function getCodelines(binding){
     return axios.post(_env.api + 'bindings/extractR', binding);
 }
 
-function searchBinding(term){
-    return axios.post(_env.api + 'bindings/searchBinding', {term:term});
+function searchBinding(term, metadata){
+    return axios.post(_env.api + 'bindings/searchBinding', {term:term, metadata: metadata});
 }
 
 module.exports = {

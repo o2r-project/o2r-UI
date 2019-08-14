@@ -100,7 +100,7 @@ class ERC extends React.Component {
             })
     }
 
-    handleTabChange ( e, newValue ) {
+    handleTabChange = ( e, newValue ) => {
         this.setState({
             tabValue: newValue,
         })
@@ -143,6 +143,7 @@ class ERC extends React.Component {
                                 state={this.state} 
                                 handleDataChange={this.handleDataChange.bind(this)}
                                 handleCodeChange={this.handleCodeChange.bind(this)}
+                                handleTabChange={this.handleTabChange}
                                 >
                             </Inspect>
                         }
