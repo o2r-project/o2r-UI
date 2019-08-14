@@ -11,15 +11,23 @@
     display: table;
   }
 
-  #uploadCard {
+  #uploadCard1 {
     background-color: rgb(238, 238, 238);
     width: 600px;
     margin-left: 5%;
     margin-right: 5%;
     margin-top: 5%;
     max-height: 700px;
-    -webkit-overflow-scrolling: inherit;
-    overflow: auto;
+}
+#uploadCard2 {
+  background-color: rgb(238, 238, 238);
+  width: 600px;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 5%;
+  max-height: 700px;
+  -webkit-overflow-scrolling: inherit;
+  overflow: auto;
 }
 
 #moreInfo {
