@@ -28,11 +28,15 @@ class Inspect extends Component {
                 </ReflexElement>
                 <ReflexSplitter propagate={true} style={{ height: "10px" }} />
                 <ReflexElement>
-                    {props.dataset != undefined ? 
-                    <SelectFile value={props.dataset.datafile} handleChange={this.props.handleDataChange} options={props.datafiles} name="dataset" />
+                    {props.dataset != undefined 
+                    ?<SelectFile value={props.dataset.datafile} handleChange={this.props.handleDataChange} options={props.datafiles} name="dataset" />
                     : ''}
-                    {props.dataset != null ? 
-                        <DataView data={props.dataset}></DataView> : <div>There is no data to display</div>}
+                    {props.dataset != null 
+                    ?<DataView 
+                        data={props.dataset}
+                        id={props.id} 
+                    /> 
+                    :<div>There is no data to display</div>}
                 </ReflexElement>
             </ReflexContainer>
         );

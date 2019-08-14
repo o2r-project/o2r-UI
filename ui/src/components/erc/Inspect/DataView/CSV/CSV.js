@@ -1,7 +1,6 @@
 import React from 'react';
 import csvstring from 'csv-string';
 import { Table, TableBody, TableCell, TableHead, TableRow, Paper } from '@material-ui/core';
-import uuid from 'uuid/v1';
 
 class CSV extends React.Component {
   
@@ -13,18 +12,18 @@ class CSV extends React.Component {
             <Table>
               <TableHead>
                 <TableRow>
-                    {csv[0].map(cell => (
-                        <TableCell component="th" scope="row" key={uuid()}>
+                    {csv[0].map((cell,index) => (
+                        <TableCell component="th" scope="row" key={index}>
                             {cell}
                         </TableCell>
                     ))}
                 </TableRow>
               </TableHead>
               <TableBody>
-                {csv.slice(1).map(row => (
-                <TableRow key={uuid()}>
-                    {row.map(cell => (
-                        <TableCell component="th" scope="row" key={uuid()}>
+                {csv.slice(1).map((row, index) => (
+                <TableRow key={index}>
+                    {row.map((cell, index) => (
+                        <TableCell component="th" scope="row" key={index}>
                             {cell}
                         </TableCell>
                     ))}
