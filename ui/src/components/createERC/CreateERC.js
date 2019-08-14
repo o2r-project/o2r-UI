@@ -37,21 +37,21 @@ class CreateERC extends Component {
     getMetadata() {
         const self = this;
         httpRequests.singleCompendium(this.state.compendium_id)
-            .then(function (res) {
-                const metadata = res.data.metadata.o2r;
-                self.setState({
-                    metadata: metadata,
+        .then(function (res) {
+            const metadata = res.data.metadata.o2r;
+            self.setState({
+                metadata: metadata,
+            })
+            httpRequests.getFile("compendium/" + self.state.compendium_id + "/data/" + metadata.mainfile)
+                .then(function (res) {
+                    self.setState({
+                        codefile: res,
+                    });
                 })
-                httpRequests.getFile("compendium/" + self.state.compendium_id + "/data/" + metadata.mainfile)
-                    .then(function (res) {
-                        self.setState({
-                            codefile: res,
-                        });
-                    })
-            })
-            .catch(function (response) {
-                console.log(response);
-            })
+        })
+        .catch(function (response) {
+            console.log(response);
+        })
     }
 
     setMetadata = (metadata, submit) => {
@@ -66,7 +66,6 @@ class CreateERC extends Component {
     }
 
     updateMetadata = () => {
-
         const self = this;
         this.setState({
             changed: false,
@@ -107,18 +106,17 @@ class CreateERC extends Component {
                         <Tab label="Create bindings" />
                     </Tabs>
                 </AppBar>
-
                 {value === 0 &&
                     <TabContainer>
-                        {this.state.metadata != null ?
-                            <RequiredMetadata
+                        {this.state.metadata != null 
+                        ?<RequiredMetadata
                                 metadata={this.state.metadata}
                                 setMetadata={this.setMetadata}
                                 goToErc={this.goToErc}
                                 originalMetadata={this.state.originalMetadata}
                                 changed={this.state.changed}
-                            />
-                            : ''}
+                        />
+                        : ''}
                     </TabContainer>
                 }
                 {value === 1 &&
