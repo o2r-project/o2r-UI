@@ -3,7 +3,6 @@ import { makeStyles, Stepper, Step, StepLabel, StepContent, Button, Typography, 
 import ChipInput from 'material-ui-chip-input';
 
 import httpRequests from '../../../helpers/httpRequests';
-import CodeView from '../../erc/Inspect/CodeView/CodeView';
 import Manipulate from '../../erc/Manipulate/Manipulate';
 import ComputationalResult from './ComputationalResult/ComputationalResult';
 import SelectedCode from './SelectedCode/SelectedCode';
@@ -11,6 +10,7 @@ import SliderSetting from './SliderSetting/SliderSetting';
 import WidgetSelector from './WidgetSelector/WidgetSelector';
 import './bindings.css';
 import fakeBindings from '../../../helpers/bindingsExamples.json';
+import Sourcecode from '../../erc/Inspect/CodeView/Sourcecode/Sourcecode';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -449,7 +449,7 @@ class Bindings extends Component {
             <div className='codeView'
               onMouseUp={this.handleMouseUp.bind(this)}
             >
-              <CodeView code={this.props.codefile.data} class/>
+              <Sourcecode code={this.props.codefile.data} />
             </div>
           </div>
           : 
