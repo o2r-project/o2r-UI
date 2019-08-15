@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Tabs, Tab, Typography, AppBar } from '@material-ui/core';
 
-
 import './createERC.css';
 import RequiredMetadata from './requiredMetadata/RequiredMetadata';
 //import SpatioTemporalMetadata from './spatioTemporalMetadata/SpatioTemporalMetadata';
@@ -24,29 +23,25 @@ class CreateERC extends Component {
             metadata: null,
             compendium_id: props.match.params.id,
             codefile: null,
-            changed: false,
         }
     }
 
-    handleChange = (evt, val) => {
-        this.setState({
-            value: val,
-        })
-    }
+    handleTabChange = ( e, val ) => this.setState({value: val,});
 
     getMetadata() {
         const self = this;
-        httpRequests.singleCompendium(this.state.compendium_id)
+        httpRequests.singleCompendium(self.state.compendium_id)
         .then(function (res) {
             const metadata = res.data.metadata.o2r;
-            self.setState({
-                metadata: metadata,
-            })
-            httpRequests.getFile("compendium/" + self.state.compendium_id + "/data/" + metadata.mainfile)
-                .then(function (res) {
+                httpRequests.getFile("compendium/" + self.state.compendium_id + "/data/" + metadata.mainfile)
+                .then(function (res2) {
                     self.setState({
-                        codefile: res,
+                        metadata: metadata,
+                        codefile: res2,
                     });
+                })
+                .catch(function(res2){
+                    console.log(res2)
                 })
         })
         .catch(function (response) {
@@ -54,52 +49,35 @@ class CreateERC extends Component {
         })
     }
 
-    setMetadata = (metadata, submit) => {
-        this.setState({
-            metadata: metadata,
-            changed: true,
-        }, () => {
-            if (submit) {
-                this.updateMetadata()
-            }
-        });
-    }
-
-    updateMetadata = () => {
+    updateMetadata = (metadata) => {
         const self = this;
-        this.setState({
-            changed: false,
+        httpRequests.updateMetadata(self.state.compendium_id, metadata)
+        .then(function (res2) {
+            console.log(res2)
         })
-        httpRequests.updateMetadata(self.state.compendium_id, self.state.metadata)
-            .then(function (res2) {
-                self.setState({saved: true})
-            })
-            .catch(function (res2) {
-                console.log(res2)
-            })
+        .catch(function (res2) {
+            console.log(res2)
+        })
     }
 
     goToErc = () => {
-        console.log("go");
         this.props.history.push({
             pathname: '/erc/' + this.state.compendium_id,
             state: { data: this.metadata }
         });
     }
     
-
-    componentDidMount() {
-        this.getMetadata();
-    }
+    componentDidMount = () => this.getMetadata();
 
     render() {
         const { value } = this.state;
+        console.log(this.state)
         return (
             <div>
                 <AppBar position="fixed" color="default" id="appBar">
                     <Tabs scrollButtons="on" variant="standard" indicatorColor="primary" centered textColor="primary"
                         value={value}
-                        onChange={this.handleChange}
+                        onChange={this.handleTabChange}
                     >
                         <Tab label="Required Metadata" />
                         <Tab label="Spatiotemporal Metadata" />
@@ -110,18 +88,16 @@ class CreateERC extends Component {
                     <TabContainer>
                         {this.state.metadata != null 
                         ?<RequiredMetadata
-                                metadata={this.state.metadata}
-                                setMetadata={this.setMetadata}
-                                goToErc={this.goToErc}
-                                originalMetadata={this.state.originalMetadata}
-                                changed={this.state.changed}
+                            metadata={this.state.metadata}
+                            updateMetadata={this.updateMetadata}
+                            goToErc={this.goToErc}
                         />
                         : ''}
                     </TabContainer>
                 }
                 {value === 1 &&
                     <TabContainer>
-                        ST
+                        
                     </TabContainer>
                 }
                 {value === 2 &&
