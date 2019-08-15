@@ -49,11 +49,13 @@ class CreateERC extends Component {
         })
     }
 
-    updateMetadata = (metadata) => {
+    updateMetadata = (metadata, forward) => {
         const self = this;
         httpRequests.updateMetadata(self.state.compendium_id, metadata)
         .then(function (res2) {
-            console.log(res2)
+            if (forward) {
+                self.goToErc();
+            }
         })
         .catch(function (res2) {
             console.log(res2)
@@ -107,6 +109,7 @@ class CreateERC extends Component {
                             codefile={this.state.codefile}
                             compendium_id={this.state.compendium_id}
                             updateMetadata={this.updateMetadata}
+                            goToErc={this.goToErc}
                         />
                     </TabContainer>
                 }
