@@ -463,7 +463,7 @@ class Bindings extends Component {
           <div>
             <h4>Preview of the interactive figure</h4>
             <div className='codeView'>
-              <Manipulate bindings={[this.state.tmpBinding]}></Manipulate>
+              <Manipulate bindings={[this.state.tmpBinding]} />
               <Button variant="contained" color="primary"
                 onClick={this.switchCodePreview.bind(this)}
                 >

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Tab, Typography, AppBar } from '@material-ui/core';
+import { Tabs, Tab, Typography, AppBar, LinearProgress } from '@material-ui/core';
 
 import './createERC.css';
 import RequiredMetadata from './requiredMetadata/RequiredMetadata';
@@ -23,6 +23,7 @@ class CreateERC extends Component {
             metadata: null,
             compendium_id: props.match.params.id,
             codefile: null,
+            showProgress: false,
         }
     }
 
@@ -31,7 +32,7 @@ class CreateERC extends Component {
     getMetadata() {
         const self = this;
         httpRequests.singleCompendium(self.state.compendium_id)
-        .then(function (res) {
+        .then( ( res ) => {
             const metadata = res.data.metadata.o2r;
                 httpRequests.getFile("compendium/" + self.state.compendium_id + "/data/" + metadata.mainfile)
                 .then(function (res2) {
@@ -40,25 +41,23 @@ class CreateERC extends Component {
                         codefile: res2,
                     });
                 })
-                .catch(function(res2){
-                    console.log(res2)
-                })
+                .catch((res2) => console.log(res2))
         })
-        .catch(function (response) {
-            console.log(response);
-        })
+        .catch((res) => console.log(res))
     }
 
     updateMetadata = (metadata, forward) => {
+        this.setState({showProgress:true});
         const self = this;
         httpRequests.updateMetadata(self.state.compendium_id, metadata)
-        .then(function (res2) {
+        .then( ( res2 ) => {
+            this.setState({showProgress:false});
             if (forward) {
                 self.goToErc();
             }
         })
-        .catch(function (res2) {
-            console.log(res2)
+        .catch((res2) => {
+            this.setState({showProgress:false});
         })
     }
 
@@ -86,6 +85,9 @@ class CreateERC extends Component {
                         <Tab label="Create bindings" />
                     </Tabs>
                 </AppBar>
+                {this.state.showProgress
+                ?<LinearProgress className="progress"/>
+                :''}
                 {value === 0 &&
                     <TabContainer>
                         {this.state.metadata != null 
