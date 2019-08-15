@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { makeStyles, Stepper, Step, StepLabel, StepContent, Button, Typography, Paper, RadioGroup, FormControl} from "@material-ui/core";
+import { makeStyles, Stepper, Step, StepLabel, StepContent, Button, 
+        Typography, Paper, RadioGroup, FormControl} from "@material-ui/core";
 import ChipInput from 'material-ui-chip-input';
 
 import httpRequests from '../../../helpers/httpRequests';
@@ -56,8 +57,9 @@ const useStyles = makeStyles(theme => ({
 function VerticalLinearStepper ( props ) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
-  const steps = ['Select result from the list below', 'Mark the plot()-Function in the code', 'Select the parameter by marking it in the code on the left', 
-              'Configure a UI widget'];
+  const steps = ['Select result from the list below', 'Mark the plot()-Function in the code', 
+                  'Select the parameter by marking it in the code on the left', 
+                  'Configure a UI widget'];
   const [result, setResult] = React.useState();
   const [widget, setWidget] = React.useState('slider');
   const [disabled, disable] = React.useState(true);
@@ -163,17 +165,22 @@ function VerticalLinearStepper ( props ) {
                   </FormControl>
                   {widget === 'slider' 
                   ? <div>
-                      <SliderSetting id="min" label="Minimum value" type="number" handleSlider={(e) => handleSlider(e.target.value, 'minValue')} styles={classes.numField} />
-                      <SliderSetting id="max" label="Maximum value" type="number" handleSlider={(e) => handleSlider(e.target.value, 'maxValue')} styles={classes.numField} />
-                      <SliderSetting id="step" label="Step size" type="number" handleSlider={(e) => handleSlider(e.target.value, 'stepSize')} styles={classes.numField} />
-                      <SliderSetting id="captionSlider" label="Description" type="text" handleSlider={(e) => handleSlider(e.target.value, 'caption')} styles={classes.textField} />
+                      <SliderSetting id="min" label="Minimum value" type="number" handleSlider={(e) => 
+                          handleSlider(e.target.value, 'minValue')} styles={classes.numField} />
+                      <SliderSetting id="max" label="Maximum value" type="number" handleSlider={(e) => 
+                          handleSlider(e.target.value, 'maxValue')} styles={classes.numField} />
+                      <SliderSetting id="step" label="Step size" type="number" handleSlider={(e) => 
+                          handleSlider(e.target.value, 'stepSize')} styles={classes.numField} />
+                      <SliderSetting id="captionSlider" label="Description" type="text" handleSlider={(e) => 
+                          handleSlider(e.target.value, 'caption')} styles={classes.textField} />
                     </div>
                   : <div>
                         <ChipInput style={{marginBottom:'3%'}}
                           onChange={(chips) => handleSlider(chips, 'options')}
                           placeholder="Type and enter at least two options"
                         />
-                        <SliderSetting id="captionRadio" label="Description" type="text" handleSlider={(e) => handleSlider(e.target.value, 'caption')} styles={classes.textField} />
+                        <SliderSetting id="captionRadio" label="Description" type="text" handleSlider={(e) => 
+                            handleSlider(e.target.value, 'caption')} styles={classes.textField} />
                     </div>
                   }
                       <Button variant="contained" color="primary"
@@ -424,7 +431,7 @@ class Bindings extends Component {
   }
 
   saveErc () {
-    this.props.updateMetadata(this.state.metadata);
+    this.props.updateMetadata(this.state.metadata, true);
   }
 
   clearBinding () {
@@ -456,7 +463,7 @@ class Bindings extends Component {
           <div>
             <h4>Preview of the interactive figure</h4>
             <div className='codeView'>
-              <Manipulate bindings={[this.state.tmpBinding]}></Manipulate>
+              <Manipulate bindings={[this.state.tmpBinding]} />
               <Button variant="contained" color="primary"
                 onClick={this.switchCodePreview.bind(this)}
                 >

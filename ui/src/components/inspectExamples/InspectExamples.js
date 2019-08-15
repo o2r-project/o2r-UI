@@ -56,7 +56,7 @@ class InspectExamples extends Component {
     }
  
     render() {
-        console.log(this.state)
+        //console.log(this.state)
         return(
             <div>
                 <h1>Latest ERCs</h1>
