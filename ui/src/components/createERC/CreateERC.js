@@ -51,6 +51,7 @@ class CreateERC extends Component {
         const self = this;
         httpRequests.updateMetadata(self.state.compendium_id, metadata)
         .then( ( res2 ) => {
+            //console.log(JSON.stringify(res2.data.metadata.o2r.interaction))
             this.setState({showProgress:false});
             if (forward) {
                 self.goToErc();
