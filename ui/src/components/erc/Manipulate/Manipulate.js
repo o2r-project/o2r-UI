@@ -104,6 +104,7 @@ class Manipulate extends React.Component {
         this.setState({
             [name]: 24,
         }, () => {
+            alert("Sorry, this function isn't working, yet :(.")
             this.buildFullUrl(this.state.binding);
         });
     }
