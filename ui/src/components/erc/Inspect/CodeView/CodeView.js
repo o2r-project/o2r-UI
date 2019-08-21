@@ -33,10 +33,10 @@ class CodeView extends React.Component {
         .then(function (res) {
             console.log(res)
             if ( text.trim() != '' ) {
-                self.setState({
+                /*self.setState({
                     selectedText:text,
                     popup:true,
-                })
+                })*/
             }
             /*if (res.data.data.length != 0) {
                     for (var i in res.data.data) {
