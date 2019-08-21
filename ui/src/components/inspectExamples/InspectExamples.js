@@ -5,6 +5,7 @@ import {TwitterShareButton, TwitterIcon} from 'react-share';
 
 import './inspectExamples.css';
 import httpRequests from '../../helpers/httpRequests';
+import config from '../../helpers/config.json'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -40,7 +41,7 @@ function SpacingGrid(props) {
                                 </CardContent>
                         </CardActionArea>
                         <CardActions>
-                            <TwitterShareButton url={"http://localhost/#/erc/" + erc.id} >
+                            <TwitterShareButton url={config.ercUrl + erc.id} >
                                 <TwitterIcon
                                     size={32}
                                     round 
@@ -51,6 +52,7 @@ function SpacingGrid(props) {
                             >
                             Go to ERC
                             </Button>
+                            <a href={config.ercUrl+erc.id}>{config.ercUrl+erc.id}</a>
                         </CardActions>               
                     </Card> 
                 </div>
