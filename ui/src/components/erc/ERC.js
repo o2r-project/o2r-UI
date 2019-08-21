@@ -98,16 +98,24 @@ class ERC extends React.Component {
             .then(function(response) {
                 const data = response.data.metadata.o2r;
                 console.log(data)
+                let dataset = '';
+                if(Array.isArray(data.inputfiles)){
+                    dataset=data.inputfiles[0];
+                }else{
+                    dataset=data.inputfiles;
+                }
                 self.setState({
                     metadata: data,
                     datafiles: data.inputfiles,
-                    dataset: data.inputfiles[0],
+                    dataset: dataset,
                     codefiles: data.codefiles,
                     binding:data.interaction[0],
                 });
                 self.setDisplayFile(data.displayfile);
-                if ( data.inputfiles.length > 0 ) {
+                if ( Array.isArray(data.inputfiles)) {
                     self.setDataFile(data.inputfiles[0]);
+                }else{
+                    self.setDataFile(data.inputfiles);
                 }
                 self.setCodeFile(data.mainfile);
             })
