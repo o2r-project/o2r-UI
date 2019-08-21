@@ -97,7 +97,7 @@ class ERC extends React.Component {
         httpRequests.singleCompendium(this.state.id)
             .then(function(response) {
                 const data = response.data.metadata.o2r;
-                console.log(response)
+                console.log(data)
                 self.setState({
                     metadata: data,
                     datafiles: data.inputfiles,
@@ -171,7 +171,7 @@ class ERC extends React.Component {
                         {this.state.tabValue === 2 && 
                             <div>
                                 {this.state.metadata.interaction.length > 0 ?
-                                <Manipulate bindings={this.state.metadata.interaction}></Manipulate>
+                                <Manipulate bindings={this.state.metadata.interaction} id={this.state.id} />
                                 : 'No interactive figures were made for this paper'}
                             </div>
                         }
