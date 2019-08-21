@@ -1,10 +1,65 @@
 import React, { Component } from "react";
-import { Card, CardContent, CardActionArea, CardActions, Typography, Button, CardHeader } from "@material-ui/core/";
+import { Card, CardContent, CardActionArea, CardActions, Typography, Button, CardHeader, Grid, makeStyles } from "@material-ui/core/";
 import { withRouter } from 'react-router-dom';
 import {TwitterShareButton, TwitterIcon} from 'react-share';
 
 import './inspectExamples.css';
 import httpRequests from '../../helpers/httpRequests';
+
+const useStyles = makeStyles(theme => ({
+    root: {
+      flexGrow: 1,
+    },
+    paper: {
+      height: 140,
+      width: 100,
+    },
+    control: {
+      padding: theme.spacing(2),
+    },
+  }));
+  
+function SpacingGrid(props) {
+    const [spacing] = React.useState(2);
+    const classes = useStyles();
+  
+    return (
+      <Grid container className={classes.root} spacing={2}>
+        <Grid item xs={12}>
+          <Grid container justify="center" spacing={spacing}>
+            {props.ercs.map( (erc, index ) =>
+                <div key={index} style={{width:'20%', marginRight:'2%', marginTop:'3%', marginBottom: '3%'}}>
+                    <Card className="example">
+                        <CardActionArea onClick={()=>props.forward(erc)}>
+                            <CardHeader
+                                    title={erc.metadata.o2r.title}/>
+                                <CardContent>
+                                <Typography component="p">
+                                    {erc.metadata.o2r.description.substr(0,150)}...
+                                </Typography>
+                                </CardContent>
+                        </CardActionArea>
+                        <CardActions>
+                            <TwitterShareButton url={"http://localhost/#/erc/" + erc.id} >
+                                <TwitterIcon
+                                    size={32}
+                                    round 
+                                />
+                            </TwitterShareButton>
+                            <Button size="small" color="primary"
+                                onClick={()=>props.forward(erc)}
+                            >
+                            Go to ERC
+                            </Button>
+                        </CardActions>               
+                    </Card> 
+                </div>
+            )}
+          </Grid>
+        </Grid>
+      </Grid>
+    );
+  }
 
 class InspectExamples extends Component {
 
@@ -14,6 +69,7 @@ class InspectExamples extends Component {
             ercs: [],
         }
         this.getErcs = this.getErcs.bind(this);
+        this.forward = this.forward.bind(this);
     }
 
     sort = ( ercs ) => {return ercs};
@@ -52,35 +108,11 @@ class InspectExamples extends Component {
         console.log(this.state)
         return(
             <div>
-                <h1>Inspect Executable Research Compendia</h1>
-                {this.state.ercs.map( (erc, index ) =>
-                    <div key={index}>
-                        <Card className="example">
-                            <CardActionArea onClick={this.forward.bind(this,erc)}>
-                                <CardHeader
-                                        title={erc.metadata.o2r.title}/>
-                                    <CardContent>
-                                    <Typography component="p">
-                                        {erc.metadata.o2r.description.substr(0,150)}...
-                                    </Typography>
-                                    </CardContent>
-                            </CardActionArea>
-                            <CardActions>
-                                <TwitterShareButton url={"http://localhost/#/erc/" + erc.id} >
-                                    <TwitterIcon
-                                        size={32}
-                                        round 
-                                    />
-                                </TwitterShareButton>
-                                <Button size="small" color="primary"
-                                    onClick={this.forward.bind(this,erc)}
-                                >
-                                Go to ERC
-                                </Button>
-                            </CardActions>               
-                        </Card> 
-                    </div>
-                )}
+                <h1 style={{textAlign:'center'}}>Examine Executable Research Compendia</h1>
+                <SpacingGrid 
+                    ercs={this.state.ercs}
+                    forward={this.forward}
+                />
             </div>
         )
     }
