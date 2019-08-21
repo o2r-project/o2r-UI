@@ -28,7 +28,7 @@ function SpacingGrid(props) {
         <Grid item xs={12}>
           <Grid container justify="center" spacing={spacing}>
             {props.ercs.map( (erc, index ) =>
-                <div key={index} style={{width:'20%', marginRight:'2%', marginTop:'3%', marginBottom: '3%'}}>
+                <div key={index} style={{width:'20%', marginRight:'2%', marginTop:'1%', marginBottom: '0%'}}>
                     <Card className="example">
                         <CardActionArea onClick={()=>props.forward(erc)}>
                             <CardHeader
@@ -108,7 +108,7 @@ class InspectExamples extends Component {
         console.log(this.state)
         return(
             <div>
-                <h1 style={{textAlign:'center'}}>Examine Executable Research Compendia</h1>
+                <h1 style={{textAlign:'center', marginBottom:'2%', marginTop: '5%'}}>Examine Executable Research Compendia</h1>
                 <SpacingGrid 
                     ercs={this.state.ercs}
                     forward={this.forward}
