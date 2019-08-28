@@ -7,6 +7,7 @@ import RequiredMetadata from './requiredMetadata/RequiredMetadata';
 //import SpatioTemporalMetadata from './spatioTemporalMetadata/SpatioTemporalMetadata';
 import Bindings from './bindings/Bindings';
 import httpRequests from '../../helpers/httpRequests';
+import SpatioTemporalMetadata from './spatioTemporalMetadata/SpatioTemporalMetadata';
 
 function TabContainer(props) {
     return (
@@ -135,8 +136,12 @@ class CreateERC extends Component {
                 }
                 {value === 1 &&
                     <TabContainer>
-                        ST
-                    </TabContainer>
+                      {/*  <SpatioTemporalMetadata
+                            goToErc={this.goToErc}
+                            metadata={this.state.metadata}
+                            setMetadata={this.setMetadata}
+                      originalMetadata={this.state.originalMetadata}/> */}
+                      </TabContainer> 
                 }
                 {value === 2 &&
                     <TabContainer>
