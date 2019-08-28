@@ -40,7 +40,6 @@ class CreateERC extends Component {
 
     getMetadata() {
 
-        console.log(true);
         const self = this;
         httpRequests.singleCompendium(this.state.compendium_id)
             .then(function (res) {
@@ -78,13 +77,13 @@ class CreateERC extends Component {
         const self = this;
         this.setState({
             changed: false,
-            open:true, 
-            message:"Updating Metadata",
+            open: true,
+            message: "Updating Metadata",
             originalMetadata: JSON.parse(JSON.stringify(this.state.metadata))
         })
         httpRequests.updateMetadata(self.state.compendium_id, self.state.metadata)
             .then(function (res2) {
-                self.setState({saved: true, open:true, message:"Metadata updated"})
+                self.setState({ saved: true, open: true, message: "Metadata updated" })
             })
             .catch(function (res2) {
                 console.log(res2)
@@ -92,20 +91,19 @@ class CreateERC extends Component {
     }
 
     goToErc = () => {
-        console.log("go");
         this.props.history.push({
             pathname: '/erc/' + this.state.compendium_id,
             state: { data: this.metadata }
         });
     }
-    
+
 
     componentDidMount() {
         this.getMetadata();
     }
 
     handleClose = () => {
-        this.setState({open :false})
+        this.setState({ open: false })
     }
 
     render() {
@@ -124,15 +122,15 @@ class CreateERC extends Component {
                 </AppBar>
                 {value === 0 &&
                     <TabContainer>
-                        {this.state.metadata != null 
-                        ?<RequiredMetadata
+                        {this.state.metadata != null
+                            ? <RequiredMetadata
                                 metadata={this.state.metadata}
                                 setMetadata={this.setMetadata}
                                 goToErc={this.goToErc}
                                 originalMetadata={this.state.originalMetadata}
                                 changed={this.state.changed}
-                        />
-                        : ''}
+                            />
+                            : ''}
                     </TabContainer>
                 }
                 {value === 1 &&
@@ -150,23 +148,23 @@ class CreateERC extends Component {
                         />
                     </TabContainer>
                 }
-                 <Snackbar
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                  }}
-                  open={this.state.open}
-                  onClose={this.handleClose}
-                  autoHideDuration={6000}
-                  ContentProps={{
-                    'aria-describedby': 'message-id',
-                  }}
-                  message={<span id="message-id"> {this.state.message} </span>}
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.open}
+                    onClose={this.handleClose}
+                    autoHideDuration={6000}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id"> {this.state.message} </span>}
                 />
             </div>
-           
-                 
-              
+
+
+
         );
     }
 }
