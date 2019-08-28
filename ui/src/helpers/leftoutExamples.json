@@ -304,3 +304,127 @@
 "figure": "Figure 14",
 "lines": [{"start":46,"end":46}, {"start":71,"end":71}, {"start":308,"end":313}, {"start":320,"end":320}, {"start":366,"end":366}, {"start":517,"end":536}, {"start":556,"end":556}, {"start":574,"end":574}, {"start":604,"end":616}, {"start":645,"end":647}, {"start":662,"end":669}]
 }
+
+//spacetime
+{
+    "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+    "figure": "Figure 3b",
+    "lines": [
+        {
+            "start": 24,
+            "end": 29
+        },
+        {
+            "start": 46,
+            "end": 51
+        },
+        {
+            "start": 60,
+            "end": 67
+        },
+        {
+            "start": 82,
+            "end": 82
+        },
+        {
+            "start": 98,
+            "end": 112
+        },
+        {
+            "start": 2447,
+            "end": 2447
+        },
+        {
+            "start": 2477,
+            "end": 2492
+        }
+    ]
+},
+{
+    "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+    "figure": "Figure 4",
+    "lines": [
+        {
+            "start": 24,
+            "end": 29
+        },
+        {
+            "start": 46,
+            "end": 51
+        },
+        {
+            "start": 60,
+            "end": 67
+        },
+        {
+            "start": 81,
+            "end": 82
+        },
+        {
+            "start": 98,
+            "end": 112
+        },
+        {
+            "start": 151,
+            "end": 672
+        },
+        {
+            "start": 678,
+            "end": 704
+        },
+        {
+            "start": 710,
+            "end": 784
+        },
+        {
+            "start": 790,
+            "end": 799
+        },
+        {
+            "start": 805,
+            "end": 827
+        }
+    ]
+},
+{
+    "title": "A space–time statistical climate model for hurricane intensification in the North Atlantic basin",
+    "figure": "Figure 11",
+    "lines": [
+        {
+            "start": 24,
+            "end": 29
+        },
+        {
+            "start": 46,
+            "end": 51
+        },
+        {
+            "start": 60,
+            "end": 67
+        },
+        {
+            "start": 81,
+            "end": 82
+        },
+        {
+            "start": 98,
+            "end": 99
+        },
+        {
+            "start": 118,
+            "end": 119
+        },
+        {
+            "start": 151,
+            "end": 672
+        },
+        {
+            "start": 2450,
+            "end": 2450
+        },
+        {
+            "start": 2499,
+            "end": 2547
+        }
+    ]
+},

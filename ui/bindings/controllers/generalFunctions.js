@@ -55,9 +55,9 @@ fn.modifyMainfile = function(fileContent, result, file, compendiumId) {
     } else if (result.type == 'figure') {
         fileContent = fileContent.replace(new RegExp(result.result, 'g'), '**_' + result.result + '_**');
         fn.saveRFile(fileContent, compendiumId, file);
-        exec('Rscript -e "rmarkdown::render(\'' + path.join('tmp', 'o2r', 'compendium', compendiumId, file) + '\', output_file = ' + "'display.html'" + ')"', function(err) {
-            if (err) throw err;
-        });
+        //exec('Rscript -e "rmarkdown::render(\'' + path.join('tmp', 'o2r', 'compendium', compendiumId, file) + '\', output_file = ' + "'display.html'" + ')"', function(err) {
+        //    if (err) throw err;
+        //});
         debug('End modifying file');
     }
 };

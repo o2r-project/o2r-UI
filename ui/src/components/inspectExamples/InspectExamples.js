@@ -11,16 +11,15 @@ class InspectExamples extends Component {
     constructor(props) {
         super(props);
         this.state={
-            ercs: []
+            ercs: [],
         }
-        this.getERcs = this.getERcs.bind(this);
+        this.getErcs = this.getErcs.bind(this);
     }
 
-    sort ( ercs ) {
-        return ercs;
-    }
+    sort = ( ercs ) => {return ercs};
 
-    getERcs () {
+    getErcs () {
+        let self = this;
         let ercs = [];
         httpRequests.listAllCompendia()
         .then ( ( res ) => {
@@ -34,19 +33,13 @@ class InspectExamples extends Component {
                         })
                     }
                 })
-                .catch ( ( res2 ) => {
-                    console.log(res2)
-                })
+                .catch ( ( res2 ) => console.log(res2))
             });
         })
-        .catch ( ( res ) => {
-            console.log(res);
-        })
+        .catch ( ( res ) => console.log(res))
     }
 
-    componentDidMount () {
-        this.getERcs();
-    }
+    componentDidMount = () => this.getErcs();
 
     forward = (erc) => {
         this.props.history.push({
@@ -59,7 +52,7 @@ class InspectExamples extends Component {
         console.log(this.state)
         return(
             <div>
-                <h1>Latest ERCs</h1>
+                <h1>Inspect Executable Research Compendia</h1>
                 {this.state.ercs.map( (erc, index ) =>
                     <div key={index}>
                         <Card className="example">

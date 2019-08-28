@@ -4,5 +4,15 @@
 }
 
 #appBar{
+
     top: 64px !important;
 }
+
+
+.progress {
+    position: absolute;
+    top: 23vh;
+    left:83%;
+    width:12%;
+  }
+

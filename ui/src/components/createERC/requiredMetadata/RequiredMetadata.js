@@ -84,7 +84,6 @@ class RequiredMetadata extends Component {
     };
 
 
-
     componentDidMount() {
         prepareLicense();
         this.authorsNotNull();
@@ -120,8 +119,8 @@ class RequiredMetadata extends Component {
         })
     }
 
-    setChangedFalse = () => {
-        this.setState({ changed: false })
+    setChangedFalse = () =>{
+        this.setState({ changed: false})
     }
 
     authorsNotNull = () => {
@@ -167,7 +166,9 @@ class RequiredMetadata extends Component {
                             actions.resetForm(values);
                         }
                         }
-                        render={props => <Form{...props} authors={this.state.authors}
+                        render={props => <Form{...props} 
+                            authors={this.state.authors}
+                            title={this.state.title}
                             displayCandidates={this.state.displayCandidates}
                             mainFileCandidates={this.state.mainFileCandidates}
                             onUpdate={this.updateAuthors}

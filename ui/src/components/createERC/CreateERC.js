@@ -68,7 +68,8 @@ class CreateERC extends Component {
         });
     }
 
-    updateMetadata = () => {
+    updateMetadata = (metadata, forward) => {
+        this.setState({showProgress:true});
         const self = this;
         this.setState({
             changed: false,
@@ -101,6 +102,7 @@ class CreateERC extends Component {
 
     render() {
         const { value } = this.state;
+        console.log(this.state)
         return (
             <div>
                 <AppBar position="fixed" color="default" id="appBar">
@@ -113,6 +115,9 @@ class CreateERC extends Component {
                         <Tab label="Create bindings" />
                     </Tabs>
                 </AppBar>
+                {this.state.showProgress
+                ?<LinearProgress className="progress"/>
+                :''}
                 {value === 0 &&
                     <TabContainer>
                         {this.state.metadata != null
@@ -142,6 +147,7 @@ class CreateERC extends Component {
                             codefile={this.state.codefile}
                             compendium_id={this.state.compendium_id}
                             updateMetadata={this.updateMetadata}
+                            goToErc={this.goToErc}
                         />
                     </TabContainer>
                 }
