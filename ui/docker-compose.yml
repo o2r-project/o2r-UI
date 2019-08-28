@@ -216,8 +216,8 @@ services:
       - DEBUGME=inspecter
 
   bindings:
-    image: o2rproject/o2r-bindings:latest
-    #build: ./bindings
+    #image: o2rproject/o2r-bindings:latest
+    build: ./bindings
     ports:
      - "5000-5499:5000-5499"
     volumes:

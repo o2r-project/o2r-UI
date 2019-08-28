@@ -34,13 +34,29 @@ class ERC extends React.Component {
             .then(function(res) {
                 httpRequests.getFile("compendium/" + self.state.id + "/data/")
                     .then(function(res2) {
-                        self.setState({
-                            dataset: {
-                                datafile: datafile,
-                                data: res.data,
-                                tree: res2.data.children,
-                            },
-                        });
+                        if ( datafile.trim().toLowerCase().indexOf('.rdata')!==-1){
+                            httpRequests.getFile('inspection/'+self.state.id+'?file='+datafile)
+                            .then ( ( res3 ) => {
+                                self.setState({
+                                    dataset: {
+                                        datafile: datafile,
+                                        data: res3.data,
+                                        tree: res2.data.children,
+                                    },
+                                });
+                            })
+                            .catch ( ( res3 ) => {
+                                console.log(res)
+                            })
+                        }else{
+                            self.setState({
+                                dataset: {
+                                    datafile: datafile,
+                                    data: res.data,
+                                    tree: res2.data.children,
+                                },
+                            });
+                        }
                     })
                     .catch(function(res2) {
                         console.log(res2)
@@ -100,7 +116,7 @@ class ERC extends React.Component {
             })
     }
 
-    handleTabChange ( e, newValue ) {
+    handleTabChange = ( e, newValue ) => {
         this.setState({
             tabValue: newValue,
         })
@@ -143,6 +159,7 @@ class ERC extends React.Component {
                                 state={this.state} 
                                 handleDataChange={this.handleDataChange.bind(this)}
                                 handleCodeChange={this.handleCodeChange.bind(this)}
+                                handleTabChange={this.handleTabChange}
                                 >
                             </Inspect>
                         }

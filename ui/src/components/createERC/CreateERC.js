@@ -75,7 +75,6 @@ class CreateERC extends Component {
     }
 
     updateMetadata = () => {
-
         const self = this;
         this.setState({
             changed: false,
@@ -121,18 +120,17 @@ class CreateERC extends Component {
                         <Tab label="Create bindings" />
                     </Tabs>
                 </AppBar>
-
                 {value === 0 &&
                     <TabContainer>
-                        {this.state.metadata != null ?
-                            <RequiredMetadata
+                        {this.state.metadata != null 
+                        ?<RequiredMetadata
                                 metadata={this.state.metadata}
                                 setMetadata={this.setMetadata}
                                 goToErc={this.goToErc}
                                 originalMetadata={this.state.originalMetadata}
                                 changed={this.state.changed}
-                            />
-                            : ''}
+                        />
+                        : ''}
                     </TabContainer>
                 }
                 {value === 1 &&

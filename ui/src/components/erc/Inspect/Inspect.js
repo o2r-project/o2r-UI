@@ -12,19 +12,31 @@ class Inspect extends Component {
         return (
             <ReflexContainer orientation="horizontal">
                 <ReflexElement>
-                    {props.codefiles != null && props.codefile != null ? 
-                    <SelectFile value={props.codefile.filename} handleChange={this.props.handleCodeChange} options={props.codefiles} name="codefile" />
-                    : ''}
-                    {props.codefile != null ? 
-                        <CodeView code={props.codefile.file.data}></CodeView> : <div>There is no data to display</div>}
+                    {props.codefiles != null && props.codefile != null 
+                    ?<SelectFile 
+                        value={props.codefile.filename} 
+                        handleChange={this.props.handleCodeChange} 
+                        options={props.codefiles} 
+                        name="codefile" />
+                    :''}
+                    {props.codefile != null 
+                    ?<CodeView 
+                        code={props.codefile.file.data} 
+                        handleTabChange={this.props.handleTabChange} 
+                        metadata={this.props.state.metadata} /> 
+                    :<div>There is no data to display</div>}
                 </ReflexElement>
                 <ReflexSplitter propagate={true} style={{ height: "10px" }} />
                 <ReflexElement>
-                    {props.dataset != undefined ? 
-                    <SelectFile value={props.dataset.datafile} handleChange={this.props.handleDataChange} options={props.datafiles} name="dataset" />
+                    {props.dataset != undefined 
+                    ?<SelectFile value={props.dataset.datafile} handleChange={this.props.handleDataChange} options={props.datafiles} name="dataset" />
                     : ''}
-                    {props.dataset != null ? 
-                        <DataView data={props.dataset}></DataView> : <div>There is no data to display</div>}
+                    {props.dataset != null 
+                    ?<DataView 
+                        data={props.dataset}
+                        id={props.id} 
+                    /> 
+                    :<div>There is no data to display</div>}
                 </ReflexElement>
             </ReflexContainer>
         );

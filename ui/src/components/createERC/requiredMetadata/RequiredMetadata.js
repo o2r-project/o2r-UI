@@ -38,7 +38,6 @@ function prepareLicense() {
     leastRestrictiveData.push(textLicenses[5].id);
     leastRestrictiveData.push(codeLicenses[39].id);
     leastRestrictiveData.push(dataLicenses[4].id);
-
 }
 
 
@@ -62,6 +61,7 @@ const validationSchema = Yup.object({
 });
 
 const Form = props => {
+    
     const {
         values: { title, abstract, publicationDate, displayFile, mainFile, textLicense, dataLicense, codeLicense },
         errors,
@@ -76,8 +76,7 @@ const Form = props => {
         initialValues,
         validateForm
     } = props;
-
-
+    console.log(props.values.title)
     const valid = props.changed || (isValid && dirty)
 
     const reset = props.changed || dirty
@@ -353,18 +352,13 @@ class RequiredMetadata extends Component {
         this.authorsNotNull();
     }
 
-
-
     componentWillUnmount() {
-
         const updatedMetadata = this.props.metadata;
         if (this.state.changed == true) {
             updatedMetadata.creators = this.state.authors;
             this.props.setMetadata(updatedMetadata, false);
         }
-
     }
-    
 
     updateAuthors = (value) => {
         this.setState({authors: value, changed: true }, () => {
@@ -394,21 +388,17 @@ class RequiredMetadata extends Component {
         this.setState({ fieldValues: values })
     }
 
-
-
     render() {
-
         return (
             <div>
-
                 {this.state.metadata &&
                     <Formik ref={this.form}
                         onSubmit={(values, actions) => {
-
                             actions.setSubmitting(false);
                             this.setState({
                                 changed: false,
-                            })
+                            });
+                            
                             const updatedMetadata = this.props.metadata;
                             updatedMetadata.title = values.title;
                             updatedMetadata.description = values.abstract;
@@ -438,12 +428,7 @@ class RequiredMetadata extends Component {
                         validationSchema={validationSchema}
                     />
                 }
-
-
-
             </div>
-
-
         );
     }
 }
