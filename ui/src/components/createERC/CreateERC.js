@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Tab, Typography, AppBar } from '@material-ui/core';
+import { Tabs, Tab, Typography, AppBar, Snackbar } from '@material-ui/core';
 
 
 import './createERC.css';
@@ -25,6 +25,8 @@ class CreateERC extends Component {
             compendium_id: props.match.params.id,
             codefile: null,
             changed: false,
+            message: "",
+            open: false,
         }
     }
 
@@ -70,10 +72,11 @@ class CreateERC extends Component {
         const self = this;
         this.setState({
             changed: false,
+            open:true, message:"Updating Metadata"
         })
         httpRequests.updateMetadata(self.state.compendium_id, self.state.metadata)
             .then(function (res2) {
-                self.setState({saved: true})
+                self.setState({saved: true, open:true, message:"Metadata updated"})
             })
             .catch(function (res2) {
                 console.log(res2)
@@ -91,6 +94,10 @@ class CreateERC extends Component {
 
     componentDidMount() {
         this.getMetadata();
+    }
+
+    handleClose = () => {
+        this.setState({open :false})
     }
 
     render() {
@@ -136,7 +143,23 @@ class CreateERC extends Component {
                         />
                     </TabContainer>
                 }
+                 <Snackbar
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+                  open={this.state.open}
+                  onClose={this.handleClose}
+                  autoHideDuration={6000}
+                  ContentProps={{
+                    'aria-describedby': 'message-id',
+                  }}
+                  message={<span id="message-id"> {this.state.message} </span>}
+                />
             </div>
+           
+                 
+              
         );
     }
 }
