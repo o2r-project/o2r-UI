@@ -79,12 +79,11 @@ class OwnMap extends React.Component {
       return;
     }
     this._editableFG = ref;
-    GeoJSON=this.getGeoJson()
+    GeoJSON = this.getGeoJson()
     const metadata = this.state.metadata;
-    
-    for(var i=0; i<4; i++)
-    {
-    GeoJSON.geometry.coordinates[0][i] = metadata.spatial.union.bbox[i];
+
+    for (var i = 0; i < 4; i++) {
+      GeoJSON.geometry.coordinates[0][i] = metadata.spatial.union.bbox[i];
     }
 
     GeoJSON.geometry.coordinates[0][4] = metadata.spatial.union.bbox[0];
@@ -207,6 +206,22 @@ class SpatioTemporalMetadata extends React.Component {
 
   }
 
+  handleClick = (e) => {
+    this.props.goToERC
+  }
+
+  handleReset = () => {
+
+    var begin = props.originalMetadata.temporal.begin
+    begin = begin.substring(0, 10);
+    var end = props.originalMetadata.temporal.end
+    end = end.substring(0, 10);
+    this.setState({
+      from: begin,
+      to: end
+    })
+  }
+
 
 
   render() {
@@ -222,8 +237,6 @@ class SpatioTemporalMetadata extends React.Component {
             id="date"
             label="Beginn"
             type="date"
-            //defaultValue={this.props.metadata.temporal.beginn}
-            //className={classes.textField}
             InputLabelProps={{
               required: true,
               shrink: true,
@@ -236,8 +249,6 @@ class SpatioTemporalMetadata extends React.Component {
             id="date"
             label="End"
             type="date"
-            //defaultValue={this.props.metadata.temporal.end}
-            //className={classes.textField}
             InputLabelProps={{
               required: true,
               shrink: true,
@@ -247,6 +258,26 @@ class SpatioTemporalMetadata extends React.Component {
             }
           />
         </Card>
+        <Button
+          onClick={handleReset.bind(null)}
+          type="button"
+          disabled={!reset}
+        >
+          Reset
+        </Button>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={!valid || !props.authorsValid}
+        >
+          Save
+        </Button>
+        <Button
+          type="button"
+          onClick={handleClick.bind(null)}>
+          Go To ERC
+        </Button>
       </div>
 
 

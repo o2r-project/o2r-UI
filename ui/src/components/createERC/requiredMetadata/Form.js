@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Card, TextField, Button, MenuItem, CardContent, Grid } from "@material-ui/core";
-
 import Authors from './Authors/Authors';
 
 export const Form = props => {
@@ -69,6 +68,9 @@ export const Form = props => {
         else if (name === "ERC") {
             props.goToERC();
         }
+
+        console.log(props.leastRestrictiveData)
+        console.log(props.dataLicenses)
     };
 
     return (

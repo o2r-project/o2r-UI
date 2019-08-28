@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Card, TextField, Button, MenuItem, CardContent, Grid } from "@material-ui/core";
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { withRouter } from 'react-router-dom';
 
 import licensesData from '../../../helpers/licenses.json'
-import Authors from './Authors/Authors';
 import { Form } from './Form';
 
 import './requiredMetadata.css';
@@ -181,7 +179,7 @@ class RequiredMetadata extends Component {
                             originalMetadata={this.props.originalMetadata}
                             textLicenses={textLicenses}
                             codeLicenses={codeLicenses}
-                            dataLicenses={textLicenses}
+                            dataLicenses={dataLicenses}
                             mostRestrictiveData={mostRestrictiveData}
                             leastRestrictiveData={leastRestrictiveData} />}
                         initialValues={this.state}
