@@ -78,7 +78,9 @@ class CreateERC extends Component {
         const self = this;
         this.setState({
             changed: false,
-            open:true, message:"Updating Metadata"
+            open:true, 
+            message:"Updating Metadata",
+            originalMetadata: JSON.parse(JSON.stringify(this.state.metadata))
         })
         httpRequests.updateMetadata(self.state.compendium_id, self.state.metadata)
             .then(function (res2) {

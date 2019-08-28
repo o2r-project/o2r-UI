@@ -76,14 +76,26 @@ const Form = props => {
         initialValues,
         validateForm
     } = props;
-    console.log(props.values.title)
+
+
     const valid = props.changed || (isValid && dirty)
 
     const reset = props.changed || dirty
 
 
     const handleReset = () => {
-        resetForm(props.originalMetadata)
+
+        const resetData= props.values
+        console.log(resetData)
+        resetData.title= props.originalMetadata.title
+        resetData.abstract= props.originalMetadata.description
+        resetData.publicationDate= props.originalMetadata.publication_date
+        resetData.displayFile= props.originalMetadata.displayfile
+        resetData.mainFile= props.originalMetadata.mainfile
+        resetData.dataLicense= props.originalMetadata.license.data
+        resetData.textLicense= props.originalMetadata.license.text
+        resetData.codeLicense= props.originalMetadata.license.code
+        resetForm(resetData)
         props.onUpdate(props.originalMetadata.creators);
         props.setChanged();
     };
@@ -95,6 +107,10 @@ const Form = props => {
         handleChange(e);
         setFieldTouched(name, true, false);
     };
+
+    const blur = () => {
+        props.setFormValues(props.values);
+    }
 
 
     const handleClick = (name, e) => {
@@ -131,6 +147,7 @@ const Form = props => {
                                 error={touched.title && Boolean(errors.title)}
                                 value={title}
                                 onChange={change.bind(null, "title")}
+                                onBlur={blur.bind(null)}
                                 margin="normal"
                                 variant="outlined"
                                 InputLabelProps={{
@@ -150,6 +167,7 @@ const Form = props => {
                                 error={touched.abstract && Boolean(errors.abstract)}
                                 value={abstract}
                                 onChange={change.bind(null, "abstract")}
+                                onBlur={blur.bind(null)}
                                 margin="normal"
                                 variant="outlined"
                                 InputLabelProps={{
@@ -169,6 +187,7 @@ const Form = props => {
                                 error={touched.publicationDate && Boolean(errors.publicationDate)}
                                 value={publicationDate}
                                 onChange={change.bind(null, "publicationDate")}
+                                onBlur={blur.bind(null)}
                                 margin="normal"
                                 variant="outlined"
                                 InputLabelProps={{
@@ -187,6 +206,7 @@ const Form = props => {
                                 error={touched.displayFile && Boolean(errors.displayFile)}
                                 value={displayFile}
                                 onChange={change.bind(null, "displayFile")}
+                                onBlur={blur.bind(null)}
                                 margin="normal"
                                 variant="outlined"
                                 InputLabelProps={{
@@ -211,6 +231,7 @@ const Form = props => {
                                 error={touched.mainFile && Boolean(errors.mainFile)}
                                 value={mainFile}
                                 onChange={change.bind(null, "mainFile")}
+                                onBlur={blur.bind(null)}
                                 margin="normal"
                                 variant="outlined"
                                 InputLabelProps={{
@@ -243,6 +264,7 @@ const Form = props => {
                                 error={touched.textLicense && Boolean(errors.textLicense)}
                                 value={textLicense}
                                 onChange={change.bind(null, "textLicense")}
+                                onBlur={blur.bind(null)}
                                 margin="normal"
                                 variant="outlined"
                             >
@@ -262,6 +284,7 @@ const Form = props => {
                                 error={touched.codeLicense && Boolean(errors.codeLicense)}
                                 value={codeLicense}
                                 onChange={change.bind(null, "codeLicense")}
+                                onBlur={blur.bind(null)}
                                 margin="normal"
                                 variant="outlined"
                             >
@@ -281,6 +304,7 @@ const Form = props => {
                                 error={touched.dataLicense && Boolean(errors.dataLicense)}
                                 value={dataLicense}
                                 onChange={change.bind(null, "dataLicense")}
+                                onBlur={blur.bind(null)}
                                 margin="normal"
                                 variant="outlined"
                             >
@@ -324,6 +348,7 @@ const Form = props => {
     )
 }
 
+
 class RequiredMetadata extends Component {
     constructor(props) {
         super(props);
@@ -341,11 +366,12 @@ class RequiredMetadata extends Component {
             mainFileCandidates: props.metadata.mainfile_candidates,
             authors: props.metadata.creators,
             authorsValid: false,
-            formValues: null,
             isValid: true,
             changed: props.changed,
         }
     };
+
+
 
     componentDidMount() {
         prepareLicense();
@@ -353,11 +379,27 @@ class RequiredMetadata extends Component {
     }
 
     componentWillUnmount() {
+
+        const values = this.state.formValues;
         const updatedMetadata = this.props.metadata;
+        console.log(values);
+
+        if (values != null) {
+            updatedMetadata.title = values.title;
+            updatedMetadata.description = values.abstract;
+            updatedMetadata.publication_date = values.publicationDate;
+            updatedMetadata.displayfile = values.displayFile;
+            updatedMetadata.mainfile = values.mainFile;
+            updatedMetadata.license.data = values.dataLicense;
+            updatedMetadata.license.text = values.textLicense;
+            updatedMetadata.license.code = values.codeLicense;
+        }
+
         if (this.state.changed == true) {
             updatedMetadata.creators = this.state.authors;
-            this.props.setMetadata(updatedMetadata, false);
         }
+
+        this.props.setMetadata(updatedMetadata, false);
     }
 
     updateAuthors = (value) => {
@@ -384,8 +426,8 @@ class RequiredMetadata extends Component {
         this.setState({ authorsValid: valid });
     };
 
-    setFieldValues = (values) => {
-        this.setState({ fieldValues: values })
+    setFormValues = (values) => {
+        this.setState({ formValues: values })
     }
 
     render() {
@@ -393,6 +435,7 @@ class RequiredMetadata extends Component {
             <div>
                 {this.state.metadata &&
                     <Formik ref={this.form}
+                    //enableReinitialize
                         onSubmit={(values, actions) => {
                             actions.setSubmitting(false);
                             this.setState({
@@ -418,7 +461,7 @@ class RequiredMetadata extends Component {
                             mainFileCandidates={this.state.mainFileCandidates}
                             onUpdate={this.updateAuthors}
                             authorsValid={this.state.authorsValid}
-                            setFieldValues={this.setFieldValues}
+                            setFormValues={this.setFormValues}
                             goToERC={this.props.goToErc}
                             reset={this.props.reset}
                             changed={this.state.changed}
