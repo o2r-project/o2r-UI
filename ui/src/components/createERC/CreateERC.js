@@ -33,31 +33,25 @@ class CreateERC extends Component {
     }
 
 
-    handleChange = (evt, val) => {
-        this.setState({
-            value: val,
-        })
-    }
+    handleTabChange = ( e, val ) => this.setState({value: val,});
 
     getMetadata() {
 
         const self = this;
-        httpRequests.singleCompendium(this.state.compendium_id)
+        httpRequests.singleCompendium(self.state.compendium_id)
             .then(function (res) {
                 const metadata = res.data.metadata.o2r;
-                self.setState({
-                    metadata: metadata,
-                    originalMetadata: JSON.parse(JSON.stringify(metadata)),
-                })
                 httpRequests.getFile("compendium/" + self.state.compendium_id + "/data/" + metadata.mainfile)
-                    .then(function (res) {
+                    .then(function (res2) {
                         self.setState({
-                            codefile: res,
+                            metadata: metadata,
+                            originalMetadata: JSON.parse(JSON.stringify(metadata)),
+                            codefile: res2,
                         });
                     })
             })
-            .catch(function (response) {
-                console.log(response);
+            .catch(function (res2) {
+                console.log(res2);
             })
 
     }
@@ -99,9 +93,7 @@ class CreateERC extends Component {
     }
 
 
-    componentDidMount() {
-        this.getMetadata();
-    }
+    componentDidMount = () => this.getMetadata();
 
     handleClose = () => {
         this.setState({ open: false })
@@ -114,7 +106,7 @@ class CreateERC extends Component {
                 <AppBar position="fixed" color="default" id="appBar">
                     <Tabs scrollButtons="on" variant="standard" indicatorColor="primary" centered textColor="primary"
                         value={value}
-                        onChange={this.handleChange}
+                        onChange={this.handleTabChange}
                     >
                         <Tab label="Required Metadata" />
                         <Tab label="Spatiotemporal Metadata" />

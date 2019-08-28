@@ -8,7 +8,6 @@ import { Form } from './Form';
 
 import './requiredMetadata.css';
 
-
 const textLicenses = [];
 const dataLicenses = [];
 const codeLicenses = [];
@@ -94,27 +93,29 @@ class RequiredMetadata extends Component {
     componentWillUnmount() {
 
         const values = this.state.formValues;
-        const updatedMetadata = this.props.metadata;
+        const newMetadata = this.props.metadata;
 
         if (values != null) {
-            updatedMetadata.title = values.title;
-            updatedMetadata.description = values.abstract;
-            updatedMetadata.publication_date = values.publicationDate;
-            updatedMetadata.displayfile = values.displayFile;
-            updatedMetadata.mainfile = values.mainFile;
-            updatedMetadata.license.data = values.dataLicense;
-            updatedMetadata.license.text = values.textLicense;
-            updatedMetadata.license.code = values.codeLicense;
+            newMetadata.title = values.title;
+            newMetadata.description = values.abstract;
+            newMetadata.publication_date = values.publicationDate;
+            newMetadata.displayfile = values.displayFile;
+            newMetadata.mainfile = values.mainFile;
+            newMetadata.license.data = values.dataLicense;
+            newMetadata.license.text = values.textLicense;
+            newMetadata.license.code = values.codeLicense;
         }
-        if (this.state.changed == true) {
-            updatedMetadata.creators = this.state.authors;
+        if (this.state.authorsChanged == true) {
+            newMetadata.creators = this.state.authors;
         }
-
-        this.props.setMetadata(updatedMetadata, false);
+        if(values!= null || this.state.authorsChanged)
+        {
+        this.props.setMetadata(newMetadata, false);
+        }
     }
 
     updateAuthors = (value) => {
-        this.setState({ authors: value, changed: true }, () => {
+        this.setState({ authors: value, authorsChanged: true }, () => {
             this.authorsNotNull()
         })
     }
@@ -152,17 +153,17 @@ class RequiredMetadata extends Component {
                                 changed: false,
                             });
 
-                            const updatedMetadata = this.props.metadata;
-                            updatedMetadata.title = values.title;
-                            updatedMetadata.description = values.abstract;
-                            updatedMetadata.creators = this.state.authors;
-                            updatedMetadata.publication_date = values.publicationDate;
-                            updatedMetadata.displayfile = values.displayFile;
-                            updatedMetadata.mainfile = values.mainFile;
-                            updatedMetadata.license.data = values.dataLicense;
-                            updatedMetadata.license.text = values.textLicense;
-                            updatedMetadata.license.code = values.codeLicense;
-                            this.props.setMetadata(updatedMetadata, true);
+                            const newMetadata = this.props.metadata;
+                            newMetadata.title = values.title;
+                            newMetadata.description = values.abstract;
+                            newMetadata.creators = this.state.authors;
+                            newMetadata.publication_date = values.publicationDate;
+                            newMetadata.displayfile = values.displayFile;
+                            newMetadata.mainfile = values.mainFile;
+                            newMetadata.license.data = values.dataLicense;
+                            newMetadata.license.text = values.textLicense;
+                            newMetadata.license.code = values.codeLicense;
+                            this.props.setMetadata(newMetadata, true);
                             actions.resetForm(values);
                         }
                         }

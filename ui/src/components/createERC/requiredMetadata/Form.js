@@ -39,6 +39,7 @@ export const Form = props => {
         resetForm(resetData)
         props.onUpdate(props.originalMetadata.creators);
         props.setChanged();
+        props.setFormValues(props.values);
     };
 
 
@@ -54,24 +55,19 @@ export const Form = props => {
     }
 
 
-    const handleClick = (name, e) => {
+    const goToErc = () => props.goToErc();
 
-        if (name === "mostRestrictive") {
-            setFieldValue('textLicense', props.mostRestrictiveData[0]);
-            setFieldValue('codeLicense', props.mostRestrictiveData[1]);
-            setFieldValue('dataLicense', props.mostRestrictiveData[2]);
-        } else if (name === "leastRestrictive") {
-            setFieldValue('textLicense', props.leastRestrictiveData[0]);
-            setFieldValue('codeLicense', props.leastRestrictiveData[1]);
-            setFieldValue('dataLicense', props.leastRestrictiveData[2]);
-        }
-        else if (name === "ERC") {
-            props.goToERC();
-        }
+    const setMostRestrictive = () => {
+        setFieldValue('textLicense', props.mostRestrictiveData[0]);
+        setFieldValue('codeLicense', props.mostRestrictiveData[1]);
+        setFieldValue('dataLicense', props.mostRestrictiveData[2]);
+    }
+    const setLeastRestrictive = () => {
+        setFieldValue('textLicense', props.leastRestrictiveData[0]);
+        setFieldValue('codeLicense', props.leastRestrictiveData[1]);
+        setFieldValue('dataLicense', props.leastRestrictiveData[2]);
+    }
 
-        console.log(props.leastRestrictiveData)
-        console.log(props.dataLicenses)
-    };
 
     return (
         <form id="form" onSubmit={props.handleSubmit}>
@@ -191,10 +187,10 @@ export const Form = props => {
                             <h4>Licenses</h4>
                             <div>
                                 <Button variant="contained" color="primary" style={{ margin: "8px" }}
-                                    onClick={handleClick.bind(null, "mostRestrictive")}
+                                    onClick={setMostRestrictive}
                                 >MOST RESTRICTIVE</Button>
                                 <Button variant="contained" color="primary" style={{ margin: "8px" }}
-                                    onClick={handleClick.bind(null, "leastRestrictive")}
+                                    onClick={setLeastRestrictive}
                                 >LEAST RESTRICTIVE</Button>
                             </div>
 
@@ -280,7 +276,7 @@ export const Form = props => {
                          </Button>
                         <Button
                             type="button"
-                            onClick={handleClick.bind(null, "ERC")}>
+                            onClick={goToErc}>
                             Go To ERC
                             </Button>
                     </Card>

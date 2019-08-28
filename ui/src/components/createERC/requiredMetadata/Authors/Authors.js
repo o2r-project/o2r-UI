@@ -11,7 +11,6 @@ class Authors extends Component {
         super(props);
 
         this.state = {
-
             deletable: false
         };
 
@@ -71,7 +70,6 @@ class Authors extends Component {
                         handleUpdate={this.handleUpdate}
                     />
                 )}
-
                 <div>
                     <IconButton aria-label="Add"
                         onClick={this.handleClick}
