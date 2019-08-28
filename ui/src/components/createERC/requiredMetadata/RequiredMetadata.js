@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Card, TextField, Button, MenuItem, CardContent, Grid } from "@material-ui/core";
 import { Formik } from 'formik';
-import { Persist } from 'formik-persist'
 import * as Yup from 'yup';
 import { withRouter } from 'react-router-dom';
 
@@ -85,14 +84,13 @@ const Form = props => {
 
 
     const handleReset = () => {
-        resetForm(initialValues)
-        props.onUpdate(props.originalAuthors);
+        resetForm(props.originalMetadata)
+        props.onUpdate(props.originalMetadata.creators);
         props.setChanged();
     };
 
 
     const change = (name, e) => {
-        console.log(dirty)
         e.persist();
         e.target.name = name;
         handleChange(e);
@@ -318,7 +316,6 @@ const Form = props => {
                             onClick={handleClick.bind(null, "ERC")}>
                             Go To ERC
                             </Button>
-                            <Persist name="form" />
                     </Card>
 
                 </Grid>
@@ -348,8 +345,6 @@ class RequiredMetadata extends Component {
             formValues: null,
             isValid: true,
             changed: props.changed,
-            originalAuthors: props.metadata.creators,
-
         }
     };
 
@@ -363,7 +358,6 @@ class RequiredMetadata extends Component {
     componentWillUnmount() {
 
         const updatedMetadata = this.props.metadata;
-
         if (this.state.changed == true) {
             updatedMetadata.creators = this.state.authors;
             this.props.setMetadata(updatedMetadata, false);
@@ -373,8 +367,7 @@ class RequiredMetadata extends Component {
     
 
     updateAuthors = (value) => {
-        var originalAuthors=this.state.authors;
-        this.setState({originalAuthors:originalAuthors, authors: value, changed: true }, () => {
+        this.setState({authors: value, changed: true }, () => {
             this.authorsNotNull()
         })
     }
@@ -416,8 +409,6 @@ class RequiredMetadata extends Component {
                             this.setState({
                                 changed: false,
                             })
-                            
-
                             const updatedMetadata = this.props.metadata;
                             updatedMetadata.title = values.title;
                             updatedMetadata.description = values.abstract;
@@ -442,7 +433,7 @@ class RequiredMetadata extends Component {
                             reset={this.props.reset}
                             changed={this.state.changed}
                             setChanged={this.setChangedFalse}
-                            originalAuthors={this.state.originalAuthors} />}
+                            originalMetadata={this.props.originalMetadata} />}
                         initialValues={this.state}
                         validationSchema={validationSchema}
                     />

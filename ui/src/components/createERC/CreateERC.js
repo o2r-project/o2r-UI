@@ -22,6 +22,7 @@ class CreateERC extends Component {
         this.state = {
             value: 0,
             metadata: null,
+            originalMetadata: null,
             compendium_id: props.match.params.id,
             codefile: null,
             changed: false,
@@ -30,6 +31,7 @@ class CreateERC extends Component {
         }
     }
 
+
     handleChange = (evt, val) => {
         this.setState({
             value: val,
@@ -37,12 +39,15 @@ class CreateERC extends Component {
     }
 
     getMetadata() {
+
+        console.log(true);
         const self = this;
         httpRequests.singleCompendium(this.state.compendium_id)
             .then(function (res) {
                 const metadata = res.data.metadata.o2r;
                 self.setState({
                     metadata: metadata,
+                    originalMetadata: JSON.parse(JSON.stringify(metadata)),
                 })
                 httpRequests.getFile("compendium/" + self.state.compendium_id + "/data/" + metadata.mainfile)
                     .then(function (res) {
@@ -54,9 +59,11 @@ class CreateERC extends Component {
             .catch(function (response) {
                 console.log(response);
             })
+
     }
 
     setMetadata = (metadata, submit) => {
+
         this.setState({
             metadata: metadata,
             changed: true,
