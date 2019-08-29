@@ -19,7 +19,6 @@ handleSelectedText(e) {
     var self = this;
     var answerText = "";
     var text = window.getSelection().getRangeAt(0).toString();
-    console.log(text)
     if (text === '') return;
     let bindings = this.props.metadata.interaction;
     let foundParameters = [];
