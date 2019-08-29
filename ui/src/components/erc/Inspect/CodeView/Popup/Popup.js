@@ -8,11 +8,10 @@ render() {
         <div>
             <Dialog
                 open={this.props.open}
-                onClose={this.props.handlePopup}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title">Codelines in Bindings found</DialogTitle>
+                <DialogTitle id="alert-dialog-title">{this.props.title}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
                         {this.props.selectedText}
@@ -20,12 +19,12 @@ render() {
                 </DialogContent>
                 <DialogActions>
                     <Button color="primary"
-                        onClick={this.props.closePopup} 
+                        onClick={this.props.closePopup.bind(this, "code")} 
                     >
                         OK
                     </Button>
                     <Button color="primary" autoFocus
-                        //onClick={this.handleClose.bind(this, "tabChange")} 
+                        onClick={this.props.closePopup.bind(this, "tabChange")} 
                     >
                         Go to Manipulate
                    </Button>
