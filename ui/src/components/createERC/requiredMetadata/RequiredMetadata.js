@@ -65,23 +65,24 @@ class RequiredMetadata extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            metadata: props.metadata,
-            title: props.metadata.title,
-            abstract: props.metadata.description,
-            publicationDate: props.metadata.publication_date,
-            displayFile: props.metadata.displayfile,
-            mainFile: props.metadata.mainfile,
-            dataLicense: props.metadata.license.data,
-            textLicense: props.metadata.license.text,
-            codeLicense: props.metadata.license.code,
-            displayCandidates: props.metadata.displayfile_candidates,
-            mainFileCandidates: props.metadata.mainfile_candidates,
             authors: props.metadata.creators,
             authorsValid: false,
             isValid: true,
-            changed: props.changed,
+            authorsChanged: false,
         }
     };
+
+
+    initialValues = {
+        title: this.props.metadata.title,
+        abstract: this.props.metadata.description,
+        publicationDate: this.props.metadata.publication_date,
+        displayFile: this.props.metadata.displayfile,
+        mainFile: this.props.metadata.mainfile,
+        dataLicense: this.props.metadata.license.data,
+        textLicense: this.props.metadata.license.text,
+        codeLicense: this.props.metadata.license.code,
+    }
 
 
     componentDidMount() {
@@ -114,7 +115,7 @@ class RequiredMetadata extends Component {
     }
 
     updateAuthors = (value) => {
-        this.setState({ authors: value, authorsChanged: true }, () => {
+        this.setState({ authors: value, authorsChanged: true, changed: true }, () => {
             this.authorsNotNull()
         })
     }
@@ -144,7 +145,7 @@ class RequiredMetadata extends Component {
     render() {
         return (
             <div>
-                {this.state.metadata &&
+                {this.props.metadata &&
                     <Formik ref={this.form}
                         onSubmit={(values, actions) => {
                             actions.setSubmitting(false);
@@ -168,9 +169,8 @@ class RequiredMetadata extends Component {
                         }
                         render={props => <Form{...props} 
                             authors={this.state.authors}
-                            title={this.state.title}
-                            displayCandidates={this.state.displayCandidates}
-                            mainFileCandidates={this.state.mainFileCandidates}
+                            displayCandidates={this.props.metadata.displayfile_candidates}
+                            mainFileCandidates={this.props.metadata.mainfile_candidates}
                             onUpdate={this.updateAuthors}
                             authorsValid={this.state.authorsValid}
                             setFormValues={this.setFormValues}
@@ -184,7 +184,7 @@ class RequiredMetadata extends Component {
                             dataLicenses={dataLicenses}
                             mostRestrictiveData={mostRestrictiveData}
                             leastRestrictiveData={leastRestrictiveData} />}
-                        initialValues={this.state}
+                        initialValues={this.initialValues}
                         validationSchema={validationSchema}
                     />
                 }

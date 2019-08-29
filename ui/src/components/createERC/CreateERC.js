@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Tab, Typography, AppBar, Snackbar } from '@material-ui/core';
+import { Tabs, Tab, Typography, AppBar, Snackbar, LinearProgress } from '@material-ui/core';
 
 
 import './createERC.css';
@@ -79,9 +79,10 @@ class CreateERC extends Component {
         })
         httpRequests.updateMetadata(self.state.compendium_id, self.state.metadata)
             .then(function (res2) {
-                self.setState({ saved: true, open: true, message: "Metadata updated" })
+                self.setState({ showProgress: false, saved: true, open: true, message: "Metadata updated" })
             })
             .catch(function (res2) {
+                self.setState({ showProgress: false, saved: true, open: true, message: "Metadata update failed" })
                 console.log(res2)
             })
     }
@@ -102,7 +103,6 @@ class CreateERC extends Component {
 
     render() {
         const { value } = this.state;
-        console.log(this.state)
         return (
             <div>
                 <AppBar position="fixed" color="default" id="appBar">
