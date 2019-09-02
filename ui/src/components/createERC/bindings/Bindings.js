@@ -351,14 +351,13 @@ class Bindings extends Component {
     let state = this.state;
     state.tmpPlotFunction = code;
     this.setState(state, () => {
-      //console.log(this.state)
-      /*httpRequests.getCodelines(state.binding)
+      httpRequests.getCodelines({id: state.tmpCompId, plot:state.tmpPlotFunction, file:state.tmpFile})
       .then( function ( res ) {
         console.log(res);
       })
       .catch( function (res) {
         console.log(res)
-      })*/
+      })
     });
   }
 
