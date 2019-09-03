@@ -65,7 +65,6 @@ class CreateERC extends Component {
 
         this.setState({
             metadata: metadata,
-            changed: true,
         }, () => {
             if (submit) {
                 this.updateMetadata()
@@ -111,8 +110,19 @@ class CreateERC extends Component {
         })
     }
 
-    setChangedFalse = () => {
+    setChangedFalse = (x) => {
+        console.log(1)
+        if(x == "all")
+        {
         this.setState({ changed: false, authorsChanged: false })
+        }
+        else{
+            this.setState({ changed: false})
+        }
+    }
+
+    setChanged= () => {
+        this.setState({ changed: true })
     }
 
     authorsNotNull = () => {
@@ -166,6 +176,7 @@ class CreateERC extends Component {
                                 changed={this.state.changed}
                                 updateAuthors={this.updateAuthors}
                                 setChangedFalse={this.setChangedFalse}
+                                setChanged={this.setChanged}
                                 authorsValid={this.state.authorsValid}
                             />
                             : ''}

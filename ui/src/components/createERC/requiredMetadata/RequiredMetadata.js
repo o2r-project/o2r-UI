@@ -30,12 +30,12 @@ function prepareLicense() {
         }
         ;
     }
-    mostRestrictiveData.push(textLicenses[3].id);
-    mostRestrictiveData.push(codeLicenses[28].id);
-    mostRestrictiveData.push(dataLicenses[1].id);
-    leastRestrictiveData.push(textLicenses[5].id);
-    leastRestrictiveData.push(codeLicenses[39].id);
-    leastRestrictiveData.push(dataLicenses[4].id);
+    mostRestrictiveData.push(textLicenses[3]);
+    mostRestrictiveData.push(codeLicenses[28]);
+    mostRestrictiveData.push(dataLicenses[1]);
+    leastRestrictiveData.push(textLicenses[5]);
+    leastRestrictiveData.push(codeLicenses[39]);
+    leastRestrictiveData.push(dataLicenses[4]);
 }
 
 
@@ -66,13 +66,12 @@ class RequiredMetadata extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            ownDirtyProof: false
+            ownDirtyProof: true
         }
     };
 
 
-    formValues = {}
-
+    
     initialValues = {
         title: this.props.metadata.title,
         abstract: this.props.metadata.description,
@@ -83,6 +82,8 @@ class RequiredMetadata extends Component {
         textLicense: this.props.metadata.license.text,
         codeLicense: this.props.metadata.license.code,
     }
+
+    formValues = this.initialValues
 
     originialValues = {
         title: this.props.originalMetadata.title,
@@ -106,7 +107,7 @@ class RequiredMetadata extends Component {
         const values = this.formValues;
         const newMetadata = this.props.metadata;
 
-        if (values != null) {
+        
             newMetadata.title = values.title;
             newMetadata.description = values.abstract;
             newMetadata.publication_date = values.publicationDate;
@@ -115,11 +116,10 @@ class RequiredMetadata extends Component {
             newMetadata.license.data = values.dataLicense;
             newMetadata.license.text = values.textLicense;
             newMetadata.license.code = values.codeLicense;
-            this.props.setMetadata(newMetadata, false);
-        }
-        if (this.props.authorsChanged == true) {
             newMetadata.creators = this.props.authors;
-        }
+        
+
+        this.props.setMetadata(newMetadata, false);
     }
 
 
@@ -130,10 +130,12 @@ class RequiredMetadata extends Component {
         console.log(JSON.stringify(values))
         if (JSON.stringify(this.originialValues) == JSON.stringify(values)) {
             console.log(true)
-            this.setState({ownDirtyProof: true})
+            this.props.setChangedFalse('form')
+            this.setState({ ownDirtyProof : false})
         }
         else {
-           this.setState({ownDirtyProof: false})
+            this.props.setChanged()
+            this.setState({ ownDirtyProof : true})
         }
         this.formValues = values;
     }
