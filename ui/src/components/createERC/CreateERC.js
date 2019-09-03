@@ -31,13 +31,13 @@ class CreateERC extends Component {
             message: "",
             open: false,
             changed: false,
-            authorsChanged:false,
-            authorsValid:false,
+            authorsChanged: false,
+            authorsValid: false,
         }
     }
 
 
-    handleTabChange = ( e, val ) => this.setState({value: val,});
+    handleTabChange = (e, val) => this.setState({ value: val, });
 
     getMetadata() {
 
@@ -74,10 +74,10 @@ class CreateERC extends Component {
     }
 
     updateMetadata = (metadata, forward) => {
-        this.setState({showProgress:true});
+        this.setState({ showProgress: true });
         const self = this;
         this.setState({
-            authorsChanged:false,
+            authorsChanged: false,
             changed: false,
             open: true,
             message: "Updating Metadata",
@@ -102,13 +102,17 @@ class CreateERC extends Component {
     }
 
     updateAuthors = (value) => {
-        this.setState({ authors: value, authorsChanged: true }, () => {
+        var changed = true;
+        if (JSON.stringify(value) == JSON.stringify(this.state.originalMetadata.creators)) {
+            changed = false;
+        }
+        this.setState({ authors: value, authorsChanged: changed }, () => {
             this.authorsNotNull()
         })
     }
 
-    setChangedFalse = () =>{
-        this.setState({ changed: false, authorsChanged: false})
+    setChangedFalse = () => {
+        this.setState({ changed: false, authorsChanged: false })
     }
 
     authorsNotNull = () => {
@@ -147,8 +151,8 @@ class CreateERC extends Component {
                     </Tabs>
                 </AppBar>
                 {this.state.showProgress
-                ?<LinearProgress className="progress"/>
-                :''}
+                    ? <LinearProgress className="progress" />
+                    : ''}
                 {value === 0 &&
                     <TabContainer>
                         {this.state.metadata != null
@@ -169,12 +173,12 @@ class CreateERC extends Component {
                 }
                 {value === 1 &&
                     <TabContainer>
-                      {/*  <SpatioTemporalMetadata
+                        {/*  <SpatioTemporalMetadata
                             goToErc={this.goToErc}
                             metadata={this.state.metadata}
                             setMetadata={this.setMetadata}
                       originalMetadata={this.state.originalMetadata}/> */}
-                      </TabContainer> 
+                    </TabContainer>
                 }
                 {value === 2 &&
                     <TabContainer>
@@ -197,7 +201,7 @@ class CreateERC extends Component {
                     autoHideDuration={6000}
                     ContentProps={{
                         'aria-describedby': 'message-id',
-                        'style': { backgroundColor : this.state.backgroundColor}
+                        'style': { backgroundColor: this.state.backgroundColor }
                     }}
                     message={<span id="message-id"> {this.state.message} </span>}
                 />

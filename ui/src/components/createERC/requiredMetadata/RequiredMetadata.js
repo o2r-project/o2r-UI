@@ -70,7 +70,7 @@ class RequiredMetadata extends Component {
         }
     };
 
-    
+
 
     initialValues = {
         title: this.props.metadata.title,
@@ -102,14 +102,10 @@ class RequiredMetadata extends Component {
             newMetadata.license.data = values.dataLicense;
             newMetadata.license.text = values.textLicense;
             newMetadata.license.code = values.codeLicense;
+            this.props.setMetadata(newMetadata, false);
         }
         if (this.state.authorsChanged == true) {
-            newMetadata.creators = this.state.authors;
-        }
-
-        if(values!= null || this.props.authorsChanged)
-        {
-        this.props.setMetadata(newMetadata, false);
+            newMetadata.creators = this.props.authors;
         }
     }
 
@@ -141,7 +137,7 @@ class RequiredMetadata extends Component {
                             actions.resetForm(values);
                         }
                         }
-                        render={props => <Form{...props} 
+                        render={props => <Form{...props}
                             authors={this.props.authors}
                             displayCandidates={this.props.metadata.displayfile_candidates}
                             mainFileCandidates={this.props.metadata.mainfile_candidates}

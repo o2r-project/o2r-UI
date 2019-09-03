@@ -21,14 +21,14 @@ export const Form = props => {
 
 
     function isEmpty(obj) {
-        for(var key in obj) {
-            if(obj.hasOwnProperty(key))
+        for (var key in obj) {
+            if (obj.hasOwnProperty(key))
                 return false;
         }
         return true;
     }
 
-    const valid = (props.authorsChanged && props.authorsValid)  || (isEmpty(errors) && dirty) || (props.changed && isEmpty(errors))
+    const valid = (props.authorsChanged && props.authorsValid) || (isEmpty(errors) && dirty) || (props.changed && isEmpty(errors))
 
     const reset = props.authorsChanged || dirty || props.changed
 
