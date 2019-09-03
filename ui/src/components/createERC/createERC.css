@@ -10,8 +10,8 @@
 
 
 .progress {
-    position: absolute;
-    top: 23vh;
+    position: fixed !important;
+    top: 40vh;
     left:83%;
     width:12%;
   }

@@ -7,7 +7,8 @@ import RequiredMetadata from './requiredMetadata/RequiredMetadata';
 //import SpatioTemporalMetadata from './spatioTemporalMetadata/SpatioTemporalMetadata';
 import Bindings from './bindings/Bindings';
 import httpRequests from '../../helpers/httpRequests';
-import SpatioTemporalMetadata from './spatioTemporalMetadata/SpatioTemporalMetadata';
+
+
 
 function TabContainer(props) {
     return (
@@ -21,14 +22,17 @@ class CreateERC extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            authors: [],
             value: 0,
             metadata: null,
             originalMetadata: null,
             compendium_id: props.match.params.id,
             codefile: null,
-            changed: false,
             message: "",
             open: false,
+            changed: false,
+            authorsChanged:false,
+            authorsValid:false,
         }
     }
 
@@ -46,8 +50,9 @@ class CreateERC extends Component {
                         self.setState({
                             metadata: metadata,
                             originalMetadata: JSON.parse(JSON.stringify(metadata)),
+                            authors: metadata.creators,
                             codefile: res2,
-                        });
+                        }, () => self.authorsNotNull());
                     })
             })
             .catch(function (res2) {
@@ -72,17 +77,19 @@ class CreateERC extends Component {
         this.setState({showProgress:true});
         const self = this;
         this.setState({
+            authorsChanged:false,
             changed: false,
             open: true,
             message: "Updating Metadata",
+            backgroundColor: "blue",
             originalMetadata: JSON.parse(JSON.stringify(this.state.metadata))
         })
         httpRequests.updateMetadata(self.state.compendium_id, self.state.metadata)
             .then(function (res2) {
-                self.setState({ showProgress: false, saved: true, open: true, message: "Metadata updated" })
+                self.setState({ showProgress: false, saved: true, open: true, message: "Metadata updated", backgroundColor: "green" })
             })
             .catch(function (res2) {
-                self.setState({ showProgress: false, saved: true, open: true, message: "Metadata update failed" })
+                self.setState({ showProgress: false, saved: true, open: true, message: "Metadata update failed", backgroundColor: "red" })
                 console.log(res2)
             })
     }
@@ -93,6 +100,30 @@ class CreateERC extends Component {
             state: { data: this.metadata }
         });
     }
+
+    updateAuthors = (value) => {
+        this.setState({ authors: value, authorsChanged: true }, () => {
+            this.authorsNotNull()
+        })
+    }
+
+    setChangedFalse = () =>{
+        this.setState({ changed: false, authorsChanged: false})
+    }
+
+    authorsNotNull = () => {
+
+        let valid = true;
+        if (this.state.authors.length === 0 || this.state.authors === null) {
+            valid = false;
+        }
+        for (var i in this.state.authors) {
+            if (this.state.authors[i].name === "") {
+                valid = false;
+            }
+        }
+        this.setState({ authorsValid: valid });
+    };
 
 
     componentDidMount = () => this.getMetadata();
@@ -126,7 +157,12 @@ class CreateERC extends Component {
                                 setMetadata={this.setMetadata}
                                 goToErc={this.goToErc}
                                 originalMetadata={this.state.originalMetadata}
+                                authors={this.state.authors}
+                                authorsChanged={this.state.authorsChanged}
                                 changed={this.state.changed}
+                                updateAuthors={this.updateAuthors}
+                                setChangedFalse={this.setChangedFalse}
+                                authorsValid={this.state.authorsValid}
                             />
                             : ''}
                     </TabContainer>
@@ -161,6 +197,7 @@ class CreateERC extends Component {
                     autoHideDuration={6000}
                     ContentProps={{
                         'aria-describedby': 'message-id',
+                        'style': { backgroundColor : this.state.backgroundColor}
                     }}
                     message={<span id="message-id"> {this.state.message} </span>}
                 />

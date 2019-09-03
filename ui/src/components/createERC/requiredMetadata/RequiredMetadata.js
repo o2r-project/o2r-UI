@@ -61,17 +61,16 @@ const validationSchema = Yup.object({
 
 
 
+
 class RequiredMetadata extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            authors: props.metadata.creators,
-            authorsValid: false,
-            isValid: true,
-            authorsChanged: false,
+            formValues: null
         }
     };
 
+    
 
     initialValues = {
         title: this.props.metadata.title,
@@ -87,7 +86,6 @@ class RequiredMetadata extends Component {
 
     componentDidMount() {
         prepareLicense();
-        this.authorsNotNull();
     }
 
     componentWillUnmount() {
@@ -108,35 +106,14 @@ class RequiredMetadata extends Component {
         if (this.state.authorsChanged == true) {
             newMetadata.creators = this.state.authors;
         }
-        if(values!= null || this.state.authorsChanged)
+
+        if(values!= null || this.props.authorsChanged)
         {
         this.props.setMetadata(newMetadata, false);
         }
     }
 
-    updateAuthors = (value) => {
-        this.setState({ authors: value, authorsChanged: true, changed: true }, () => {
-            this.authorsNotNull()
-        })
-    }
 
-    setChangedFalse = () =>{
-        this.setState({ changed: false})
-    }
-
-    authorsNotNull = () => {
-
-        let valid = true;
-        if (this.state.authors.length === 0 || this.state.authors === null) {
-            valid = false;
-        }
-        for (var i in this.state.authors) {
-            if (this.state.authors[i].name === "") {
-                valid = false;
-            }
-        }
-        this.setState({ authorsValid: valid });
-    };
 
     setFormValues = (values) => {
         this.setState({ formValues: values })
@@ -149,14 +126,11 @@ class RequiredMetadata extends Component {
                     <Formik ref={this.form}
                         onSubmit={(values, actions) => {
                             actions.setSubmitting(false);
-                            this.setState({
-                                changed: false,
-                            });
 
                             const newMetadata = this.props.metadata;
                             newMetadata.title = values.title;
                             newMetadata.description = values.abstract;
-                            newMetadata.creators = this.state.authors;
+                            newMetadata.creators = this.props.authors;
                             newMetadata.publication_date = values.publicationDate;
                             newMetadata.displayfile = values.displayFile;
                             newMetadata.mainfile = values.mainFile;
@@ -168,16 +142,16 @@ class RequiredMetadata extends Component {
                         }
                         }
                         render={props => <Form{...props} 
-                            authors={this.state.authors}
+                            authors={this.props.authors}
                             displayCandidates={this.props.metadata.displayfile_candidates}
                             mainFileCandidates={this.props.metadata.mainfile_candidates}
-                            onUpdate={this.updateAuthors}
-                            authorsValid={this.state.authorsValid}
+                            onUpdate={this.props.updateAuthors}
+                            authorsValid={this.props.authorsValid}
                             setFormValues={this.setFormValues}
                             goToERC={this.props.goToErc}
-                            reset={this.props.reset}
-                            changed={this.state.changed}
-                            setChanged={this.setChangedFalse}
+                            authorsChanged={this.props.authorsChanged}
+                            changed={this.props.changed}
+                            setChangedFalse={this.props.setChangedFalse}
                             originalMetadata={this.props.originalMetadata}
                             textLicenses={textLicenses}
                             codeLicenses={codeLicenses}

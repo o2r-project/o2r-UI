@@ -20,9 +20,17 @@ export const Form = props => {
     } = props;
 
 
-    const valid = props.changed || (isValid && dirty)
+    function isEmpty(obj) {
+        for(var key in obj) {
+            if(obj.hasOwnProperty(key))
+                return false;
+        }
+        return true;
+    }
 
-    const reset = props.changed || dirty
+    const valid = (props.authorsChanged && props.authorsValid)  || (isEmpty(errors) && dirty) || (props.changed && isEmpty(errors))
+
+    const reset = props.authorsChanged || dirty || props.changed
 
 
     const handleReset = () => {
@@ -38,7 +46,7 @@ export const Form = props => {
         resetData.codeLicense = props.originalMetadata.license.code
         resetForm(resetData)
         props.onUpdate(props.originalMetadata.creators);
-        props.setChanged();
+        props.setChangedFalse();
         props.setFormValues(props.values);
     };
 
@@ -270,7 +278,7 @@ export const Form = props => {
                             type="submit"
                             variant="contained"
                             color="primary"
-                            disabled={!valid || !props.authorsValid}
+                            disabled={!valid}
                         >
                             Save
                          </Button>
