@@ -68,10 +68,13 @@ class RequiredMetadata extends Component {
         this.state = {
             ownDirtyProof: true
         }
+        this.form= React.createRef();
+        
     };
 
 
-    
+
+
     initialValues = {
         title: this.props.metadata.title,
         abstract: this.props.metadata.description,
@@ -100,6 +103,9 @@ class RequiredMetadata extends Component {
 
     componentDidMount() {
         prepareLicense();
+        console.log(this.form)
+        this.form.current.getFormikActions().validateForm()
+        this.form.current.getFormikActions().setTouched({"title" : true, "abstract" : true, "publicationDate" : true, "textLicense" : true, "dataLicense" : true,"codeLicense" : true});
     }
 
     componentWillUnmount() {
@@ -107,17 +113,17 @@ class RequiredMetadata extends Component {
         const values = this.formValues;
         const newMetadata = this.props.metadata;
 
-        
-            newMetadata.title = values.title;
-            newMetadata.description = values.abstract;
-            newMetadata.publication_date = values.publicationDate;
-            newMetadata.displayfile = values.displayFile;
-            newMetadata.mainfile = values.mainFile;
-            newMetadata.license.data = values.dataLicense;
-            newMetadata.license.text = values.textLicense;
-            newMetadata.license.code = values.codeLicense;
-            newMetadata.creators = this.props.authors;
-        
+
+        newMetadata.title = values.title;
+        newMetadata.description = values.abstract;
+        newMetadata.publication_date = values.publicationDate;
+        newMetadata.displayfile = values.displayFile;
+        newMetadata.mainfile = values.mainFile;
+        newMetadata.license.data = values.dataLicense;
+        newMetadata.license.text = values.textLicense;
+        newMetadata.license.code = values.codeLicense;
+        newMetadata.creators = this.props.authors;
+
 
         this.props.setMetadata(newMetadata, false);
     }
@@ -126,16 +132,15 @@ class RequiredMetadata extends Component {
 
     setFormValues = (values) => {
 
-        console.log(JSON.stringify(this.originialValues))
-        console.log(JSON.stringify(values))
+
         if (JSON.stringify(this.originialValues) == JSON.stringify(values)) {
             console.log(true)
             this.props.setChangedFalse('form')
-            this.setState({ ownDirtyProof : false})
+            this.setState({ ownDirtyProof: false })
         }
         else {
             this.props.setChanged()
-            this.setState({ ownDirtyProof : true})
+            this.setState({ ownDirtyProof: true })
         }
         this.formValues = values;
     }
@@ -144,7 +149,7 @@ class RequiredMetadata extends Component {
         return (
             <div>
                 {this.props.metadata &&
-                    <Formik ref={this.form}
+                    <Formik  ref={this.form}
                         onSubmit={(values, actions) => {
                             actions.setSubmitting(false);
 
@@ -162,7 +167,7 @@ class RequiredMetadata extends Component {
                             actions.resetForm(values);
                         }
                         }
-                        render={props => <Form{...props}
+                        render={props => <Form  {...props}
                             authors={this.props.authors}
                             displayCandidates={this.props.metadata.displayfile_candidates}
                             mainFileCandidates={this.props.metadata.mainfile_candidates}

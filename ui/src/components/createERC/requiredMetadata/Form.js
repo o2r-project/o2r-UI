@@ -30,7 +30,7 @@ export const Form = props => {
 
     const valid = (props.authorsChanged && props.authorsValid && isEmpty(errors)) || (props.changed && isEmpty(errors) && props.ownDirtyProof && props.authorsValid)
 
-    const reset = props.authorsChanged ||  (props.changed && props.ownDirtyProof)
+    const reset = props.authorsChanged || (props.changed && props.ownDirtyProof)
 
 
     const handleReset = () => {
@@ -38,7 +38,7 @@ export const Form = props => {
         resetForm(props.originalMetadata)
         props.onUpdate(props.originalAuthors);
         props.setChangedFalse("all");
-        
+
     };
 
 
@@ -50,7 +50,7 @@ export const Form = props => {
     };
 
     const blur = () => {
-       props.setFormValues(props.values)
+        props.setFormValues(props.values)
     }
 
 
@@ -60,22 +60,22 @@ export const Form = props => {
 
 
     const setMostRestrictive = () => {
-        var values= props.values
-        values.textLicense= props.mostRestrictiveData[0].id;
-        values.codeLicense= props.mostRestrictiveData[1].id;
-        values.dataLicense= props.mostRestrictiveData[2].id;
+        var values = props.values
+        values.textLicense = props.mostRestrictiveData[0].id;
+        values.codeLicense = props.mostRestrictiveData[1].id;
+        values.dataLicense = props.mostRestrictiveData[2].id;
         setValues(values)
         props.setFormValues(values)
     }
 
 
-   const setLeastRestrictive = () => {
-    var values= props.values
-    values.textLicense= props.leastRestrictiveData[0].id;
-    values.codeLicense= props.leastRestrictiveData[1].id;
-    values.dataLicense= props.leastRestrictiveData[2].id;
-    setValues(values)
-    props.setFormValues(values)
+    const setLeastRestrictive = () => {
+        var values = props.values
+        values.textLicense = props.leastRestrictiveData[0].id;
+        values.codeLicense = props.leastRestrictiveData[1].id;
+        values.dataLicense = props.leastRestrictiveData[2].id;
+        setValues(values)
+        props.setFormValues(values)
     }
 
 
@@ -197,7 +197,7 @@ export const Form = props => {
                             <h4>Licenses</h4>
                             <div>
                                 <Button variant="contained" color="primary" style={{ margin: "8px" }}
-                                    onClick={() => {setMostRestrictive()}}
+                                    onClick={() => { setMostRestrictive() }}
                                 >MOST RESTRICTIVE</Button>
                                 <Button variant="contained" color="primary" style={{ margin: "8px" }}
                                     onClick={setLeastRestrictive}
@@ -253,6 +253,7 @@ export const Form = props => {
                                 helperText={touched.dataLicense ? errors.dataLicense : ""}
                                 error={touched.dataLicense && Boolean(errors.dataLicense)}
                                 value={dataLicense}
+                                defaultValue=""
                                 onChange={change.bind(null, "dataLicense")}
                                 onBlur={blur.bind(null)}
                                 margin="normal"

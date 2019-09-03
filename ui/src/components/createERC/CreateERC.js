@@ -112,16 +112,15 @@ class CreateERC extends Component {
 
     setChangedFalse = (x) => {
         console.log(1)
-        if(x == "all")
-        {
-        this.setState({ changed: false, authorsChanged: false })
+        if (x == "all") {
+            this.setState({ changed: false, authorsChanged: false })
         }
-        else{
-            this.setState({ changed: false})
+        else {
+            this.setState({ changed: false })
         }
     }
 
-    setChanged= () => {
+    setChanged = () => {
         this.setState({ changed: true })
     }
 
