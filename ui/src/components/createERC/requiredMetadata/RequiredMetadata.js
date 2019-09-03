@@ -66,11 +66,12 @@ class RequiredMetadata extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            formValues: null
+            ownDirtyProof: false
         }
     };
 
 
+    formValues = {}
 
     initialValues = {
         title: this.props.metadata.title,
@@ -83,6 +84,18 @@ class RequiredMetadata extends Component {
         codeLicense: this.props.metadata.license.code,
     }
 
+    originialValues = {
+        title: this.props.originalMetadata.title,
+        abstract: this.props.originalMetadata.description,
+        publicationDate: this.props.originalMetadata.publication_date,
+        displayFile: this.props.originalMetadata.displayfile,
+        mainFile: this.props.originalMetadata.mainfile,
+        dataLicense: this.props.originalMetadata.license.data,
+        textLicense: this.props.originalMetadata.license.text,
+        codeLicense: this.props.originalMetadata.license.code,
+
+    }
+
 
     componentDidMount() {
         prepareLicense();
@@ -90,7 +103,7 @@ class RequiredMetadata extends Component {
 
     componentWillUnmount() {
 
-        const values = this.state.formValues;
+        const values = this.formValues;
         const newMetadata = this.props.metadata;
 
         if (values != null) {
@@ -104,7 +117,7 @@ class RequiredMetadata extends Component {
             newMetadata.license.code = values.codeLicense;
             this.props.setMetadata(newMetadata, false);
         }
-        if (this.state.authorsChanged == true) {
+        if (this.props.authorsChanged == true) {
             newMetadata.creators = this.props.authors;
         }
     }
@@ -112,7 +125,17 @@ class RequiredMetadata extends Component {
 
 
     setFormValues = (values) => {
-        this.setState({ formValues: values })
+
+        console.log(JSON.stringify(this.originialValues))
+        console.log(JSON.stringify(values))
+        if (JSON.stringify(this.originialValues) == JSON.stringify(values)) {
+            console.log(true)
+            this.setState({ownDirtyProof: true})
+        }
+        else {
+           this.setState({ownDirtyProof: false})
+        }
+        this.formValues = values;
     }
 
     render() {
@@ -148,7 +171,9 @@ class RequiredMetadata extends Component {
                             authorsChanged={this.props.authorsChanged}
                             changed={this.props.changed}
                             setChangedFalse={this.props.setChangedFalse}
-                            originalMetadata={this.props.originalMetadata}
+                            originalMetadata={this.originialValues}
+                            originalAuthors={this.props.originalMetadata.creators}
+                            ownDirtyProof={this.state.ownDirtyProof}
                             textLicenses={textLicenses}
                             codeLicenses={codeLicenses}
                             dataLicenses={dataLicenses}

@@ -28,24 +28,15 @@ export const Form = props => {
         return true;
     }
 
-    const valid = (props.authorsChanged && props.authorsValid) || (isEmpty(errors) && dirty) || (props.changed && isEmpty(errors))
+    const valid = (props.authorsChanged && props.authorsValid) || (isEmpty(errors) && dirty && !props.ownDirtyProof ) || (props.changed && isEmpty(errors) && !props.ownDirtyProof)
 
-    const reset = props.authorsChanged || dirty || props.changed
+    const reset = props.authorsChanged || (dirty && !props.ownDirtyProof) || (props.changed && !props.ownDirtyProof)
 
 
     const handleReset = () => {
 
-        const resetData = props.values
-        resetData.title = props.originalMetadata.title
-        resetData.abstract = props.originalMetadata.description
-        resetData.publicationDate = props.originalMetadata.publication_date
-        resetData.displayFile = props.originalMetadata.displayfile
-        resetData.mainFile = props.originalMetadata.mainfile
-        resetData.dataLicense = props.originalMetadata.license.data
-        resetData.textLicense = props.originalMetadata.license.text
-        resetData.codeLicense = props.originalMetadata.license.code
-        resetForm(resetData)
-        props.onUpdate(props.originalMetadata.creators);
+        resetForm(props.originalMetadata)
+        props.onUpdate(props.originalAuthors);
         props.setChangedFalse();
         props.setFormValues(props.values);
     };
