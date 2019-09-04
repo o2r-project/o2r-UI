@@ -136,7 +136,6 @@ class RequiredMetadata extends Component {
 
 
         if (JSON.stringify(this.originialValues) == JSON.stringify(values)) {
-            console.log(true)
             this.props.setChangedFalse('form')
         }
         else {

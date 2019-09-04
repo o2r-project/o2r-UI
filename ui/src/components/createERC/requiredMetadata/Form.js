@@ -37,7 +37,6 @@ export const Form = props => {
 
         resetForm(props.originalMetadata)
         for(var i in props.resetAuthors){
-            console.log(props.resetAuthors[i])
             props.resetAuthors[i].getFormikActions().resetForm(props.originalAuthors[i])
         }
         props.onUpdate(JSON.parse(JSON.stringify(props.originalAuthors)));
