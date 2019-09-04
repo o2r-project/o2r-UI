@@ -20,6 +20,7 @@ function AuthorCard(props) {
                     index={self.id} />}
                 initialValues={props.author}
                 validationSchema={authorValidationSchema}
+                enableReinitialize
             />
 
         </div>

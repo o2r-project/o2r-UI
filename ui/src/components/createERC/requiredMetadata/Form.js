@@ -40,7 +40,7 @@ export const Form = props => {
             console.log(props.resetAuthors[i])
             props.resetAuthors[i].getFormikActions().resetForm(props.originalAuthors[i])
         }
-        props.onUpdate(props.originalAuthors);
+        props.onUpdate(JSON.parse(JSON.stringify(props.originalAuthors)));
         props.setChangedFalse("all");
 
     };

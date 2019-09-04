@@ -102,7 +102,7 @@ class CreateERC extends Component {
 
     updateAuthors = (value) => {
         var changed = true;
-        if (JSON.stringify(value) == JSON.stringify(this.state.originalMetadata.creators)) {
+        if (JSON.stringify(value) === JSON.stringify(this.state.originalMetadata.creators)) {
             changed = false;
         }
         this.setState({ authors: value, authorsChanged: changed }, () => {
