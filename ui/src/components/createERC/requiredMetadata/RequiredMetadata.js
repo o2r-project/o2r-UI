@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 
 import licensesData from '../../../helpers/licenses.json'
 import { Form } from './Form';
+import { refs } from './Authors/AuthorCard'
 
 import './requiredMetadata.css';
 
@@ -60,19 +61,16 @@ const validationSchema = Yup.object({
 
 
 
-
+var refs2;
 
 class RequiredMetadata extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            ownDirtyProof: true
         }
-        this.form= React.createRef();
-        
+        this.form = React.createRef();
+
     };
-
-
 
 
     initialValues = {
@@ -103,9 +101,13 @@ class RequiredMetadata extends Component {
 
     componentDidMount() {
         prepareLicense();
-        console.log(this.form)
+        refs2 = refs.splice(refs.length - this.props.authors.length, refs.length)
+        console.log(refs2)
         this.form.current.getFormikActions().validateForm()
-        this.form.current.getFormikActions().setTouched({"title" : true, "abstract" : true, "publicationDate" : true, "textLicense" : true, "dataLicense" : true,"codeLicense" : true});
+        this.form.current.getFormikActions().setTouched({ "title": true, "abstract": true, "publicationDate": true, "textLicense": true, "dataLicense": true, "codeLicense": true });
+        for (var i in refs2) {
+            refs2[i].getFormikActions().validateForm()
+        }
     }
 
     componentWillUnmount() {
@@ -136,11 +138,9 @@ class RequiredMetadata extends Component {
         if (JSON.stringify(this.originialValues) == JSON.stringify(values)) {
             console.log(true)
             this.props.setChangedFalse('form')
-            this.setState({ ownDirtyProof: false })
         }
         else {
             this.props.setChanged()
-            this.setState({ ownDirtyProof: true })
         }
         this.formValues = values;
     }
@@ -149,7 +149,7 @@ class RequiredMetadata extends Component {
         return (
             <div>
                 {this.props.metadata &&
-                    <Formik  ref={this.form}
+                    <Formik ref={this.form}
                         onSubmit={(values, actions) => {
                             actions.setSubmitting(false);
 
@@ -174,13 +174,13 @@ class RequiredMetadata extends Component {
                             onUpdate={this.props.updateAuthors}
                             authorsValid={this.props.authorsValid}
                             setFormValues={this.setFormValues}
+                            resetAuthors={refs2}
                             goToERC={this.props.goToErc}
                             authorsChanged={this.props.authorsChanged}
                             changed={this.props.changed}
                             setChangedFalse={this.props.setChangedFalse}
                             originalMetadata={this.originialValues}
                             originalAuthors={this.props.originalMetadata.creators}
-                            ownDirtyProof={this.state.ownDirtyProof}
                             textLicenses={textLicenses}
                             codeLicenses={codeLicenses}
                             dataLicenses={dataLicenses}

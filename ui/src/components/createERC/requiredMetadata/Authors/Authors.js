@@ -65,6 +65,7 @@ class Authors extends Component {
                         key={index}
                         id={index}
                         author={item}
+                        authors={this.props.authors}
                         deleteable={this.state.deletable}
                         handleDelete={() => this.handleDelete(index)}
                         handleUpdate={this.handleUpdate}

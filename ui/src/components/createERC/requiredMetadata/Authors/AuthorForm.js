@@ -15,16 +15,16 @@ export const AuthorForm = props => {
     const {
         values: { name, affiliation, orcid },
         errors,
-        touched,
         handleChange,
-        setFieldTouched,
     } = props;
 
     const change = (name, e) => {
         e.persist();
         e.target.name = name;
         handleChange(e);
-        setFieldTouched(name, true, false);
+        var values= props.values
+        values[name] = e.target.defaultValue
+        props.onChange(props.index, values)
     };
 
     function update() {
@@ -40,8 +40,8 @@ export const AuthorForm = props => {
                 type="text"
                 style={{ margin: 8 }}
                 required
-                helperText={touched.name ? errors.name : ""}
-                error={touched.name && Boolean(errors.name)}
+                helperText={Boolean(errors.name)? errors.name : ""}
+                error={Boolean(errors.name)}
                 value={name}
                 onChange={change.bind(null, "name")}
                 onBlur={update}
@@ -55,8 +55,8 @@ export const AuthorForm = props => {
                 label="Affiliation"
                 type="text"
                 style={{ margin: 8 }}
-                helperText={touched.affiliation ? errors.affiliation : ""}
-                error={touched.affiliation && Boolean(errors.affiliation)}
+                helperText={Boolean(errors.affiliation) ? errors.affiliation : ""}
+                error={Boolean(errors.affiliation)}
                 value={affiliation}
                 onBlur={update}
                 onChange={change.bind(null, "affiliation")}
@@ -70,8 +70,8 @@ export const AuthorForm = props => {
                 label="ORCID"
                 type="text"
                 style={{ margin: 8 }}
-                helperText={touched.orcid ? errors.orcid : ""}
-                error={touched.orcid && Boolean(errors.orcid)}
+                helperText={Boolean(errors.orcid) ? errors.orcid : ""}
+                error={Boolean(errors.orcid)}
                 value={orcid}
                 onBlur={update}
                 onChange={change.bind(null, "orcid")}

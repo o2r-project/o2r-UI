@@ -28,14 +28,18 @@ export const Form = props => {
         return true;
     }
 
-    const valid = (props.authorsChanged && props.authorsValid && isEmpty(errors)) || (props.changed && isEmpty(errors) && props.ownDirtyProof && props.authorsValid)
+    const valid = (props.authorsChanged && props.authorsValid && isEmpty(errors)) || (props.changed && isEmpty(errors) && props.authorsValid)
 
-    const reset = props.authorsChanged || (props.changed && props.ownDirtyProof)
+    const reset = props.authorsChanged || props.changed
 
 
     const handleReset = () => {
 
         resetForm(props.originalMetadata)
+        for(var i in props.resetAuthors){
+            console.log(props.resetAuthors[i])
+            props.resetAuthors[i].getFormikActions().resetForm(props.originalAuthors[i])
+        }
         props.onUpdate(props.originalAuthors);
         props.setChangedFalse("all");
 
@@ -46,7 +50,10 @@ export const Form = props => {
         e.persist();
         e.target.name = name;
         handleChange(e);
+        var values= props.values
+        values[name] = e.nativeEvent.data
         setFieldTouched(name, true, false);
+        props.setFormValues(values)
     };
 
     const blur = () => {

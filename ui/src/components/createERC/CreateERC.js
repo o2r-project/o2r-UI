@@ -111,7 +111,6 @@ class CreateERC extends Component {
     }
 
     setChangedFalse = (x) => {
-        console.log(1)
         if (x == "all") {
             this.setState({ changed: false, authorsChanged: false })
         }
@@ -131,7 +130,7 @@ class CreateERC extends Component {
             valid = false;
         }
         for (var i in this.state.authors) {
-            if (this.state.authors[i].name === "") {
+            if (this.state.authors[i].name === "" || this.state.authors[i].name === null) {
                 valid = false;
             }
         }

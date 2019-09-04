@@ -3,14 +3,16 @@ import React from "react";
 import { AuthorForm, authorValidationSchema } from "./AuthorForm";
 
 
+export const refs = []
 
 function AuthorCard(props) {
 
     const self = props;
+    
     return (
         <div id="AuthorCard">
 
-            <Formik
+            <Formik ref={(ref) => refs.push(ref)}
                 onSubmit={(values, actions) => {
 
                 }}
@@ -18,7 +20,6 @@ function AuthorCard(props) {
                     index={self.id} />}
                 initialValues={props.author}
                 validationSchema={authorValidationSchema}
-                enableReinitialize={true}
             />
 
         </div>
