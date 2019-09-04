@@ -23,7 +23,7 @@ export const AuthorForm = props => {
         e.target.name = name;
         handleChange(e);
         var values= props.values
-        values[name] = e.target.defaultValue
+        values[name] = e.target.value
         props.onChange(props.index, values)
     };
 
