@@ -60,10 +60,10 @@ handleSelectedText(e) {
 
                 if (foundParameters.length != 0 || res.data.data.length != 0) {
                     answerText += " Please check in the \"Manipulate\" view"
-                    self.setState({ title: "Codelines in Bindings found", selectedText: answerText, popup: true })
+                    self.setState({ title: "Codeline in Bindings found", selectedText: answerText, popup: true })
                 }
                 else {
-                    self.setState({ title: "Codelines is not used for any Binding", selectedText: answerText, popup: true })
+                    self.setState({ title: "Codeline is not used for any Binding", selectedText: answerText, popup: true })
                 }
 
             })
