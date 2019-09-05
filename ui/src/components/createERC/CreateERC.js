@@ -32,6 +32,7 @@ class CreateERC extends Component {
             open: false,
             changed: false,
             authorsChanged: false,
+            spatioTemporalChanged: false,
             authorsValid: false,
         }
     }
@@ -118,12 +119,12 @@ class CreateERC extends Component {
             this.setState({ changed: false, authorsChanged: false })
         }
         else {
-            this.setState({ changed: false })
+            this.setState({ [x]: false })
         }
     }
 
-    setChanged = () => {
-        this.setState({ changed: true })
+    setChanged = (changed) => {
+        this.setState({ [changed]: true })
     }
 
     authorsNotNull = () => {
@@ -175,6 +176,7 @@ class CreateERC extends Component {
                                 authors={this.state.authors}
                                 authorsChanged={this.state.authorsChanged}
                                 changed={this.state.changed}
+                                spatioTemporalChanged={this.spatioTemporalChanged}
                                 updateAuthors={this.updateAuthors}
                                 setChangedFalse={this.setChangedFalse}
                                 setChanged={this.setChanged}
@@ -189,7 +191,12 @@ class CreateERC extends Component {
                             goToErc={this.goToErc}
                             metadata={this.state.metadata}
                             setMetadata={this.setMetadata}
-                      originalMetadata={this.state.originalMetadata}/> }
+                            originalMetadata={this.state.originalMetadata}
+                            setChanged={this.setChanged}
+                            setChangedFalse={this.setChangedFalse}
+                            changed={this.state.changed}
+                            authorsChanged={this.state.authorsChanged}
+                            spatioTemporalChanged={this.state.spatioTemporalChanged}/> }
                     </TabContainer>
                 }
                 {value === 2 &&

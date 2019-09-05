@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, TextField, Button, MenuItem, CardContent, Grid } from "@material-ui/core";
 import Authors from './Authors/Authors';
-
+export let valid;
 export const Form = props => {
 
     const {
@@ -28,7 +28,7 @@ export const Form = props => {
         return true;
     }
 
-    const valid = (props.authorsChanged && props.authorsValid && isEmpty(errors)) || (props.changed && isEmpty(errors) && props.authorsValid)
+    valid = (props.authorsChanged && props.authorsValid && isEmpty(errors)) || (props.changed && isEmpty(errors) && props.authorsValid)
 
     const reset = props.authorsChanged || props.changed
 

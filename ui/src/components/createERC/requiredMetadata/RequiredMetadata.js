@@ -136,10 +136,10 @@ class RequiredMetadata extends Component {
 
 
         if (JSON.stringify(this.originialValues) == JSON.stringify(values)) {
-            this.props.setChangedFalse('form')
+            this.props.setChangedFalse("changed")
         }
         else {
-            this.props.setChanged()
+            this.props.setChanged("changed")
         }
         this.formValues = values;
     }

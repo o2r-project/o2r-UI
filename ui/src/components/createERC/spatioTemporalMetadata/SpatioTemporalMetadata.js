@@ -7,6 +7,7 @@ import { Card, TextField, Button, Grid } from "@material-ui/core";
 
 import OwnMap, {ref} from "./Map"
 import L from 'leaflet'
+import {valid} from '../requiredMetadata/Form.js'
 
 
 let to;
@@ -20,9 +21,11 @@ class SpatioTemporalMetadata extends React.Component {
     this.state = {
       from: begin,
       to: end,
-      changed: false
     };
   };
+
+  changed= this.props.changed || this.props.authorsChanged || this.props.sptioTemporalChanged
+
 
   handleChange = (e, name) => {
     this.setState({
@@ -37,13 +40,13 @@ class SpatioTemporalMetadata extends React.Component {
     else {
       updatedMetadata.temporal.end = e.target.value;
     }
-    
+
     if(JSON.stringify(updatedMetadata.temporal) !== JSON.stringify(this.props.originalMetadata.temporal))
     {
-    this.setState({changed: true})
+    this.setChanged()
     }
     else{
-      this.setState({changed: false})
+      this.props.setChangedFalse("spatioTemporal")
     }
 
     this.props.setMetadata(updatedMetadata, false);
@@ -61,7 +64,7 @@ class SpatioTemporalMetadata extends React.Component {
   }
 
   setChanged= () => {
-    this.setState({changed: true})
+    this.props.setChanged("spatioTemporalChanged")
   }
 
   handleReset = () => {
@@ -75,7 +78,13 @@ class SpatioTemporalMetadata extends React.Component {
       to: end,
       changed: false
     })
-    this.props.setMetadata(this.props.originalMetadata, false)
+
+    var metadata= this.props.metadata
+
+    metadata.temporal.begin = this.props.originalMetadata.temporal.begin
+    metadata.temporal.end= this.props.originalMetadata.temporal.end
+    metadata.spatial= this.props.originalMetadata.spatial
+    this.props.setMetadata(metadata, false)
 
     this._editableFG = ref;
     var GeoJSON = this.getGeoJson()
@@ -154,7 +163,7 @@ class SpatioTemporalMetadata extends React.Component {
               <Button
                 onClick={this.handleReset.bind(null)}
                 type="button"
-                disabled={!this.state.changed}
+                disabled={!this.props.spatioTemporalChanged}
               >
                 Reset
             </Button>
@@ -163,7 +172,7 @@ class SpatioTemporalMetadata extends React.Component {
                 type="submit"
                 variant="contained"
                 color="primary"
-                disabled={!this.state.changed}
+                disabled={!this.changed || !valid }
               >
                 Save
             </Button>
