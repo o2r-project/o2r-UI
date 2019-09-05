@@ -98,7 +98,7 @@ class RequiredMetadata extends Component {
 
     }
 
-
+    
     componentDidMount() {
         prepareLicense();
         refs2 = refs.splice(refs.length - this.props.authors.length, refs.length)
@@ -178,8 +178,8 @@ class RequiredMetadata extends Component {
                             authorsChanged={this.props.authorsChanged}
                             changed={this.props.changed}
                             setChangedFalse={this.props.setChangedFalse}
-                            originalMetadata={this.originialValues}
-                            originalAuthors={this.props.originalMetadata.creators}
+                            originalMetadata={JSON.parse(JSON.stringify(this.originialValues))}
+                            originalAuthors={JSON.parse(JSON.stringify(this.props.originalMetadata.creators))}
                             textLicenses={textLicenses}
                             codeLicenses={codeLicenses}
                             dataLicenses={dataLicenses}

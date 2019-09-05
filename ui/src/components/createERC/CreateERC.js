@@ -26,7 +26,6 @@ class CreateERC extends Component {
             value: 0,
             metadata: null,
             originalMetadata: null,
-            originalMetadataString: "",
             compendium_id: props.match.params.id,
             codefile: null,
             message: "",
@@ -51,7 +50,6 @@ class CreateERC extends Component {
                         self.setState({
                             metadata: metadata,
                             originalMetadata: JSON.parse(JSON.stringify(metadata)),
-                            originalMetadataString: JSON.stringify(metadata),
                             authors: metadata.creators,
                             codefile: res2,
                         }, () => self.authorsNotNull());
@@ -84,7 +82,6 @@ class CreateERC extends Component {
             message: "Updating Metadata",
             backgroundColor: "blue",
             originalMetadata: JSON.parse(JSON.stringify(this.state.metadata)),
-            originalMetadataString: JSON.stringify(this.state.metadata)
         })
         httpRequests.updateMetadata(self.state.compendium_id, self.state.metadata)
             .then(function (res2) {
@@ -105,17 +102,13 @@ class CreateERC extends Component {
 
     updateAuthors = async (value) => {
 
-        if(JSON.stringify(this.state.originalMetadata) !== this.state.originalMetadataString){
-            await this.setState({originalMetadata: JSON.parse(this.state.originalMetadataString)})
-        }
         var changed = true;
-        var value2 = JSON.parse(JSON.stringify(value));
         if (JSON.stringify(value) === JSON.stringify(this.state.originalMetadata.creators)) {
             changed = false;
         }
 
 
-        this.setState({ authors: value2, authorsChanged: changed }, () => {
+        this.setState({ authors: value, authorsChanged: changed }, () => {
             this.authorsNotNull()
         })
     }

@@ -41,6 +41,7 @@ export const Form = props => {
         }
         props.onUpdate(JSON.parse(JSON.stringify(props.originalAuthors)));
         props.setChangedFalse("all");
+        props.setFormValues(props.originalMetadata)
 
     };
 
@@ -50,7 +51,7 @@ export const Form = props => {
         e.target.name = name;
         handleChange(e);
         var values= props.values
-        values[name] = e.nativeEvent.data
+        values[name] = e.target.value
         setFieldTouched(name, true, false);
         props.setFormValues(values)
     };
