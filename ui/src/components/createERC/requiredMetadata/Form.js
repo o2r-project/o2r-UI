@@ -1,7 +1,8 @@
 import React from 'react';
 import { Card, TextField, Button, MenuItem, CardContent, Grid } from "@material-ui/core";
 import Authors from './Authors/Authors';
-export let valid;
+export let valid2;
+
 export const Form = props => {
 
     const {
@@ -28,7 +29,9 @@ export const Form = props => {
         return true;
     }
 
-    valid = (props.authorsChanged && props.authorsValid && isEmpty(errors)) || (props.changed && isEmpty(errors) && props.authorsValid)
+    const valid = (props.authorsChanged && props.authorsValid && isEmpty(errors)) || (props.changed && isEmpty(errors) && props.authorsValid) || (props.spatioTemporalChanged && props.authorsValid && isEmpty(errors))
+
+    valid2 = isEmpty(errors) && props.authorsValid
 
     const reset = props.authorsChanged || props.changed
 
@@ -54,6 +57,7 @@ export const Form = props => {
         values[name] = e.target.value
         setFieldTouched(name, true, false);
         props.setFormValues(values)
+        console.log(valid2)
     };
 
     const blur = () => {

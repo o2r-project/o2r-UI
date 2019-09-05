@@ -175,6 +175,7 @@ class RequiredMetadata extends Component {
                             setFormValues={this.setFormValues}
                             resetAuthors={refs2}
                             goToERC={this.props.goToErc}
+                            spatioTemporalChanged={this.props.spatioTemporalChanged}
                             authorsChanged={this.props.authorsChanged}
                             changed={this.props.changed}
                             setChangedFalse={this.props.setChangedFalse}

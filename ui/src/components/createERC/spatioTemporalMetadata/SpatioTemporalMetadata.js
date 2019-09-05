@@ -7,7 +7,7 @@ import { Card, TextField, Button, Grid } from "@material-ui/core";
 
 import OwnMap, {ref} from "./Map"
 import L from 'leaflet'
-import {valid} from '../requiredMetadata/Form.js'
+import {valid2} from '../requiredMetadata/Form.js'
 
 
 let to;
@@ -24,9 +24,6 @@ class SpatioTemporalMetadata extends React.Component {
     };
   };
 
-  changed= this.props.changed || this.props.authorsChanged || this.props.sptioTemporalChanged
-
-
   handleChange = (e, name) => {
     this.setState({
       [name]: e.target.value
@@ -41,15 +38,18 @@ class SpatioTemporalMetadata extends React.Component {
       updatedMetadata.temporal.end = e.target.value;
     }
 
+    console.log(this.props.spatioTemporalChanged)
+    console.log(this.state.changed)
     if(JSON.stringify(updatedMetadata.temporal) !== JSON.stringify(this.props.originalMetadata.temporal))
     {
     this.setChanged()
     }
     else{
-      this.props.setChangedFalse("spatioTemporal")
+      this.props.setChangedFalse("spatioTemporalChanged");
     }
 
     this.props.setMetadata(updatedMetadata, false);
+
 
   }
 
@@ -76,7 +76,6 @@ class SpatioTemporalMetadata extends React.Component {
     this.setState({
       from: begin,
       to: end,
-      changed: false
     })
 
     var metadata= this.props.metadata
@@ -99,6 +98,8 @@ class SpatioTemporalMetadata extends React.Component {
     let leafletFG = this._editableFG.leafletElement;
     leafletFG.clearLayers()
     leafletGeoJSON.eachLayer(layer => leafletFG.addLayer(layer));
+
+    this.props.setChangedFalse("spatioTemporalChanged");
   }
 
 
@@ -172,7 +173,7 @@ class SpatioTemporalMetadata extends React.Component {
                 type="submit"
                 variant="contained"
                 color="primary"
-                disabled={!this.changed || !valid }
+                disabled={!(this.props.spatioTemporalChanged || this.props.authorsChanged || this.props.changed) || !valid2 }
               >
                 Save
             </Button>

@@ -176,7 +176,7 @@ class CreateERC extends Component {
                                 authors={this.state.authors}
                                 authorsChanged={this.state.authorsChanged}
                                 changed={this.state.changed}
-                                spatioTemporalChanged={this.spatioTemporalChanged}
+                                spatioTemporalChanged={this.state.spatioTemporalChanged}
                                 updateAuthors={this.updateAuthors}
                                 setChangedFalse={this.setChangedFalse}
                                 setChanged={this.setChanged}
