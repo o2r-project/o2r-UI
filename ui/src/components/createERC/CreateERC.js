@@ -4,7 +4,7 @@ import { Tabs, Tab, Typography, AppBar, Snackbar, LinearProgress } from '@materi
 
 import './createERC.css';
 import RequiredMetadata from './requiredMetadata/RequiredMetadata';
-//import SpatioTemporalMetadata from './spatioTemporalMetadata/SpatioTemporalMetadata';
+import SpatioTemporalMetadata from './spatioTemporalMetadata/SpatioTemporalMetadata';
 import Bindings from './bindings/Bindings';
 import httpRequests from '../../helpers/httpRequests';
 
@@ -185,11 +185,11 @@ class CreateERC extends Component {
                 }
                 {value === 1 &&
                     <TabContainer>
-                        {/*  <SpatioTemporalMetadata
+                        { <SpatioTemporalMetadata
                             goToErc={this.goToErc}
                             metadata={this.state.metadata}
                             setMetadata={this.setMetadata}
-                      originalMetadata={this.state.originalMetadata}/> */}
+                      originalMetadata={this.state.originalMetadata}/> }
                     </TabContainer>
                 }
                 {value === 2 &&
@@ -199,7 +199,8 @@ class CreateERC extends Component {
                             codefile={this.state.codefile}
                             compendium_id={this.state.compendium_id}
                             updateMetadata={this.updateMetadata}
-                            goToErc={this.goToErc}
+                            originalMetadata={this.state.originalMetadata}
+                            goToERC={this.goToErc}
                         />
                     </TabContainer>
                 }
