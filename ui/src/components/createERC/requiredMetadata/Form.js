@@ -61,9 +61,7 @@ export const Form = props => {
     }
 
 
-    const goToErc = () => props.goToErc();
-
-
+    const goToErc = () => props.goToERC();
 
 
     const setMostRestrictive = () => {
