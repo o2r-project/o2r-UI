@@ -5,9 +5,9 @@ import './spatioTemporalMetadata.css';
 import React from 'react'
 import { Card, TextField, Button, Grid } from "@material-ui/core";
 
-import OwnMap, {ref} from "./Map"
+import OwnMap, { ref } from "./Map"
 import L from 'leaflet'
-import {valid2} from '../requiredMetadata/Form.js'
+import { valid2 } from '../requiredMetadata/Form.js'
 
 
 let to;
@@ -24,27 +24,22 @@ class SpatioTemporalMetadata extends React.Component {
     };
   };
 
-  handleChange = (e, name) => {
-    this.setState({
+  handleChange = async (e, name) => {
+    const updatedMetadata = JSON.parse(JSON.stringify(this.props.metadata));
+    await this.setState({
       [name]: e.target.value
     })
 
-    const updatedMetadata = JSON.parse(JSON.stringify(this.props.metadata));
+    updatedMetadata.temporal.begin = this.state.from;
+    updatedMetadata.temporal.end = this.state.to;
 
-    if (name === "from") {
-      updatedMetadata.temporal.begin = e.target.value;
+    var originalMetadata = this.props.originalMetadata
+    originalMetadata.temporal.end = this.props.originalMetadata.temporal.end.substring(0, 10);
+    originalMetadata.temporal.begin = this.props.originalMetadata.temporal.begin.substring(0, 10);
+    if (JSON.stringify(updatedMetadata.temporal) !== JSON.stringify(originalMetadata.temporal)) {
+      this.setChanged()
     }
     else {
-      updatedMetadata.temporal.end = e.target.value;
-    }
-
-    console.log(this.props.spatioTemporalChanged)
-    console.log(this.state.changed)
-    if(JSON.stringify(updatedMetadata.temporal) !== JSON.stringify(this.props.originalMetadata.temporal))
-    {
-    this.setChanged()
-    }
-    else{
       this.props.setChangedFalse("spatioTemporalChanged");
     }
 
@@ -54,16 +49,15 @@ class SpatioTemporalMetadata extends React.Component {
   }
 
   handleClick = (e) => {
-    console.log(this.props)
     this.props.goToErc()
   }
 
   handleSave = () => {
-    this.setState({changed: false})
+    this.props.setChangedFalse("all")
     this.props.setMetadata(this.props.metadata, true)
   }
 
-  setChanged= () => {
+  setChanged = () => {
     this.props.setChanged("spatioTemporalChanged")
   }
 
@@ -78,18 +72,18 @@ class SpatioTemporalMetadata extends React.Component {
       to: end,
     })
 
-    var metadata= this.props.metadata
+    var metadata = this.props.metadata
 
     metadata.temporal.begin = this.props.originalMetadata.temporal.begin
-    metadata.temporal.end= this.props.originalMetadata.temporal.end
-    metadata.spatial= this.props.originalMetadata.spatial
+    metadata.temporal.end = this.props.originalMetadata.temporal.end
+    metadata.spatial = this.props.originalMetadata.spatial
     this.props.setMetadata(metadata, false)
 
     this._editableFG = ref;
     var GeoJSON = this.getGeoJson()
-  
+
     for (var i = 0; i < 4; i++) {
-        GeoJSON.geometry.coordinates[0][i] = this.props.originalMetadata.spatial.union.bbox[i];
+      GeoJSON.geometry.coordinates[0][i] = this.props.originalMetadata.spatial.union.bbox[i];
     }
 
     GeoJSON.geometry.coordinates[0][4] = this.props.originalMetadata.spatial.union.bbox[0];
@@ -105,22 +99,22 @@ class SpatioTemporalMetadata extends React.Component {
 
   getGeoJson = () => {
     return {
-        "type": "Feature",
-        "properties": {},
-        "geometry": {
-            "type": "Polygon",
-            "coordinates": [
-                [
-                    [180, 180],
-                    [180, -180],
-                    [-180, -180],
-                    [-180, 180],
-                    [180, 180]
-                ]
-            ]
-        }
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [180, 180],
+            [180, -180],
+            [-180, -180],
+            [-180, 180],
+            [180, 180]
+          ]
+        ]
+      }
     }
-}
+  }
 
   render() {
     let to;
@@ -130,7 +124,7 @@ class SpatioTemporalMetadata extends React.Component {
           <Grid item xs={10}>
             <Card>
               <h1>Specify the spatial properties of your dataset(s):</h1>
-              <OwnMap metadata={this.props.metadata} setMetadata={this.props.setMetadata} setChanged={this.setChanged}/>
+              <OwnMap metadata={this.props.metadata} setMetadata={this.props.setMetadata} setChanged={this.setChanged} />
               <h1> Specify the temporal properties of your dataset(s):</h1>
 
               <TextField
@@ -173,7 +167,7 @@ class SpatioTemporalMetadata extends React.Component {
                 type="submit"
                 variant="contained"
                 color="primary"
-                disabled={!(this.props.spatioTemporalChanged || this.props.authorsChanged || this.props.changed) || !valid2 }
+                disabled={!(this.props.spatioTemporalChanged || this.props.authorsChanged || this.props.changed) || !valid2}
               >
                 Save
             </Button>

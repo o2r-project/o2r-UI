@@ -36,6 +36,8 @@ class OwnMap extends React.Component {
 
         });
 
+        console.log(e)
+
         const metadata = this.state.metadata;
 
         metadata.spatial.union.bbox[0] = GeoJSON.geometry.coordinates[0][0];
@@ -91,7 +93,7 @@ class OwnMap extends React.Component {
             GeoJSON.geometry.coordinates[0][i] = metadata.spatial.union.bbox[i];
         }
 
-        GeoJSON.geometry.coordinates[0][4] = metadata.spatial.union.bbox[0];
+        //GeoJSON.geometry.coordinates[0][4] = metadata.spatial.union.bbox[0];
 
         let leafletGeoJSON = new L.GeoJSON(GeoJSON);
         let leafletFG = this._editableFG.leafletElement;
@@ -113,7 +115,6 @@ class OwnMap extends React.Component {
                         [180, -180],
                         [-180, -180],
                         [-180, 180],
-                        [180, 180]
                     ]
                 ]
             }

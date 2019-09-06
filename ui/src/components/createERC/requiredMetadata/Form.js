@@ -57,7 +57,6 @@ export const Form = props => {
         values[name] = e.target.value
         setFieldTouched(name, true, false);
         props.setFormValues(values)
-        console.log(valid2)
     };
 
     const blur = () => {
