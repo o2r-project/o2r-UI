@@ -79,7 +79,8 @@ bindings.createBinding = function(binding, response) {
 };
 
 bindings.implementExtractR = function (binding,response) {
-    debug( 'Start to extract codelines for result: %s, compendium: %s', binding.computationalResult.result, binding.id );
+    //debug( 'Start to extract codelines for result: %s, compendium: %s', binding.computationalResult.result, binding.id );
+
 
     //Comment in if used with Service
     let file = fn.readRmarkdown(binding.id, binding.file);
@@ -97,9 +98,13 @@ bindings.implementExtractR = function (binding,response) {
     //Insert binding.plot
     let valuesToSearchFor = processJson.valuesToSearchFor(binding.plot);
     let codeLinesForValues = processJson.getAllCodeLines(varsInLines,valuesToSearchFor,[]);
+
     
-    binding.sourcecode.codelines = processJson.getCodeLines(codeLinesForValues);
-    console.log(binding.sourcecode.codelines)
+    
+    debug(codeLinesForValues);
+    
+    binding.codelines = processJson.getCodeLines(codeLinesForValues);
+    debug(binding.codelines)
     response.send({
         callback: 'ok',
         data: binding});

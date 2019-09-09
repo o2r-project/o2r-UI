@@ -142,7 +142,6 @@ areYou.findType = function (file) {
         type = 'sequence';
     } else {
         type = '';
-        debug("Unable to detect type in line " + i + "!");
 
     }
     return type;
