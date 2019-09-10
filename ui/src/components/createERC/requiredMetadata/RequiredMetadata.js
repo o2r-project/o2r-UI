@@ -102,7 +102,6 @@ class RequiredMetadata extends Component {
     componentDidMount() {
         prepareLicense();
         refs2 = refs.splice(refs.length - this.props.authors.length, refs.length)
-        console.log(refs2)
         this.form.current.getFormikActions().validateForm()
         this.form.current.getFormikActions().setTouched({ "title": true, "abstract": true, "publicationDate": true, "textLicense": true, "dataLicense": true, "codeLicense": true });
         for (var i in refs2) {
@@ -185,7 +184,8 @@ class RequiredMetadata extends Component {
                             codeLicenses={codeLicenses}
                             dataLicenses={dataLicenses}
                             mostRestrictiveData={mostRestrictiveData}
-                            leastRestrictiveData={leastRestrictiveData} />}
+                            leastRestrictiveData={leastRestrictiveData}
+                            candidate={this.props.candidate} />}
                         initialValues={this.initialValues}
                         validationSchema={validationSchema}
                     />

@@ -295,7 +295,8 @@ export const Form = props => {
                          </Button>
                         <Button
                             type="button"
-                            onClick={goToErc}>
+                            onClick={goToErc}
+                            disabled={props.candidate}>>
                             Go To ERC
                             </Button>
                     </Card>

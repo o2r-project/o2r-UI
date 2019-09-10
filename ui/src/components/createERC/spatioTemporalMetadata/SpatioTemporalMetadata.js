@@ -179,7 +179,8 @@ class SpatioTemporalMetadata extends React.Component {
             </Button>
               <Button
                 type="button"
-                onClick={this.handleClick.bind(null)}>
+                onClick={this.handleClick.bind(null)}
+                disabled={this.props.candidate}>
                 Go To ERC
              </Button>
             </Card>

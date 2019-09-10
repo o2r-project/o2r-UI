@@ -34,6 +34,7 @@ class CreateERC extends Component {
             authorsChanged: false,
             spatioTemporalChanged: false,
             authorsValid: false,
+            candidate: true,
         }
     }
 
@@ -46,12 +47,15 @@ class CreateERC extends Component {
         httpRequests.singleCompendium(self.state.compendium_id)
             .then(function (res) {
                 const metadata = res.data.metadata.o2r;
+                var candidate = res.data.candidate;
+                if( candidate != true) candidate =false;
                 httpRequests.getFile("compendium/" + self.state.compendium_id + "/data/" + metadata.mainfile)
                     .then(function (res2) {
                         self.setState({
                             metadata: metadata,
                             originalMetadata: JSON.parse(JSON.stringify(metadata)),
                             authors: metadata.creators,
+                            candidate: candidate,
                             codefile: res2,
                         }, () => self.authorsNotNull());
                     })
@@ -86,7 +90,7 @@ class CreateERC extends Component {
         })
         httpRequests.updateMetadata(self.state.compendium_id, self.state.metadata)
             .then(function (res2) {
-                self.setState({ showProgress: false, saved: true, open: true, message: "Metadata updated", backgroundColor: "green" })
+                self.setState({ showProgress: false, saved: true, open: true, message: "Metadata updated", backgroundColor: "green", candidate: false })
             })
             .catch(function (res2) {
                 self.setState({ showProgress: false, saved: true, open: true, message: "Metadata update failed", backgroundColor: "red" })
@@ -181,6 +185,7 @@ class CreateERC extends Component {
                                 setChangedFalse={this.setChangedFalse}
                                 setChanged={this.setChanged}
                                 authorsValid={this.state.authorsValid}
+                                candidate={this.state.candidate}
                             />
                             : ''}
                     </TabContainer>
@@ -196,7 +201,8 @@ class CreateERC extends Component {
                             setChangedFalse={this.setChangedFalse}
                             changed={this.state.changed}
                             authorsChanged={this.state.authorsChanged}
-                            spatioTemporalChanged={this.state.spatioTemporalChanged}/> }
+                            spatioTemporalChanged={this.state.spatioTemporalChanged}
+                            candidate={this.state.candidate}/> }
                     </TabContainer>
                 }
                 {value === 2 &&
