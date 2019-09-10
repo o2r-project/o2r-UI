@@ -214,7 +214,7 @@ class CreateERC extends Component {
                 <Snackbar
                     anchorOrigin={{
                         vertical: 'bottom',
-                        horizontal: 'left',
+                        horizontal: 'right',
                     }}
                     open={this.state.open}
                     onClose={this.handleClose}

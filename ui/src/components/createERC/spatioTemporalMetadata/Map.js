@@ -24,10 +24,22 @@ class OwnMap extends React.Component {
         this.forceUpdate()
     }
 
+    isEmpty(obj) {
+        for (var key in obj) {
+            if (obj.hasOwnProperty(key))
+                return false;
+        }
+        return true;
+    }
+
 
     _onEdited = (e) => {
 
         var bounds
+        console.log(e.layers._layers)
+        if(this.isEmpty(e.layers._layers)){
+            return
+        }
 
         e.layers.eachLayer((layer) => {
 
@@ -37,18 +49,19 @@ class OwnMap extends React.Component {
 
         });
         
-        const metadata = this.state.metadata;
+        const metadata = this.props.metadata;
 
-        var northEast= [bounds._northEast.lat, bounds._northEast.lng]
-        var southEast= [bounds._southWest.lat, bounds._northEast.lng]
-        var southWest= [bounds._southWest.lat, bounds._southWest.lng]
-        var northWest= [bounds._northEast.lat, bounds._southWest.lng]       
+        var northEast= [bounds._northEast.lng, bounds._northEast.lat]
+        var southEast= [bounds._southWest.lng, bounds._northEast.lat]
+        var southWest= [bounds._southWest.lng, bounds._southWest.lat]
+        var northWest= [bounds._northEast.lng, bounds._southWest.lat] 
+
+
 
         metadata.spatial.union.bbox[0] = northEast
         metadata.spatial.union.bbox[1] = southEast
         metadata.spatial.union.bbox[2] = southWest
         metadata.spatial.union.bbox[3] = northWest
-        console.log(metadata)
         this.props.setMetadata(metadata, false);
         this.setState({ GeoJSON: GeoJSON });
         this.props.setChanged();
