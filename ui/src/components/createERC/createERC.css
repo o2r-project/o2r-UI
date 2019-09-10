@@ -4,12 +4,15 @@
 }
 
 #appBar{
-    margin-top: -0.7%;
+
+    top: 64px !important;
 }
 
+
 .progress {
-    position: absolute;
-    top: 23vh;
+    position: fixed !important;
+    margin-top: 9%;
     left:83%;
     width:12%;
   }
+

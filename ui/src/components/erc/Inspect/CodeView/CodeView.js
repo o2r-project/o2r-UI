@@ -6,88 +6,96 @@ import Popup from './Popup/Popup';
 import httpRequests from '../../../../helpers/httpRequests';
 
 class CodeView extends React.Component {
+constructor(props) {
+    super(props);
+    this.state = {
+        selectedText: '',
+        popup: false,
+        title: "",
+    }
+}
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            selectedText:'',
-            popup:false,
+handleSelectedText(e) {
+    var self = this;
+    var answerText = "";
+    var text = window.getSelection().getRangeAt(0).toString();
+    if (text === '' || text.length < 4) return;
+    let bindings = this.props.metadata.interaction;
+    let foundParameters = [];
+    bindings.forEach(binding => {
+        binding.sourcecode.parameter.forEach(parameter => {
+            if (parameter.text.indexOf(text) !== -1) {
+                foundParameters.push(binding);
+            }
+        })
+    });
+
+    if (foundParameters.length != 0) {
+        answerText = "This Codeline is the Parameter for "
+
+        for (var i = 0; i < foundParameters.length - 1; i++) {
+            answerText += foundParameters[i].computationalResult.result + " and ";
         }
+        answerText += foundParameters[foundParameters.length - 1].computationalResult.result + ". "
     }
 
-    handleSelectedText ( e ) {
-        let self = this;
-        let text = window.getSelection().getRangeAt(0).toString();
-        if (text==='') return;
-        let bindings = this.props.metadata.interaction;
-        let foundParameters = [];
-        bindings.forEach(binding => {
-            binding.sourcecode.parameter.forEach(parameter => {
-                if ( parameter.text.indexOf(text) !== -1 ) {
-                    foundParameters.push(binding);
-                } 
-            })
-        });
-
+    try {
         httpRequests.searchBinding(text, this.props.metadata)
-        .then(function (res) {
-            console.log(res)
-            if ( text.trim() != '' ) {
-                self.setState({
-                    selectedText:text,
-                    popup:true,
-                })
-            }
-            /*if (res.data.data.length != 0) {
-                    for (var i in res.data.data) {
-                        for (var j in figures) {
-                            if (res.data.data[i] == figures[j]) {
-                                console.log(true)
-                                res.data.data.splice(i, 1)
-                            }
+            .then(function (res) {
+
+                for (var i in res.data.data) {
+                    for (var j in foundParameters) {
+                        if (res.data.data[i] == foundParameters[j].computationalResult.result) {
+                            res.data.data.splice(i, 1)
                         }
                     }
-                    if (res.data.data[i] == figures[j]) {
-                        parameter = true;
-                    }
+                }
+                if (res.data.data.length != 0) {
                     for (var i = 0; i < res.data.data.length - 1; i++) {
                         answerText += res.data.data[i] + " and "
                     }
-                    answerText += res.data.data[res.data.data.length - 1] + " using this Codeline. Please check in the \"Manipulate\" view"
+                    answerText += res.data.data[res.data.data.length - 1] + " using this Codeline."
+
                 }
-                if(figures.length != 0 || res.data.data.length != 0) {
-                    self.setState({answerText: answerText, open: true})
+
+                if (foundParameters.length != 0 || res.data.data.length != 0) {
+                    answerText += " Please check in the \"Manipulate\" view"
+                    self.setState({ title: "Codeline in Bindings found", selectedText: answerText, popup: true })
                 }
             })
-            .catch (function (res) {
+            .catch(function (res) {
                 console.log(res);
             })
-        } 
-        catch(error) {*/
-        });
+    } catch (error) {
     }
+}
 
-    closePopup () {
-        this.setState({
-            popup:false,
-        })
-    }
 
-    render() {
-        return (
-            <div 
-                onMouseUp={this.handleSelectedText.bind(this)}>
-                <Sourcecode
-                    code={this.props.code}
-                />
-                <Popup 
-                    selectedText={this.state.selectedText}
-                    open={this.state.popup}
-                    closePopup={this.closePopup.bind(this)}
-                />
-            </div>
-        )
+closePopup = (name, e) => {
+    this.setState({ popup: false })
+    if (name == "tabChange") {
+        console.log(true)
+        this.props.handleTabChange(e, 2);
     }
+}
+
+render() {
+    return (
+        <div
+            onMouseUp={this.handleSelectedText.bind(this)}>
+            <Sourcecode
+                code={this.props.code}
+            />
+            <Popup
+                selectedText={this.state.selectedText}
+                open={this.state.popup}
+                title={this.state.title}
+                closePopup={this.closePopup}
+            />
+        </div>
+    )
+}
+
 }
 
 export default CodeView;
