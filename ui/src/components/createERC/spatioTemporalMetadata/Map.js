@@ -12,9 +12,7 @@ class OwnMap extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            metadata: props.metadata,
-            drawn: true,
-            GeoJSON: null
+
         };
     };
 
@@ -29,21 +27,28 @@ class OwnMap extends React.Component {
 
     _onEdited = (e) => {
 
+        var bounds
 
         e.layers.eachLayer((layer) => {
 
             GeoJSON = layer.toGeoJSON();
+            bounds= layer.getBounds();
+
 
         });
-
-        console.log(e)
-
+        
         const metadata = this.state.metadata;
 
-        metadata.spatial.union.bbox[0] = GeoJSON.geometry.coordinates[0][0];
-        metadata.spatial.union.bbox[1] = GeoJSON.geometry.coordinates[0][1];
-        metadata.spatial.union.bbox[2] = GeoJSON.geometry.coordinates[0][2];
-        metadata.spatial.union.bbox[3] = GeoJSON.geometry.coordinates[0][3];
+        var northEast= [bounds._northEast.lat, bounds._northEast.lng]
+        var southEast= [bounds._southWest.lat, bounds._northEast.lng]
+        var southWest= [bounds._southWest.lat, bounds._southWest.lng]
+        var northWest= [bounds._northEast.lat, bounds._southWest.lng]       
+
+        metadata.spatial.union.bbox[0] = northEast
+        metadata.spatial.union.bbox[1] = southEast
+        metadata.spatial.union.bbox[2] = southWest
+        metadata.spatial.union.bbox[3] = northWest
+        console.log(metadata)
         this.props.setMetadata(metadata, false);
         this.setState({ GeoJSON: GeoJSON });
         this.props.setChanged();
@@ -54,7 +59,7 @@ class OwnMap extends React.Component {
     _onCreated = (e) => {
 
         GeoJSON = e.layer.toGeoJSON();
-        this.setState({ drawn: true, GeoJSON: GeoJSON });
+        this.props.setDrawn(true);
         const metadata = this.state.metadata;
 
         metadata.spatial.union.bbox[0] = GeoJSON.geometry.coordinates[0][0];
@@ -69,8 +74,8 @@ class OwnMap extends React.Component {
     }
 
     _onDeleted = (e) => {
-        this.setState({ drawn: false, GeoJSON: null });
-        const metadata = this.state.metadata;
+        this.props.setDrawn(false);
+        const metadata = this.props.metadata;
 
         metadata.spatial.union.bbox[0] = [181, 181]
         metadata.spatial.union.bbox[1] = [-181, 181]
@@ -87,7 +92,7 @@ class OwnMap extends React.Component {
         }
         this._editableFG = ref;
         GeoJSON = this.getGeoJson()
-        const metadata = this.state.metadata;
+        const metadata = this.props.metadata;
 
         for (var i = 0; i < 4; i++) {
             GeoJSON.geometry.coordinates[0][i] = metadata.spatial.union.bbox[i];
@@ -138,8 +143,8 @@ class OwnMap extends React.Component {
                         onEdited={this._onEdited}
                         onCreated={this._onCreated}
                         onDeleted={this._onDeleted}
-                        edit={this.state.drawn ? { remove: true } : { remove: false }}
-                        draw={this.state.drawn ? {
+                        edit={this.props.drawn ? { remove: true } : { remove: false }}
+                        draw={this.props.drawn ? {
                             circle: false,
                             circlemarker: false,
                             marker: false,

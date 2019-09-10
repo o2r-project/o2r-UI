@@ -10,7 +10,7 @@ import L from 'leaflet'
 import { valid2 } from '../requiredMetadata/Form.js'
 
 
-let to;
+
 class SpatioTemporalMetadata extends React.Component {
   constructor(props) {
     super(props);
@@ -21,6 +21,7 @@ class SpatioTemporalMetadata extends React.Component {
     this.state = {
       from: begin,
       to: end,
+      drawn: true,
     };
   };
 
@@ -61,6 +62,10 @@ class SpatioTemporalMetadata extends React.Component {
     this.props.setChanged("spatioTemporalChanged")
   }
 
+  setDrawn = (result) => {
+    this.setState({drawn: result})
+  }
+
   handleReset = () => {
 
     var begin = this.props.originalMetadata.temporal.begin
@@ -70,6 +75,7 @@ class SpatioTemporalMetadata extends React.Component {
     this.setState({
       from: begin,
       to: end,
+      drawn: true,
     })
 
     var metadata = this.props.metadata
@@ -124,7 +130,7 @@ class SpatioTemporalMetadata extends React.Component {
           <Grid item xs={10}>
             <Card>
               <h1>Specify the spatial properties of your dataset(s):</h1>
-              <OwnMap metadata={this.props.metadata} setMetadata={this.props.setMetadata} setChanged={this.setChanged} />
+              <OwnMap metadata={this.props.metadata} setMetadata={this.props.setMetadata} setChanged={this.setChanged} drawn={this.state.drawn} setDrawn={this.setDrawn} />
               <h1> Specify the temporal properties of your dataset(s):</h1>
 
               <TextField
