@@ -136,6 +136,7 @@ class ERC extends React.Component {
                         <Button onClick={this.handleDisplayFile.bind(this)}>{this.state.html ? 'Show PDf' : 'Show HTML'}</Button>
                         {this.state.displayfile!=null 
                         ?<MainView 
+                            metadata={this.state.metadata}
                             filePath={this.state.html 
                                 ? config.baseUrl + "compendium/" + this.state.id + "/data/" + this.state.displayfile
                                 : this.state.metadata.identifier.doiurl}>
