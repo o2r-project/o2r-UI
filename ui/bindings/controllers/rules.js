@@ -4,8 +4,8 @@ let areYou = {};
 
 const variable = function (content) {
     //Test for variable of form v = x or v <- x
-    const isVariable1 = /^\s*\b(?![(])[\w\[\],\s]*\s?=\s?[\w\[\]]+/;
-    const isVariable2 = /^\s*\b(?![(])[\w\[\],\s]*\s?<-\s?[\w\[\]]+/;
+    const isVariable1 = /^\s*\b(?![(])[\w\[\],.\s]*\s?=\s?[".\w\[\]]+/;
+    const isVariable2 = /^\s*\b(?![(])[\w\[\],.\s]*\s?<-\s?[".\w\[\]]+/;
 
     if (!fun(content) && (isVariable1.test(content) || isVariable2.test(content))) {
         return isVariable1;
@@ -491,7 +491,7 @@ areYou.processVariables = function (json, index,multi) {
     let linesOfMultiVar = [];
     let end;
     let varCont = json[index].value;
-    if (varCont.indexOf('(') != -1 && varCont.indexOf(')') != -1 || varCont.indexOf('(') == -1 && varCont.indexOf(')') == -1) {
+    if (varCont.indexOf('(') != -1 && varCont.indexOf(')') != -1 && varCont.indexOf('%>%') == -1 || varCont.indexOf('(') == -1 && varCont.indexOf(')') == -1 && varCont.indexOf('%>%') == -1) {
         let varContProcessed = processVarContent(varCont);
         varContProcessed.type = areYou.findType(varContProcessed.value);
         json[index].content = [varContProcessed];
