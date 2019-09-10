@@ -35,8 +35,7 @@ class OwnMap extends React.Component {
 
     _onEdited = (e) => {
 
-        var bounds
-        console.log(e.layers._layers)
+        var bounds;
         if(this.isEmpty(e.layers._layers)){
             return
         }

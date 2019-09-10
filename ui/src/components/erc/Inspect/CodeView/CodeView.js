@@ -19,7 +19,7 @@ handleSelectedText(e) {
     var self = this;
     var answerText = "";
     var text = window.getSelection().getRangeAt(0).toString();
-    if (text === '') return;
+    if (text === '' || text.length < 4) return;
     let bindings = this.props.metadata.interaction;
     let foundParameters = [];
     bindings.forEach(binding => {
@@ -62,10 +62,6 @@ handleSelectedText(e) {
                     answerText += " Please check in the \"Manipulate\" view"
                     self.setState({ title: "Codeline in Bindings found", selectedText: answerText, popup: true })
                 }
-                else {
-                    self.setState({ title: "Codeline is not used for any Binding", selectedText: answerText, popup: true })
-                }
-
             })
             .catch(function (res) {
                 console.log(res);
