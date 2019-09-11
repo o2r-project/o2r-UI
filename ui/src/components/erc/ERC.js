@@ -137,6 +137,7 @@ class ERC extends React.Component {
                         {this.state.displayfile!=null 
                         ?<MainView 
                             metadata={this.state.metadata}
+                            handleTabChange={this.handleTabChange}
                             filePath={this.state.html 
                                 ? config.baseUrl + "compendium/" + this.state.id + "/data/" + this.state.displayfile
                                 : this.state.metadata.identifier.doiurl}>

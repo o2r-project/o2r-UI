@@ -2,29 +2,33 @@ import React from 'react';
 import Iframe from 'react-iframe';
 
 import './mainview.css';
-import { width, height } from '@material-ui/system';
+import Popup from '../Inspect/CodeView/Popup/Popup'
 
 var iframe
 class MainView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            selectedText: '',
+            popup: false,
+            title: "",
+        }
+    }
 
 componentDidMount(){
-    //window.addEventListener("message", this.handleSelectedText.bind(this))
     iframe= document.getElementById('iframe_id');
-    console.log(iframe)
     iframe.contentWindow.addEventListener("mouseup", this.handleSelectedText.bind(this))
 }
 handleSelectedText(e) {
     var answerText = ""
-    var text= iframe.contentWindow.getSelection().toString()
-    //var text = window.getSelection().getRangeAt(0).toString();
-    console.log(text)
-    console.log(1)
+    var text= iframe.contentWindow.getSelection().toString();
+    var text1= text.replace('=', '<-')
     if (text === '' || text.length < 4) return;
     let bindings = this.props.metadata.interaction;
     let foundParameters = [];
     bindings.forEach(binding => {
         binding.sourcecode.parameter.forEach(parameter => {
-            if (parameter.text.indexOf(text) !== -1) {
+            if (parameter.text.indexOf(text) !== -1 || parameter.text.indexOf(text1) !== -1) {
                 foundParameters.push(binding);
             }
         })
@@ -39,7 +43,17 @@ handleSelectedText(e) {
         answerText += foundParameters[foundParameters.length - 1].computationalResult.result + ". "
         
     }
-    console.log(answerText)
+    if (foundParameters.length != 0) {
+        answerText += " Please check in the \"Manipulate\" view"
+        this.setState({ title: "Codeline in Bindings found", selectedText: answerText, popup: true })
+    }
+}
+
+closePopup = (name, e) => {
+    this.setState({ popup: false })
+    if (name == "tabChange") 
+        this.props.handleTabChange(e, 2);
+    }
 }
 
     render() {
@@ -47,7 +61,12 @@ handleSelectedText(e) {
         return (
             <div onMouseUp={this.handleSelectedText.bind(this)} style={{top: 0,left:0, width : "100%", height: "100%", position: "absolute"}}>
             <Iframe id={'iframe_id'} url={url}  className="iframe"/>
-            
+            <Popup
+                selectedText={this.state.selectedText}
+                open={this.state.popup}
+                title={this.state.title}
+                closePopup={this.closePopup}
+            />
             </div>
    
         )
