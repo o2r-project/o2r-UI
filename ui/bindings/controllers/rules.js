@@ -55,8 +55,9 @@ const fun = function (content) {
 
 const lib = function (content) {
     const isLibrary = /(?:library)/;
+    const loadData = /(?:load)/
 
-    if (isLibrary.test(content) == true) {
+    if (isLibrary.test(content) == true || loadData.test(content) == true) {
         return isLibrary;
     }
 };
@@ -187,8 +188,6 @@ processBracketContentInFun = function (funContent) {
 
 //Variables
 processVarContent = function (varContent) {
-    console.log('CONT1 ' + varContent);
-    
     if (varContent.indexOf('=') != -1 && varContent.indexOf('<-') == -1) {
         let variable = varContent.substring(0, varContent.indexOf('='));
         let value = varContent.substring(varContent.indexOf('=') + 1);
@@ -211,11 +210,14 @@ processMultiLineVarContent = function (jsonAtVarLine, startIndex) {
     let closingBracket = /[)]/;
     let value = '';
     let end = 0;
+    let endIndex;
     let firstOcc = true;
     for (let i = startIndex; i < jsonAtVarLine.length; i++) {
         if (closingBracket.test(jsonAtVarLine[i].value) == true && firstOcc == true) {
             firstOcc = false;
             end = i;
+            endIndex = jsonAtVarLine[i].index;
+            //console.log('THIS IS THE END ' + end);
             for (let j = startIndex; j <= end; j++) {
                 value += jsonAtVarLine[j].value;
                 value = value.replace(/ /g, '');
@@ -224,7 +226,8 @@ processMultiLineVarContent = function (jsonAtVarLine, startIndex) {
     }
     return {
         value: value,
-        end: end
+        end: end,
+        endIndex: endIndex 
     };
 };
 /********************************************************
@@ -490,6 +493,7 @@ areYou.processInlineFunction = function (json,index) {
 areYou.processVariables = function (json, index,multi) {
     let linesOfMultiVar = [];
     let end;
+    let endIndexMulti;
     let varCont = json[index].value;
     if (varCont.indexOf('(') != -1 && varCont.indexOf(')') != -1 && varCont.indexOf('%>%') == -1 || varCont.indexOf('(') == -1 && varCont.indexOf(')') == -1 && varCont.indexOf('%>%') == -1) {
         let varContProcessed = processVarContent(varCont);
@@ -507,6 +511,7 @@ areYou.processVariables = function (json, index,multi) {
         json[index].content = [varContProcessed];
         let start = index + 1;
         end = preprocessVarCond.end;
+        endIndexMulti = preprocessVarCond.endIndex;
         linesOfMultiVar.push(start, end);
     }
     //Filter out duplicates
@@ -516,7 +521,8 @@ areYou.processVariables = function (json, index,multi) {
         return {
             json:json[index],
             end:end,
-            multi:true
+            multi:true,
+            endIndex: endIndexMulti
         }
     }
 };

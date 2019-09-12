@@ -1,0 +1,2827 @@
+---
+title: "A space–time statistical climate model for hurricane intensification in the North Atlantic basin"
+author:
+    - name: Erik Fraza
+      affiliation: Department of Geography, Florida State University
+    - name: James B. Elsner
+      affiliation: Department of Geography, Florida State University
+    - name: Thomas H. Jagger
+      affiliation: Department of Geography, Florida State University
+date: 2016-08-02
+doi: 10.5194/ascmo-2-105-2016
+abstract: "Climate influences on hurricane intensification are investigated by averaging hourly intensification rates over the period 1975–2014 in 8°x 8° latitude–longitude grid cells. The statistical effects of hurricane intensity and sea-surface temperature (SST), along with the climatic effects of El Niño–Southern Oscillation (ENSO), the North Atlantic Oscillation (NAO) and the Madden–Julian Oscillation (MJO), are quantified using a Bayesian hierarchical model fit to the averaged data. As expected, stronger hurricanes tend to have higher intensification rates, especially over the warmest waters. Of the three climate variables considered, the NAO has the largest effect on intensification rates after controlling for intensity and SST. The model shows an average increase in intensification rates of 0.18 [0.06, 0.31]ms^-1 h^-1 (95% credible interval) for every 1 standard deviation decrease in the NAO index. Weak trade winds associated with the negative phase of the NAO might result in less vertical wind shear and thus higher mean intensification rates."
+output: html_document
+---
+
+```{r, include=FALSE}
+if (!require("rasterVis")) install.packages("rasterVis", repos = "http://cloud.r-project.org")
+if (!require("plotrix")) install.packages("plotrix", repos = "http://cloud.r-project.org")
+if (!require("wesanderson")) install.packages("wesanderson", repos = "http://cloud.r-project.org")
+```
+
+```{r, include=FALSE}
+list.files(pattern="mjomeiAnalysis.Rmd")
+library(ggplot2)
+library("dplyr")
+library("latticeExtra")
+load("mjoBestUse.RData")
+Intensity = 33.0
+Tracks.df = filter(Tracks.df, Int >= Intensity) 
+
+```
+
+```{r, include=FALSE}
+
+fullData.df = load("best.use.2014.Rdata")
+begin = 1975; end = 2014
+
+fullData.df = filter(best.use,Yr >= begin, Yr <= end, Int >= 33.0, M == FALSE) 
+fullData.df = mutate(best.use,Int = WmaxS * .5144, 
+         DIntDt = DWmaxDt * .5144) 
+         
+  
+```
+
+```{r, include=FALSE}
+library("rgdal")
+ll = "+proj=longlat +ellps=WGS84"
+
+Tracks.sdf = Tracks.df
+coordinates(Tracks.sdf) = c("lon", "lat")
+proj4string(Tracks.sdf) = CRS(ll)
+
+fullData.sdf = fullData.df
+coordinates(fullData.sdf) = c("lon", "lat")
+proj4string(fullData.sdf) = CRS(ll)
+```
+
+
+```{r, include=FALSE}
+library("raster")
+r = raster(ncol = 10, nrow = 5, 
+           xmn = -100, xmx = -20, 
+           ymn = 10, ymx = 50)
+
+Tracks.grid = rasterize(Tracks.sdf, r,
+                        field = 'DIntDt',
+                        fun = mean)
+
+test = rasterToPolygons(Tracks.grid)
+sid1=1675
+Example.sdf = subset(Tracks.sdf, 
+                     Sid == sid1 | 
+                     Sid == 1677 |
+                     Sid == 1683)
+Example.grid = rasterize(Example.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+```
+
+```{r, include=FALSE}
+library("RColorBrewer")
+library("rasterVis")
+range(values(Example.grid), na.rm = TRUE)
+rng = seq(0, 1.5, 1.5)
+breaks = c(0, 0.25, 0.50, 0.75, 1.0, 1.25, 1.50)
+cr = brewer.pal(9, "Purples")
+cr = cr[-(1:3)]
+vals = levelplot(Example.grid, margin = FALSE, 
+          xlab = NULL, ylab = NULL, 
+          col.regions = cr, at = rng, 
+          colorkey = NULL,
+          border = "white", border.lwd = 2, pretty=TRUE,
+          par.settings = list(fontsize = list(text = 15)))
+```
+
+Figure 1. Tracks and corresponding cells for three 2008 hurricanes: Gustav, Ike, and Omar. Each colored cell indicates at least one storm intensifies within its boundaries.
+```{r, include=FALSE}
+library(mapproj)
+library(maptools)
+
+outlines = as.data.frame(map("world", xlim = c(-100, -20), 
+                             ylim = c(10, 50), 
+                             plot = FALSE)[c("x", "y")],
+                             color = "gray")
+map = geom_path(aes(x, y), inherit.aes = FALSE, data = outlines, 
+                alpha = .8, show_guide = FALSE, color = "blue")
+ext = as.vector(extent(r))
+boundaries = map("world", fill = TRUE, xlim = ext[1:2], 
+                 ylim = ext[3:4], plot = FALSE)
+IDs = sapply(strsplit(boundaries$names, ":"), function(x) x[1])
+bPols <<- map2SpatialPolygons(boundaries, IDs = IDs,
+                              proj4string = CRS(projection(r)))
+```
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE, out.width=700}
+#This chunk produces Figure 1 from the article
+
+require(gridExtra)
+require(sp)
+
+Int2a.df = filter(Tracks.df, Sid == sid1)
+Int2b.df = filter(Tracks.df, Sid == 1677)
+Int2c.df = filter(Tracks.df, Sid == 1683)
+holdera = data.frame(Int2a.df$lon, Int2a.df$lat)
+holderb = data.frame(Int2b.df$lon, Int2b.df$lat)
+holderc = data.frame(Int2c.df$lon, Int2c.df$lat)
+linesa <<- SpatialLines(list(Lines(list(Line(holdera)),
+                                 ID = 'Int2a.df$Sid')))
+linesb <<- SpatialLines(list(Lines(list(Line(holderb)),
+                                 ID = 'Int2b.df$Sid')))
+linesc <<- SpatialLines(list(Lines(list(Line(holderc)),
+                                 ID = 'Int2c.df$Sid')))
+
+
+tracking = vals + 
+  latticeExtra::layer(sp.polygons(bPols, col = gray(.8))) +
+  latticeExtra::layer(sp.lines(linesa, lwd = 2, col = gray(.4))) + 
+  latticeExtra::layer(sp.lines(linesb, lwd = 2, col = gray(.4))) + 
+  latticeExtra::layer(sp.lines(linesc, lwd = 2, col = gray(.4))) +
+  latticeExtra::layer(panel.text(-63.5, 27.5, 'Gustav', col = gray(.4))) +
+  latticeExtra::layer(panel.text(-51, 16.5, 'Ike', col = gray(.4))) + 
+  latticeExtra::layer(panel.text(-81.5, 16.25, 'Omar', col = gray(.4)))
+plot(tracking)
+
+```
+
+```{r, echo = FALSE}
+
+#This chunk handles mean intensification
+
+data1975 = filter(Tracks.df, Yr == 1975)
+data1975.sdf = data1975
+coordinates(data1975.sdf) = c("lon", "lat")
+proj4string(data1975.sdf) = CRS(ll)
+
+data1975.grid = rasterize(data1975.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1976 = filter(Tracks.df, Yr == 1976)
+data1976.sdf = data1976
+coordinates(data1976.sdf) = c("lon", "lat")
+proj4string(data1976.sdf) = CRS(ll)
+
+data1976.grid = rasterize(data1976.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1977 = filter(Tracks.df, Yr == 1977)
+data1977.sdf = data1977
+coordinates(data1977.sdf) = c("lon", "lat")
+proj4string(data1977.sdf) = CRS(ll)
+
+data1977.grid = rasterize(data1977.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1978 = filter(Tracks.df, Yr == 1978)
+data1978.sdf = data1978
+coordinates(data1978.sdf) = c("lon", "lat")
+proj4string(data1978.sdf) = CRS(ll)
+
+data1978.grid = rasterize(data1978.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1979 = filter(Tracks.df, Yr == 1979)
+data1979.sdf = data1979
+coordinates(data1979.sdf) = c("lon", "lat")
+proj4string(data1979.sdf) = CRS(ll)
+
+data1979.grid = rasterize(data1979.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1980 = filter(Tracks.df, Yr == 1980)
+data1980.sdf = data1980
+coordinates(data1980.sdf) = c("lon", "lat")
+proj4string(data1980.sdf) = CRS(ll)
+
+data1980.grid = rasterize(data1980.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1981 = filter(Tracks.df, Yr == 1981)
+data1981.sdf = data1981
+coordinates(data1981.sdf) = c("lon", "lat")
+proj4string(data1981.sdf) = CRS(ll)
+
+data1981.grid = rasterize(data1981.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1982 = filter(Tracks.df, Yr == 1982)
+data1982.sdf = data1982
+coordinates(data1982.sdf) = c("lon", "lat")
+proj4string(data1982.sdf) = CRS(ll)
+
+data1982.grid = rasterize(data1982.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1983 = filter(Tracks.df, Yr == 1983)
+data1983.sdf = data1983
+coordinates(data1983.sdf) = c("lon", "lat")
+proj4string(data1983.sdf) = CRS(ll)
+
+data1983.grid = rasterize(data1983.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1984 = filter(Tracks.df, Yr == 1984)
+data1984.sdf = data1984
+coordinates(data1984.sdf) = c("lon", "lat")
+proj4string(data1984.sdf) = CRS(ll)
+
+data1984.grid = rasterize(data1984.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1985 = filter(Tracks.df, Yr == 1985)
+data1985.sdf = data1985
+coordinates(data1985.sdf) = c("lon", "lat")
+proj4string(data1985.sdf) = CRS(ll)
+
+data1985.grid = rasterize(data1985.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1986 = filter(Tracks.df, Yr == 1986)
+data1986.sdf = data1986
+coordinates(data1986.sdf) = c("lon", "lat")
+proj4string(data1986.sdf) = CRS(ll)
+
+data1986.grid = rasterize(data1986.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1987 = filter(Tracks.df, Yr == 1987)
+data1987.sdf = data1987
+coordinates(data1987.sdf) = c("lon", "lat")
+proj4string(data1987.sdf) = CRS(ll)
+
+data1987.grid = rasterize(data1987.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1988 = filter(Tracks.df, Yr == 1988)
+data1988.sdf = data1988
+coordinates(data1988.sdf) = c("lon", "lat")
+proj4string(data1988.sdf) = CRS(ll)
+
+data1988.grid = rasterize(data1988.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1989 = filter(Tracks.df, Yr == 1989)
+data1989.sdf = data1989
+coordinates(data1989.sdf) = c("lon", "lat")
+proj4string(data1989.sdf) = CRS(ll)
+
+data1989.grid = rasterize(data1989.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1990 = filter(Tracks.df, Yr == 1990)
+data1990.sdf = data1990
+coordinates(data1990.sdf) = c("lon", "lat")
+proj4string(data1990.sdf) = CRS(ll)
+
+data1990.grid = rasterize(data1990.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1991 = filter(Tracks.df, Yr == 1991)
+data1991.sdf = data1991
+coordinates(data1991.sdf) = c("lon", "lat")
+proj4string(data1991.sdf) = CRS(ll)
+
+data1991.grid = rasterize(data1991.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1992 = filter(Tracks.df, Yr == 1992)
+data1992.sdf = data1992
+coordinates(data1992.sdf) = c("lon", "lat")
+proj4string(data1992.sdf) = CRS(ll)
+
+data1992.grid = rasterize(data1992.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1993 = filter(Tracks.df, Yr == 1993)
+data1993.sdf = data1993
+coordinates(data1993.sdf) = c("lon", "lat")
+proj4string(data1993.sdf) = CRS(ll)
+
+data1993.grid = rasterize(data1993.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1994 = filter(Tracks.df, Yr == 1994)
+data1994.sdf = data1994
+coordinates(data1994.sdf) = c("lon", "lat")
+proj4string(data1994.sdf) = CRS(ll)
+
+data1994.grid = rasterize(data1994.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1995 = filter(Tracks.df, Yr == 1995)
+data1995.sdf = data1995
+coordinates(data1995.sdf) = c("lon", "lat")
+proj4string(data1995.sdf) = CRS(ll)
+
+data1995.grid = rasterize(data1995.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1996 = filter(Tracks.df, Yr == 1996)
+data1996.sdf = data1996
+coordinates(data1996.sdf) = c("lon", "lat")
+proj4string(data1996.sdf) = CRS(ll)
+
+data1996.grid = rasterize(data1996.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1997 = filter(Tracks.df, Yr == 1997)
+data1997.sdf = data1997
+coordinates(data1997.sdf) = c("lon", "lat")
+proj4string(data1997.sdf) = CRS(ll)
+
+data1997.grid = rasterize(data1997.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1998 = filter(Tracks.df, Yr == 1998)
+data1998.sdf = data1998
+coordinates(data1998.sdf) = c("lon", "lat")
+proj4string(data1998.sdf) = CRS(ll)
+
+data1998.grid = rasterize(data1998.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data1999 = filter(Tracks.df, Yr == 1999)
+data1999.sdf = data1999
+coordinates(data1999.sdf) = c("lon", "lat")
+proj4string(data1999.sdf) = CRS(ll)
+
+data1999.grid = rasterize(data1999.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data2000 = filter(Tracks.df, Yr == 2000)
+data2000.sdf = data2000
+coordinates(data2000.sdf) = c("lon", "lat")
+proj4string(data2000.sdf) = CRS(ll)
+
+data2000.grid = rasterize(data2000.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data2001 = filter(Tracks.df, Yr == 2001)
+data2001.sdf = data2001
+coordinates(data2001.sdf) = c("lon", "lat")
+proj4string(data2001.sdf) = CRS(ll)
+
+data2001.grid = rasterize(data2001.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data2002 = filter(Tracks.df, Yr == 2002)
+data2002.sdf = data2002
+coordinates(data2002.sdf) = c("lon", "lat")
+proj4string(data2002.sdf) = CRS(ll)
+
+data2002.grid = rasterize(data2002.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data2003 = filter(Tracks.df, Yr == 2003)
+data2003.sdf = data2003
+coordinates(data2003.sdf) = c("lon", "lat")
+proj4string(data2003.sdf) = CRS(ll)
+
+data2003.grid = rasterize(data2003.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data2004 = filter(Tracks.df, Yr == 2004)
+data2004.sdf = data2004
+coordinates(data2004.sdf) = c("lon", "lat")
+proj4string(data2004.sdf) = CRS(ll)
+
+data2004.grid = rasterize(data2004.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data2005 = filter(Tracks.df, Yr == 2005)
+data2005.sdf = data2005
+coordinates(data2005.sdf) = c("lon", "lat")
+proj4string(data2005.sdf) = CRS(ll)
+
+data2005.grid = rasterize(data2005.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data2006 = filter(Tracks.df, Yr == 2006)
+data2006.sdf = data2006
+coordinates(data2006.sdf) = c("lon", "lat")
+proj4string(data2006.sdf) = CRS(ll)
+
+data2006.grid = rasterize(data2006.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data2007 = filter(Tracks.df, Yr == 2007)
+data2007.sdf = data2007
+coordinates(data2007.sdf) = c("lon", "lat")
+proj4string(data2007.sdf) = CRS(ll)
+
+data2007.grid = rasterize(data2007.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data2008 = filter(Tracks.df, Yr == 2008)
+data2008.sdf = data2008
+coordinates(data2008.sdf) = c("lon", "lat")
+proj4string(data2008.sdf) = CRS(ll)
+
+data2008.grid = rasterize(data2008.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data2009 = filter(Tracks.df, Yr == 2009)
+data2009.sdf = data2009
+coordinates(data2009.sdf) = c("lon", "lat")
+proj4string(data2009.sdf) = CRS(ll)
+
+data2009.grid = rasterize(data2009.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data2010 = filter(Tracks.df, Yr == 2010)
+data2010.sdf = data2010
+coordinates(data2010.sdf) = c("lon", "lat")
+proj4string(data2010.sdf) = CRS(ll)
+
+data2010.grid = rasterize(data2010.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data2011 = filter(Tracks.df, Yr == 2011)
+data2011.sdf = data2011
+coordinates(data2011.sdf) = c("lon", "lat")
+proj4string(data2011.sdf) = CRS(ll)
+
+data2011.grid = rasterize(data2011.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data2012 = filter(Tracks.df, Yr == 2012)
+data2012.sdf = data2012
+coordinates(data2012.sdf) = c("lon", "lat")
+proj4string(data2012.sdf) = CRS(ll)
+
+data2012.grid = rasterize(data2012.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data2013 = filter(Tracks.df, Yr == 2013)
+data2013.sdf = data2013
+coordinates(data2013.sdf) = c("lon", "lat")
+proj4string(data2013.sdf) = CRS(ll)
+
+data2013.grid = rasterize(data2013.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+data2014 = filter(Tracks.df, Yr == 2014)
+data2014.sdf = data2014
+coordinates(data2014.sdf) = c("lon", "lat")
+proj4string(data2014.sdf) = CRS(ll)
+
+data2014.grid = rasterize(data2014.sdf, r, 
+                         field = 'DIntDt',
+                         fun = mean)
+
+dataDIntDt1975.df = as.data.frame(data1975.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1975.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1976.df = as.data.frame(data1976.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1976.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1977.df = as.data.frame(data1977.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1977.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1978.df = as.data.frame(data1978.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1978.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1979.df = as.data.frame(data1979.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1979.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1980.df = as.data.frame(data1980.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1980.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1981.df = as.data.frame(data1981.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1981.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1982.df = as.data.frame(data1982.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1982.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1983.df = as.data.frame(data1983.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1983.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1984.df = as.data.frame(data1984.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1984.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1985.df = as.data.frame(data1985.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1985.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1986.df = as.data.frame(data1986.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1986.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1987.df = as.data.frame(data1987.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1987.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1988.df = as.data.frame(data1988.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1988.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1989.df = as.data.frame(data1989.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1989.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1990.df = as.data.frame(data1990.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1990.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1991.df = as.data.frame(data1991.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1991.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1992.df = as.data.frame(data1992.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1992.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1993.df = as.data.frame(data1993.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1993.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1994.df = as.data.frame(data1994.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1994.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1995.df = as.data.frame(data1995.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1995.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1996.df = as.data.frame(data1996.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1996.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1997.df = as.data.frame(data1997.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1997.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1998.df = as.data.frame(data1998.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1998.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt1999.df = as.data.frame(data1999.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt1999.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt2000.df = as.data.frame(data2000.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt2000.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt2001.df = as.data.frame(data2001.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt2001.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt2002.df = as.data.frame(data2002.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt2002.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt2003.df = as.data.frame(data2003.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt2003.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt2004.df = as.data.frame(data2004.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt2004.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt2005.df = as.data.frame(data2005.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt2005.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt2006.df = as.data.frame(data2006.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt2006.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt2007.df = as.data.frame(data2007.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt2007.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt2008.df = as.data.frame(data2008.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt2008.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt2009.df = as.data.frame(data2009.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt2009.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt2010.df = as.data.frame(data2010.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt2010.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt2011.df = as.data.frame(data2011.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt2011.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt2012.df = as.data.frame(data2012.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt2012.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt2013.df = as.data.frame(data2013.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt2013.df) <- c("lon", "lat", "DIntDt")
+dataDIntDt2014.df = as.data.frame(data2014.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataDIntDt2014.df) <- c("lon", "lat", "DIntDt")
+
+dataDIntDt1975.df$Year[1:50] = 1975
+dataDIntDt1976.df$Year[1:50] = 1976
+dataDIntDt1977.df$Year[1:50] = 1977
+dataDIntDt1978.df$Year[1:50] = 1978
+dataDIntDt1979.df$Year[1:50] = 1979
+dataDIntDt1980.df$Year[1:50] = 1980
+dataDIntDt1981.df$Year[1:50] = 1981
+dataDIntDt1982.df$Year[1:50] = 1982
+dataDIntDt1983.df$Year[1:50] = 1983
+dataDIntDt1984.df$Year[1:50] = 1984
+dataDIntDt1985.df$Year[1:50] = 1985
+dataDIntDt1986.df$Year[1:50] = 1986
+dataDIntDt1987.df$Year[1:50] = 1987
+dataDIntDt1988.df$Year[1:50] = 1988
+dataDIntDt1989.df$Year[1:50] = 1989
+dataDIntDt1990.df$Year[1:50] = 1990
+dataDIntDt1991.df$Year[1:50] = 1991
+dataDIntDt1992.df$Year[1:50] = 1992
+dataDIntDt1993.df$Year[1:50] = 1993
+dataDIntDt1994.df$Year[1:50] = 1994
+dataDIntDt1995.df$Year[1:50] = 1995
+dataDIntDt1996.df$Year[1:50] = 1996
+dataDIntDt1997.df$Year[1:50] = 1997
+dataDIntDt1998.df$Year[1:50] = 1998
+dataDIntDt1999.df$Year[1:50] = 1999
+dataDIntDt2000.df$Year[1:50] = 2000
+dataDIntDt2001.df$Year[1:50] = 2001
+dataDIntDt2002.df$Year[1:50] = 2002
+dataDIntDt2003.df$Year[1:50] = 2003
+dataDIntDt2004.df$Year[1:50] = 2004
+dataDIntDt2005.df$Year[1:50] = 2005
+dataDIntDt2006.df$Year[1:50] = 2006
+dataDIntDt2007.df$Year[1:50] = 2007
+dataDIntDt2008.df$Year[1:50] = 2008
+dataDIntDt2009.df$Year[1:50] = 2009
+dataDIntDt2010.df$Year[1:50] = 2010
+dataDIntDt2011.df$Year[1:50] = 2011
+dataDIntDt2012.df$Year[1:50] = 2012
+dataDIntDt2013.df$Year[1:50] = 2013
+dataDIntDt2014.df$Year[1:50] = 2014
+
+dataDIntDt1975.df$ID = as.numeric(as.factor(with(dataDIntDt1975.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1976.df$ID = as.numeric(as.factor(with(dataDIntDt1976.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1977.df$ID = as.numeric(as.factor(with(dataDIntDt1977.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1978.df$ID = as.numeric(as.factor(with(dataDIntDt1978.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1979.df$ID = as.numeric(as.factor(with(dataDIntDt1979.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1980.df$ID = as.numeric(as.factor(with(dataDIntDt1980.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1981.df$ID = as.numeric(as.factor(with(dataDIntDt1981.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1982.df$ID = as.numeric(as.factor(with(dataDIntDt1982.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1983.df$ID = as.numeric(as.factor(with(dataDIntDt1983.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1984.df$ID = as.numeric(as.factor(with(dataDIntDt1984.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1985.df$ID = as.numeric(as.factor(with(dataDIntDt1985.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1986.df$ID = as.numeric(as.factor(with(dataDIntDt1986.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1987.df$ID = as.numeric(as.factor(with(dataDIntDt1987.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1988.df$ID = as.numeric(as.factor(with(dataDIntDt1988.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1989.df$ID = as.numeric(as.factor(with(dataDIntDt1989.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1990.df$ID = as.numeric(as.factor(with(dataDIntDt1990.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1991.df$ID = as.numeric(as.factor(with(dataDIntDt1991.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1992.df$ID = as.numeric(as.factor(with(dataDIntDt1992.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1993.df$ID = as.numeric(as.factor(with(dataDIntDt1993.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1994.df$ID = as.numeric(as.factor(with(dataDIntDt1994.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1995.df$ID = as.numeric(as.factor(with(dataDIntDt1995.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1996.df$ID = as.numeric(as.factor(with(dataDIntDt1996.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1997.df$ID = as.numeric(as.factor(with(dataDIntDt1997.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1998.df$ID = as.numeric(as.factor(with(dataDIntDt1998.df, paste(lon, lat,  sep="_"))))
+dataDIntDt1999.df$ID = as.numeric(as.factor(with(dataDIntDt1999.df, paste(lon, lat,  sep="_"))))
+dataDIntDt2000.df$ID = as.numeric(as.factor(with(dataDIntDt2000.df, paste(lon, lat,  sep="_"))))
+dataDIntDt2001.df$ID = as.numeric(as.factor(with(dataDIntDt2001.df, paste(lon, lat,  sep="_"))))
+dataDIntDt2002.df$ID = as.numeric(as.factor(with(dataDIntDt2002.df, paste(lon, lat,  sep="_"))))
+dataDIntDt2003.df$ID = as.numeric(as.factor(with(dataDIntDt2003.df, paste(lon, lat,  sep="_"))))
+dataDIntDt2004.df$ID = as.numeric(as.factor(with(dataDIntDt2004.df, paste(lon, lat,  sep="_"))))
+dataDIntDt2005.df$ID = as.numeric(as.factor(with(dataDIntDt2005.df, paste(lon, lat,  sep="_"))))
+dataDIntDt2006.df$ID = as.numeric(as.factor(with(dataDIntDt2006.df, paste(lon, lat,  sep="_"))))
+dataDIntDt2007.df$ID = as.numeric(as.factor(with(dataDIntDt2007.df, paste(lon, lat,  sep="_"))))
+dataDIntDt2008.df$ID = as.numeric(as.factor(with(dataDIntDt2008.df, paste(lon, lat,  sep="_"))))
+dataDIntDt2009.df$ID = as.numeric(as.factor(with(dataDIntDt2009.df, paste(lon, lat,  sep="_"))))
+dataDIntDt2010.df$ID = as.numeric(as.factor(with(dataDIntDt2010.df, paste(lon, lat,  sep="_"))))
+dataDIntDt2011.df$ID = as.numeric(as.factor(with(dataDIntDt2011.df, paste(lon, lat,  sep="_"))))
+dataDIntDt2012.df$ID = as.numeric(as.factor(with(dataDIntDt2012.df, paste(lon, lat,  sep="_"))))
+dataDIntDt2013.df$ID = as.numeric(as.factor(with(dataDIntDt2013.df, paste(lon, lat,  sep="_"))))
+dataDIntDt2014.df$ID = as.numeric(as.factor(with(dataDIntDt2014.df, paste(lon, lat,  sep="_"))))
+
+```
+
+```{r, echo = FALSE}
+
+Intensification = rbind(dataDIntDt1975.df,dataDIntDt1976.df, dataDIntDt1977.df, dataDIntDt1978.df, dataDIntDt1979.df,
+                        dataDIntDt1980.df, dataDIntDt1981.df, dataDIntDt1982.df, dataDIntDt1983.df,
+                        dataDIntDt1984.df, dataDIntDt1985.df, dataDIntDt1986.df, dataDIntDt1987.df,
+                        dataDIntDt1988.df, dataDIntDt1989.df, dataDIntDt1990.df, dataDIntDt1991.df, 
+                        dataDIntDt1992.df, dataDIntDt1993.df, dataDIntDt1994.df, dataDIntDt1995.df, 
+                        dataDIntDt1996.df, dataDIntDt1997.df, dataDIntDt1998.df, dataDIntDt1999.df,
+                        dataDIntDt2000.df, dataDIntDt2001.df, dataDIntDt2002.df, dataDIntDt2003.df,
+                        dataDIntDt2004.df, dataDIntDt2005.df, dataDIntDt2006.df, dataDIntDt2007.df,
+                        dataDIntDt2008.df, dataDIntDt2009.df, dataDIntDt2010.df, dataDIntDt2011.df,
+                        dataDIntDt2012.df, dataDIntDt2013.df, dataDIntDt2014.df) 
+
+Intensification$ID = as.integer(Intensification$ID)
+
+looper = nrow(Intensification)
+
+while(looper > 0)
+  {
+  if ((Intensification$ID[looper] == 50) == TRUE | (Intensification$ID[looper] == 46) == TRUE |
+        (Intensification$ID[looper] == 45) == TRUE | (Intensification$ID[looper] == 35) == TRUE |
+        (Intensification$ID[looper] == 49) == TRUE | (Intensification$ID[looper] == 40) == TRUE|
+        (Intensification$ID[looper] == 44) == TRUE | (Intensification$ID[looper] == 3) == TRUE |
+        (Intensification$ID[looper] == 4) == TRUE)
+    {
+      Intensification = Intensification[-looper,]
+      }
+  looper = looper - 1
+  }
+
+```
+
+```{r, echo = FALSE}
+
+ID = dataDIntDt1975.df$ID
+Yr = c(1975:2014)
+
+DIntDtData.df = data.frame(ID)
+
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1975.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1976.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1977.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1978.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1979.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1980.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1981.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1982.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1983.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1984.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1985.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1986.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1987.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1988.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1989.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1990.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1991.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1992.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1993.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1994.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1995.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1996.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1997.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1998.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt1999.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt2000.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt2001.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt2002.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt2003.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt2004.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt2005.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt2006.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt2007.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt2008.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt2009.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt2010.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt2011.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt2012.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt2013.df$DIntDt)
+DIntDtData.df = cbind(DIntDtData.df, dataDIntDt2014.df$DIntDt)
+
+x = 1
+while (x < 41){
+  colnames(DIntDtData.df)[x+1] = Yr[x]
+  x = x+1
+}
+
+DIntDtData.df$ID = as.integer(DIntDtData.df$ID)
+
+looper = nrow(DIntDtData.df)
+
+while(looper > 0)
+  {
+  if ((DIntDtData.df$ID[looper] == 50) == TRUE | (DIntDtData.df$ID[looper] == 46) == TRUE |
+        (DIntDtData.df$ID[looper] == 45) == TRUE | (DIntDtData.df$ID[looper] == 35) == TRUE |
+        (DIntDtData.df$ID[looper] == 49) == TRUE | (DIntDtData.df$ID[looper] == 40) == TRUE|
+        (DIntDtData.df$ID[looper] == 44) == TRUE | (DIntDtData.df$ID[looper] == 3) == TRUE |
+        (DIntDtData.df$ID[looper] == 4) == TRUE)
+    {
+      DIntDtData.df = DIntDtData.df[-looper,]
+      }
+  looper = looper - 1
+}
+
+idOrder = DIntDtData.df$ID
+latOrder = Intensification$lat[1:41]
+lonOrder = Intensification$lon[1:41]
+
+gridOrder = data.frame(ID = idOrder, lat = latOrder, lon = lonOrder)
+gridOrder = arrange(gridOrder, ID)
+
+```
+
+```{r, echo = FALSE}
+
+DIntDtStack = stack(data1975.grid, data1976.grid, data1977.grid, data1978.grid, data1979.grid, data1980.grid,
+                    data1981.grid, data1982.grid, data1983.grid, data1984.grid, data1985.grid,
+                    data1986.grid, data1987.grid, data1988.grid, data1989.grid, data1990.grid,
+                    data1991.grid, data1992.grid, data1993.grid, data1994.grid, data1995.grid,
+                    data1996.grid, data1997.grid, data1998.grid, data1999.grid, data2000.grid,
+                    data2001.grid, data2002.grid, data2003.grid, data2004.grid, data2005.grid,
+                    data2006.grid, data2007.grid, data2008.grid, data2009.grid, data2010.grid,
+                    data2011.grid, data2012.grid, data2013.grid, data2014.grid)
+
+DIntDtStackCount = nlayers(DIntDtStack)
+
+```
+
+```{r, echo = FALSE}
+#This chunk produces Figure 4 from the article.
+library("latticeExtra")
+
+library("rasterVis")
+
+names = c('1975', '1976', '1977', '1978', '1979', '1980', '1981', '1982', '1983', '1984','1985', '1986', '1987', '1988', '1989', '1990', '1991', '1992', '1993',
+          '1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002',
+          '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011',
+          '2012', '2013', '2014')
+
+background = sp.polygons(bPols, col = gray(.8))
+
+cr = brewer.pal(9, "Purples")
+cr = cr[-(1)]
+rng = seq(0, 2.00, 0.25)
+breaks =  c(0.00, 0.25, 0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00 )
+
+plotting = spplot(DIntDtStack, col.regions=cr, names.attr = names,
+                  at = rng, colorkey = list(space="bottom", at=breaks, labels=list(at=breaks)), labels=paste(rng), par.settings=list(fontsize=list(text=10)),
+        sub=expression(paste("Intensification [m ", s^-1, " per h]")),
+              pretty=TRUE)
+
+p1 = plotting + latticeExtra::layer(sp.polygons(bPols))
+plot(p1)
+
+```
+
+```{r, echo = FALSE}
+
+#This chunk handles mean intensity
+
+data1975 = filter(Tracks.df, Yr == 1975)
+data1975.sdf = data1975
+coordinates(data1975.sdf) = c("lon", "lat")
+proj4string(data1975.sdf) = CRS(ll)
+
+data1975.grid = rasterize(data1975.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1976 = filter(Tracks.df, Yr == 1976)
+data1976.sdf = data1976
+coordinates(data1976.sdf) = c("lon", "lat")
+proj4string(data1976.sdf) = CRS(ll)
+
+data1976.grid = rasterize(data1976.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1977 = filter(Tracks.df, Yr == 1977)
+data1977.sdf = data1977
+coordinates(data1977.sdf) = c("lon", "lat")
+proj4string(data1977.sdf) = CRS(ll)
+
+data1977.grid = rasterize(data1977.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1978 = filter(Tracks.df, Yr == 1978)
+data1978.sdf = data1978
+coordinates(data1978.sdf) = c("lon", "lat")
+proj4string(data1978.sdf) = CRS(ll)
+
+data1978.grid = rasterize(data1978.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1979 = filter(Tracks.df, Yr == 1979)
+data1979.sdf = data1979
+coordinates(data1979.sdf) = c("lon", "lat")
+proj4string(data1979.sdf) = CRS(ll)
+
+data1979.grid = rasterize(data1979.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1980 = filter(Tracks.df, Yr == 1980)
+data1980.sdf = data1980
+coordinates(data1980.sdf) = c("lon", "lat")
+proj4string(data1980.sdf) = CRS(ll)
+
+data1980.grid = rasterize(data1980.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1981 = filter(Tracks.df, Yr == 1981)
+data1981.sdf = data1981
+coordinates(data1981.sdf) = c("lon", "lat")
+proj4string(data1981.sdf) = CRS(ll)
+
+data1981.grid = rasterize(data1981.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1982 = filter(Tracks.df, Yr == 1982)
+data1982.sdf = data1982
+coordinates(data1982.sdf) = c("lon", "lat")
+proj4string(data1982.sdf) = CRS(ll)
+
+data1982.grid = rasterize(data1982.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1983 = filter(Tracks.df, Yr == 1983)
+data1983.sdf = data1983
+coordinates(data1983.sdf) = c("lon", "lat")
+proj4string(data1983.sdf) = CRS(ll)
+
+data1983.grid = rasterize(data1983.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1984 = filter(Tracks.df, Yr == 1984)
+data1984.sdf = data1984
+coordinates(data1984.sdf) = c("lon", "lat")
+proj4string(data1984.sdf) = CRS(ll)
+
+data1984.grid = rasterize(data1984.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1985 = filter(Tracks.df, Yr == 1985)
+data1985.sdf = data1985
+coordinates(data1985.sdf) = c("lon", "lat")
+proj4string(data1985.sdf) = CRS(ll)
+
+data1985.grid = rasterize(data1985.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1986 = filter(Tracks.df, Yr == 1986)
+data1986.sdf = data1986
+coordinates(data1986.sdf) = c("lon", "lat")
+proj4string(data1986.sdf) = CRS(ll)
+
+data1986.grid = rasterize(data1986.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1987 = filter(Tracks.df, Yr == 1987)
+data1987.sdf = data1987
+coordinates(data1987.sdf) = c("lon", "lat")
+proj4string(data1987.sdf) = CRS(ll)
+
+data1987.grid = rasterize(data1987.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1988 = filter(Tracks.df, Yr == 1988)
+data1988.sdf = data1988
+coordinates(data1988.sdf) = c("lon", "lat")
+proj4string(data1988.sdf) = CRS(ll)
+
+data1988.grid = rasterize(data1988.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1989 = filter(Tracks.df, Yr == 1989)
+data1989.sdf = data1989
+coordinates(data1989.sdf) = c("lon", "lat")
+proj4string(data1989.sdf) = CRS(ll)
+
+data1989.grid = rasterize(data1989.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1990 = filter(Tracks.df, Yr == 1990)
+data1990.sdf = data1990
+coordinates(data1990.sdf) = c("lon", "lat")
+proj4string(data1990.sdf) = CRS(ll)
+
+data1990.grid = rasterize(data1990.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1991 = filter(Tracks.df, Yr == 1991)
+data1991.sdf = data1991
+coordinates(data1991.sdf) = c("lon", "lat")
+proj4string(data1991.sdf) = CRS(ll)
+
+data1991.grid = rasterize(data1991.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1992 = filter(Tracks.df, Yr == 1992)
+data1992.sdf = data1992
+coordinates(data1992.sdf) = c("lon", "lat")
+proj4string(data1992.sdf) = CRS(ll)
+
+data1992.grid = rasterize(data1992.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1993 = filter(Tracks.df, Yr == 1993)
+data1993.sdf = data1993
+coordinates(data1993.sdf) = c("lon", "lat")
+proj4string(data1993.sdf) = CRS(ll)
+
+data1993.grid = rasterize(data1993.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1994 = filter(Tracks.df, Yr == 1994)
+data1994.sdf = data1994
+coordinates(data1994.sdf) = c("lon", "lat")
+proj4string(data1994.sdf) = CRS(ll)
+
+data1994.grid = rasterize(data1994.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1995 = filter(Tracks.df, Yr == 1995)
+data1995.sdf = data1995
+coordinates(data1995.sdf) = c("lon", "lat")
+proj4string(data1995.sdf) = CRS(ll)
+
+data1995.grid = rasterize(data1995.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1996 = filter(Tracks.df, Yr == 1996)
+data1996.sdf = data1996
+coordinates(data1996.sdf) = c("lon", "lat")
+proj4string(data1996.sdf) = CRS(ll)
+
+data1996.grid = rasterize(data1996.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1997 = filter(Tracks.df, Yr == 1997)
+data1997.sdf = data1997
+coordinates(data1997.sdf) = c("lon", "lat")
+proj4string(data1997.sdf) = CRS(ll)
+
+data1997.grid = rasterize(data1997.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1998 = filter(Tracks.df, Yr == 1998)
+data1998.sdf = data1998
+coordinates(data1998.sdf) = c("lon", "lat")
+proj4string(data1998.sdf) = CRS(ll)
+
+data1998.grid = rasterize(data1998.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data1999 = filter(Tracks.df, Yr == 1999)
+data1999.sdf = data1999
+coordinates(data1999.sdf) = c("lon", "lat")
+proj4string(data1999.sdf) = CRS(ll)
+
+data1999.grid = rasterize(data1999.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data2000 = filter(Tracks.df, Yr == 2000)
+data2000.sdf = data2000
+coordinates(data2000.sdf) = c("lon", "lat")
+proj4string(data2000.sdf) = CRS(ll)
+
+data2000.grid = rasterize(data2000.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data2001 = filter(Tracks.df, Yr == 2001)
+data2001.sdf = data2001
+coordinates(data2001.sdf) = c("lon", "lat")
+proj4string(data2001.sdf) = CRS(ll)
+
+data2001.grid = rasterize(data2001.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data2002 = filter(Tracks.df, Yr == 2002)
+data2002.sdf = data2002
+coordinates(data2002.sdf) = c("lon", "lat")
+proj4string(data2002.sdf) = CRS(ll)
+
+data2002.grid = rasterize(data2002.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data2003 = filter(Tracks.df, Yr == 2003)
+data2003.sdf = data2003
+coordinates(data2003.sdf) = c("lon", "lat")
+proj4string(data2003.sdf) = CRS(ll)
+
+data2003.grid = rasterize(data2003.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data2004 = filter(Tracks.df, Yr == 2004)
+data2004.sdf = data2004
+coordinates(data2004.sdf) = c("lon", "lat")
+proj4string(data2004.sdf) = CRS(ll)
+
+data2004.grid = rasterize(data2004.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data2005 = filter(Tracks.df, Yr == 2005)
+data2005.sdf = data2005
+coordinates(data2005.sdf) = c("lon", "lat")
+proj4string(data2005.sdf) = CRS(ll)
+
+data2005.grid = rasterize(data2005.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data2006 = filter(Tracks.df, Yr == 2006)
+data2006.sdf = data2006
+coordinates(data2006.sdf) = c("lon", "lat")
+proj4string(data2006.sdf) = CRS(ll)
+
+data2006.grid = rasterize(data2006.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data2007 = filter(Tracks.df, Yr == 2007)
+data2007.sdf = data2007
+coordinates(data2007.sdf) = c("lon", "lat")
+proj4string(data2007.sdf) = CRS(ll)
+
+data2007.grid = rasterize(data2007.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data2008 = filter(Tracks.df, Yr == 2008)
+data2008.sdf = data2008
+coordinates(data2008.sdf) = c("lon", "lat")
+proj4string(data2008.sdf) = CRS(ll)
+
+data2008.grid = rasterize(data2008.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data2009 = filter(Tracks.df, Yr == 2009)
+data2009.sdf = data2009
+coordinates(data2009.sdf) = c("lon", "lat")
+proj4string(data2009.sdf) = CRS(ll)
+
+data2009.grid = rasterize(data2009.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data2010 = filter(Tracks.df, Yr == 2010)
+data2010.sdf = data2010
+coordinates(data2010.sdf) = c("lon", "lat")
+proj4string(data2010.sdf) = CRS(ll)
+
+data2010.grid = rasterize(data2010.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data2011 = filter(Tracks.df, Yr == 2011)
+data2011.sdf = data2011
+coordinates(data2011.sdf) = c("lon", "lat")
+proj4string(data2011.sdf) = CRS(ll)
+
+data2011.grid = rasterize(data2011.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data2012 = filter(Tracks.df, Yr == 2012)
+data2012.sdf = data2012
+coordinates(data2012.sdf) = c("lon", "lat")
+proj4string(data2012.sdf) = CRS(ll)
+
+data2012.grid = rasterize(data2012.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data2013 = filter(Tracks.df, Yr == 2013)
+data2013.sdf = data2013
+coordinates(data2013.sdf) = c("lon", "lat")
+proj4string(data2013.sdf) = CRS(ll)
+
+data2013.grid = rasterize(data2013.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+data2014 = filter(Tracks.df, Yr == 2014)
+data2014.sdf = data2014
+coordinates(data2014.sdf) = c("lon", "lat")
+proj4string(data2014.sdf) = CRS(ll)
+
+data2014.grid = rasterize(data2014.sdf, r, 
+                         field = 'Int',
+                         fun = mean)
+
+dataInt1975.df = as.data.frame(data1975.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1975.df) <- c("lon", "lat", "Int")
+dataInt1976.df = as.data.frame(data1976.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1976.df) <- c("lon", "lat", "Int")
+dataInt1977.df = as.data.frame(data1977.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1977.df) <- c("lon", "lat", "Int")
+dataInt1978.df = as.data.frame(data1978.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1978.df) <- c("lon", "lat", "Int")
+dataInt1979.df = as.data.frame(data1979.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1979.df) <- c("lon", "lat", "Int")
+dataInt1980.df = as.data.frame(data1980.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1980.df) <- c("lon", "lat", "Int")
+dataInt1981.df = as.data.frame(data1981.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1981.df) <- c("lon", "lat", "Int")
+dataInt1982.df = as.data.frame(data1982.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1982.df) <- c("lon", "lat", "Int")
+dataInt1983.df = as.data.frame(data1983.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1983.df) <- c("lon", "lat", "Int")
+dataInt1984.df = as.data.frame(data1984.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1984.df) <- c("lon", "lat", "Int")
+dataInt1985.df = as.data.frame(data1985.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1985.df) <- c("lon", "lat", "Int")
+dataInt1986.df = as.data.frame(data1986.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1986.df) <- c("lon", "lat", "Int")
+dataInt1987.df = as.data.frame(data1987.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1987.df) <- c("lon", "lat", "Int")
+dataInt1988.df = as.data.frame(data1988.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1988.df) <- c("lon", "lat", "Int")
+dataInt1989.df = as.data.frame(data1989.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1989.df) <- c("lon", "lat", "Int")
+dataInt1990.df = as.data.frame(data1990.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1990.df) <- c("lon", "lat", "Int")
+dataInt1991.df = as.data.frame(data1991.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1991.df) <- c("lon", "lat", "Int")
+dataInt1992.df = as.data.frame(data1992.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1992.df) <- c("lon", "lat", "Int")
+dataInt1993.df = as.data.frame(data1993.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1993.df) <- c("lon", "lat", "Int")
+dataInt1994.df = as.data.frame(data1994.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1994.df) <- c("lon", "lat", "Int")
+dataInt1995.df = as.data.frame(data1995.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1995.df) <- c("lon", "lat", "Int")
+dataInt1996.df = as.data.frame(data1996.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1996.df) <- c("lon", "lat", "Int")
+dataInt1997.df = as.data.frame(data1997.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1997.df) <- c("lon", "lat", "Int")
+dataInt1998.df = as.data.frame(data1998.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1998.df) <- c("lon", "lat", "Int")
+dataInt1999.df = as.data.frame(data1999.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt1999.df) <- c("lon", "lat", "Int")
+dataInt2000.df = as.data.frame(data2000.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt2000.df) <- c("lon", "lat", "Int")
+dataInt2001.df = as.data.frame(data2001.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt2001.df) <- c("lon", "lat", "Int")
+dataInt2002.df = as.data.frame(data2002.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt2002.df) <- c("lon", "lat", "Int")
+dataInt2003.df = as.data.frame(data2003.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt2003.df) <- c("lon", "lat", "Int")
+dataInt2004.df = as.data.frame(data2004.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt2004.df) <- c("lon", "lat", "Int")
+dataInt2005.df = as.data.frame(data2005.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt2005.df) <- c("lon", "lat", "Int")
+dataInt2006.df = as.data.frame(data2006.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt2006.df) <- c("lon", "lat", "Int")
+dataInt2007.df = as.data.frame(data2007.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt2007.df) <- c("lon", "lat", "Int")
+dataInt2008.df = as.data.frame(data2008.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt2008.df) <- c("lon", "lat", "Int")
+dataInt2009.df = as.data.frame(data2009.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt2009.df) <- c("lon", "lat", "Int")
+dataInt2010.df = as.data.frame(data2010.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt2010.df) <- c("lon", "lat", "Int")
+dataInt2011.df = as.data.frame(data2011.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt2011.df) <- c("lon", "lat", "Int")
+dataInt2012.df = as.data.frame(data2012.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt2012.df) <- c("lon", "lat", "Int")
+dataInt2013.df = as.data.frame(data2013.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt2013.df) <- c("lon", "lat", "Int")
+dataInt2014.df = as.data.frame(data2014.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataInt2014.df) <- c("lon", "lat", "Int")
+
+dataInt1975.df$Year[1:50] = 1975
+dataInt1976.df$Year[1:50] = 1976
+dataInt1977.df$Year[1:50] = 1977
+dataInt1978.df$Year[1:50] = 1978
+dataInt1979.df$Year[1:50] = 1979
+dataInt1980.df$Year[1:50] = 1980
+dataInt1981.df$Year[1:50] = 1981
+dataInt1982.df$Year[1:50] = 1982
+dataInt1983.df$Year[1:50] = 1983
+dataInt1984.df$Year[1:50] = 1984
+dataInt1985.df$Year[1:50] = 1985
+dataInt1986.df$Year[1:50] = 1986
+dataInt1987.df$Year[1:50] = 1987
+dataInt1988.df$Year[1:50] = 1988
+dataInt1989.df$Year[1:50] = 1989
+dataInt1990.df$Year[1:50] = 1990
+dataInt1991.df$Year[1:50] = 1991
+dataInt1992.df$Year[1:50] = 1992
+dataInt1993.df$Year[1:50] = 1993
+dataInt1994.df$Year[1:50] = 1994
+dataInt1995.df$Year[1:50] = 1995
+dataInt1996.df$Year[1:50] = 1996
+dataInt1997.df$Year[1:50] = 1997
+dataInt1998.df$Year[1:50] = 1998
+dataInt1999.df$Year[1:50] = 1999
+dataInt2000.df$Year[1:50] = 2000
+dataInt2001.df$Year[1:50] = 2001
+dataInt2002.df$Year[1:50] = 2002
+dataInt2003.df$Year[1:50] = 2003
+dataInt2004.df$Year[1:50] = 2004
+dataInt2005.df$Year[1:50] = 2005
+dataInt2006.df$Year[1:50] = 2006
+dataInt2007.df$Year[1:50] = 2007
+dataInt2008.df$Year[1:50] = 2008
+dataInt2009.df$Year[1:50] = 2009
+dataInt2010.df$Year[1:50] = 2010
+dataInt2011.df$Year[1:50] = 2011
+dataInt2012.df$Year[1:50] = 2012
+dataInt2013.df$Year[1:50] = 2013
+dataInt2014.df$Year[1:50] = 2014
+
+dataInt1975.df$ID = as.numeric(as.factor(with(dataInt1975.df, paste(lon, lat,  sep="_"))))
+dataInt1976.df$ID = as.numeric(as.factor(with(dataInt1976.df, paste(lon, lat,  sep="_"))))
+dataInt1977.df$ID = as.numeric(as.factor(with(dataInt1977.df, paste(lon, lat,  sep="_"))))
+dataInt1978.df$ID = as.numeric(as.factor(with(dataInt1978.df, paste(lon, lat,  sep="_"))))
+dataInt1979.df$ID = as.numeric(as.factor(with(dataInt1979.df, paste(lon, lat,  sep="_"))))
+dataInt1980.df$ID = as.numeric(as.factor(with(dataInt1980.df, paste(lon, lat,  sep="_"))))
+dataInt1981.df$ID = as.numeric(as.factor(with(dataInt1981.df, paste(lon, lat,  sep="_"))))
+dataInt1982.df$ID = as.numeric(as.factor(with(dataInt1982.df, paste(lon, lat,  sep="_"))))
+dataInt1983.df$ID = as.numeric(as.factor(with(dataInt1983.df, paste(lon, lat,  sep="_"))))
+dataInt1984.df$ID = as.numeric(as.factor(with(dataInt1984.df, paste(lon, lat,  sep="_"))))
+dataInt1985.df$ID = as.numeric(as.factor(with(dataInt1985.df, paste(lon, lat,  sep="_"))))
+dataInt1986.df$ID = as.numeric(as.factor(with(dataInt1986.df, paste(lon, lat,  sep="_"))))
+dataInt1987.df$ID = as.numeric(as.factor(with(dataInt1987.df, paste(lon, lat,  sep="_"))))
+dataInt1988.df$ID = as.numeric(as.factor(with(dataInt1988.df, paste(lon, lat,  sep="_"))))
+dataInt1989.df$ID = as.numeric(as.factor(with(dataInt1989.df, paste(lon, lat,  sep="_"))))
+dataInt1990.df$ID = as.numeric(as.factor(with(dataInt1990.df, paste(lon, lat,  sep="_"))))
+dataInt1991.df$ID = as.numeric(as.factor(with(dataInt1991.df, paste(lon, lat,  sep="_"))))
+dataInt1992.df$ID = as.numeric(as.factor(with(dataInt1992.df, paste(lon, lat,  sep="_"))))
+dataInt1993.df$ID = as.numeric(as.factor(with(dataInt1993.df, paste(lon, lat,  sep="_"))))
+dataInt1994.df$ID = as.numeric(as.factor(with(dataInt1994.df, paste(lon, lat,  sep="_"))))
+dataInt1995.df$ID = as.numeric(as.factor(with(dataInt1995.df, paste(lon, lat,  sep="_"))))
+dataInt1996.df$ID = as.numeric(as.factor(with(dataInt1996.df, paste(lon, lat,  sep="_"))))
+dataInt1997.df$ID = as.numeric(as.factor(with(dataInt1997.df, paste(lon, lat,  sep="_"))))
+dataInt1998.df$ID = as.numeric(as.factor(with(dataInt1998.df, paste(lon, lat,  sep="_"))))
+dataInt1999.df$ID = as.numeric(as.factor(with(dataInt1999.df, paste(lon, lat,  sep="_"))))
+dataInt2000.df$ID = as.numeric(as.factor(with(dataInt2000.df, paste(lon, lat,  sep="_"))))
+dataInt2001.df$ID = as.numeric(as.factor(with(dataInt2001.df, paste(lon, lat,  sep="_"))))
+dataInt2002.df$ID = as.numeric(as.factor(with(dataInt2002.df, paste(lon, lat,  sep="_"))))
+dataInt2003.df$ID = as.numeric(as.factor(with(dataInt2003.df, paste(lon, lat,  sep="_"))))
+dataInt2004.df$ID = as.numeric(as.factor(with(dataInt2004.df, paste(lon, lat,  sep="_"))))
+dataInt2005.df$ID = as.numeric(as.factor(with(dataInt2005.df, paste(lon, lat,  sep="_"))))
+dataInt2006.df$ID = as.numeric(as.factor(with(dataInt2006.df, paste(lon, lat,  sep="_"))))
+dataInt2007.df$ID = as.numeric(as.factor(with(dataInt2007.df, paste(lon, lat,  sep="_"))))
+dataInt2008.df$ID = as.numeric(as.factor(with(dataInt2008.df, paste(lon, lat,  sep="_"))))
+dataInt2009.df$ID = as.numeric(as.factor(with(dataInt2009.df, paste(lon, lat,  sep="_"))))
+dataInt2010.df$ID = as.numeric(as.factor(with(dataInt2010.df, paste(lon, lat,  sep="_"))))
+dataInt2011.df$ID = as.numeric(as.factor(with(dataInt2011.df, paste(lon, lat,  sep="_"))))
+dataInt2012.df$ID = as.numeric(as.factor(with(dataInt2012.df, paste(lon, lat,  sep="_"))))
+dataInt2013.df$ID = as.numeric(as.factor(with(dataInt2013.df, paste(lon, lat,  sep="_"))))
+dataInt2014.df$ID = as.numeric(as.factor(with(dataInt2014.df, paste(lon, lat,  sep="_"))))
+
+```
+
+```{r, echo = FALSE}
+
+Intensity = rbind(dataInt1975.df,dataInt1976.df, dataInt1977.df, dataInt1978.df, dataInt1979.df,
+                        dataInt1980.df, dataInt1981.df, dataInt1982.df, dataInt1983.df,
+                        dataInt1984.df, dataInt1985.df, dataInt1986.df, dataInt1987.df,
+                        dataInt1988.df, dataInt1989.df, dataInt1990.df, dataInt1991.df, 
+                        dataInt1992.df, dataInt1993.df, dataInt1994.df, dataInt1995.df, 
+                        dataInt1996.df, dataInt1997.df, dataInt1998.df, dataInt1999.df,
+                        dataInt2000.df, dataInt2001.df, dataInt2002.df, dataInt2003.df,
+                        dataInt2004.df, dataInt2005.df, dataInt2006.df, dataInt2007.df,
+                        dataInt2008.df, dataInt2009.df, dataInt2010.df, dataInt2011.df,
+                        dataInt2012.df, dataInt2013.df, dataInt2014.df) 
+
+Intensity$ID = as.integer(Intensity$ID)
+
+looper = nrow(Intensity)
+
+while(looper > 0)
+  {
+  if ((Intensity$ID[looper] == 50) == TRUE | (Intensity$ID[looper] == 46) == TRUE |
+        (Intensity$ID[looper] == 45) == TRUE | (Intensity$ID[looper] == 35) == TRUE |
+        (Intensity$ID[looper] == 49) == TRUE | (Intensity$ID[looper] == 40) == TRUE|
+        (Intensity$ID[looper] == 44) == TRUE | (Intensity$ID[looper] == 3) == TRUE |
+        (Intensity$ID[looper] == 4) == TRUE)
+    {
+      Intensity = Intensity[-looper,]
+      }
+  looper = looper - 1
+  }
+```
+
+```{r, echo = FALSE}
+
+ID = dataInt1975.df$ID
+Yr = c(1975:2014)
+
+IntData.df = data.frame(ID)
+
+IntData.df = cbind(IntData.df, dataInt1975.df$Int)
+IntData.df = cbind(IntData.df, dataInt1976.df$Int)
+IntData.df = cbind(IntData.df, dataInt1977.df$Int)
+IntData.df = cbind(IntData.df, dataInt1978.df$Int)
+IntData.df = cbind(IntData.df, dataInt1979.df$Int)
+IntData.df = cbind(IntData.df, dataInt1980.df$Int)
+IntData.df = cbind(IntData.df, dataInt1981.df$Int)
+IntData.df = cbind(IntData.df, dataInt1982.df$Int)
+IntData.df = cbind(IntData.df, dataInt1983.df$Int)
+IntData.df = cbind(IntData.df, dataInt1984.df$Int)
+IntData.df = cbind(IntData.df, dataInt1985.df$Int)
+IntData.df = cbind(IntData.df, dataInt1986.df$Int)
+IntData.df = cbind(IntData.df, dataInt1987.df$Int)
+IntData.df = cbind(IntData.df, dataInt1988.df$Int)
+IntData.df = cbind(IntData.df, dataInt1989.df$Int)
+IntData.df = cbind(IntData.df, dataInt1990.df$Int)
+IntData.df = cbind(IntData.df, dataInt1991.df$Int)
+IntData.df = cbind(IntData.df, dataInt1992.df$Int)
+IntData.df = cbind(IntData.df, dataInt1993.df$Int)
+IntData.df = cbind(IntData.df, dataInt1994.df$Int)
+IntData.df = cbind(IntData.df, dataInt1995.df$Int)
+IntData.df = cbind(IntData.df, dataInt1996.df$Int)
+IntData.df = cbind(IntData.df, dataInt1997.df$Int)
+IntData.df = cbind(IntData.df, dataInt1998.df$Int)
+IntData.df = cbind(IntData.df, dataInt1999.df$Int)
+IntData.df = cbind(IntData.df, dataInt2000.df$Int)
+IntData.df = cbind(IntData.df, dataInt2001.df$Int)
+IntData.df = cbind(IntData.df, dataInt2002.df$Int)
+IntData.df = cbind(IntData.df, dataInt2003.df$Int)
+IntData.df = cbind(IntData.df, dataInt2004.df$Int)
+IntData.df = cbind(IntData.df, dataInt2005.df$Int)
+IntData.df = cbind(IntData.df, dataInt2006.df$Int)
+IntData.df = cbind(IntData.df, dataInt2007.df$Int)
+IntData.df = cbind(IntData.df, dataInt2008.df$Int)
+IntData.df = cbind(IntData.df, dataInt2009.df$Int)
+IntData.df = cbind(IntData.df, dataInt2010.df$Int)
+IntData.df = cbind(IntData.df, dataInt2011.df$Int)
+IntData.df = cbind(IntData.df, dataInt2012.df$Int)
+IntData.df = cbind(IntData.df, dataInt2013.df$Int)
+IntData.df = cbind(IntData.df, dataInt2014.df$Int)
+
+x = 1
+while (x < 41){
+  colnames(IntData.df)[x+1] = Yr[x]
+  x = x+1
+}
+
+IntData.df$ID = as.integer(IntData.df$ID)
+
+looper = nrow(IntData.df)
+
+while(looper > 0)
+  {
+  if ((IntData.df$ID[looper] == 50) == TRUE | (IntData.df$ID[looper] == 46) == TRUE |
+        (IntData.df$ID[looper] == 45) == TRUE | (IntData.df$ID[looper] == 35) == TRUE |
+        (IntData.df$ID[looper] == 49) == TRUE | (IntData.df$ID[looper] == 40) == TRUE|
+        (IntData.df$ID[looper] == 44) == TRUE | (IntData.df$ID[looper] == 3) == TRUE |
+        (IntData.df$ID[looper] == 4) == TRUE)
+    {
+      IntData.df = IntData.df[-looper,]
+      }
+  looper = looper - 1
+  }
+
+```
+
+```{r, echo = FALSE}
+
+IntStack = stack(data1975.grid, data1976.grid, data1977.grid, data1978.grid, data1979.grid, data1980.grid,
+                    data1981.grid, data1982.grid, data1983.grid, data1984.grid, data1985.grid,
+                    data1986.grid, data1987.grid, data1988.grid, data1989.grid, data1990.grid,
+                    data1991.grid, data1992.grid, data1993.grid, data1994.grid, data1995.grid,
+                    data1996.grid, data1997.grid, data1998.grid, data1999.grid, data2000.grid,
+                    data2001.grid, data2002.grid, data2003.grid, data2004.grid, data2005.grid,
+                    data2006.grid, data2007.grid, data2008.grid, data2009.grid, data2010.grid,
+                    data2011.grid, data2012.grid, data2013.grid, data2014.grid)
+
+```
+
+```{r, echo = FALSE}
+#This chunk produces Figure 5 in the article.
+
+cr = brewer.pal(7, "Greens")
+cr = cr[-(1)]
+rng = seq(30, 84, 9)
+breaks =  c(30, 39, 48, 57, 66, 75, 84 )
+
+plotting = spplot(IntStack, col.regions=cr, names.attr = names, 
+                  at = rng, colorkey = list(space="bottom", at=breaks, labels=list(at=breaks)), labels=paste(rng),
+                  par.settings=list(fontsize=list(text=10)),
+        sub=expression(paste("Intensity [m ", s^-1, "]")),
+              pretty=TRUE)
+
+p2 = plotting + latticeExtra::layer(sp.polygons(bPols))
+plot(p2)
+
+```
+
+
+```{r, echo = FALSE}
+
+load("ncSST20142015.RData")
+load("ncSST20002013.RData")  
+load("ncSST19901999.RData")
+load("ncSST19801989.RData")
+load("ncSST19701979.RData")
+
+SST = cbind(ncdataframe19701979[,-(3:62)],
+            ncdataframe19801989[, 3:length(ncdataframe19801989)], 
+            ncdataframe19901999[, 3:length(ncdataframe19901999)], 
+            ncSST20002013[, 3:length(ncSST20002013)],
+            sst20142015[,3:length(sst20142015)])
+
+sst.sdf = SST
+coordinates(sst.sdf) = c("lon", "lat")
+proj4string(sst.sdf) = CRS(ll)
+
+```
+
+
+```{r, echo = FALSE}
+
+sst2 = data.frame(matrix(nrow = nrow(SST), ncol = 42))
+colnames(sst2)[1:2] = c("lat", "lon")
+colnames(sst2)[3:42] = c(1975:2014)
+
+rowCount = 1
+Year = 1975
+counter = 8
+colCount = 3
+
+while(rowCount <= nrow(SST)){
+  sst2$lon[rowCount] = SST$lon[rowCount]
+  sst2$lat[rowCount] = SST$lat[rowCount]
+  while(counter < ncol(SST)){
+    dummy = subset(SST[rowCount, counter:(counter+4)])
+    sst2[rowCount, colCount] = rowMeans(dummy)
+    counter = counter + 12
+    colCount = colCount + 1
+    }
+  rowCount = rowCount + 1
+  Year= Year + 1
+  counter = 8
+  colCount = 3
+}
+
+```
+
+```{r, echo = FALSE, warning=FALSE, message=FALSE}
+
+sst2$mean = rowMeans(sst2[,4:42])
+
+sst2.sdf = sst2
+coordinates(sst2.sdf) = c("lon", "lat")
+proj4string(sst2.sdf) = CRS(ll)
+funParameter = eval(parse(text = "mean"))
+sstTotal.grid = rasterize(sst2.sdf, r, 
+                         field = 'mean',
+                         fun = funParameter)
+
+```
+
+```{r, echo = FALSE}
+
+#This chunk handles mean SST
+
+#data1975 = filter(SST, Yr == 1975)
+time = 3 
+
+data1975 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1975.sdf = data1975
+coordinates(data1975.sdf) = c("lon", "lat")
+proj4string(data1975.sdf) = CRS(ll)
+
+data1975.grid = rasterize(data1975.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1976 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1976.sdf = data1976
+coordinates(data1976.sdf) = c("lon", "lat")
+proj4string(data1976.sdf) = CRS(ll)
+
+data1976.grid = rasterize(data1976.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1977 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1977.sdf = data1977
+coordinates(data1977.sdf) = c("lon", "lat")
+proj4string(data1977.sdf) = CRS(ll)
+
+data1977.grid = rasterize(data1977.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1978 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1978.sdf = data1978
+coordinates(data1978.sdf) = c("lon", "lat")
+proj4string(data1978.sdf) = CRS(ll)
+
+data1978.grid = rasterize(data1978.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1979 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1979.sdf = data1979
+coordinates(data1979.sdf) = c("lon", "lat")
+proj4string(data1979.sdf) = CRS(ll)
+
+data1979.grid = rasterize(data1979.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1980 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1980.sdf = data1980
+coordinates(data1980.sdf) = c("lon", "lat")
+proj4string(data1980.sdf) = CRS(ll)
+
+data1980.grid = rasterize(data1980.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1981 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1981.sdf = data1981
+coordinates(data1981.sdf) = c("lon", "lat")
+proj4string(data1981.sdf) = CRS(ll)
+
+data1981.grid = rasterize(data1981.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1982 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1982.sdf = data1982
+coordinates(data1982.sdf) = c("lon", "lat")
+proj4string(data1982.sdf) = CRS(ll)
+
+data1982.grid = rasterize(data1982.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1983 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1983.sdf = data1983
+coordinates(data1983.sdf) = c("lon", "lat")
+proj4string(data1983.sdf) = CRS(ll)
+
+data1983.grid = rasterize(data1983.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1984 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1984.sdf = data1984
+coordinates(data1984.sdf) = c("lon", "lat")
+proj4string(data1984.sdf) = CRS(ll)
+
+data1984.grid = rasterize(data1984.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1985 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1985.sdf = data1985
+coordinates(data1985.sdf) = c("lon", "lat")
+proj4string(data1985.sdf) = CRS(ll)
+
+data1985.grid = rasterize(data1985.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1986 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1986.sdf = data1986
+coordinates(data1986.sdf) = c("lon", "lat")
+proj4string(data1986.sdf) = CRS(ll)
+
+data1986.grid = rasterize(data1986.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1987 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1987.sdf = data1987
+coordinates(data1987.sdf) = c("lon", "lat")
+proj4string(data1987.sdf) = CRS(ll)
+
+data1987.grid = rasterize(data1987.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1988 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1988.sdf = data1988
+coordinates(data1988.sdf) = c("lon", "lat")
+proj4string(data1988.sdf) = CRS(ll)
+
+data1988.grid = rasterize(data1988.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1989 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1989.sdf = data1989
+coordinates(data1989.sdf) = c("lon", "lat")
+proj4string(data1989.sdf) = CRS(ll)
+
+data1989.grid = rasterize(data1989.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1990 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1990.sdf = data1990
+coordinates(data1990.sdf) = c("lon", "lat")
+proj4string(data1990.sdf) = CRS(ll)
+
+data1990.grid = rasterize(data1990.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1991 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1991.sdf = data1991
+coordinates(data1991.sdf) = c("lon", "lat")
+proj4string(data1991.sdf) = CRS(ll)
+
+data1991.grid = rasterize(data1991.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1992 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1992.sdf = data1992
+coordinates(data1992.sdf) = c("lon", "lat")
+proj4string(data1992.sdf) = CRS(ll)
+
+data1992.grid = rasterize(data1992.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1993 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1993.sdf = data1993
+coordinates(data1993.sdf) = c("lon", "lat")
+proj4string(data1993.sdf) = CRS(ll)
+
+data1993.grid = rasterize(data1993.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1994 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1994.sdf = data1994
+coordinates(data1994.sdf) = c("lon", "lat")
+proj4string(data1994.sdf) = CRS(ll)
+
+data1994.grid = rasterize(data1994.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1995 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1995.sdf = data1995
+coordinates(data1995.sdf) = c("lon", "lat")
+proj4string(data1995.sdf) = CRS(ll)
+
+data1995.grid = rasterize(data1995.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1996 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1996.sdf = data1996
+coordinates(data1996.sdf) = c("lon", "lat")
+proj4string(data1996.sdf) = CRS(ll)
+
+data1996.grid = rasterize(data1996.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1997 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1997.sdf = data1997
+coordinates(data1997.sdf) = c("lon", "lat")
+proj4string(data1997.sdf) = CRS(ll)
+
+data1997.grid = rasterize(data1997.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1998 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1998.sdf = data1998
+coordinates(data1998.sdf) = c("lon", "lat")
+proj4string(data1998.sdf) = CRS(ll)
+
+data1998.grid = rasterize(data1998.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data1999 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data1999.sdf = data1999
+coordinates(data1999.sdf) = c("lon", "lat")
+proj4string(data1999.sdf) = CRS(ll)
+
+data1999.grid = rasterize(data1999.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data2000 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data2000.sdf = data2000
+coordinates(data2000.sdf) = c("lon", "lat")
+proj4string(data2000.sdf) = CRS(ll)
+
+data2000.grid = rasterize(data2000.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data2001 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data2001.sdf = data2001
+coordinates(data2001.sdf) = c("lon", "lat")
+proj4string(data2001.sdf) = CRS(ll)
+
+data2001.grid = rasterize(data2001.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data2002 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data2002.sdf = data2002
+coordinates(data2002.sdf) = c("lon", "lat")
+proj4string(data2002.sdf) = CRS(ll)
+
+data2002.grid = rasterize(data2002.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data2003 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data2003.sdf = data2003
+coordinates(data2003.sdf) = c("lon", "lat")
+proj4string(data2003.sdf) = CRS(ll)
+
+data2003.grid = rasterize(data2003.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data2004 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data2004.sdf = data2004
+coordinates(data2004.sdf) = c("lon", "lat")
+proj4string(data2004.sdf) = CRS(ll)
+
+data2004.grid = rasterize(data2004.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data2005 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data2005.sdf = data2005
+coordinates(data2005.sdf) = c("lon", "lat")
+proj4string(data2005.sdf) = CRS(ll)
+
+data2005.grid = rasterize(data2005.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data2006 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data2006.sdf = data2006
+coordinates(data2006.sdf) = c("lon", "lat")
+proj4string(data2006.sdf) = CRS(ll)
+
+data2006.grid = rasterize(data2006.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data2007 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data2007.sdf = data2007
+coordinates(data2007.sdf) = c("lon", "lat")
+proj4string(data2007.sdf) = CRS(ll)
+
+data2007.grid = rasterize(data2007.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data2008 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data2008.sdf = data2008
+coordinates(data2008.sdf) = c("lon", "lat")
+proj4string(data2008.sdf) = CRS(ll)
+
+data2008.grid = rasterize(data2008.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data2009 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data2009.sdf = data2009
+coordinates(data2009.sdf) = c("lon", "lat")
+proj4string(data2009.sdf) = CRS(ll)
+
+data2009.grid = rasterize(data2009.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data2010 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data2010.sdf = data2010
+coordinates(data2010.sdf) = c("lon", "lat")
+proj4string(data2010.sdf) = CRS(ll)
+
+data2010.grid = rasterize(data2010.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data2011 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data2011.sdf = data2011
+coordinates(data2011.sdf) = c("lon", "lat")
+proj4string(data2011.sdf) = CRS(ll)
+
+data2011.grid = rasterize(data2011.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data2012 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data2012.sdf = data2012
+coordinates(data2012.sdf) = c("lon", "lat")
+proj4string(data2012.sdf) = CRS(ll)
+
+data2012.grid = rasterize(data2012.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data2013 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data2013.sdf = data2013
+coordinates(data2013.sdf) = c("lon", "lat")
+proj4string(data2013.sdf) = CRS(ll)
+
+data2013.grid = rasterize(data2013.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+data2014 = cbind(sst2[,1:2],
+                 sst = sst2[,time])
+time = time + 1
+data2014.sdf = data2014
+coordinates(data2014.sdf) = c("lon", "lat")
+proj4string(data2014.sdf) = CRS(ll)
+
+data2014.grid = rasterize(data2014.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+datasst1975.df = as.data.frame(data1975.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1975.df) <- c("lon", "lat", "sst")
+datasst1976.df = as.data.frame(data1976.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1976.df) <- c("lon", "lat", "sst")
+datasst1977.df = as.data.frame(data1977.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1977.df) <- c("lon", "lat", "sst")
+datasst1978.df = as.data.frame(data1978.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1978.df) <- c("lon", "lat", "sst")
+datasst1979.df = as.data.frame(data1979.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1979.df) <- c("lon", "lat", "sst")
+datasst1980.df = as.data.frame(data1980.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1980.df) <- c("lon", "lat", "sst")
+datasst1981.df = as.data.frame(data1981.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1981.df) <- c("lon", "lat", "sst")
+datasst1982.df = as.data.frame(data1982.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1982.df) <- c("lon", "lat", "sst")
+datasst1983.df = as.data.frame(data1983.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1983.df) <- c("lon", "lat", "sst")
+datasst1984.df = as.data.frame(data1984.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1984.df) <- c("lon", "lat", "sst")
+datasst1985.df = as.data.frame(data1985.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1985.df) <- c("lon", "lat", "sst")
+datasst1986.df = as.data.frame(data1986.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1986.df) <- c("lon", "lat", "sst")
+datasst1987.df = as.data.frame(data1987.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1987.df) <- c("lon", "lat", "sst")
+datasst1988.df = as.data.frame(data1988.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1988.df) <- c("lon", "lat", "sst")
+datasst1989.df = as.data.frame(data1989.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1989.df) <- c("lon", "lat", "sst")
+datasst1990.df = as.data.frame(data1990.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1990.df) <- c("lon", "lat", "sst")
+datasst1991.df = as.data.frame(data1991.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1991.df) <- c("lon", "lat", "sst")
+datasst1992.df = as.data.frame(data1992.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1992.df) <- c("lon", "lat", "sst")
+datasst1993.df = as.data.frame(data1993.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1993.df) <- c("lon", "lat", "sst")
+datasst1994.df = as.data.frame(data1994.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1994.df) <- c("lon", "lat", "sst")
+datasst1995.df = as.data.frame(data1995.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1995.df) <- c("lon", "lat", "sst")
+datasst1996.df = as.data.frame(data1996.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1996.df) <- c("lon", "lat", "sst")
+datasst1997.df = as.data.frame(data1997.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1997.df) <- c("lon", "lat", "sst")
+datasst1998.df = as.data.frame(data1998.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1998.df) <- c("lon", "lat", "sst")
+datasst1999.df = as.data.frame(data1999.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst1999.df) <- c("lon", "lat", "sst")
+datasst2000.df = as.data.frame(data2000.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst2000.df) <- c("lon", "lat", "sst")
+datasst2001.df = as.data.frame(data2001.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst2001.df) <- c("lon", "lat", "sst")
+datasst2002.df = as.data.frame(data2002.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst2002.df) <- c("lon", "lat", "sst")
+datasst2003.df = as.data.frame(data2003.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst2003.df) <- c("lon", "lat", "sst")
+datasst2004.df = as.data.frame(data2004.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst2004.df) <- c("lon", "lat", "sst")
+datasst2005.df = as.data.frame(data2005.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst2005.df) <- c("lon", "lat", "sst")
+datasst2006.df = as.data.frame(data2006.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst2006.df) <- c("lon", "lat", "sst")
+datasst2007.df = as.data.frame(data2007.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst2007.df) <- c("lon", "lat", "sst")
+datasst2008.df = as.data.frame(data2008.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst2008.df) <- c("lon", "lat", "sst")
+datasst2009.df = as.data.frame(data2009.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst2009.df) <- c("lon", "lat", "sst")
+datasst2010.df = as.data.frame(data2010.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst2010.df) <- c("lon", "lat", "sst")
+datasst2011.df = as.data.frame(data2011.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst2011.df) <- c("lon", "lat", "sst")
+datasst2012.df = as.data.frame(data2012.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst2012.df) <- c("lon", "lat", "sst")
+datasst2013.df = as.data.frame(data2013.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst2013.df) <- c("lon", "lat", "sst")
+datasst2014.df = as.data.frame(data2014.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(datasst2014.df) <- c("lon", "lat", "sst")
+
+datasst1975.df$Year[1:50] = 1975
+datasst1976.df$Year[1:50] = 1976
+datasst1977.df$Year[1:50] = 1977
+datasst1978.df$Year[1:50] = 1978
+datasst1979.df$Year[1:50] = 1979
+datasst1980.df$Year[1:50] = 1980
+datasst1981.df$Year[1:50] = 1981
+datasst1982.df$Year[1:50] = 1982
+datasst1983.df$Year[1:50] = 1983
+datasst1984.df$Year[1:50] = 1984
+datasst1985.df$Year[1:50] = 1985
+datasst1986.df$Year[1:50] = 1986
+datasst1987.df$Year[1:50] = 1987
+datasst1988.df$Year[1:50] = 1988
+datasst1989.df$Year[1:50] = 1989
+datasst1990.df$Year[1:50] = 1990
+datasst1991.df$Year[1:50] = 1991
+datasst1992.df$Year[1:50] = 1992
+datasst1993.df$Year[1:50] = 1993
+datasst1994.df$Year[1:50] = 1994
+datasst1995.df$Year[1:50] = 1995
+datasst1996.df$Year[1:50] = 1996
+datasst1997.df$Year[1:50] = 1997
+datasst1998.df$Year[1:50] = 1998
+datasst1999.df$Year[1:50] = 1999
+datasst2000.df$Year[1:50] = 2000
+datasst2001.df$Year[1:50] = 2001
+datasst2002.df$Year[1:50] = 2002
+datasst2003.df$Year[1:50] = 2003
+datasst2004.df$Year[1:50] = 2004
+datasst2005.df$Year[1:50] = 2005
+datasst2006.df$Year[1:50] = 2006
+datasst2007.df$Year[1:50] = 2007
+datasst2008.df$Year[1:50] = 2008
+datasst2009.df$Year[1:50] = 2009
+datasst2010.df$Year[1:50] = 2010
+datasst2011.df$Year[1:50] = 2011
+datasst2012.df$Year[1:50] = 2012
+datasst2013.df$Year[1:50] = 2013
+datasst2014.df$Year[1:50] = 2014
+
+datasst1975.df$ID = as.numeric(as.factor(with(datasst1975.df, paste(lon, lat,  sep="_"))))
+datasst1976.df$ID = as.numeric(as.factor(with(datasst1976.df, paste(lon, lat,  sep="_"))))
+datasst1977.df$ID = as.numeric(as.factor(with(datasst1977.df, paste(lon, lat,  sep="_"))))
+datasst1978.df$ID = as.numeric(as.factor(with(datasst1978.df, paste(lon, lat,  sep="_"))))
+datasst1979.df$ID = as.numeric(as.factor(with(datasst1979.df, paste(lon, lat,  sep="_"))))
+datasst1980.df$ID = as.numeric(as.factor(with(datasst1980.df, paste(lon, lat,  sep="_"))))
+datasst1981.df$ID = as.numeric(as.factor(with(datasst1981.df, paste(lon, lat,  sep="_"))))
+datasst1982.df$ID = as.numeric(as.factor(with(datasst1982.df, paste(lon, lat,  sep="_"))))
+datasst1983.df$ID = as.numeric(as.factor(with(datasst1983.df, paste(lon, lat,  sep="_"))))
+datasst1984.df$ID = as.numeric(as.factor(with(datasst1984.df, paste(lon, lat,  sep="_"))))
+datasst1985.df$ID = as.numeric(as.factor(with(datasst1985.df, paste(lon, lat,  sep="_"))))
+datasst1986.df$ID = as.numeric(as.factor(with(datasst1986.df, paste(lon, lat,  sep="_"))))
+datasst1987.df$ID = as.numeric(as.factor(with(datasst1987.df, paste(lon, lat,  sep="_"))))
+datasst1988.df$ID = as.numeric(as.factor(with(datasst1988.df, paste(lon, lat,  sep="_"))))
+datasst1989.df$ID = as.numeric(as.factor(with(datasst1989.df, paste(lon, lat,  sep="_"))))
+datasst1990.df$ID = as.numeric(as.factor(with(datasst1990.df, paste(lon, lat,  sep="_"))))
+datasst1991.df$ID = as.numeric(as.factor(with(datasst1991.df, paste(lon, lat,  sep="_"))))
+datasst1992.df$ID = as.numeric(as.factor(with(datasst1992.df, paste(lon, lat,  sep="_"))))
+datasst1993.df$ID = as.numeric(as.factor(with(datasst1993.df, paste(lon, lat,  sep="_"))))
+datasst1994.df$ID = as.numeric(as.factor(with(datasst1994.df, paste(lon, lat,  sep="_"))))
+datasst1995.df$ID = as.numeric(as.factor(with(datasst1995.df, paste(lon, lat,  sep="_"))))
+datasst1996.df$ID = as.numeric(as.factor(with(datasst1996.df, paste(lon, lat,  sep="_"))))
+datasst1997.df$ID = as.numeric(as.factor(with(datasst1997.df, paste(lon, lat,  sep="_"))))
+datasst1998.df$ID = as.numeric(as.factor(with(datasst1998.df, paste(lon, lat,  sep="_"))))
+datasst1999.df$ID = as.numeric(as.factor(with(datasst1999.df, paste(lon, lat,  sep="_"))))
+datasst2000.df$ID = as.numeric(as.factor(with(datasst2000.df, paste(lon, lat,  sep="_"))))
+datasst2001.df$ID = as.numeric(as.factor(with(datasst2001.df, paste(lon, lat,  sep="_"))))
+datasst2002.df$ID = as.numeric(as.factor(with(datasst2002.df, paste(lon, lat,  sep="_"))))
+datasst2003.df$ID = as.numeric(as.factor(with(datasst2003.df, paste(lon, lat,  sep="_"))))
+datasst2004.df$ID = as.numeric(as.factor(with(datasst2004.df, paste(lon, lat,  sep="_"))))
+datasst2005.df$ID = as.numeric(as.factor(with(datasst2005.df, paste(lon, lat,  sep="_"))))
+datasst2006.df$ID = as.numeric(as.factor(with(datasst2006.df, paste(lon, lat,  sep="_"))))
+datasst2007.df$ID = as.numeric(as.factor(with(datasst2007.df, paste(lon, lat,  sep="_"))))
+datasst2008.df$ID = as.numeric(as.factor(with(datasst2008.df, paste(lon, lat,  sep="_"))))
+datasst2009.df$ID = as.numeric(as.factor(with(datasst2009.df, paste(lon, lat,  sep="_"))))
+datasst2010.df$ID = as.numeric(as.factor(with(datasst2010.df, paste(lon, lat,  sep="_"))))
+datasst2011.df$ID = as.numeric(as.factor(with(datasst2011.df, paste(lon, lat,  sep="_"))))
+datasst2012.df$ID = as.numeric(as.factor(with(datasst2012.df, paste(lon, lat,  sep="_"))))
+datasst2013.df$ID = as.numeric(as.factor(with(datasst2013.df, paste(lon, lat,  sep="_"))))
+datasst2014.df$ID = as.numeric(as.factor(with(datasst2014.df, paste(lon, lat,  sep="_"))))
+
+```
+
+```{r, echo = FALSE}
+
+SSTdata = rbind(datasst1975.df,datasst1976.df, datasst1977.df, datasst1978.df, datasst1979.df,
+                        datasst1980.df, datasst1981.df, datasst1982.df, datasst1983.df,
+                        datasst1984.df, datasst1985.df, datasst1986.df, datasst1987.df,
+                        datasst1988.df, datasst1989.df, datasst1990.df, datasst1991.df, 
+                        datasst1992.df, datasst1993.df, datasst1994.df, datasst1995.df, 
+                        datasst1996.df, datasst1997.df, datasst1998.df, datasst1999.df,
+                        datasst2000.df, datasst2001.df, datasst2002.df, datasst2003.df,
+                        datasst2004.df, datasst2005.df, datasst2006.df, datasst2007.df,
+                        datasst2008.df, datasst2009.df, datasst2010.df, datasst2011.df,
+                        datasst2012.df, datasst2013.df, datasst2014.df) 
+
+SSTdata$ID = as.integer(SSTdata$ID)
+
+looper = nrow(SSTdata)
+
+while(looper > 0)
+  {
+  if ((SSTdata$ID[looper] == 50) == TRUE | (SSTdata$ID[looper] == 46) == TRUE |
+        (SSTdata$ID[looper] == 45) == TRUE | (SSTdata$ID[looper] == 35) == TRUE |
+        (SSTdata$ID[looper] == 49) == TRUE | (SSTdata$ID[looper] == 40) == TRUE|
+        (SSTdata$ID[looper] == 44) == TRUE | (SSTdata$ID[looper] == 3) == TRUE |
+        (SSTdata$ID[looper] == 4) == TRUE)
+    {
+      SSTdata = SSTdata[-looper,]
+      }
+  looper = looper - 1
+  }
+```
+
+```{r, echo = FALSE}
+ 
+ID = datasst1975.df$ID
+
+sstData.df = data.frame(ID)
+
+sstData.df = cbind(sstData.df, datasst1975.df$sst)
+sstData.df = cbind(sstData.df, datasst1976.df$sst)
+sstData.df = cbind(sstData.df, datasst1977.df$sst)
+sstData.df = cbind(sstData.df, datasst1978.df$sst)
+sstData.df = cbind(sstData.df, datasst1979.df$sst)
+sstData.df = cbind(sstData.df, datasst1980.df$sst)
+sstData.df = cbind(sstData.df, datasst1981.df$sst)
+sstData.df = cbind(sstData.df, datasst1982.df$sst)
+sstData.df = cbind(sstData.df, datasst1983.df$sst)
+sstData.df = cbind(sstData.df, datasst1984.df$sst)
+sstData.df = cbind(sstData.df, datasst1985.df$sst)
+sstData.df = cbind(sstData.df, datasst1986.df$sst)
+sstData.df = cbind(sstData.df, datasst1987.df$sst)
+sstData.df = cbind(sstData.df, datasst1988.df$sst)
+sstData.df = cbind(sstData.df, datasst1989.df$sst)
+sstData.df = cbind(sstData.df, datasst1990.df$sst)
+sstData.df = cbind(sstData.df, datasst1991.df$sst)
+sstData.df = cbind(sstData.df, datasst1992.df$sst)
+sstData.df = cbind(sstData.df, datasst1993.df$sst)
+sstData.df = cbind(sstData.df, datasst1994.df$sst)
+sstData.df = cbind(sstData.df, datasst1995.df$sst)
+sstData.df = cbind(sstData.df, datasst1996.df$sst)
+sstData.df = cbind(sstData.df, datasst1997.df$sst)
+sstData.df = cbind(sstData.df, datasst1998.df$sst)
+sstData.df = cbind(sstData.df, datasst1999.df$sst)
+sstData.df = cbind(sstData.df, datasst2000.df$sst)
+sstData.df = cbind(sstData.df, datasst2001.df$sst)
+sstData.df = cbind(sstData.df, datasst2002.df$sst)
+sstData.df = cbind(sstData.df, datasst2003.df$sst)
+sstData.df = cbind(sstData.df, datasst2004.df$sst)
+sstData.df = cbind(sstData.df, datasst2005.df$sst)
+sstData.df = cbind(sstData.df, datasst2006.df$sst)
+sstData.df = cbind(sstData.df, datasst2007.df$sst)
+sstData.df = cbind(sstData.df, datasst2008.df$sst)
+sstData.df = cbind(sstData.df, datasst2009.df$sst)
+sstData.df = cbind(sstData.df, datasst2010.df$sst)
+sstData.df = cbind(sstData.df, datasst2011.df$sst)
+sstData.df = cbind(sstData.df, datasst2012.df$sst)
+sstData.df = cbind(sstData.df, datasst2013.df$sst)
+sstData.df = cbind(sstData.df, datasst2014.df$sst)
+
+x = 1
+while (x < 41){
+  colnames(sstData.df)[x+1] = Yr[x]
+  x = x+1
+}
+
+sstData.df$ID = as.integer(sstData.df$ID)
+
+looper = nrow(sstData.df)
+
+while(looper > 0)
+  {
+  if ((sstData.df$ID[looper] == 50) == TRUE | (sstData.df$ID[looper] == 46) == TRUE |
+        (sstData.df$ID[looper] == 45) == TRUE | (sstData.df$ID[looper] == 35) == TRUE |
+        (sstData.df$ID[looper] == 49) == TRUE | (sstData.df$ID[looper] == 40) == TRUE|
+        (sstData.df$ID[looper] == 44) == TRUE | (sstData.df$ID[looper] == 3) == TRUE |
+        (sstData.df$ID[looper] == 4) == TRUE)
+    {
+      sstData.df = sstData.df[-looper,]
+      }
+  looper = looper - 1
+}
+
+
+```
+
+```{r, echo = FALSE}
+
+sstStack = stack(data1975.grid, data1976.grid, data1977.grid, data1978.grid, data1979.grid, data1980.grid,
+                    data1981.grid, data1982.grid, data1983.grid, data1984.grid, data1985.grid,
+                    data1986.grid, data1987.grid, data1988.grid, data1989.grid, data1990.grid,
+                    data1991.grid, data1992.grid, data1993.grid, data1994.grid, data1995.grid,
+                    data1996.grid, data1997.grid, data1998.grid, data1999.grid, data2000.grid,
+                    data2001.grid, data2002.grid, data2003.grid, data2004.grid, data2005.grid,
+                    data2006.grid, data2007.grid, data2008.grid, data2009.grid, data2010.grid,
+                    data2011.grid, data2012.grid, data2013.grid, data2014.grid)
+
+```
+
+```{r, echo = FALSE}
+
+cr = brewer.pal(7, "Reds")
+cr = cr[-(1:2)]
+#cr = cr[-length(cr)]
+rng = seq(20, 30, 2)
+breaks =  c(20, 22, 24, 26, 28, 30)
+
+plotting = spplot(sstStack, col.regions=cr, names.attr = names, 
+                  at = rng, colorkey = list(space="bottom", at=breaks, labels=list(at=breaks)), labels=paste(rng),
+                  par.settings=list(fontsize=list(text=10)),
+      sub=expression(paste("Sea surface temperature [", degree, "C]")),
+              pretty=TRUE)
+
+p3 = plotting + latticeExtra::layer(sp.polygons(bPols))
+#p3
+
+```
+
+```{r, echo = FALSE}
+
+dataSSTanom.df = as.data.frame(sstTotal.grid, row.names=NULL, optional = TRUE, xy = TRUE, centroids = TRUE)
+colnames(dataSSTanom.df) <- c("lon", "lat", "sst")
+
+dataSSTanom.df$sst[1:13] = NA
+
+dataSSTanom.sdf = dataSSTanom.df
+coordinates(dataSSTanom.sdf) = c("lon", "lat")
+proj4string(dataSSTanom.sdf) = CRS(ll)
+
+dataSSTanom.grid = rasterize(dataSSTanom.sdf, r, 
+                         field = 'sst',
+                         fun = funParameter)
+
+```
+
+```{r, echo = FALSE}
+#This chunk produces Figure 6 in the article.
+
+cr1 = rev(brewer.pal(5, "Blues"))
+cr1 = cr1[-c(4:5)]
+cr2 = brewer.pal(5, "Reds")
+cr2 = cr2[-c(1:2)]
+cr = c(cr1,cr2)
+#cr = cr[-length(cr)]
+rng = seq(-1.5, 1.5, 0.5)
+breaks =  c(-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5)
+
+plotting = spplot(sstStack - dataSSTanom.grid, col.regions=cr, names.attr = names, 
+                  at = rng, colorkey = list(space="bottom", at=breaks, labels=list(at=breaks)), labels=paste(rng),
+                  par.settings=list(fontsize=list(text=10)),
+      sub=expression(paste("Sea surface temperature anomalies [", degree, "C]")),
+              pretty=TRUE)
+
+p3a = plotting + latticeExtra::layer(sp.polygons(bPols))
+plot(p3a)
+
+```
+
+
+```{r, echo = FALSE}
+
+data.df = merge(Intensification, Intensity)
+data.df = merge(data.df, SSTdata)
+
+load("mjoRMM.RData")
+
+mjoRMM$rmmSum = mjoRMM$meanRMM1 + mjoRMM$meanRMM2
+
+data.df["RMM1"] = NA
+data.df["RMM2"] = NA
+
+data.df  = data.df[with(data.df, order(Year)),]
+
+Yr = 1975
+counter = 1
+loop = 1
+
+while (Yr < 2014)
+  {
+   while ((data.df$Year[counter] == Yr)== TRUE){  
+      data.df$RMM1[counter] = mjoRMM$meanRMM1[loop]
+      data.df$RMM2[counter] = mjoRMM$meanRMM2[loop]
+       data.df$rmmSum[counter] = mjoRMM$rmmSum[loop]
+       counter = counter + 1
+      }
+    Yr = Yr + 1
+    loop = loop + 1
+  }
+#The error that occurs when running the above loop does not
+#affect any of the data or code. Therefore, it can be ignored.
+
+```
+
+```{r, echo = FALSE}
+
+mei = read.table("meiForMJO.txt", header=TRUE)
+#mei = mei[-5,] 
+mei = mei[-1,]
+mei = mei[,-(2:6)]
+mei = mei[,-(7:8)]
+
+mei$avg = rowMeans(subset(mei, select = c(Jun, Jul, Aug, Sep, Oct)))
+
+Yr = 1975
+counter = 1
+loop = 2
+
+while (Yr < 2014)
+  {
+    while ((data.df$Year[counter] == Yr)== TRUE){  
+      data.df$mei[counter] = mei$avg[loop]
+      counter = counter + 1
+      }
+    Yr = Yr + 1
+    loop = loop + 1
+}
+#The error that occurs when running the above loop does not
+#affect any of the data or code. Therefore, it can be ignored.
+
+```
+
+```{r, echo = FALSE}
+
+nao = read.table("naoData.txt", header=TRUE)
+
+
+nao = nao[,-(5:13)]
+
+nao$avg = rowMeans(subset(nao, select = c(Jan, Feb, Mar)))
+
+Yr = 1975
+counter = 1
+loop = 2
+
+while (Yr < 2014)
+  {
+    while ((data.df$Year[counter] == Yr)== TRUE){  
+      data.df$nao[counter] = nao$avg[loop]
+      
+      counter = counter + 1
+      }
+    Yr = Yr + 1
+    loop = loop + 1
+}
+
+naoYears = nao[order(nao$avg),]
+negNAO = naoYears$year[1:10]
+posNAO = naoYears$year[31:40]
+
+#The error that occurs when running the above loop does not
+#affect any of the data or code. Therefore, it can be ignored.
+
+```
+Figure 7. Time series of (a) monthly average of MEI from 1975 to 2014, (b) monthly average of NAOI from 1975 to 2014...
+```{r, echo = FALSE}
+#This chunk produces Figure 7 in the article.
+
+library(grid)
+library(gridExtra)
+library(plotrix)
+library(reshape2)
+
+meiTime = ggplot(data=mei, aes(x=Yr,y=avg, group=1)) +
+  geom_line(size=1.25) + ylab("MEI [s.d.]") + xlab("") +
+  theme(plot.title=element_text(hjust=0)) +
+  ggtitle('(a)')
+
+naoTime = ggplot(data=nao, aes(x=year,y=avg, group=1)) +
+  geom_line(size=1.25) + ylab("NAOI [s.d.]") + xlab("") +
+  theme(plot.title=element_text(hjust=0)) +
+  ggtitle('(b)')
+
+mjoTime = ggplot(data=mjoRMM, aes(x=year,y=rmmSum, group=1)) +
+  geom_line(size=1.25) + ylab("MJOI [s.d.]") + xlab("Year") +
+  theme(plot.title=element_text(hjust=0)) +
+  ggtitle('(c)')
+
+grid.arrange(meiTime, naoTime, mjoTime, widths=unit(0.5,"npc"), ncol=1)
+
+```
+
+```{r, echo = FALSE}
+#This chunk produces Figure 3b in the article.
+
+mean(Tracks.grid@data@values, na.rm=TRUE)
+
+range(values(Tracks.grid), na.rm=TRUE)
+cr = brewer.pal(6, "Purples")
+cr = cr[-(1:2)]
+rng = seq(0, 0.80, 0.20)
+breaks =  c(0.00, 0.20, 0.40, 0.60, 0.80)
+vals = levelplot(Tracks.grid, margin = FALSE,
+          sub=expression(paste("Intensification [m ", s^-1, " per h]")),
+          xlab = NULL, ylab = NULL, 
+          at=rng, col.regions = cr,
+          colorkey = list(space="bottom", at=breaks, labels=list(at=breaks)), labels=paste(rng),
+          border = "white", border.lwd = 2,
+          par.settings = list(fontsize=list(text=12)),
+          scales=list(draw=FALSE))
+pDIntDt = vals + latticeExtra::layer(sp.polygons(bPols, col = gray(.8))) 
+pDIntDt = update(pDIntDt, main = textGrob("b", x = unit(.05, "npc"), 
+                               gp = gpar(fontsize=16)))
+plot(pDIntDt)
+
+```
+Figure 11. Density plot of five strongest mean intensification values (scaled to 24 h) for each of the 10 highest NAOI years (pink)...
+```{r, echo = FALSE}
+#This chunk produces Figure 11 in the article.
+
+DIntDtmaxNAO = data.frame(Y2002 = dataDIntDt2002.df$DIntDt,
+                          Y2014 = dataDIntDt2014.df$DIntDt,
+                          Y1997 = dataDIntDt1997.df$DIntDt,
+                          Y1989 = dataDIntDt1989.df$DIntDt,
+                          Y1994 = dataDIntDt1994.df$DIntDt,
+                          Y1993 = dataDIntDt1993.df$DIntDt,
+                          Y2012 = dataDIntDt2012.df$DIntDt,
+                          Y2000 = dataDIntDt2000.df$DIntDt,
+                          Y1995 = dataDIntDt1995.df$DIntDt,
+                          Y1990 = dataDIntDt1990.df$DIntDt)
+
+DIntDtminNAO = data.frame(Y2010 = dataDIntDt2010.df$DIntDt,
+                          Y1977 = dataDIntDt1977.df$DIntDt,
+                          Y1985 = dataDIntDt1985.df$DIntDt,
+                          Y1987 = dataDIntDt1987.df$DIntDt,
+                          Y2013 = dataDIntDt2013.df$DIntDt,
+                          Y1979 = dataDIntDt1979.df$DIntDt,
+                          Y1980 = dataDIntDt1980.df$DIntDt,
+                          Y1978 = dataDIntDt1978.df$DIntDt,
+                          Y1975 = dataDIntDt1975.df$DIntDt,
+                          Y2001 = dataDIntDt2001.df$DIntDt)
+
+minNAOdata = data.frame(lapply(DIntDtminNAO, sort, decreasing=TRUE, na.last=TRUE))
+maxNAOdata = data.frame(lapply(DIntDtmaxNAO, sort, decreasing=TRUE, na.last=TRUE))
+
+minNAODIntDt = as.vector(as.matrix(minNAOdata[1:5,]))
+maxNAODIntDt = as.vector(as.matrix(maxNAOdata[1:5,]))
+minmax = 24
+naoData = data.frame(maxNAO = maxNAODIntDt, minNAO = minNAODIntDt)
+naoData$minNAO = naoData$minNAO * minmax #max is here; its 43.8
+naoData$maxNAO = naoData$maxNAO * minmax
+
+mNAOdata = melt(naoData)
+
+plot(ggplot(mNAOdata, aes(value, fill=variable)) +
+  geom_density(alpha=.3, color=NA) +
+  scale_fill_discrete(name=NULL, 
+                      breaks=c("maxNAO", "minNAO"),
+                      labels=c("10 Highest NAOI averaged years",
+        "10 Lowest NAOI averaged years")) +
+  xlab("Intensification [m"~s^{-1}~"per day]") +
+  ylab("Density") + theme(legend.position = c(.73,.9)) +
+  theme(legend.title=element_blank(),
+        axis.text.x = element_text(size=20),
+        axis.text.y = element_text(size=20),
+        axis.title.x = element_text(size=20),
+        axis.title.y = element_text(size=20),
+        legend.text = element_text(size=16)) +
+  geom_linerange(x=15.43, ymax=0.08, ymin=0, color="white", size=2))
+
+```
+Figure 3. Mean intensification histogram and spatial plot. (a) Histogram of mean hourly intensification...
+```{r, echo = FALSE}
+#This chunk produces Figure 3a in the article, as well as the entire Figure 3.
+
+histDIntDt = ggplot(data.df, aes(DIntDt)) + geom_histogram(binwidth=0.2,
+  color = "white", fill = "#6A51A3") +
+  xlab(expression(paste("Mean Intensification [m ", s^-1, " per h]"))) +
+  ylab("Number of Grid Cells") 
+histDIntDt = histDIntDt + ggtitle("a") + theme(plot.title = element_text(hjust = 0))
+plot(histDIntDt)
+
+grid.arrange(histDIntDt, pDIntDt,widths=unit(0.5,"npc"), ncol=1)
+
+```
+
+```{r, echo = FALSE, message=FALSE}
+years = c(1975:2014)
+
+Cov = data.frame(Year = mei$Yr, mei = mei$avg, nao = nao$avg, 
+                 rmmSum = mjoRMM$rmmSum)
+
+#install.packages("INLA", repos=c(getOption("repos"), INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE)
+require(INLA)
+require(spdep)
+test.nb = poly2nb(test)
+nb2INLA("testnb.INLA", test.nb)
+test.nb = inla.read.graph("testnb.INLA")
+
+st = expand.grid(ID = 1:nrow(DIntDtData.df), Year = years) 
+data.INLA = merge(st, Cov, by="Year")
+DIntDtData.df = DIntDtData.df[,-1]
+data.INLA$DIntDt = as.vector(as.matrix(DIntDtData.df)) 
+IntData.df = IntData.df[,-1]
+data.INLA$Int = as.vector(as.matrix(IntData.df)) 
+sstData.df = sstData.df[,-1]
+data.INLA$SST = as.vector(as.matrix(sstData.df))
+#ohcData.df = ohcData.df[,-1]
+#data.INLA$OHC = as.vector(as.matrix(ohcData.df))
+data.INLA$ID.1 = data.INLA$ID.2 = data.INLA$ID.3 = 
+  data.INLA$ID.4 = data.INLA$ID.5 =
+  data.INLA$ID
+
+```
+
+```{r, echo = FALSE}
+model="besag"
+formula = DIntDt ~ Int + SST + mei + rmmSum + nao +
+  f(ID.1, Int, model=model, graph=test.nb) +
+  f(ID.2, SST, model=model, graph=test.nb) +
+  f(ID.3, mei, model=model, graph=test.nb) + 
+  f(ID.4, rmmSum, model=model, graph=test.nb) + 
+  f(ID.5, nao, model=model, graph=test.nb)
+
+```
+
+
+```{r, echo = FALSE}
+
+model.inla = inla(formula, family="gamma", data = data.INLA,
+                  control.compute=list(dic=TRUE)) 
+summary(model.inla)
+
+```
+
+```{r, echo = FALSE}
+#This chunk produces Figure 2a in the article. 
+
+library(RColorBrewer)
+library(wesanderson)
+
+Count.grid = rasterize(Tracks.sdf, r,
+                        field = 'Sid',
+                        fun = function(x,...) {length(unique(na.omit(x)))})
+
+range(values(Count.grid), na.rm=TRUE)
+rng = seq(0, 35, 5)
+crq = wes_palette(7, name="Rushmore", type="continuous")
+vals = levelplot(Count.grid, margin = FALSE,
+          sub=expression(paste("Number of Intensifying Hurricanes per cell")),
+          xlab = NULL, ylab = NULL, 
+          at=rng, col.regions = crq,
+          colorkey = list(space='bottom'),
+          border = "white", border.lwd = 2,
+          par.settings = list(fontsize=list(text=12)),
+          scales=list(draw=FALSE)) 
+pCount = vals + latticeExtra::layer(sp.polygons(bPols, col = gray(.8))) 
+pCount = update(pCount, main = textGrob("a", x = unit(.05, "npc"), 
+                               gp = gpar(fontsize=16)))
+plot(pCount)
+
+```
+Figure 2. Hurricane intensification count and ratio per cell. (a) Number of intensifying hurricanes per cell...
+```{r, echo = FALSE}
+#This chunk produces Figure 2b in the article, as well as the entire Figure 2.
+
+fullCount.grid = rasterize(fullData.sdf, r,
+                        field = 'Sid',
+                        fun = function(x,...) {length(unique(na.omit(x)))})
+
+difCount.grid = Count.grid / fullCount.grid
+
+rng = seq(0.2, 1, 0.2)
+breaks =  c(0.2, 0.4, 0.6, 0.8, 1.0)
+cr = brewer.pal(5, "Blues")
+cr = cr[-(1)]
+vals = levelplot(difCount.grid, margin = FALSE,
+          sub=expression(paste("Ratio of intensifying hurricanes to all hurricanes")),
+          xlab = NULL, ylab = NULL, 
+          at=rng, col.regions = cr,
+          colorkey = list(space = 'bottom',    at=breaks,labels=list(at=breaks)),
+          border = "white", border.lwd = 2,
+          par.settings = list(fontsize=list(text=12)),
+          scales=list(draw=FALSE))
+pDif = vals + latticeExtra::layer(sp.polygons(bPols, col = gray(.8))) 
+pDif = update(pDif, main = textGrob("b", x = unit(.05, "npc"), 
+                               gp = gpar(fontsize=16)))
+plot(pDif)
+
+grid.arrange(pCount, pDif, ncol=1)
+
+```
+
+```{r, echo = FALSE}
+#This chunk produces Figures 8 and 10 in the article.
+
+intPost = as.data.frame(model.inla$marginals.fixed$Int)
+
+intPostPlot = ggplot(data=intPost, aes(x=x,y=y, group=1)) +
+  geom_line() + xlab(expression(paste("",beta[Int]," [m ",s^-1,h^-1," per m ",s^-1,"]"))) + ylab("Density") +
+  theme(axis.text.x = element_text(size=20),
+  axis.text.y = element_text(size=20), text = element_text(size=20),
+  plot.title=element_text(hjust=0)) +
+  geom_linerange(x=0, ymin=0, ymax=80, color="red", size=3) +
+  geom_linerange(x=-0.0003, ymin=0, ymax = 80, color="gray", size=3)+
+  geom_linerange(x=0.0213, ymin=0, ymax = 80, color="gray", size=3)+
+  ggtitle('a')
+plot(intPostPlot)
+sstPost = as.data.frame(model.inla$marginals.fixed$SST)
+
+sstPostPlot = ggplot(data=sstPost, aes(x=x,y=y, group=1)) +
+  geom_line() + xlab(expression(paste("",beta[SST]," [m ", s^-1, h^-1," per ",degree,"C]"))) + ylab("Density") +
+  theme(axis.text.x = element_text(size=20),
+  axis.text.y = element_text(size=20), text = element_text(size=20),
+  plot.title=element_text(hjust=0)) +
+  geom_linerange(x=0, ymin=0, ymax=30, color="red", size=3) +
+  geom_linerange(x=0.0525, ymin=0, ymax = 30, color="gray", size=3)+
+  geom_linerange(x=0.1102, ymin=0, ymax = 30, color="gray", size=3)+
+  ggtitle('b')
+plot(sstPostPlot)
+#grid.arrange(intPostPlot, sstPostPlot, heights=c(1,1)))
+
+meiPost = as.data.frame(model.inla$marginals.fixed$mei)
+
+meiPostPlot = ggplot(data=meiPost, aes(x=x,y=y, group=1)) +
+  geom_line() + xlab(expression(paste("",beta[MEI]," [m ", s^-1, h^-1," per 1 SD]"))) + ylab("Density") +
+  theme(axis.text.x = element_text(size=20),
+  axis.text.y = element_text(size=20), text = element_text(size=20),
+  plot.title=element_text(hjust=0)) +
+  geom_linerange(x=0, ymin=0, ymax=8, color="red", size=2) +
+  geom_linerange(x=-0.1045, ymin=0, ymax = 8, color="gray", size=2)+
+  geom_linerange(x=0.1155, ymin=0, ymax = 8, color="gray", size=2)+
+  ggtitle('a')
+plot(meiPostPlot)
+naoPost = as.data.frame(model.inla$marginals.fixed$nao)
+
+naoPostPlot = ggplot(data=naoPost, aes(x=x,y=y, group=1)) +
+  geom_line() + xlab(expression(paste("",beta[NAOI]," [m ", s^-1, h^-1," per 1 SD]"))) + ylab("Density") +
+  theme(axis.text.x = element_text(size=20),
+  axis.text.y = element_text(size=20), text = element_text(size=20),
+  plot.title=element_text(hjust=0)) +
+  geom_linerange(x=0, ymin=0, ymax=7, color="red", size=2) +
+  geom_linerange(x=-0.3004, ymin=0, ymax = 7, color="gray", size=2)+
+  geom_linerange(x=-0.0514, ymin=0, ymax = 7, color="gray", size=2)+
+  ggtitle('b')
+plot(naoPostPlot)
+mjoPost = as.data.frame(model.inla$marginals.fixed$rmmSum)
+
+mjoPostPlot = ggplot(data=mjoPost, aes(x=x,y=y, group=1)) +
+  geom_line() + xlab(expression(paste("",beta[MJOI]," [m ", s^-1, h^-1," per 1 SD]"))) + ylab("Density") +
+  theme(axis.text.x = element_text(size=20),
+  axis.text.y = element_text(size=20), text = element_text(size=20),
+  plot.title=element_text(hjust=0)) +
+  geom_linerange(x=0, ymin=0, ymax=2.5, color="red", size=2) +
+  geom_linerange(x=-0.1974, ymin=0, ymax = 2.5, color="gray", size=2)+
+  geom_linerange(x=0.5443, ymin=0, ymax = 2.5, color="gray", size=2)+
+  ggtitle('c')
+plot(mjoPostPlot)
+#plot(grid.arrange(meiPostPlot, naoPostPlot, mjoPostPlot, heights=c(1,1,1)))
+
+```
+
+```{r, echo = FALSE}
+coef.Int = model.inla$summary.random[[1]]$mean + model.inla$summary.fixed["Int","mean"]
+coef.Int.sd = model.inla$summary.random[[1]]$sd + model.inla$summary.fixed["Int","sd"]
+
+coef.SST = model.inla$summary.random[[2]]$mean + model.inla$summary.fixed["SST","mean"]
+coef.SST.sd = model.inla$summary.random[[2]]$sd + model.inla$summary.fixed["SST","sd"]
+
+#coef.error = model.inla$summary.random[[6]]$mean + model.inla$summary.fixed["(Intercept)", "mean"] 
+#coef.error.sd = model.inla$summary.random[[6]]$sd + model.inla$summary.fixed["(Intercept)", "sd"] 
+
+coef.cov.df = data.frame(coef.Int, coef.Int.sd, coef.SST, coef.SST.sd)
+
+#cor.test(coef.Int, coef.error) #0.991 -> spatially confounded
+#cor.test(coef.SST, coef.error) #0.966 -> spatially confounded
+
+```
+
+```{r, echo = FALSE}
+
+coef.cov.df$lat = latOrder 
+coef.cov.df$lon = lonOrder 
+
+FinalData.sdf = coef.cov.df
+coordinates(FinalData.sdf) = c("lon", "lat")
+proj4string(FinalData.sdf) = CRS(ll)
+
+```
+
+```{r, echo = FALSE}
+#This chunk produces Figure 9a in the article.
+
+Int.grid = rasterize(FinalData.sdf, r, 
+                         field = 'coef.Int',
+                         fun = mean)
+
+range(values(Int.grid), na.rm = TRUE)
+rng = seq(0.003, 0.017, .002)
+breaks = c(0.003, 0.005, 0.007, 0.009, 0.011, 0.013, 0.015, 0.017)
+cr = brewer.pal(9, "Greens")
+cr = cr[-(1:2)]
+vals = levelplot(Int.grid, margin = FALSE, 
+          xlab = NULL, ylab = NULL, 
+          col.regions = cr, at = rng, 
+          colorkey = list(space = 'bottom', at=breaks, labels=list(at=breaks)),
+          border = "white", border.lwd = 2,
+          par.settings = list(fontsize = list(text = 20)),
+          scales=list(draw=FALSE),
+          sub=expression(paste("",bar(beta)[Int],"(s) [m ",s^-1,h^-1," per m ",s^-1,"]")))
+pInt = vals + latticeExtra::layer(sp.polygons(bPols, col = gray(.8)))
+pInt = update(pInt, main = textGrob("a", x = unit(.05, "npc"), 
+                               gp = gpar(fontsize=16)))
+plot(pInt)
+
+```
+
+```{r, echo = FALSE}
+#This chunk produces Figure 9b in the article, as well as the entire Figure 9.
+
+library(gridExtra)
+
+SST.grid = rasterize(FinalData.sdf, r, 
+                         field = 'coef.SST',
+                         fun = mean)
+
+mean(SST.grid@data@values, na.rm=TRUE)
+
+range(values(SST.grid), na.rm = TRUE)
+rng = seq(0.077, 0.085, .001)
+breaks =  c(0.077, 0.078, 0.079, 0.080, 0.081, 0.082, 0.083, 0.084, 0.085)
+cr = brewer.pal(9, "Reds")
+cr = cr[-(1)]
+vals = levelplot(SST.grid, margin = FALSE, 
+          xlab = NULL, ylab = NULL, 
+          col.regions = cr, at = rng, 
+          colorkey = list(space = 'bottom',    at=breaks,labels=list(at=breaks)),
+          border = "white", border.lwd = 2,
+          par.settings = list(fontsize = list(text = 20)),
+          scales=list(draw=FALSE),
+          sub=expression(paste("",bar(beta)[SST],"(s) [m ",s^-1,h^-1," per ",degree,"C ]")))
+pSST = vals + latticeExtra::layer(sp.polygons(bPols, col = gray(.8)))
+pSST = update(pSST, main = textGrob("b", x = unit(.05, "npc"), 
+                               gp = gpar(fontsize=16)))
+plot(pSST)
+
+grid.arrange(pInt, pSST, ncol=1)
+
+```
