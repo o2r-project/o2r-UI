@@ -42,21 +42,21 @@ function prepareLicense() {
 
 const validationSchema = Yup.object({
     title: Yup.string()
-        .required('Titel is required'),
+        .required('Title is required'),
     abstract: Yup.string()
         .required('Abstract is required'),
     publicationDate: Yup.date().max(new Date, 'No Valid Date')
-        .required("Date is require"),
+        .required("Date is required"),
     displayFile: Yup.string()
         .required('DisplayFile is required'),
     mainFile: Yup.string()
         .required('MainFile is required'),
     textLicense: Yup.mixed()
-        .required(),
+        .required('Text License is required'),
     codeLicense: Yup.mixed()
-        .required(),
+        .required('Code License is required'),
     dataLicense: Yup.mixed()
-        .required()
+        .required('Data License is required')
 });
 
 

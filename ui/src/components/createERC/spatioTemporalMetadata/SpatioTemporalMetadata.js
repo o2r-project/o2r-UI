@@ -8,6 +8,7 @@ import { Card, TextField, Button, Grid } from "@material-ui/core";
 import OwnMap, { ref } from "./Map"
 import L from 'leaflet'
 import { valid2 } from '../requiredMetadata/Form.js'
+import { ErrorMessage } from 'formik';
 
 
 
@@ -15,9 +16,9 @@ class SpatioTemporalMetadata extends React.Component {
   constructor(props) {
     super(props);
     var begin = props.metadata.temporal.begin
-    begin = begin.substring(0, 10);
+    if(begin) begin = begin.substring(0, 10);
     var end = props.metadata.temporal.end
-    end = end.substring(0, 10);
+    if(end) end = end.substring(0, 10);
     this.state = {
       from: begin,
       to: end,
@@ -35,8 +36,8 @@ class SpatioTemporalMetadata extends React.Component {
     updatedMetadata.temporal.end = this.state.to;
 
     var originalMetadata = this.props.originalMetadata
-    originalMetadata.temporal.end = this.props.originalMetadata.temporal.end.substring(0, 10);
-    originalMetadata.temporal.begin = this.props.originalMetadata.temporal.begin.substring(0, 10);
+    if(originalMetadata.temporal.end) originalMetadata.temporal.end = this.props.originalMetadata.temporal.end.substring(0, 10);
+    if(originalMetadata.temporal.begin) originalMetadata.temporal.begin = this.props.originalMetadata.temporal.begin.substring(0, 10);
     if (JSON.stringify(updatedMetadata.temporal) !== JSON.stringify(originalMetadata.temporal)) {
       this.setChanged()
     }
@@ -69,9 +70,19 @@ class SpatioTemporalMetadata extends React.Component {
   handleReset = () => {
 
     var begin = this.props.originalMetadata.temporal.begin
-    begin = begin.substring(0, 10);
+    if(begin) {
+      begin = begin.substring(0, 10);
+    }
+    else{
+      begin = "";
+    }
     var end = this.props.originalMetadata.temporal.end
-    end = end.substring(0, 10);
+    if(end)
+    { end = end.substring(0, 10);}
+    else 
+    {
+      end= "";
+    }
     this.setState({
       from: begin,
       to: end,
@@ -138,7 +149,6 @@ class SpatioTemporalMetadata extends React.Component {
                 label="Begin"
                 type="date"
                 InputLabelProps={{
-                  required: true,
                   shrink: true,
                 }}
                 value={this.state.from}
@@ -150,7 +160,6 @@ class SpatioTemporalMetadata extends React.Component {
                 label="End"
                 type="date"
                 InputLabelProps={{
-                  required: true,
                   shrink: true,
                 }}
                 value={this.state.to}
@@ -184,6 +193,10 @@ class SpatioTemporalMetadata extends React.Component {
                 Go To ERC
              </Button>
             </Card>
+            <div id={"errorMessage"}>
+            {!this.props.valid2 ? "Required Metadata is not valid" : "" }
+            </div>
+
           </Grid>
         </Grid>
       </div>

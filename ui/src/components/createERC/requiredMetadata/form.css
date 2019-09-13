@@ -1,0 +1,7 @@
+#errorMessage {
+    position: fixed !important;
+    color: red;
+    margin-top: 13%;
+    left:83%;
+    width:12%;
+  }

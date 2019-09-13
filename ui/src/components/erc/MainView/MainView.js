@@ -21,17 +21,13 @@ class MainView extends React.Component {
 componentDidMount(){
     iframe= document.getElementById('iframe_id');
     iframe.contentWindow.addEventListener("mouseup", this.handleSelectedText.bind(this))
-    window.find("a");
-    $(document.body).highlight('a');
 
-    console.log(iframe.contentWindow.document.body)
 
 }
 
 
 search(){
 
-    var searchWord ="eco"
     var $html = $($('#iframe_id').contents().find('html'));
          $html.highlight("a")
          console.log($html)

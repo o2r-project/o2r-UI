@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, TextField, Button, MenuItem, CardContent, Grid } from "@material-ui/core";
 import Authors from './Authors/Authors';
+import './form.css'
 export let valid2;
 
 export const Form = props => {
@@ -300,6 +301,26 @@ export const Form = props => {
                             Go To ERC
                             </Button>
                     </Card>
+                    <div id={"errorMessage"}>
+                       { errors.title ? errors.title : "" } 
+                        { errors.title ? <br/> : "" } 
+                        { errors.abstract ? errors.abstract: "" }
+                        { errors.abstract ? <br/> : "" } 
+                        { errors.publicationDate ? errors.publicationDate: "" }
+                        { errors.publicationDate ? <br/> : "" } 
+                        { errors.displayFile ? errors.displayFile : "" }
+                        { errors.displayFile ? <br/> : "" } 
+                        { errors.mainFile ? errors.mainFile : "" }
+                        { errors.mainFile ? <br/> : "" } 
+                        { errors.textLicense ? errors.textLicense : "" } 
+                        { errors.textLicense ? <br/> : "" } 
+                        { errors.dataLicense ? errors.dataLicense : "" } 
+                        { errors.dataLicense ? <br/> : "" } 
+                        { errors.codeLicense ? errors.codeLicense : "" }
+                        { errors.codeLicense ? <br/> : "" } 
+                        { !props.authorsValid ? "Authors are not valid" : ""}
+                     </div> 
+                                     
 
                 </Grid>
             </Grid>
