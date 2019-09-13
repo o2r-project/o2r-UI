@@ -37,6 +37,9 @@ search(){
          console.log($html)
 
          $(document.body).highlight('a');
+         window.find("a");
+     
+         console.log(iframe.contentWindow.document.body)
       
 }
 
@@ -80,7 +83,7 @@ closePopup = (name, e) => {
     render() {
         const url = this.props.filePath;
         return (
-            <div>
+
             <div onMouseUp={this.handleSelectedText.bind(this)} style={{top: 0,left:0, width : "100%", height: "100%", position: "absolute"}}>
             <Iframe id={'iframe_id'} url={url}  className="iframe"/>
             <Popup
@@ -90,10 +93,7 @@ closePopup = (name, e) => {
                 closePopup={this.closePopup}
             />
             </div>
-            <div>
-            <Button onClick={this.search.bind(this)}> test </Button>
-            </div>
-            </div>
+
    
         )
   }
