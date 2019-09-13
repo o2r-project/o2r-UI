@@ -3,6 +3,9 @@ import Iframe from 'react-iframe';
 
 import './mainview.css';
 import Popup from '../Inspect/CodeView/Popup/Popup'
+import * as $ from 'jquery';
+import 'jquery-highlight';
+import { Button} from '@material-ui/core'
 
 var iframe
 class MainView extends React.Component {
@@ -18,7 +21,25 @@ class MainView extends React.Component {
 componentDidMount(){
     iframe= document.getElementById('iframe_id');
     iframe.contentWindow.addEventListener("mouseup", this.handleSelectedText.bind(this))
+    window.find("a");
+    $(document.body).highlight('a');
+
+    console.log(iframe.contentWindow.document.body)
+
 }
+
+
+search(){
+
+    var searchWord ="eco"
+    var $html = $($('#iframe_id').contents().find('html'));
+         $html.highlight("a")
+         console.log($html)
+
+         $(document.body).highlight('a');
+      
+}
+
 handleSelectedText(e) {
     var answerText = ""
     var text= iframe.contentWindow.getSelection().toString();
@@ -54,11 +75,12 @@ closePopup = (name, e) => {
     if (name == "tabChange") 
         this.props.handleTabChange(e, 2);
     }
-}
+
 
     render() {
         const url = this.props.filePath;
         return (
+            <div>
             <div onMouseUp={this.handleSelectedText.bind(this)} style={{top: 0,left:0, width : "100%", height: "100%", position: "absolute"}}>
             <Iframe id={'iframe_id'} url={url}  className="iframe"/>
             <Popup
@@ -67,6 +89,10 @@ closePopup = (name, e) => {
                 title={this.state.title}
                 closePopup={this.closePopup}
             />
+            </div>
+            <div>
+            <Button onClick={this.search.bind(this)}> test </Button>
+            </div>
             </div>
    
         )
