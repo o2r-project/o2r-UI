@@ -73,7 +73,7 @@ class RequiredMetadata extends Component {
     };
 
 
-    initialValues = {
+    formValues = {
         title: this.props.metadata.title,
         abstract: this.props.metadata.description,
         publicationDate: this.props.metadata.publication_date,
@@ -84,7 +84,6 @@ class RequiredMetadata extends Component {
         codeLicense: this.props.metadata.license.code,
     }
 
-    formValues = this.initialValues
 
     originialValues = {
         title: this.props.originalMetadata.title,
@@ -97,7 +96,6 @@ class RequiredMetadata extends Component {
         codeLicense: this.props.originalMetadata.license.code,
 
     }
-
     
     componentDidMount() {
         prepareLicense();
@@ -161,6 +159,7 @@ class RequiredMetadata extends Component {
                             newMetadata.license.data = values.dataLicense;
                             newMetadata.license.text = values.textLicense;
                             newMetadata.license.code = values.codeLicense;
+                            this.originialValues = newMetadata;
                             this.props.setMetadata(newMetadata, true);
                             actions.resetForm(values);
                         }
@@ -186,7 +185,7 @@ class RequiredMetadata extends Component {
                             mostRestrictiveData={mostRestrictiveData}
                             leastRestrictiveData={leastRestrictiveData}
                             candidate={this.props.candidate} />}
-                        initialValues={this.initialValues}
+                        initialValues={this.formValues}
                         validationSchema={validationSchema}
                     />
                 }
