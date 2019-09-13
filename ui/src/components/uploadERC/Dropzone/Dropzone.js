@@ -33,7 +33,7 @@ class Dropzone extends Component{
           state: {data:response}
         });
       })
-      .catch(function(response){
+      .catch((response) => {
         if(response.response.status === 401){
           alert("You have to be logged in to upload a Workspace")
         }

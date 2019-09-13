@@ -8,8 +8,6 @@ import { Card, TextField, Button, Grid } from "@material-ui/core";
 import OwnMap, { ref } from "./Map"
 import L from 'leaflet'
 import { valid2 } from '../requiredMetadata/Form.js'
-import { ErrorMessage } from 'formik';
-
 
 
 class SpatioTemporalMetadata extends React.Component {
@@ -194,7 +192,7 @@ class SpatioTemporalMetadata extends React.Component {
              </Button>
             </Card>
             <div id={"errorMessage"}>
-            {!this.props.valid2 ? "Required Metadata is not valid" : "" }
+            {!valid2 ? "Required Metadata is not valid" : "" }
             </div>
 
           </Grid>
