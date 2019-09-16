@@ -28,6 +28,7 @@ const processJson = require('./processJson');
 const request = require('request');
 
 let bindings = {};
+let runningPorts = [];
 
 bindings.start = (conf) => {
     return new Promise((resolve, reject) => {
@@ -57,22 +58,29 @@ bindings.start = (conf) => {
             debug('Start')
             debug('compendium: %s', compendium)
             debug('binding: %s', binding)
-            debug('end')
             /*res.send({
                 callback: 'ok',
                 data: binding
             });*/
             // TODO dynamisch alle query paramater auslesen mit req.query
-            /*let newValue0 = req.query.newValue0*/
-
+            //let newValue0 = req.query.newValue0
+            debug('Query parameter: %s', req.query.newValue0);
             // gucken ob schon ein container für (compendium,binding) existiert
-
-                // wenn ja, den internen port in der container-Liste nachschlagen und den request weiter leiten
-                var request_options = {
-                    //url: "localhost:5010/" + binding + "?" + req.query,
-                    url: "http://localhost:5010/figure1?newValue0=30"
-                };
-        
+            debug('number of saved ports: %s', runningPorts.length)
+            let running = runningPorts.find(function(elem) {
+                debug('elem.result: %s', elem.result)
+                debug('result: %s', compendium+binding)
+                debug('match1: %s', elem.result === compendium + binding)
+                debug('match2: %s', elem.result == compendium + binding)
+                return elem.result === compendium + binding
+            });
+            debug('Found port: %s', running.port);
+            // wenn ja, den internen port in der container-Liste nachschlagen und den request weiter leiten
+            var request_options = {
+                url: "http://localhost:"+ running.port + "/" + binding + '?newValue0='+req.query.newValue0,
+                //url: "http://localhost:5010/figure1?newValue0=30"
+            };
+            debug('created URL: %s', request_options.url)
                 var req_pipe = request(request_options);
                 req_pipe.pipe(res);
         
@@ -103,6 +111,12 @@ bindings.start = (conf) => {
 
             // gucken schon ein container für (compendium,binding) existiert, wenn nicht den service _auf einem neuen freien_
             debug('Start running plumber service for compendium %s and result %s', req.body.id, req.body.computationalResult.result);
+            runningPorts.push({
+                result: req.body.id+req.body.computationalResult.result.replace(/\s/g, '').toLowerCase(),
+                port: req.body.port
+            });
+            debug('Saved %s of compendium %s under port %s', req.body.computationalResult.result, req.body.id, req.body.port);
+
             bindings.runR(req.body);
 
             // TODO port und binding intern speichern in container-Liste
