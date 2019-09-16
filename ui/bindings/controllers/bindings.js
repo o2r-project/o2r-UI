@@ -25,16 +25,17 @@ const path = require('path');
 const net = require('net');
 const fn = require('./generalFunctions');
 const processJson = require('./processJson');
+const request = require('request');
 
 let bindings = {};
 
 bindings.start = (conf) => {
     return new Promise((resolve, reject) => {
+        debug('Start bindings service');
+
         const app = express();
               app.use(bodyParser.json());
               app.use(bodyParser.urlencoded({extended: true}));
-
-        debug('Start service to create bindings');
 
         app.post('/api/v1/bindings/extractR', function(req, res) {
             bindings.implementExtractR(req.body, res);
@@ -53,15 +54,23 @@ bindings.start = (conf) => {
         app.get('/api/v1/compendium/:compendium/binding/:binding', function(req, res) {
             let compendium = req.params.compendium;
             let binding = req.params.binding;
-
+            debug('Start')
+            debug('compendium: %s', compendium)
+            debug('binding: %s', binding)
+            debug('end')
+            /*res.send({
+                callback: 'ok',
+                data: binding
+            });*/
             // TODO dynamisch alle query paramater auslesen mit req.query
-            let newValue0 = req.query.newValue0
+            /*let newValue0 = req.query.newValue0*/
 
             // gucken ob schon ein container für (compendium,binding) existiert
 
                 // wenn ja, den internen port in der container-Liste nachschlagen und den request weiter leiten
                 var request_options = {
-                    url: "localhost:5010/" + binding + "?" + req.query,
+                    //url: "localhost:5010/" + binding + "?" + req.query,
+                    url: "http://localhost:5010/figure1?newValue0=30"
                 };
         
                 var req_pipe = request(request_options);
@@ -93,7 +102,7 @@ bindings.start = (conf) => {
                 data: req.body});
 
             // gucken schon ein container für (compendium,binding) existiert, wenn nicht den service _auf einem neuen freien_
-            debug('Start running plumber service for binding %s', req.body.id);
+            debug('Start running plumber service for compendium %s and result %s', req.body.id, req.body.computationalResult.result);
             bindings.runR(req.body);
 
             // TODO port und binding intern speichern in container-Liste
@@ -108,7 +117,7 @@ bindings.start = (conf) => {
 };
 
 // TODO: CRON job
-var cron = require('node-cron');
+/*var cron = require('node-cron');
  
 cron.schedule('* 23 * * *', () => {
   console.log('cleaning up containers');
@@ -116,7 +125,7 @@ cron.schedule('* 23 * * *', () => {
   // durch container-Liste durchgehen
     // alle container älter als 25 stunden stoppen und aus der container-Liste entfernen
 
-});
+});*/
 
 bindings.createBinding = function(binding, response) {
     debug( 'Start creating binding for result: %s, compendium: %s', binding.computationalResult.result, binding.id );
