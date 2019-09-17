@@ -97,7 +97,7 @@ bindings.implementExtractR = function (binding,response) {
     let varsInLines = processJson.getVarsAndValuesOfLines(processedJson);
     //Insert binding.plot
     let valuesToSearchFor = processJson.valuesToSearchFor(binding.plot);
-    let codeLinesForValues = processJson.getAllCodeLines(varsInLines,valuesToSearchFor,[]);
+    let codeLinesForValues = processJson.getAllCodeLines(varsInLines,valuesToSearchFor,[],[]);
 
     
     

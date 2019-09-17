@@ -55,9 +55,9 @@ const fun = function (content) {
 
 const lib = function (content) {
     const isLibrary = /(?:library)/;
-    const loadData = /(?:load)/
+    const loadData = /(?:load)/;
 
-    if (isLibrary.test(content) == true || loadData.test(content) == true) {
+    if (loadData.test(content) == true || isLibrary.test(content) == true) {
         return isLibrary;
     }
 };
