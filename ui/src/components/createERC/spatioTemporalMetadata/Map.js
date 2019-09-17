@@ -72,7 +72,7 @@ class OwnMap extends React.Component {
 
         GeoJSON = e.layer.toGeoJSON();
         this.props.setDrawn(true);
-        const metadata = this.state.metadata;
+        const metadata = this.props.metadata;
 
         metadata.spatial.union.bbox[0] = GeoJSON.geometry.coordinates[0][0];
         metadata.spatial.union.bbox[1] = GeoJSON.geometry.coordinates[0][1];
