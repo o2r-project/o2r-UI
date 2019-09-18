@@ -47,9 +47,9 @@ function ListJobs(jobs) {
                         <Typography className="steps">
                             <span><b>Validate bag: </b><Status status={job.steps.validate_bag.status}></Status></span><br/>
                             <span><b>Generate configuration: </b><Status status={job.steps.generate_configuration.status}></Status></span><br/>
-                            <span><b>Image prepare: </b><Status status={job.steps.image_prepare.status}></Status></span><br/>
                             <span><b>Validate compendium: </b><Status status={job.steps.validate_compendium.status}></Status></span><br/>
                             <span><b>Generate manifest: </b><Status status={job.steps.generate_manifest.status}></Status></span><br/>
+                            <span><b>Image prepare: </b><Status status={job.steps.image_prepare.status}></Status></span><br/>
                             <span><b>Image build: </b><Status status={job.steps.image_build.status}></Status></span><br/>
                             <span><b>Image execute: </b><Status status={job.steps.image_execute.status}></Status></span><br/>
                             <span><b>Image save: </b><Status status={job.steps.image_save.status}></Status></span><br/>
