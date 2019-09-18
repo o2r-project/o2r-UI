@@ -98,16 +98,24 @@ class ERC extends React.Component {
             .then(function(response) {
                 const data = response.data.metadata.o2r;
                 console.log(data)
+                let dataset = '';
+                if(Array.isArray(data.inputfiles)){
+                    dataset=data.inputfiles[0];
+                }else{
+                    dataset=data.inputfiles;
+                }
                 self.setState({
                     metadata: data,
                     datafiles: data.inputfiles,
-                    dataset: data.inputfiles[0],
+                    dataset: dataset,
                     codefiles: data.codefiles,
                     binding:data.interaction[0],
                 });
                 self.setDisplayFile(data.displayfile);
-                if ( data.inputfiles.length > 0 ) {
+                if ( Array.isArray(data.inputfiles)) {
                     self.setDataFile(data.inputfiles[0]);
+                }else{
+                    self.setDataFile(data.inputfiles);
                 }
                 self.setCodeFile(data.mainfile);
             })
@@ -133,7 +141,13 @@ class ERC extends React.Component {
             <div className="Erc" >
                 <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
                     <ReflexElement>
-                        <Button onClick={this.handleDisplayFile.bind(this)}>{this.state.html ? 'Show PDf' : 'Show HTML'}</Button>
+                        <Button 
+                            onClick={this.handleDisplayFile.bind(this)}
+                            variant='contained'
+                            color='inherit'
+                        >
+                            {this.state.html ? 'Show PDf' : 'Show HTML'}
+                        </Button>
                         {this.state.displayfile!=null 
                         ?<MainView 
                             filePath={this.state.html 
