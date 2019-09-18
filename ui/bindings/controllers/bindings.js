@@ -55,33 +55,33 @@ bindings.start = (conf) => {
         app.get('/api/v1/compendium/:compendium/binding/:binding', function(req, res) {
             let compendium = req.params.compendium;
             let binding = req.params.binding;
-            debug('Start')
-            debug('compendium: %s', compendium)
-            debug('binding: %s', binding)
-            /*res.send({
-                callback: 'ok',
-                data: binding
-            });*/
-            // TODO dynamisch alle query paramater auslesen mit req.query
-            //let newValue0 = req.query.newValue0
-            debug('Query parameter: %s', req.query.newValue0);
+            debug('Getting image for %s from compendium: %s', binding, compendium)
+
+            // query paramater auslesen mit req.query
+            debug('Query parameters: %s', Object.keys(req.query).length);
+            let queryParameters = '?';
+            for ( let i = 0; i < Object.keys(req.query).length; i++ ) {
+                queryParameters = queryParameters + "newValue" + i + "=" + req.query["newValue"+i];
+                if ( i +1 < Object.keys(req.query).length ) {
+                    queryParameters = queryParameters + "&";
+                } 
+            }
+            debug('Created url: %s', queryParameters);
+            
             // gucken ob schon ein container für (compendium,binding) existiert
+            // wenn ja, den internen port in der container-Liste nachschlagen und den request weiter leiten
             debug('number of saved ports: %s', runningPorts.length)
             let running = runningPorts.find(function(elem) {
-                debug('elem.result: %s', elem.result)
-                debug('result: %s', compendium+binding)
-                debug('match1: %s', elem.result === compendium + binding)
-                debug('match2: %s', elem.result == compendium + binding)
-                return elem.result === compendium + binding
+                return elem.result === compendium + binding;
             });
-            debug('Found port: %s', running.port);
-            // wenn ja, den internen port in der container-Liste nachschlagen und den request weiter leiten
+            debug('Port %s for result %s in compendium %s: %s', running.port, binding, compendium)
+
             var request_options = {
-                url: "http://localhost:"+ running.port + "/" + binding + '?newValue0='+req.query.newValue0,
-                //url: "http://localhost:5010/figure1?newValue0=30"
+                url: "http://localhost:"+ running.port + "/" + binding + queryParameters,
             };
-            debug('created URL: %s', request_options.url)
-                var req_pipe = request(request_options);
+            debug('Created URL: %s', request_options.url)
+
+            var req_pipe = request(request_options);
                 req_pipe.pipe(res);
         
                 req_pipe.on('error', function(e){
