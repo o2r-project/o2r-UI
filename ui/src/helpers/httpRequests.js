@@ -56,7 +56,7 @@ function sendBinding(binding){
 }
 
 function runManipulationService(binding){
-    return axios.post(_env.api + 'bindings/runPlumberService', binding);
+    return axios.post(_env.api + 'compendium/'+binding.id+'/binding/' + binding.computationalResult.result.replace(/\s/g, '').toLowerCase(), binding);
 }
 
 function getCodelines(binding){
