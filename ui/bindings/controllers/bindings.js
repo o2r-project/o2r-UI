@@ -105,17 +105,22 @@ bindings.start = (conf) => {
         
         // allow clients to "prepare" a container for the binding by calling this POST endpoing
         app.post('/api/v1/compendium/:compendium/binding/:binding', function(req, res) {
-            res.send({
+            let compendium = req.params.compendium;
+            let binding = req.params.binding;
+            /*res.send({
                 callback: 'ok',
-                data: req.body});
+                data: req.body});*/
 
             // gucken schon ein container für (compendium,binding) existiert, wenn nicht den service _auf einem neuen freien_
+            let running = runningPorts.find(function(elem) {
+                return elem.result === compendium + binding;
+            });
             debug('Start running plumber service for compendium %s and result %s', req.body.id, req.body.computationalResult.result);
             runningPorts.push({
-                result: req.body.id+req.body.computationalResult.result.replace(/\s/g, '').toLowerCase(),
+                result: compendium+binding,
                 port: req.body.port
             });
-            debug('Saved %s of compendium %s under port %s', req.body.computationalResult.result, req.body.id, req.body.port);
+            debug('Saved %s of compendium %s under port %s', binding, compendium, req.body.port);
 
             bindings.runR(req.body);
 
