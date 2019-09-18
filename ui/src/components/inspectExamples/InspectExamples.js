@@ -5,6 +5,7 @@ import {TwitterShareButton, TwitterIcon} from 'react-share';
 
 import './inspectExamples.css';
 import httpRequests from '../../helpers/httpRequests';
+import config from '../../helpers/config';
 
 class InspectExamples extends Component {
 
@@ -67,7 +68,7 @@ class InspectExamples extends Component {
                                     </CardContent>
                             </CardActionArea>
                             <CardActions>
-                                <TwitterShareButton url={"http://localhost/#/erc/" + erc.id} >
+                                <TwitterShareButton url={config.ercUrl + erc.id} >
                                     <TwitterIcon
                                         size={32}
                                         round 
