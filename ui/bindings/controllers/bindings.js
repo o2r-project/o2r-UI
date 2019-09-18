@@ -25,16 +25,18 @@ const path = require('path');
 const net = require('net');
 const fn = require('./generalFunctions');
 const processJson = require('./processJson');
+const request = require('request');
 
 let bindings = {};
+let runningPorts = [];
 
 bindings.start = (conf) => {
     return new Promise((resolve, reject) => {
+        debug('Start bindings service');
+
         const app = express();
               app.use(bodyParser.json());
               app.use(bodyParser.urlencoded({extended: true}));
-
-        debug('Start service to create bindings');
 
         app.post('/api/v1/bindings/extractR', function(req, res) {
             bindings.implementExtractR(req.body, res);
@@ -43,15 +45,83 @@ bindings.start = (conf) => {
         app.post('/api/v1/bindings/searchBinding', function ( req, res ) {
             bindings.searchBinding( req.body, res);
         });
+
+
         app.post('/api/v1/bindings/binding', function(req, res) {
             bindings.createBinding(req.body, res);
         });
-        app.post('/api/v1/bindings/runPlumberService', function(req, res) {
+
+        // wäre schön, binding als "sub-resource": https://o2r.uni-muenster.de/api/v1/compendium/abcde/binding/figure1?newValue0=42
+        app.get('/api/v1/compendium/:compendium/binding/:binding', function(req, res) {
+            let compendium = req.params.compendium;
+            let binding = req.params.binding;
+            debug('Getting image for %s from compendium: %s', binding, compendium)
+
+            // query paramater auslesen mit req.query
+            debug('Query parameters: %s', Object.keys(req.query).length);
+            let queryParameters = '?';
+            for ( let i = 0; i < Object.keys(req.query).length; i++ ) {
+                queryParameters = queryParameters + "newValue" + i + "=" + req.query["newValue"+i];
+                if ( i +1 < Object.keys(req.query).length ) {
+                    queryParameters = queryParameters + "&";
+                } 
+            }
+            debug('Created url: %s', queryParameters);
+            
+            // gucken ob schon ein container für (compendium,binding) existiert
+            // wenn ja, den internen port in der container-Liste nachschlagen und den request weiter leiten
+            debug('number of saved ports: %s', runningPorts.length)
+            let running = runningPorts.find(function(elem) {
+                return elem.result === compendium + binding;
+            });
+            debug('Port %s for result %s in compendium %s: %s', running.port, binding, compendium)
+
+            var request_options = {
+                url: "http://localhost:"+ running.port + "/" + binding + queryParameters,
+            };
+            debug('Created URL: %s', request_options.url)
+
+            var req_pipe = request(request_options);
+                req_pipe.pipe(res);
+        
+                req_pipe.on('error', function(e){
+                    console.log(e);
+                });
+                //client quit normally
+                req.on('end', function(){
+                    console.log('end');
+                    req_pipe.abort();
+        
+                });
+                //client quit unexpectedly
+                req.on('close', function(){
+                    console.log('close');
+                    req_pipe.abort();
+    
+                });
+
+                // wenn nicht, dann plumber container starten, siehe /api/v1/bindings/runPlumberService
+        });
+        
+        // allow clients to "prepare" a container for the binding by calling this POST endpoing
+        app.post('/api/v1/compendium/:compendium/binding/:binding', function(req, res) {
             res.send({
                 callback: 'ok',
                 data: req.body});
-            debug('Start running plumber service for binding %s', req.body.id);
+
+            // gucken schon ein container für (compendium,binding) existiert, wenn nicht den service _auf einem neuen freien_
+            debug('Start running plumber service for compendium %s and result %s', req.body.id, req.body.computationalResult.result);
+            runningPorts.push({
+                result: req.body.id+req.body.computationalResult.result.replace(/\s/g, '').toLowerCase(),
+                port: req.body.port
+            });
+            debug('Saved %s of compendium %s under port %s', req.body.computationalResult.result, req.body.id, req.body.port);
+
             bindings.runR(req.body);
+
+            // TODO port und binding intern speichern in container-Liste
+            
+            // wenn ja, dann garnichts machen
         });
         let bindingsListen = app.listen(conf.port, () => {
             debug('Bindings server listening on port %s', conf.port);
@@ -59,6 +129,17 @@ bindings.start = (conf) => {
         });
     });
 };
+
+// TODO: CRON job
+/*var cron = require('node-cron');
+ 
+cron.schedule('* 23 * * *', () => {
+  console.log('cleaning up containers');
+
+  // durch container-Liste durchgehen
+    // alle container älter als 25 stunden stoppen und aus der container-Liste entfernen
+
+});*/
 
 bindings.createBinding = function(binding, response) {
     debug( 'Start creating binding for result: %s, compendium: %s', binding.computationalResult.result, binding.id );

@@ -10,22 +10,8 @@ class Authors extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-
-            deletable: false
-        };
 
     }
-
-
-    componentDidMount() {
-        if (this.props.authors.length > 1) {
-            this.setState({ deletable: true })
-        } else {
-            this.setState({ deletable: false })
-        }
-    }
-
 
     handleDelete(i) {
         let authors = this.props.authors.slice();
@@ -33,11 +19,6 @@ class Authors extends Component {
         authors.splice(i, 1);
 
         this.props.onUpdate(authors);
-        if (authors.length > 1) {
-            this.setState({ deletable: true });
-        } else {
-            this.setState({ deletable: false });
-        }
     }
 
     handleUpdate = (i, value) => {
@@ -66,12 +47,12 @@ class Authors extends Component {
                         key={index}
                         id={index}
                         author={item}
-                        deleteable={this.state.deletable}
+                        authors={this.props.authors}
+                        deleteable={this.props.authors.length > 1 ? true  : false }
                         handleDelete={() => this.handleDelete(index)}
                         handleUpdate={this.handleUpdate}
                     />
                 )}
-
                 <div>
                     <IconButton aria-label="Add"
                         onClick={this.handleClick}
