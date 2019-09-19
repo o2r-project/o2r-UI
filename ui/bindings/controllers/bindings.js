@@ -26,7 +26,9 @@ const net = require('net');
 const fn = require('./generalFunctions');
 const processJson = require('./processJson');
 const request = require('request');
+const exec = require('child_process').exec;
 
+const baseUrl = "http://localhost:";
 let bindings = {};
 let runningPorts = [];
 
@@ -51,14 +53,11 @@ bindings.start = (conf) => {
             bindings.createBinding(req.body, res);
         });
 
-        // wäre schön, binding als "sub-resource": https://o2r.uni-muenster.de/api/v1/compendium/abcde/binding/figure1?newValue0=42
         app.get('/api/v1/compendium/:compendium/binding/:binding', function(req, res) {
             let compendium = req.params.compendium;
             let binding = req.params.binding;
-            debug('Getting image for %s from compendium: %s', binding, compendium)
-
-            // query paramater auslesen mit req.query
-            debug('Query parameters: %s', Object.keys(req.query).length);
+            debug('Start getting image for %s from compendium: %s', binding, compendium);
+            debug('Extracted query parameters: %s', Object.keys(req.query).length);
             let queryParameters = '?';
             for ( let i = 0; i < Object.keys(req.query).length; i++ ) {
                 queryParameters = queryParameters + "newValue" + i + "=" + req.query["newValue"+i];
@@ -67,61 +66,67 @@ bindings.start = (conf) => {
                 } 
             }
             debug('Created url: %s', queryParameters);
-            
-            // gucken ob schon ein container für (compendium,binding) existiert
-            // wenn ja, den internen port in der container-Liste nachschlagen und den request weiter leiten
-            debug('number of saved ports: %s', runningPorts.length)
+            debug('Number of saved ports: %s', runningPorts.length)
             let running = runningPorts.find(function(elem) {
                 return elem.result === compendium + binding;
             });
-            debug('Port %s for result %s in compendium %s: %s', running.port, binding, compendium)
-
+            debug('Port %s for result %s in compendium %s', running.port, binding, compendium)
             var request_options = {
-                url: "http://localhost:"+ running.port + "/" + binding + queryParameters,
+                url: baseUrl + running.port + "/" + binding + queryParameters,
             };
             debug('Created URL: %s', request_options.url)
 
             var req_pipe = request(request_options);
-                req_pipe.pipe(res);
-        
+                req_pipe.pipe(res);        
                 req_pipe.on('error', function(e){
                     console.log(e);
                 });
-                //client quit normally
                 req.on('end', function(){
                     console.log('end');
                     req_pipe.abort();
-        
                 });
-                //client quit unexpectedly
                 req.on('close', function(){
                     console.log('close');
                     req_pipe.abort();
-    
                 });
-
-                // wenn nicht, dann plumber container starten, siehe /api/v1/bindings/runPlumberService
         });
         
-        // allow clients to "prepare" a container for the binding by calling this POST endpoing
         app.post('/api/v1/compendium/:compendium/binding/:binding', function(req, res) {
+            let compendium = req.params.compendium;
+            let binding = req.params.binding;
+
+            if ( runningPorts.length < 1 ) {
+                debug('RunningPorts list epty so far. Start running plumber service for compendium %s and result %s', compendium, binding);
+                let newPort = 5000;
+                runningPorts.push({
+                    result: compendium+binding,
+                    port: newPort
+                });
+                debug('Saved %s of compendium %s under port %s', binding, compendium, newPort);
+                bindings.runR(req.body, newPort);
+            } else {
+                let included = false;
+                runningPorts.forEach( function (elem) {
+                    if ( elem.result === compendium + binding ) {
+                        included = true;
+                        debug('Service for binding already running');
+                    }
+                })
+                if ( !included ) {
+                    debug('Start running plumber service for compendium %s and result %s', compendium, binding);
+                    let newPort = 5000 + runningPorts.length;
+                    runningPorts.push({
+                        result: compendium+binding,
+                        port: newPort
+                    });
+                    debug('Saved %s of compendium %s under port %s', binding, compendium, newPort);
+                    bindings.runR(req.body, newPort);
+                }
+            }
+
             res.send({
                 callback: 'ok',
                 data: req.body});
-
-            // gucken schon ein container für (compendium,binding) existiert, wenn nicht den service _auf einem neuen freien_
-            debug('Start running plumber service for compendium %s and result %s', req.body.id, req.body.computationalResult.result);
-            runningPorts.push({
-                result: req.body.id+req.body.computationalResult.result.replace(/\s/g, '').toLowerCase(),
-                port: req.body.port
-            });
-            debug('Saved %s of compendium %s under port %s', req.body.computationalResult.result, req.body.id, req.body.port);
-
-            bindings.runR(req.body);
-
-            // TODO port und binding intern speichern in container-Liste
-            
-            // wenn ja, dann garnichts machen
         });
         let bindingsListen = app.listen(conf.port, () => {
             debug('Bindings server listening on port %s', conf.port);
@@ -131,6 +136,7 @@ bindings.start = (conf) => {
 };
 
 // TODO: CRON job
+// docker container prune --filter "until=24h"?
 /*var cron = require('node-cron');
  
 cron.schedule('* 23 * * *', () => {
@@ -151,7 +157,6 @@ bindings.createBinding = function(binding, response) {
         extractedCode = fn.replaceVariable( extractedCode, binding.sourcecode.parameter );
     let wrappedCode = fn.wrapCode( extractedCode, binding.computationalResult.result, binding.sourcecode.parameter, figureSize );
     fn.saveResult( wrappedCode, binding.id, binding.computationalResult.result.replace(/\s/g, '').toLowerCase() );
-    fn.createRunFile( binding.id, binding.computationalResult.result.replace(/\s/g, '').toLowerCase(), binding.port );
     binding.codesnippet = binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '.R';
     response.send({
         callback: 'ok',
@@ -178,32 +183,31 @@ bindings.implementExtractR = function (binding,response) {
 
 bindings.searchBinding = function ( req, res) {
     var searchTerm= req.term
-    
     var metadata= req.metadata
     debug( 'Start searching for %s', searchTerm,);
     let figures = [];
     let newCode = '';
+    
     for(var i in metadata.interaction){
         let fileContent = fn.readRmarkdown( metadata.interaction[i].id, metadata.interaction[i].sourcecode.file );
         let codelines = fn.handleCodeLines( metadata.interaction[i].sourcecode.codelines );
         let extractedCode = fn.extractCode( fileContent, codelines );
               
-        if(extractedCode.indexOf(searchTerm) != -1)
-        {
+        if ( extractedCode.indexOf(searchTerm) != -1 ) {
             figures.push(metadata.interaction[i].computationalResult.result);
             debug( 'Found ', searchTerm, ' in ', metadata.interaction[i].computationalResult.result)
-
         }
-        else{
+        else {
             debug( 'Not Found ', searchTerm, ' in ', metadata.interaction[i].computationalResult.result)
         }
     }
 
-    debug( 'End searching for %s', searchTerm,);
+    debug( 'End searching for %s', searchTerm);
     res.send({
         callback: 'ok',
         data:figures,
-        code:newCode});
+        code:newCode
+    });
 };
 
 /*bindings.showFigureDataCode = function(binding) {
@@ -220,34 +224,34 @@ bindings.searchBinding = function ( req, res) {
     // fn.modifyMainfile(binding, fileContent);
 };*/
 
-bindings.runR = function ( binding ) {
+bindings.runR = function ( binding, port ) {
     let server = net.createServer(function(socket) {
         socket.write('Echo server\r\n');
         socket.pipe(socket);
     });
     
-        server.listen(binding.port, 'localhost');
+        server.listen(port, 'localhost');
         server.on('error', function (e) {
-            debug("port %s is not free", binding.port);
-            binding.port = binding.port+1;
-            bindings.runR(binding);
+            debug("port %s is not free", port);
         });
         server.on('listening', function ( e ) {
             server.close();
-            debug("port %s is free", binding.port);
-            let filepath = path.join('tmp', 'o2r', 'compendium', binding.id, binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + 'run.R');
-            let run = rscript(filepath)
-                .call(function ( err, d ) {
-                    if ( err ) { 
-                        debug('error: %s', err.toString());
-                    }
-                    debug('Started service: %s', binding.computationalResult.result);
+            debug("port %s is free", port);
+            
+            exec('R -e '+ 
+                '"library("plumber"); '
+                + "setwd('" + path.join('tmp', 'o2r', 'compendium', binding.id) + "'); "
+                + "path = paste('" + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + ".R', sep = ''); "
+                + "r <- plumb(path); " 
+                + "r\\$run(host = '0.0.0.0', port=" + port + ");"
+                + '"', 
+                function(err) {
+                    if (err) throw err;
                 });
-            debug('Started rscript: %o', filepath);
         });
         server.close(function () {
             console.log('server stopped');
-          });
+        });
 };
 
 module.exports = bindings;

@@ -27,7 +27,8 @@ class Manipulate extends React.Component {
         self.state.bindings.forEach((binding)=>{
             httpRequests.runManipulationService(binding)
             .then(function(res){
-                self.setParameter()
+                console.log(res)
+                self.setParameter();
             })
             .catch(function(res){
                 console.log(res)
