@@ -135,17 +135,14 @@ bindings.start = (conf) => {
     });
 };
 
-// TODO: CRON job
-// docker container prune --filter "until=24h"?
-/*var cron = require('node-cron');
+var cron = require('node-cron');
  
-cron.schedule('* 23 * * *', () => {
-  console.log('cleaning up containers');
-
-  // durch container-Liste durchgehen
+cron.schedule('* * * * *', () => {
+    debug('cleaning up containers');
+    // durch container-Liste durchgehen
     // alle container älter als 25 stunden stoppen und aus der container-Liste entfernen
 
-});*/
+});
 
 bindings.createBinding = function(binding, response) {
     debug( 'Start creating binding for result: %s, compendium: %s', binding.computationalResult.result, binding.id );
