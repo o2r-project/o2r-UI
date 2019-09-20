@@ -240,19 +240,16 @@ class Bindings extends Component {
         tmpComputResult: {},
         tmpParam: '',
         tmpParams: [],
-        tmpPort:'',
         tmpCodelines: '',
         tmpPlotFunction: '',
         tmpFile: props.metadata.mainfile,
         tmpBinding: '',
         figures:'',
       }
-      this.getPort = this.getPort.bind(this);
       this.getFakeData = this.getFakeData.bind(this);
     }
 
   componentDidMount () {
-    this.getPort();
     this.getFakeData();
   }
 
@@ -267,29 +264,6 @@ class Bindings extends Component {
     this.setState({
       figures:figures,
     });
-  }
-
-  getPort () {
-    let existingPort = 5000;
-    httpRequests.listAllCompendia()
-    .then ( ( res ) => {
-      let ercs = res.data.results;
-      if ( ercs.length === 0) {
-        this.setState({tmpPort:existingPort});
-      }else{
-        for ( let i=0;i<ercs.length;i++ ){
-          httpRequests.singleCompendium(ercs[i])
-          .then ( ( res2 ) => {
-            existingPort += res2.data.metadata.o2r.interaction.length;
-            if ( i+1 === ercs.length ){
-              this.setState({tmpPort:existingPort});
-            }
-          })
-          .catch ( ( res2 ) => console.log(res2))
-        } 
-      }
-    })
-    .catch ( ( res ) => console.log(res))
   }
 
   setResult ( result ) {
@@ -393,8 +367,7 @@ class Bindings extends Component {
         "file": this.state.tmpFile,
         "codelines": this.state.tmpCodelines,
         "parameter": this.state.tmpParams,
-      },
-      "port": this.state.tmpPort,
+      }
     };
     this.setState({tmpBinding:binding});
     return binding;
@@ -423,7 +396,6 @@ class Bindings extends Component {
     state.tmpPlotFunction='';
     state.tmpBinding='';
     this.setState(state);
-    state.tmpPort=state.tmpPort+1;
   }
 
   render() {
