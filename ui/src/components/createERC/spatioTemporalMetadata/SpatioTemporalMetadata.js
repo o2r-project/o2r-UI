@@ -21,6 +21,7 @@ class SpatioTemporalMetadata extends React.Component {
       from: begin,
       to: end,
       drawn: true,
+      editing: false,
     };
   };
 
@@ -61,8 +62,9 @@ class SpatioTemporalMetadata extends React.Component {
     this.props.setChanged("spatioTemporalChanged")
   }
 
-  setDrawn = (result) => {
-    this.setState({drawn: result})
+  setPropsState = (state, result) => {
+    console.log(state)
+    this.setState({ [state] : result})
   }
 
   handleReset = () => {
@@ -139,7 +141,7 @@ class SpatioTemporalMetadata extends React.Component {
           <Grid item xs={10}>
             <Card>
               <h1>Specify the spatial properties of your dataset(s):</h1>
-              <OwnMap metadata={this.props.metadata} setMetadata={this.props.setMetadata} setChanged={this.setChanged} drawn={this.state.drawn} setDrawn={this.setDrawn} />
+              <OwnMap metadata={this.props.metadata} setMetadata={this.props.setMetadata} setChanged={this.setChanged} drawn={this.state.drawn} setState={this.setPropsState} />
               <h1> Specify the temporal properties of your dataset(s):</h1>
 
               <TextField
@@ -180,7 +182,7 @@ class SpatioTemporalMetadata extends React.Component {
                 type="submit"
                 variant="contained"
                 color="primary"
-                disabled={!(this.props.spatioTemporalChanged || this.props.authorsChanged || this.props.changed) || !valid2}
+                disabled={!(this.props.spatioTemporalChanged || this.props.authorsChanged || this.props.changed) || !valid2 || this.state.editing}
               >
                 Save
             </Button>
@@ -192,7 +194,8 @@ class SpatioTemporalMetadata extends React.Component {
              </Button>
             </Card>
             <div id={"errorMessage"}>
-            {!valid2 ? "Required Metadata is not valid" : "" }
+            {!valid2 ? "Required Metadata is not valid" : "" } <br/>
+            {this.state.editing ? "Please save or cancel the editing on the map": ""}
             </div>
 
           </Grid>
