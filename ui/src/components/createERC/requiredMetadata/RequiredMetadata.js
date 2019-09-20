@@ -31,12 +31,12 @@ function prepareLicense() {
         }
         ;
     }
-    mostRestrictiveData.push(textLicenses[3]);
-    mostRestrictiveData.push(codeLicenses[28]);
-    mostRestrictiveData.push(dataLicenses[1]);
-    leastRestrictiveData.push(textLicenses[5]);
-    leastRestrictiveData.push(codeLicenses[39]);
-    leastRestrictiveData.push(dataLicenses[4]);
+    mostRestrictiveData.push(textLicenses[3].id);
+    mostRestrictiveData.push(codeLicenses[28].id);
+    mostRestrictiveData.push(dataLicenses[1].id);
+    leastRestrictiveData.push(textLicenses[5].id);
+    leastRestrictiveData.push(codeLicenses[39].id);
+    leastRestrictiveData.push(dataLicenses[4].id);
 }
 
 
@@ -159,7 +159,7 @@ class RequiredMetadata extends Component {
                             newMetadata.license.data = values.dataLicense;
                             newMetadata.license.text = values.textLicense;
                             newMetadata.license.code = values.codeLicense;
-                            this.originialValues = newMetadata;
+                            this.originialValues = JSON.parse(JSON.stringify(values));
                             this.props.setMetadata(newMetadata, true);
                             actions.resetForm(values);
                         }

@@ -37,9 +37,9 @@ export const Form = props => {
 
     const reset = props.authorsChanged || props.changed
 
-
     const handleReset = async () => {
 
+        console.log(props.originalMetadata)
         resetForm(props.originalMetadata)
         for(var i in props.resetAuthors){
             props.resetAuthors[i].getFormikActions().resetForm(props.originalAuthors[i])
@@ -73,9 +73,9 @@ export const Form = props => {
 
     const setMostRestrictive = () => {
         var values = props.values
-        values.textLicense = props.mostRestrictiveData[0].id;
-        values.codeLicense = props.mostRestrictiveData[1].id;
-        values.dataLicense = props.mostRestrictiveData[2].id;
+        values.textLicense = props.mostRestrictiveData[0];
+        values.codeLicense = props.mostRestrictiveData[1];
+        values.dataLicense = props.mostRestrictiveData[2];
         setValues(values)
         props.setFormValues(values)
     }
@@ -83,9 +83,9 @@ export const Form = props => {
 
     const setLeastRestrictive = () => {
         var values = props.values
-        values.textLicense = props.leastRestrictiveData[0].id;
-        values.codeLicense = props.leastRestrictiveData[1].id;
-        values.dataLicense = props.leastRestrictiveData[2].id;
+        values.textLicense = props.leastRestrictiveData[0];
+        values.codeLicense = props.leastRestrictiveData[1];
+        values.dataLicense = props.leastRestrictiveData[2];
         setValues(values)
         props.setFormValues(values)
     }
@@ -233,6 +233,12 @@ export const Form = props => {
                                     shrink: true,
                                   }}
                             >
+                                <MenuItem id={"menuItem"} key={props.leastRestrictiveData[0]} value={props.leastRestrictiveData[0]}>
+                                        Least Restrictive
+                                    </MenuItem>
+                                <MenuItem id={"menuItem"} key={props.mostRestrictiveData[0]} value={props.mostRestrictiveData[0]}>
+                                        Most Restrictive
+                                    </MenuItem>
                                 {props.textLicenses.map(option => (
                                     <MenuItem key={option.id} value={option.id}>
                                         {option.title}
@@ -256,6 +262,12 @@ export const Form = props => {
                                     shrink: true,
                                   }}
                             >
+                                 <MenuItem id={"menuItem"} key={props.leastRestrictiveData[1]} value={props.leastRestrictiveData[1]}>
+                                        Least Restrictive
+                                    </MenuItem>
+                                <MenuItem id={"menuItem"} key={props.mostRestrictiveData[1]} value={props.mostRestrictiveData[1]}>
+                                        Most Restrictive
+                                    </MenuItem>
                                 {props.codeLicenses.map(option => (
                                     <MenuItem key={option.id} value={option.id}>
                                         {option.title}
@@ -280,7 +292,13 @@ export const Form = props => {
                                     shrink: true,
                                   }}
                             >
-                                {props.dataLicenses.map(option => (
+                                <MenuItem id={"menuItem"} key={props.leastRestrictiveData[2]} value={props.leastRestrictiveData[2]}>
+                                        Least Restrictive
+                                    </MenuItem>
+                                <MenuItem id={"menuItem"} key={props.mostRestrictiveData[2]} value={props.mostRestrictiveData[2]}>
+                                        Most Restrictive
+                                    </MenuItem>
+                                {    props.dataLicenses.map(option => (
                                     <MenuItem key={option.id} value={option.id}>
                                         {option.title}
                                     </MenuItem>

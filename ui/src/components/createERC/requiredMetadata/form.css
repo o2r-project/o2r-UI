@@ -5,3 +5,11 @@
     left:83%;
     width:12%;
   }
+
+  #menuItem {
+    border-color: white;
+  border-width: 1px;
+  border-style: solid;
+  background-color: #0d1b96;
+  color: white;
+  }
