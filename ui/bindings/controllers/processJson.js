@@ -198,7 +198,7 @@ getSingleVarsAndValues = function(varsAndValues){
                 let vars = variable.split(/[==|]/);
                 entry.vars.filter(value => !value.includes('='))
                 vars.forEach(singleVar => {
-                    let hasNumber = /\d/; 
+                    let hasNumber = /\d{2,}/;  
                     if(hasNumber.test(singleVar) == false){
                         singleVarsAndValues[index].vars.push(singleVar);
                     }
