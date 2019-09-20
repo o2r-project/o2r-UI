@@ -80,9 +80,6 @@ class OwnMap extends React.Component {
         metadata.spatial.union.bbox[3] = GeoJSON.geometry.coordinates[0][3];
         this.props.setMetadata(metadata, false);
         this.props.setChanged();
-
-
-
     }
 
     _onDeleted = (e) => {
