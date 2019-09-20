@@ -30,14 +30,15 @@ export const Form = props => {
         return true;
     }
 
-    const valid = (props.authorsChanged && props.authorsValid && isEmpty(errors)) || (props.changed && isEmpty(errors) && props.authorsValid) || (props.spatioTemporalChanged && props.authorsValid && isEmpty(errors))
+    const valid = (props.authorsChanged && props.authorsValid && isEmpty(errors)) || (props.changed && isEmpty(errors) && props.authorsValid) 
+    || (props.spatioTemporalChanged && props.authorsValid && isEmpty(errors)) || (isEmpty(errors) && props.candidate)
 
     valid2 = isEmpty(errors) && props.authorsValid
 
     const reset = props.authorsChanged || props.changed
 
 
-    const handleReset = () => {
+    const handleReset = async () => {
 
         resetForm(props.originalMetadata)
         for(var i in props.resetAuthors){
@@ -45,7 +46,9 @@ export const Form = props => {
         }
         props.onUpdate(JSON.parse(JSON.stringify(props.originalAuthors)));
         props.setChangedFalse("all");
-        props.setFormValues(props.originalMetadata)
+        await props.setFormValues(props.originalMetadata)
+        props.validateForm()
+        props.setTouched({ "title": true, "abstract": true, "publicationDate": true, "textLicense": true, "dataLicense": true, "codeLicense": true });
 
     };
 
