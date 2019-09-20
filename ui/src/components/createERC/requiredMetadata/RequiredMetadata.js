@@ -42,9 +42,11 @@ function prepareLicense() {
 
 const validationSchema = Yup.object({
     title: Yup.string()
-        .required('Title is required'),
+        .required('Title is required')
+        .min(5, 'Title must be at least 5 characters long'),
     abstract: Yup.string()
-        .required('Abstract is required'),
+        .required('Abstract is required')
+        .min(5, 'Abstract must be at least 5 characters long'),
     publicationDate: Yup.date().max(new Date, 'No Valid Date')
         .required("Date is required"),
     displayFile: Yup.string()
