@@ -229,6 +229,9 @@ export const Form = props => {
                                 onBlur={blur.bind(null)}
                                 margin="normal"
                                 variant="outlined"
+                                InputLabelProps={{
+                                    shrink: true,
+                                  }}
                             >
                                 {props.textLicenses.map(option => (
                                     <MenuItem key={option.id} value={option.id}>
@@ -249,6 +252,9 @@ export const Form = props => {
                                 onBlur={blur.bind(null)}
                                 margin="normal"
                                 variant="outlined"
+                                InputLabelProps={{
+                                    shrink: true,
+                                  }}
                             >
                                 {props.codeLicenses.map(option => (
                                     <MenuItem key={option.id} value={option.id}>
@@ -270,6 +276,9 @@ export const Form = props => {
                                 onBlur={blur.bind(null)}
                                 margin="normal"
                                 variant="outlined"
+                                InputLabelProps={{
+                                    shrink: true,
+                                  }}
                             >
                                 {props.dataLicenses.map(option => (
                                     <MenuItem key={option.id} value={option.id}>
