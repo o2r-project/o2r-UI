@@ -453,9 +453,34 @@ pJ.getAllCodeLines = function (processedJson, varToSearchFor, lines, searched) {
 
 
 pJ.getCodeLines = function (codeLines) {
-    debug('Extract code lines');
     let codeLinesOfValues = [];
+    let min;
+    let max;
+    let index = 0;
+    let minValue = Number.MAX_SAFE_INTEGER;
+    let maxValue = 0;
+    let startIndex = 0;
 
+    while (codeLines.length > index + 1) {
+                if(codeLines[index].end + 1 != codeLines[index + 1].start){
+                    min = codeLines[startIndex].start < minValue ? codeLines[startIndex].start : minValue;
+                    max = codeLines[index].end > maxValue ? codeLines[index].end : maxValue;
+                    console.log(min)
+                    console.log(max)
+                    codeLinesOfValues.push({
+                        start: min,
+                        end: max
+                    })
+                    startIndex = index + 1;
+                }
+        index++;
+    }
+    codeLinesOfValues.push({
+        start: codeLines[codeLines.length-1].start,
+        end: codeLines[codeLines.length-1].end
+    })
+
+    /** 
     const min = codeLines.reduce(
         (minValue, codeLine) => (codeLine.start < minValue ? codeLine.start : minValue), Number.MAX_SAFE_INTEGER);
     const max = codeLines.reduce(
@@ -465,6 +490,7 @@ pJ.getCodeLines = function (codeLines) {
         start: min,
         end: max
     })
+    */
     return codeLinesOfValues;
 }
 
