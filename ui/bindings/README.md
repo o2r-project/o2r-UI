@@ -10,10 +10,10 @@ Many geoscientific papers include computational results produced by source code 
 
 Part of the [o2r-bindings](https://github.com/o2r-project/o2r-bindings) service is **extractR**. This algorithm allows automated extraction of codelines. These could then be used to recreate certain figures and plots from scientific papers. The basic steps of the algorithm are:
 * [Read *.Rmd* file](#File-Processing)
-* [Classify each line]()
-* [Process the classification]()
-* [Extract variables from classification]()
-* [Read code lines from extracted classification]()
+* [Classify each line](#Classification-of-lines)
+* [Process the classification](#Classification-processing)
+* [Extract variables from classification](#Variable-extraction)
+* [Read code lines from extracted classification](#Reading-codelines)
 
 ### File Processing
 The corresponding code for the first file processing can be found [here](). As input of the algorithm, a R Markdown file ,including all code chunks which are needed to create the desired figure, is used. This file is then split into lines. From these lines, empty ones are excluded for faster processing. The outcome of this first step is an array of objects of the form: 
@@ -26,7 +26,7 @@ Therefore, the object includes:
 * **Line**: The position of the specific value in the file, i.e. it is the 20<sup>th</sup> line which is processed.
 * **index**: The index corresponds to the position of the specific line in the original Markdown file.This is important for further processing inside the bindings service as it represents the front-end line index.  
 
-### Classification of lines {#Classification}
+### Classification of lines 
 After the first processing, each object is classified as one of the following types:
 * **variable**
 * **function**
@@ -42,7 +42,7 @@ After the first processing, each object is classified as one of the following ty
 
 A **function** is a self-written function that can be found in the Markdown file, while an **inlineFunction** is a function that is called inside the script, which can be a self-written one as well as one called from an external file or library. External files and libraries included in the script are of type **exFile** and **library**. Then, the possible R loop types are cassified as **forLoop**,**whileLoop** and **repeatLoop**. For the type **conditional**, *if* and *if else* statements are examples. If a variable is called inside the Markdown file, the line is classified as **variable call**. Moreover, a **sequence** is characterized by a "*:*", which is the case while subsetting in R. The type is added at the end of each object. 
 
-### Classification processing {#Processing}
+### Classification processing 
 After the type is added to each object, it is processed differently depending on the type. The corresponding code can be found [here](). At the end, a possible result looks like this:
 ```javascript
  [...,{
@@ -133,7 +133,7 @@ Every object has now the elements
 * **name**: represents the name of the type found at index *start*
 * **codeBlock**: represents the R Markdown code chunk index where the element was found
 
-### Variable extraction {#Extraction}
+### Variable extraction
 Now, every row of the Markdown File has been processed. Now, the variables, and therefore codelines, needed to recreate a specific figure are required. As input, **extractR** expects a function as input of the form  ```PlotFigureX(he,..) ```. Then, the function [valuesToSearchFor()]() extracts the parameters of the function. Those are the starting point for the function [getAllCodeLines](). This function loops through the object created in the [classification processing]() and finds every line, where those parameters exist. The function is then called recursivly with the variables found in those lines again and again. The result of this function is 
 ```javascript
 [ { start: 17, end: 17, codeBlock: 1 },
@@ -144,7 +144,7 @@ Now, every row of the Markdown File has been processed. Now, the variables, and 
   { start: 26, end: 26, codeBlock: 2 }...]
 ```
 Those codelines represent the needed lines from the R Markdown file for the plot created inside the function ```PlotFigureX(he,..) ```. 
-### Reading codelines {#Codelines}
+### Reading codelines 
 The lines extracted in the previous step are then grouped if those are consecutive lines. As a final result, an object array of the following form is created:
 ```javascript
 [ { start: 31, end: 31 },
