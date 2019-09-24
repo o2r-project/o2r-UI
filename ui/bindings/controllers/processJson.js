@@ -128,7 +128,6 @@ pJ.getVarsAndValuesOfLines = function (processedJson) {
             }
             let vars = pJ.getVarsOfVariables(processedJson[i].json);
             console.log('varslog')
-            console.log(vars);
             let type = processedJson[i].json.type
             let name = processedJson[i].json.content[0].variable
             let codeBlock = processedJson[i].json.codeBlock
@@ -388,7 +387,11 @@ pJ.getAllCodeLines = function (processedJson, varToSearchFor, lines, searched) {
     let data = new RegExp('\\b' + 'load' + '\\b');
     if (lines.length == 0) {
         indexFun = processedJson.findIndex(fun => fun.vars.every(elem => searched.includes(elem)))
-        filteredJson = processedJson.slice(0,indexFun);
+        if(indexFun != -1){
+            filteredJson = processedJson.slice(0,indexFun + 1);
+        } else {
+            debug('PlotFunction not found.')
+        }
         filteredJson.forEach(line => {
                 if (plotFunctions.some(fun => line.name.includes(fun)) || libAndFun.some(fun => line.type.includes(fun)) || line.vars.find(value => data.test(value)) != -1) {
                     lines.push({
@@ -453,6 +456,7 @@ pJ.getAllCodeLines = function (processedJson, varToSearchFor, lines, searched) {
 
 
 pJ.getCodeLines = function (codeLines) {
+    debug('getAllCodeLines',codeLines)
     let codeLinesOfValues = [];
     let min;
     let max;
