@@ -36,12 +36,12 @@ fullData.df = load("best.use.2014.Rdata")
 begin = 1975; end = 2014
 
 fullData.df = filter(best.use,Yr >= begin, Yr <= end, Int >= 33.0, M == FALSE) 
-fullData.df = mutate(best.use,Int = WmaxS * .5144, 
-         DIntDt = DWmaxDt * .5144) 
-         
-  
-```
+fullData.df = mutate(best.use,
+              Int = WmaxS * .5144,DIntDt = DWmaxDt * .5144) 
 
+
+
+```
 ```{r, include=FALSE}
 library("rgdal")
 ll = "+proj=longlat +ellps=WGS84"
@@ -98,16 +98,16 @@ Figure 1. Tracks and corresponding cells for three 2008 hurricanes: Gustav, Ike,
 library(mapproj)
 library(maptools)
 
-outlines = as.data.frame(map("world", xlim = c(-100, -20), 
-                             ylim = c(10, 50), 
-                             plot = FALSE)[c("x", "y")],
-                             color = "gray")
-map = geom_path(aes(x, y), inherit.aes = FALSE, data = outlines, 
-                alpha = .8, show_guide = FALSE, color = "blue")
+outlines = as.data.frame(map("world", xlim = c(-100, -20), ylim = c(10, 50), plot = FALSE)[c("x", "y")],color = "gray")
+
+map = geom_path(aes(x, y), inherit.aes = FALSE, data = outlines, alpha = .8, show_guide = FALSE, color = "blue")
+
 ext = as.vector(extent(r))
 boundaries = map("world", fill = TRUE, xlim = ext[1:2], 
                  ylim = ext[3:4], plot = FALSE)
+
 IDs = sapply(strsplit(boundaries$names, ":"), function(x) x[1])
+
 bPols <<- map2SpatialPolygons(boundaries, IDs = IDs,
                               proj4string = CRS(projection(r)))
 ```
@@ -118,6 +118,7 @@ bPols <<- map2SpatialPolygons(boundaries, IDs = IDs,
 require(gridExtra)
 require(sp)
 
+PlotFigure1 = function(Tracks.df,vals){
 Int2a.df = filter(Tracks.df, Sid == sid1)
 Int2b.df = filter(Tracks.df, Sid == 1677)
 Int2c.df = filter(Tracks.df, Sid == 1683)
@@ -130,8 +131,6 @@ linesb <<- SpatialLines(list(Lines(list(Line(holderb)),
                                  ID = 'Int2b.df$Sid')))
 linesc <<- SpatialLines(list(Lines(list(Line(holderc)),
                                  ID = 'Int2c.df$Sid')))
-
-
 tracking = vals + 
   latticeExtra::layer(sp.polygons(bPols, col = gray(.8))) +
   latticeExtra::layer(sp.lines(linesa, lwd = 2, col = gray(.4))) + 
@@ -140,10 +139,11 @@ tracking = vals +
   latticeExtra::layer(panel.text(-63.5, 27.5, 'Gustav', col = gray(.4))) +
   latticeExtra::layer(panel.text(-51, 16.5, 'Ike', col = gray(.4))) + 
   latticeExtra::layer(panel.text(-81.5, 16.25, 'Omar', col = gray(.4)))
+
 plot(tracking)
-
+}
+PlotFigure1(Tracks.df,vals)
 ```
-
 ```{r, echo = FALSE}
 
 #This chunk handles mean intensification
@@ -690,8 +690,7 @@ Intensification$ID = as.integer(Intensification$ID)
 
 looper = nrow(Intensification)
 
-while(looper > 0)
-  {
+while(looper > 0){
   if ((Intensification$ID[looper] == 50) == TRUE | (Intensification$ID[looper] == 46) == TRUE |
         (Intensification$ID[looper] == 45) == TRUE | (Intensification$ID[looper] == 35) == TRUE |
         (Intensification$ID[looper] == 49) == TRUE | (Intensification$ID[looper] == 40) == TRUE|
@@ -763,8 +762,7 @@ DIntDtData.df$ID = as.integer(DIntDtData.df$ID)
 
 looper = nrow(DIntDtData.df)
 
-while(looper > 0)
-  {
+while(looper > 0){
   if ((DIntDtData.df$ID[looper] == 50) == TRUE | (DIntDtData.df$ID[looper] == 46) == TRUE |
         (DIntDtData.df$ID[looper] == 45) == TRUE | (DIntDtData.df$ID[looper] == 35) == TRUE |
         (DIntDtData.df$ID[looper] == 49) == TRUE | (DIntDtData.df$ID[looper] == 40) == TRUE|
@@ -816,7 +814,7 @@ background = sp.polygons(bPols, col = gray(.8))
 cr = brewer.pal(9, "Purples")
 cr = cr[-(1)]
 rng = seq(0, 2.00, 0.25)
-breaks =  c(0.00, 0.25, 0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00 )
+breaks = c(0.00, 0.25, 0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00 )
 
 plotting = spplot(DIntDtStack, col.regions=cr, names.attr = names,
                   at = rng, colorkey = list(space="bottom", at=breaks, labels=list(at=breaks)), labels=paste(rng), par.settings=list(fontsize=list(text=10)),
@@ -1480,7 +1478,7 @@ IntStack = stack(data1975.grid, data1976.grid, data1977.grid, data1978.grid, dat
 cr = brewer.pal(7, "Greens")
 cr = cr[-(1)]
 rng = seq(30, 84, 9)
-breaks =  c(30, 39, 48, 57, 66, 75, 84 )
+breaks = c(30, 39, 48, 57, 66, 75, 84 )
 
 plotting = spplot(IntStack, col.regions=cr, names.attr = names, 
                   at = rng, colorkey = list(space="bottom", at=breaks, labels=list(at=breaks)), labels=paste(rng),
@@ -2292,7 +2290,7 @@ cr = brewer.pal(7, "Reds")
 cr = cr[-(1:2)]
 #cr = cr[-length(cr)]
 rng = seq(20, 30, 2)
-breaks =  c(20, 22, 24, 26, 28, 30)
+breaks = c(20, 22, 24, 26, 28, 30)
 
 plotting = spplot(sstStack, col.regions=cr, names.attr = names, 
                   at = rng, colorkey = list(space="bottom", at=breaks, labels=list(at=breaks)), labels=paste(rng),
@@ -2332,7 +2330,7 @@ cr2 = cr2[-c(1:2)]
 cr = c(cr1,cr2)
 #cr = cr[-length(cr)]
 rng = seq(-1.5, 1.5, 0.5)
-breaks =  c(-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5)
+breaks = c(-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5)
 
 plotting = spplot(sstStack - dataSSTanom.grid, col.regions=cr, names.attr = names, 
                   at = rng, colorkey = list(space="bottom", at=breaks, labels=list(at=breaks)), labels=paste(rng),
@@ -2438,12 +2436,10 @@ posNAO = naoYears$year[31:40]
 
 #The error that occurs when running the above loop does not
 #affect any of the data or code. Therefore, it can be ignored.
-
 ```
 Figure 7. Time series of (a) monthly average of MEI from 1975 to 2014, (b) monthly average of NAOI from 1975 to 2014...
 ```{r, echo = FALSE}
 #This chunk produces Figure 7 in the article.
-
 library(grid)
 library(gridExtra)
 library(plotrix)
@@ -2477,7 +2473,7 @@ range(values(Tracks.grid), na.rm=TRUE)
 cr = brewer.pal(6, "Purples")
 cr = cr[-(1:2)]
 rng = seq(0, 0.80, 0.20)
-breaks =  c(0.00, 0.20, 0.40, 0.60, 0.80)
+breaks = c(0.00, 0.20, 0.40, 0.60, 0.80)
 vals = levelplot(Tracks.grid, margin = FALSE,
           sub=expression(paste("Intensification [m ", s^-1, " per h]")),
           xlab = NULL, ylab = NULL, 
@@ -2547,19 +2543,23 @@ plot(ggplot(mNAOdata, aes(value, fill=variable)) +
   geom_linerange(x=15.43, ymax=0.08, ymin=0, color="white", size=2))
 
 ```
+
+
+
+
 Figure 3. Mean intensification histogram and spatial plot. (a) Histogram of mean hourly intensification...
 ```{r, echo = FALSE}
 #This chunk produces Figure 3a in the article, as well as the entire Figure 3.
-
+PlotFigure3a = function(data.df){
 histDIntDt = ggplot(data.df, aes(DIntDt)) + geom_histogram(binwidth=0.2,
   color = "white", fill = "#6A51A3") +
   xlab(expression(paste("Mean Intensification [m ", s^-1, " per h]"))) +
   ylab("Number of Grid Cells") 
 histDIntDt = histDIntDt + ggtitle("a") + theme(plot.title = element_text(hjust = 0))
 plot(histDIntDt)
-
 grid.arrange(histDIntDt, pDIntDt,widths=unit(0.5,"npc"), ncol=1)
-
+}
+PlotFigure3a(data.df)
 ```
 
 ```{r, echo = FALSE, message=FALSE}
@@ -2611,16 +2611,17 @@ summary(model.inla)
 
 ```
 
+
+
+
 ```{r, echo = FALSE}
 #This chunk produces Figure 2a in the article. 
-
+PlotFigure2a = function(Tracks.sdf, r){
 library(RColorBrewer)
 library(wesanderson)
-
 Count.grid = rasterize(Tracks.sdf, r,
                         field = 'Sid',
                         fun = function(x,...) {length(unique(na.omit(x)))})
-
 range(values(Count.grid), na.rm=TRUE)
 rng = seq(0, 35, 5)
 crq = wes_palette(7, name="Rushmore", type="continuous")
@@ -2636,12 +2637,14 @@ pCount = vals + latticeExtra::layer(sp.polygons(bPols, col = gray(.8)))
 pCount = update(pCount, main = textGrob("a", x = unit(.05, "npc"), 
                                gp = gpar(fontsize=16)))
 plot(pCount)
-
+}
+PlotFigure2a(Tracks.sdf,r)
 ```
 Figure 2. Hurricane intensification count and ratio per cell. (a) Number of intensifying hurricanes per cell...
 ```{r, echo = FALSE}
 #This chunk produces Figure 2b in the article, as well as the entire Figure 2.
 
+PlotFigure2b = function(fullData.sdf,r){
 fullCount.grid = rasterize(fullData.sdf, r,
                         field = 'Sid',
                         fun = function(x,...) {length(unique(na.omit(x)))})
@@ -2664,9 +2667,9 @@ pDif = vals + latticeExtra::layer(sp.polygons(bPols, col = gray(.8)))
 pDif = update(pDif, main = textGrob("b", x = unit(.05, "npc"), 
                                gp = gpar(fontsize=16)))
 plot(pDif)
-
 grid.arrange(pCount, pDif, ncol=1)
-
+}
+PlotFigure2b(fullData.sdf,r)
 ```
 
 ```{r, echo = FALSE}
@@ -2806,7 +2809,7 @@ mean(SST.grid@data@values, na.rm=TRUE)
 
 range(values(SST.grid), na.rm = TRUE)
 rng = seq(0.077, 0.085, .001)
-breaks =  c(0.077, 0.078, 0.079, 0.080, 0.081, 0.082, 0.083, 0.084, 0.085)
+breaks = c(0.077, 0.078, 0.079, 0.080, 0.081, 0.082, 0.083, 0.084, 0.085)
 cr = brewer.pal(9, "Reds")
 cr = cr[-(1)]
 vals = levelplot(SST.grid, margin = FALSE, 

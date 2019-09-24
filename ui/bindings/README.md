@@ -169,7 +169,15 @@ To run the algorithm, run ```npm install``` and afterwards ```npm start```. The 
 
 
 ## Future work
-
+The following points should be adressed in the future:
+* The algorithm sometimes gets far more matches and lines than necessary for a specific plot.
+* Highlight found lines in the UI and enable user to delete unnecessary lines / add missed lines.
+* Special syntax (like in the following example) is not working:
+```R
+a = c %>%
+  mutate(.data) %>%
+  filter(c > 5)
+```
 
 ## License
 

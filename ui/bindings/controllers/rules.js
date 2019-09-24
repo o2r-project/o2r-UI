@@ -107,7 +107,6 @@ areYou.getTypeOfLine = function (lines) {
 };
 
 areYou.findType = function (file) {
-    debug('Find Type');
     let type = '';
     if (variable(file)) {
         type = 'variable';

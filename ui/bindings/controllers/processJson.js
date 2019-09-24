@@ -12,26 +12,21 @@ pJ.addFileContentToJson = function (jsonObj) {
     let numberOfLoopRuns = 0;
     for (let i = 0; i < jsonObj.Lines.length; i++) {
         if (jsonObj.Lines[i].type == 'function') {
-            debug('function');
             let fun = rules.processFunction(jsonObj.Lines, i);
             processedJson.push(fun);
             i = fun.end;
         } else if (jsonObj.Lines[i].type == 'conditional') {
-            debug('cond');
             let cond = rules.processCond(jsonObj.Lines, i);
             processedJson.push(cond);
             i = cond.end
         } else if (jsonObj.Lines[i].type == 'forLoop' || jsonObj.Lines[i].type == 'whileLoop' || jsonObj.Lines[i].type == 'repeatLoop') {
-            debug('loop');
             let loop = rules.processLoop(jsonObj.Lines, i);
             processedJson.push(loop);
             i = loop.end
         } else if (jsonObj.Lines[i].type == 'inlineFunction') {
-            debug('ILFunction');
             let inline = rules.processInlineFunction(jsonObj.Lines, i);
             processedJson.push(inline);
         } else if (jsonObj.Lines[i].type == 'variable') {
-            debug('var');
             let variable = rules.processVariables(jsonObj.Lines, i, false);
             if (variable.multi == false) {
                 processedJson.push(variable);
@@ -41,23 +36,20 @@ pJ.addFileContentToJson = function (jsonObj) {
             }
         } else if (jsonObj.Lines[i].type == 'variable call') {
             let varCall = rules.processVarCall(jsonObj.Lines, i);
-            debug('VC ');
             processedJson.push(varCall);
         } else if (jsonObj.Lines[i].type == 'library') {
-            debug('lib');
             let lib = rules.processLib(jsonObj.Lines, i);
             processedJson.push(lib);
         } else if (jsonObj.Lines[i].type == 'exFile') {
-            debug('exFile');
             let exFile = rules.processExFile(jsonObj.Lines, i);
             processedJson.push(exFile);
         } else if (jsonObj.Lines[i].type == 'sequence') {
-            debug('seq');
             let seq = rules.processSequence(jsonObj.Lines, i);
             processedJson.push(seq);
         }
         numberOfLoopRuns++;
     }
+    debug('Added content to JSON')
     return processedJson;
 };
 
