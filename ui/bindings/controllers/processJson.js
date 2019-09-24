@@ -7,7 +7,7 @@ let pJ = {};
 
 
 pJ.addFileContentToJson = function (jsonObj) {
-    debug('Add file content to json');
+    debug('Add file content to JSON')
     let processedJson = [];
     let numberOfLoopRuns = 0;
     for (let i = 0; i < jsonObj.Lines.length; i++) {
@@ -49,7 +49,6 @@ pJ.addFileContentToJson = function (jsonObj) {
         }
         numberOfLoopRuns++;
     }
-    debug('Added content to JSON')
     return processedJson;
 };
 
@@ -381,6 +380,7 @@ pJ.getAllCodeLines = function (processedJson, varToSearchFor, lines, searched) {
         indexFun = processedJson.findIndex(fun => fun.vars.every(elem => searched.includes(elem)))
         if(indexFun != -1){
             filteredJson = processedJson.slice(0,indexFun + 1);
+            debug('JSON sliced to ', indexFun);
         } else {
             debug('PlotFunction not found.')
         }
@@ -402,7 +402,9 @@ pJ.getAllCodeLines = function (processedJson, varToSearchFor, lines, searched) {
         //isValid = true;
         let noWhiteSpace = entry.replace(/\s/g, "");
         if (noWhiteSpace != "" && isRegExp(noWhiteSpace)) {
-            let expression = new RegExp('\\b' + noWhiteSpace + '\\b');
+            let expression = new RegExp('(?<=^([^"\']|"\'[^"\']*"\')*)' + '\\b' + noWhiteSpace + '\\b');
+            console.log('expression')
+            console.log(expression)
             if (!search.includes(expression)) {
                 search.push(expression);
             }
@@ -443,12 +445,12 @@ pJ.getAllCodeLines = function (processedJson, varToSearchFor, lines, searched) {
     }, []);
 
     return lines.sort((a, b) => (a.start > b.start) ? 1 : -1);
+    //lines.push({"start":30,"end":424})
 
 };
 
 
 pJ.getCodeLines = function (codeLines) {
-    debug('getAllCodeLines',codeLines)
     let codeLinesOfValues = [];
     let min;
     let max;

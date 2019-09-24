@@ -101,7 +101,7 @@ bindings.implementExtractR = function (binding,response) {
 
     
     
-    debug(codeLinesForValues);
+    debug('Codelines: ',codeLinesForValues);
     
     binding.codelines = processJson.getCodeLines(codeLinesForValues);
     debug(binding.codelines)

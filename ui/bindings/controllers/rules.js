@@ -362,8 +362,6 @@ findValue = function(json,index){
     }
     else if(json[index].type == 'variable'){
         let variable = areYou.processVariables(json,index,false);
-        console.log('Hello var');
-        console.log(variable);
         if (variable.multi == false){
             return{
                  json:variable.json,
@@ -533,6 +531,7 @@ areYou.processVariables = function (json, index,multi) {
         return {
             json:json[index],
             end:end,
+            index:json[index].index,
             multi:true,
             endIndex: endIndexMulti
         }

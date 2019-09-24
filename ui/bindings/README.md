@@ -165,7 +165,47 @@ This is the final result of the algorithm, including each line that is necessary
 To run the algorithm, run ```npm install``` and afterwards ```npm start```. The file that should be processed must be a R Markdown file. The link to the file has to be inserted in the file *extractR.js* inside the function *implementExtractR* called at the end of the script. 
 
 ## API
+The API endpoint of extractR can be reached by
 
+```POST /api/v1/bindings/extractR```
+
+and needs the following parameters:
+* **file**: Name of the R Markdown file, e.g. *main.Rmd*
+* **id**: The corresponding compendium id
+* **plot**: The value of the plot function, e.g. *PlotFigure1(Tracks.df,vals)*
+
+A response looks like this:
+
+```JSON
+{"callback":"ok",
+"data":{
+    "id":"gV1VO",
+    "plot":"PlotFigure1(Tracks.df,vals)",
+    "file":"main.Rmd",
+    "codelines":[
+        {"start":17,"end":19},
+        {"start":23,"end":29},
+        {"start":35,"end":36},
+        {"start":38,"end":40},
+        {"start":46,"end":47},
+        {"start":49,"end":51},
+        {"start":53,"end":55},
+        {"start":60,"end":63},
+        {"start":65,"end":67},
+        {"start":69,"end":77},
+        {"start":81,"end":93},
+        {"start":98,"end":99},
+        {"start":101,"end":101},
+        {"start":103,"end":103},
+        {"start":105,"end":107},
+        {"start":109,"end":112},
+        {"start":118,"end":119},
+        {"start":145,"end":145}]
+    }
+}
+```
+
+## Requirements and Constraints
 
 
 ## Future work
