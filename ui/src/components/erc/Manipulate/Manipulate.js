@@ -4,6 +4,7 @@ import { Slider, Typography, Button, Tabs, Tab, Radio, RadioGroup, FormControlLa
 import httpRequests from '../../../helpers/httpRequests';
 import FigureComparison from './FigureComparison/FigureComparison';
 import SelectedSettings from './SelectedSettings/SelectedSettings';
+import {search, removeHighlight} from '../MainView/MainView'
 import './manipulate.css'
 import config from '../../../helpers/config';
 
@@ -70,7 +71,19 @@ class Manipulate extends React.Component {
         return params;
     }
 
-    componentDidMount = () => this.runManipulateService();
+    highlight = () =>
+    {
+        for(var i in this.state.params){
+            search(this.state.params[i])
+        }
+
+    }
+
+    componentDidMount = () => {
+        console.log(search)
+        this.runManipulateService();
+        this.highlight();
+    console.log(search)}
 
     handleChange = name => ( evt, newVal ) => {
         this.setState({
@@ -114,7 +127,9 @@ class Manipulate extends React.Component {
         this.setState({
             index: newVal,
             binding: this.state.bindings[newVal],
-        }, ()=>this.setParameter());
+        }, ()=> {this.setParameter();
+        removeHighlight();
+        this.highlight();})
         /*console.log(newVal)
         this.setState({
             binding: this.state.bindings[newVal],
