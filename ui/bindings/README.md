@@ -206,6 +206,10 @@ A response looks like this:
 ```
 
 ## Requirements and Constraints
+* Opening brackets (i.e. *(*,*{*,*[*) must be in the same line as the loop or function itself.
+* Closing brackets of functions or loops must be placed at an exclusive line.
+* Spacing between variables: Up to one space is allowed.
+* Avoid more than one closing bracket (*(*) for variable values or use a single line definition.
 
 
 ## Future work

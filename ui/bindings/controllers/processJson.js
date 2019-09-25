@@ -460,23 +460,25 @@ pJ.getCodeLines = function (codeLines) {
     let startIndex = 0;
 
     while (codeLines.length > index + 1) {
+                    console.log(codeLines[startIndex])
+                    console.log(codeLines[index])
                 if(codeLines[index].end + 1 != codeLines[index + 1].start){
                     min = codeLines[startIndex].start < minValue ? codeLines[startIndex].start : minValue;
                     max = codeLines[index].end > maxValue ? codeLines[index].end : maxValue;
-                    console.log(min)
-                    console.log(max)
                     codeLinesOfValues.push({
                         start: min,
                         end: max
                     })
                     startIndex = index + 1;
+                } if(codeLines[index].end + 1 == codeLines[codeLines.length-1].start) {
+                    codeLinesOfValues.push({
+                        start: codeLines[index].start,
+                        end: codeLines[codeLines.length-1].end
+                    })
                 }
         index++;
     }
-    codeLinesOfValues.push({
-        start: codeLines[codeLines.length-1].start,
-        end: codeLines[codeLines.length-1].end
-    })
+
 
     /** 
     const min = codeLines.reduce(
