@@ -134,7 +134,7 @@ Every object has now the elements
 * **codeBlock**: represents the R Markdown code chunk index where the element was found
 
 ### Variable extraction
-Now, every row of the Markdown File has been processed. Now, the variables, and therefore codelines, needed to recreate a specific figure are required. As input, **extractR** expects a function as input of the form  ```PlotFigureX(he,..) ```. Then, the function [valuesToSearchFor()]() extracts the parameters of the function. Those are the starting point for the function [getAllCodeLines](). This function loops through the object created in the [classification processing](#Classification-processing) and finds every line, where those parameters exist. The function is then called recursivly with the variables found in those lines again and again. The result of this function is 
+Now, every row of the Markdown File has been processed. Now, the variables, and therefore codelines, needed to recreate a specific figure are required. As input, **extractR** expects a function as input of the form  ```PlotFigureX(he,..) ```. Then, the function [valuesToSearchFor()](./controllers/processJson.js#L364) extracts the parameters of the function. Those are the starting point for the function [getAllCodeLines](./controllers/processJson.js#L378). This function loops through the object created in the [classification processing](#Classification-processing) and finds every line, where those parameters exist. The function is then called recursivly with the variables found in those lines again and again. The result of this function is 
 ```javascript
 [ { start: 17, end: 17, codeBlock: 1 },
   { start: 18, end: 18, codeBlock: 1 },
@@ -143,7 +143,7 @@ Now, every row of the Markdown File has been processed. Now, the variables, and 
   { start: 25, end: 25, codeBlock: 2 },
   { start: 26, end: 26, codeBlock: 2 }...]
 ```
-Those codelines represent the needed lines from the R Markdown file for the plot created inside the function ```PlotFigureX(he,..) ```. 
+Those codelines represent the needed lines from the R Markdown file for the plot created inside the function ```PlotFigureX(he,..) ```. The function can be seen [here](./controllers/processJson.js#L463). 
 ### Reading codelines 
 The lines extracted in the previous step are then grouped if those are consecutive lines. As a final result, an object array of the following form is created:
 ```javascript
