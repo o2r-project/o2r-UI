@@ -41,30 +41,12 @@ handleSelectedText(e) {
 
     try {
         httpRequests.searchBinding(text, this.props.metadata)
-<<<<<<< HEAD
-        .then(function (res) {
-            console.log(res)
-            if ( text.trim() != '' ) {
-                /*self.setState({
-                    selectedText:text,
-                    popup:true,
-                })*/
-            }
-            /*if (res.data.data.length != 0) {
-                    for (var i in res.data.data) {
-                        for (var j in figures) {
-                            if (res.data.data[i] == figures[j]) {
-                                console.log(true)
-                                res.data.data.splice(i, 1)
-                            }
-=======
             .then(function (res) {
 
                 for (var i in res.data.data) {
                     for (var j in foundParameters) {
                         if (res.data.data[i] == foundParameters[j].computationalResult.result) {
                             res.data.data.splice(i, 1)
->>>>>>> dev
                         }
                     }
                 }
