@@ -16,7 +16,7 @@ Part of the [o2r-bindings](https://github.com/o2r-project/o2r-bindings) service 
 * [Read code lines from extracted classification](#Reading-codelines)
 
 ### File Processing
-The corresponding code for the first file processing can be found [here](bindings/generalFunctions.js). As input of the algorithm, a R Markdown file ,including all code chunks which are needed to create the desired figure, is used. This file is then split into lines. From these lines, empty ones are excluded for faster processing. The outcome of this first step is an array of objects of the form: 
+The corresponding code for the first file processing can be found [here](generalFunctions.js). As input of the algorithm, a R Markdown file ,including all code chunks which are needed to create the desired figure, is used. This file is then split into lines. From these lines, empty ones are excluded for faster processing. The outcome of this first step is an array of objects of the form: 
 ```javascript
 [...,{"value":{'Here is the code line'},"codeBlock": 1, "Line": 20, "index": 24},...]
 ```
@@ -43,7 +43,7 @@ After the first processing, each object is classified as one of the following ty
 A **function** is a self-written function that can be found in the Markdown file, while an **inlineFunction** is a function that is called inside the script, which can be a self-written one as well as one called from an external file or library. External files and libraries included in the script are of type **exFile** and **library**. Then, the possible R loop types are cassified as **forLoop**,**whileLoop** and **repeatLoop**. For the type **conditional**, *if* and *if else* statements are examples. If a variable is called inside the Markdown file, the line is classified as **variable call**. Moreover, a **sequence** is characterized by a "*:*", which is the case while subsetting in R. The type is added at the end of each object. 
 
 ### Classification processing 
-After the type is added to each object, it is processed differently depending on the type. The corresponding code can be found [here](bindings/rules.js). At the end, a possible result looks like this:
+After the type is added to each object, it is processed differently depending on the type. The corresponding code can be found [here](rules.js). At the end, a possible result looks like this:
 ```javascript
  [...,{
     "json": {
