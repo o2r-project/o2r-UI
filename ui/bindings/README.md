@@ -90,7 +90,7 @@ After the type is added to each object, it is processed differently depending on
 ```
 Here, the object from the File Processing is extended by a **content** entry. This entry holds information about the inner content of a specific type. In the example, the **inlineFunction** *PlotFigure1* has the parameter *Tracks.df*, which is added to the content. If the type found in a specific line is a multiline type, which means that it is probably a loop or a self-written function, an **end** parameter is added to the object. This parameter describes the end-line of the function in the internal representation, while the **index** parameter represents the start of the function and the **endIndex** parameter represents the end in the frontend representation. If the multiline type would be a *loop* or an *if*, every line inside would get its own representation under **content**. 
 
-Since this representation gets quite confusing for larger files, the **content** of each entry gets further processed. The function [getVarsAndValuesOfLines]() simplifies the previous representation like you can see here: 
+Since this representation gets quite confusing for larger files, the **content** of each entry gets further processed. The function [getVarsAndValuesOfLines](./controllers/processJson.js#L55) simplifies the previous representation like you can see here: 
 ```javascript
 [...{ start: 384,
     end: 390,
