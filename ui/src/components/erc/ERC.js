@@ -141,7 +141,13 @@ class ERC extends React.Component {
             <div className="Erc" >
                 <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
                     <ReflexElement>
-                        <Button onClick={this.handleDisplayFile.bind(this)}>{this.state.html ? 'Show PDf' : 'Show HTML'}</Button>
+                        <Button 
+                            onClick={this.handleDisplayFile.bind(this)}
+                            variant='contained'
+                            color='inherit'
+                        >
+                            {this.state.html ? 'Show PDf' : 'Show HTML'}
+                        </Button>
                         {this.state.displayfile!=null 
                         ?<MainView 
                             filePath={this.state.html 

@@ -168,18 +168,6 @@ fn.saveResult = function(data, compendiumId, fileName) {
     debug('End saving result');
 };
 
-fn.createRunFile = function(compendiumId, result, port) {
-    debug('Start creating run file for compendium %s for result %s running under port %s',
-            compendiumId, result, port);
-    let content = 'library("plumber")' + '\n' +
-                    'setwd(file.path("tmp", "o2r", "compendium", "' + compendiumId + '"))' + '\n' +
-                    'path = paste("'+result + '.R", sep = "")\n' +
-                    'r <- plumb(path)\n' +
-                    'r$run(host = "0.0.0.0", port=' + port + ')';
-    fn.saveRFile(content, compendiumId, result+'run.R');
-    debug('End creating run file');
-};
-
 fn.saveRFile = function(data, compendiumId, fileName) {
     debug('Start saving file for compendium %s under file name %s',
             compendiumId, fileName);
