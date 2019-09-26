@@ -328,9 +328,9 @@ addLoopContent = function (json,index,startOfLoopLine, endOfLoopIndex) {
 };
 //TODO: Change also other parts, but it works for INSYDE
 findValue = function(json,index){
-    console.log("FindVALue " + JSON.stringify(json[index]))
+    //console.log("FindVALue " + JSON.stringify(json[index]))
     if(json[index].type == 'function'){
-        console.log('function');
+        //console.log('function');
         let fun = areYou.processFunction(json,index);
         return {
             json:fun.json,
@@ -340,7 +340,7 @@ findValue = function(json,index){
         }
     }
     else if(json[index].type == 'conditional'){    
-        console.log('cond in find value');
+        //console.log('cond in find value');
         let cond = areYou.processCond(json,index);
        return{
            json:cond.json,
@@ -350,7 +350,7 @@ findValue = function(json,index){
        }
     }
     else if(json[index].type == 'forLoop' || json[index].type == 'whileLoop' || json[index].type == 'repeatLoop'){    
-        console.log('loop');
+        //console.log('loop');
         let loop = areYou.processLoop(json,index);
         return{
             json:loop.json,

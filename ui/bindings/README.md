@@ -16,7 +16,7 @@ Part of the [o2r-bindings](https://github.com/o2r-project/o2r-bindings) service 
 * [Read code lines from extracted classification](#Reading-codelines)
 
 ### File Processing
-The corresponding code for the first file processing can be found [here](). As input of the algorithm, a R Markdown file ,including all code chunks which are needed to create the desired figure, is used. This file is then split into lines. From these lines, empty ones are excluded for faster processing. The outcome of this first step is an array of objects of the form: 
+The corresponding code for the first file processing can be found [here](./generalFunctions.js). As input of the algorithm, a R Markdown file ,including all code chunks which are needed to create the desired figure, is used. This file is then split into lines. From these lines, empty ones are excluded for faster processing. The outcome of this first step is an array of objects of the form: 
 ```javascript
 [...,{"value":{'Here is the code line'},"codeBlock": 1, "Line": 20, "index": 24},...]
 ```
@@ -27,23 +27,23 @@ Therefore, the object includes:
 * **index**: The index corresponds to the position of the specific line in the original Markdown file.This is important for further processing inside the bindings service as it represents the front-end line index.  
 
 ### Classification of lines 
-After the first processing, each object is classified as one of the following types:
-* **variable**
-* **function**
-* **inlineFunction** 
-* **exFile** 
-* **library**
-* **forLoop**
-* **whileLoop**
-* **repeatLoop**
-* **variable call**
-* **conditional**
-* **sequence**
+After the first processing, each object is classified as one of the following types (Examples in brackets):
+* **variable** (```a = X```)
+* **function** (```a = function(a,b){```)
+* **inlineFunction** (```a = raster(b)```)
+* **exFile** (```load("abc.data")```)
+* **library** (```library(raster)```)
+* **forLoop** (```for(a in b){```)
+* **whileLoop** (```while(i < 7){```)
+* **repeatLoop** (```repeat{...}```)
+* **variable call** (```plot1```)
+* **conditional** (```if(a > 7){```)
+* **sequence**: (```a[6:9]```)
 
 A **function** is a self-written function that can be found in the Markdown file, while an **inlineFunction** is a function that is called inside the script, which can be a self-written one as well as one called from an external file or library. External files and libraries included in the script are of type **exFile** and **library**. Then, the possible R loop types are cassified as **forLoop**,**whileLoop** and **repeatLoop**. For the type **conditional**, *if* and *if else* statements are examples. If a variable is called inside the Markdown file, the line is classified as **variable call**. Moreover, a **sequence** is characterized by a "*:*", which is the case while subsetting in R. The type is added at the end of each object. 
 
 ### Classification processing 
-After the type is added to each object, it is processed differently depending on the type. The corresponding code can be found [here](). At the end, a possible result looks like this:
+After the type is added to each object, it is processed differently depending on the type. The corresponding code can be found [here](./rules.js). At the end, a possible result looks like this:
 ```javascript
  [...,{
     "json": {
@@ -210,6 +210,7 @@ A response looks like this:
 * Closing brackets of functions or loops must be placed at an exclusive line.
 * Spacing between variables: Up to one space is allowed.
 * Avoid more than one closing bracket ( *'('* ) for variable values or use a single line definition.
+* The codepart responsible for the plot must be wrapped into a function called *PlotFunctionX()*. This function must include the necessary plot parameters, e.g. *PlotFunctionX(a,b,c)*. For Examples see [here](https://github.com/MarkusKonk/erc-examples/tree/master/ERC/Finished/insyde_extractR) 
 
 
 ## Future work

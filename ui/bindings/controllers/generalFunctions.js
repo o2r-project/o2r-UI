@@ -194,10 +194,6 @@ fn.extractCodeLines = function (file) {
             }
     }
     }
-    console.log('extractCodeLines');
-    console.log(start);
-    console.log('');
-    console.log(end);
     return {
         start: start,
         end: end
