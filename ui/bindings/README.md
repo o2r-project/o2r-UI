@@ -381,18 +381,18 @@ A response looks like this:
 * Spacing between variables: Up to one space is allowed.
 * Avoid more than one closing bracket ( *'('* ) for variable values or use a single line definition.
 * The codepart responsible for the plot must be wrapped into a function called *PlotFunctionX()*. This function must include the necessary plot parameters, e.g. *PlotFunctionX(a,b,c)*. For Examples see [here](https://github.com/MarkusKonk/erc-examples/tree/master/ERC/Finished/insyde_extractR) 
-
-
-## Future work
-The following points should be adressed in the future:
-* The algorithm sometimes gets far more matches and lines than necessary for a specific plot.
-* Highlight found lines in the UI and enable user to delete unnecessary lines / add missed lines.
 * Special syntax (like in the following example) is not working:
 ```R
 a = c %>%
   mutate(.data) %>%
   filter(c > 5)
 ```
+
+
+## Future work
+The following points should be adressed in the future:
+* The algorithm sometimes gets far more matches and lines than necessary for a specific plot.
+* Highlight found lines in the UI and enable user to delete unnecessary lines / add missed lines.
 
 ## License
 
