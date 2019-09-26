@@ -43,7 +43,7 @@ After the first processing, each object is classified as one of the following ty
 A **function** is a self-written function that can be found in the Markdown file, while an **inlineFunction** is a function that is called inside the script, which can be a self-written one as well as one called from an external file or library. External files and libraries included in the script are of type **exFile** and **library**. Then, the possible R loop types are cassified as **forLoop**,**whileLoop** and **repeatLoop**. For the type **conditional**, *if* and *if else* statements are examples. If a variable is called inside the Markdown file, the line is classified as **variable call**. Moreover, a **sequence** is characterized by a "*:*", which is the case while subsetting in R. The type is added at the end of each object. 
 
 ### Classification processing 
-After the type is added to each object, it is processed differently depending on the type. The corresponding code can be found [here](./controllers/rules.js#L154). At the end, a possible result looks like this:
+After the type is added to each object, it is processed differently depending on the type. The corresponding code can be found [here](./controllers/rules.js#L244-260). At the end, a possible result looks like this:
 ```javascript
  [...,{
     "json": {
