@@ -27,7 +27,7 @@ function Status(status) {
 }
 
 function ListJobs(jobs) {
-    const [expanded, setExpanded] = React.useState('panel1');
+    const [expanded, setExpanded] = React.useState(jobs.runningJob? jobs.jobs[0].id : 'panel1');
     const handleChange = panel => (event, newExpanded) => {
         setExpanded(newExpanded ? panel : false);
     };
@@ -163,11 +163,13 @@ class Check extends Component {
                     {this.state.runningJob.length>0 ? 
                         <ListJobs 
                             jobs={this.state.runningJob}
+                            runningJob={true}
                         >
                         </ListJobs> : ''}
                     {this.state.jobs.length>0 ? 
                         <ListJobs 
                             jobs={this.state.jobs}
+                            runningJob={false}
                         >
                         </ListJobs> : ''}
                 </div>
