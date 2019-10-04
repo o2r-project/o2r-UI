@@ -27,10 +27,12 @@ function Status(status) {
 }
 
 function ListJobs(jobs) {
-    const [expanded, setExpanded] = React.useState(jobs.runningJob? jobs.jobs[0].id : 'panel1');
+
+    const [expanded, setExpanded] = React.useState(jobs.runningJob[0]? jobs.runningJob[0].id : 'panel1');
     const handleChange = panel => (event, newExpanded) => {
         setExpanded(newExpanded ? panel : false);
     };
+
 
     return (
         <div>
@@ -101,6 +103,13 @@ class Check extends Component {
     }
     
     newJob() {
+        if(this.state.runningJob[0]){
+            let help=  this.state.jobs
+            help.push(this.state.runningJob[0])
+            this.setState({
+                jobs: help.reverse()
+            })
+        }
         const self = this;
         httpRequests.newJob({'compendium_id': this.props.id})
             .then(function(res) {
@@ -163,13 +172,13 @@ class Check extends Component {
                     {this.state.runningJob.length>0 ? 
                         <ListJobs 
                             jobs={this.state.runningJob}
-                            runningJob={true}
+                            runningJob={this.state.runningJob}
                         >
                         </ListJobs> : ''}
                     {this.state.jobs.length>0 ? 
                         <ListJobs 
                             jobs={this.state.jobs}
-                            runningJob={false}
+                            runningJob={this.state.runningJob}
                         >
                         </ListJobs> : ''}
                 </div>
