@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-PACKAGE_VERSION=$(sed -nE 's/^\s*"version": "(.*?)",$/\1/p' ui/package.json)
+PACKAGE_VERSION=$(sed -nE 's/^\s*"version": "(.*?)",$/\1/p' package.json)
 
 echo "Build hook running for version" $PACKAGE_VERSION
 docker build \

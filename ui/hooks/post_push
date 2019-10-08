@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-PACKAGE_VERSION=$(sed -nE 's/^\s*"version": "(.*?)",$/\1/p' ui/package.json)
+PACKAGE_VERSION=$(sed -nE 's/^\s*"version": "(.*?)",$/\1/p' package.json)
 echo Add version tag using $PACKAGE_VERSION
 
 docker tag $IMAGE_NAME $DOCKER_REPO:$PACKAGE_VERSION
