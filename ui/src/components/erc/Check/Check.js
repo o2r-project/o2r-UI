@@ -14,7 +14,12 @@ function Status(status) {
         case 'success':
             return <span className="success">Success</span>
         case 'failure':
-            return <span className="failure">Failed</span>
+            if (status.checkStatus != "failure") {
+                return <span className="failure">Process Failed (check logs)</span>
+            }
+            else {
+                return <span className="failure">Reproducibility Failed (check result)</span>
+            }
         case 'running':
             return <span className="running">Running <CircularProgress size={15} /></span>
         case 'skipped':
@@ -58,7 +63,7 @@ class ListJobs extends Component {
                         onChange={this.handleChange(job.id)}>
                         <ExpansionPanelSummary aria-controls="panel1d-content" id="panel1d-header" style={{ backgroundColor: 'rgb(245, 245, 245)' }}>
                             <Typography><b>Started: </b>{job.steps.validate_bag.start} <br />
-                                <b>Overall Status: </b><Status status={job.status}></Status>
+                                <b>Overall Status: </b><Status checkStatus={job.steps.check.status} status={job.status}></Status>
                             </Typography>
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails>
@@ -71,7 +76,7 @@ class ListJobs extends Component {
                                 <span><b>Image build: </b><Status status={job.steps.image_build.status}></Status></span><br />
                                 <span><b>Image execute: </b><Status status={job.steps.image_execute.status}></Status></span><br />
                                 <span><b>Image save: </b><Status status={job.steps.image_save.status}></Status></span><br />
-                                <span><b>Check: </b><Status status={job.steps.check.status}></Status></span><br />
+                                <span><b>Check: </b><Status checkStatus={job.steps.check.status} status={job.steps.check.status}></Status></span><br />
                                 <span><b>Cleanup: </b><Status status={job.steps.cleanup.status}></Status></span><br />
                                 <Comparison job={job} className="compare"></Comparison>
                                 <Logs job={job} ></Logs>
