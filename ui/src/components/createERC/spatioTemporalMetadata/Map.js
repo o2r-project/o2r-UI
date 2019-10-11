@@ -20,7 +20,7 @@ class OwnMap extends React.Component {
         firstTime = true;
     }
 
-    forceRerender(){
+    forceRerender() {
         this.forceUpdate()
     }
 
@@ -36,24 +36,24 @@ class OwnMap extends React.Component {
     _onEdited = (e) => {
 
         var bounds;
-        if(this.isEmpty(e.layers._layers)){
+        if (this.isEmpty(e.layers._layers)) {
             return
         }
 
         e.layers.eachLayer((layer) => {
 
             GeoJSON = layer.toGeoJSON();
-            bounds= layer.getBounds();
+            bounds = layer.getBounds();
 
 
         });
-        
+
         const metadata = this.props.metadata;
 
-        var northEast= [bounds._northEast.lng, bounds._northEast.lat]
-        var southEast= [bounds._southWest.lng, bounds._northEast.lat]
-        var southWest= [bounds._southWest.lng, bounds._southWest.lat]
-        var northWest= [bounds._northEast.lng, bounds._southWest.lat] 
+        var northEast = [bounds._northEast.lng, bounds._northEast.lat]
+        var southEast = [bounds._southWest.lng, bounds._northEast.lat]
+        var southWest = [bounds._southWest.lng, bounds._southWest.lat]
+        var northWest = [bounds._northEast.lng, bounds._southWest.lat]
 
 
 
@@ -83,11 +83,11 @@ class OwnMap extends React.Component {
     }
 
     _onEditStart = (e) => {
-        this.props.setState("editing", true)    
+        this.props.setState("editing", true)
     }
 
     _onEditStop = (e) => {
-        this.props.setState("editing", false)    
+        this.props.setState("editing", false)
     }
 
     _onDeleted = (e) => {

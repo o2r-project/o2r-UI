@@ -52,9 +52,9 @@ function ComparisonView(props) {
                         <Tab label="Overlay" />
                     </Tabs>
                     {tabValue === 0 &&
-                        props.settings.map(setting => (
+                        props.settings.map((setting,index) => (
                             <figure className="img">
-                                <figcaption>{setting}</figcaption>
+                                <figcaption>{props.settingsText[index]}</figcaption>
                                 <img src={setting} alt=""/>
                             </figure>
                         ))}
@@ -73,7 +73,7 @@ class FigureComparison extends Component {
 
     render() {
         return (
-            <ComparisonView settings={this.props.settings} />
+            <ComparisonView settings={this.props.settings} settingsText={this.props.settingsText}/>
         );
     }
 }

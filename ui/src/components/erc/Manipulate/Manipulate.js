@@ -19,7 +19,7 @@ class Manipulate extends React.Component {
             params: this.getParams(props.bindings[0].sourcecode.parameter),
             fullUrl: '',
             settings: [],
-            settingsText:[],
+            settingsText: [],
             text: "",
             index: 0,
         }
@@ -59,7 +59,7 @@ class Manipulate extends React.Component {
         let url = config.baseUrl + 'compendium/' + binding.id + "/binding/" + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?';
         let settingsText = ""
         for (let i = 0; i < this.state.params.length; i++) {
-            settingsText+= " Parameter " + (i+1) + ": "+ this.state.params[i] +" = "+this.state[this.state.params[i]]
+            settingsText += " Parameter " + (i + 1) + ": " + this.state.params[i] + " = " + this.state[this.state.params[i]]
             url = url + 'newValue' + i + '=' + this.state[this.state.params[i]];
             if (i + 1 !== this.state.params.length) {
                 url = url + '&';
@@ -116,11 +116,11 @@ class Manipulate extends React.Component {
     removeItem(index) {
         let items = this.state.settings;
         let texts = this.state.settingsText;
-        items.splice(index,1)
-        texts.splice(index,1)
-       /** var filtered = items.filter(function (value, index, arr) {
-            return value !== setting;
-        });*/
+        items.splice(index, 1)
+        texts.splice(index, 1)
+        /** var filtered = items.filter(function (value, index, arr) {
+             return value !== setting;
+         });*/
         this.setState({
             settings: items,
             settingsText: texts
@@ -206,7 +206,6 @@ class Manipulate extends React.Component {
                         </div>
                     ))}
                     <div className="image">
-                        <img src={this.state.fullUrl} alt="" />
                         <Button variant="contained" color="primary" className="maniBtn"
                             onClick={this.saveForComparison.bind(this)}
                             disabled={this.state.settings.length === 2}
@@ -218,7 +217,8 @@ class Manipulate extends React.Component {
                                 settings={this.state.settingsText}
                                 removeItem={this.removeItem.bind(this)} />
                             : ''}
-                        <FigureComparison settings={this.state.settings} />
+                        <FigureComparison settings={this.state.settings} settingsText={this.state.settingsText}/>
+                        <img src={this.state.fullUrl} alt="" />
                     </div>
                 </div>
             </div>
