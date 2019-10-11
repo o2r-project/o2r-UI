@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography, CircularProgress } from "@material-ui/core";
+import { Button, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography, CircularProgress, Dialog, DialogContent, DialogTitle, DialogActions } from "@material-ui/core";
 import socketIOClient from "socket.io-client";
 import uuid from 'uuid/v1';
 
@@ -124,6 +124,11 @@ class Check extends Component {
         });
     }
 
+
+    handleClose() {
+        this.setState({ open: false })
+    }
+
     newJob() {
         if (this.state.runningJob[0]) {
             let help = this.state.jobs
@@ -137,8 +142,10 @@ class Check extends Component {
             .then(function (res) {
                 self.socket();
             })
-            .catch(function (res) {
-                console.log(res)
+            .catch((response) => {
+                if (response.response.status === 401) {
+                    self.setState({ open: true, title: "Request to Server Failed", errorMessage: "You have to be logged in to run an analysis" })
+                }
             })
     }
 
@@ -190,6 +197,18 @@ class Check extends Component {
                         Run analysis
                     </Button>
                 </div>
+                <Dialog open={this.state.open}>
+                    <DialogTitle> {this.state.title}</DialogTitle>
+                    <div>
+                        <DialogContent>
+                            {this.state.errorMessage}
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.handleClose.bind(this)} color="primary">
+                                OK
+                                </Button>
+                        </DialogActions> </div>
+                </Dialog>
                 <div>
                     {this.state.runningJob.length > 0 ?
                         <ListJobs
