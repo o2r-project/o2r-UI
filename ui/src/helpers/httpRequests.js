@@ -67,6 +67,12 @@ function searchBinding(term, metadata){
     return axios.post(_env.api + 'bindings/searchBinding', {term:term, metadata: metadata});
 }
 
+function geocodingRequest(query){
+    var encodedQuery= escape(query)
+    const link ="https://api.mapbox.com/geocoding/v5/mapbox.places/" + encodedQuery + ".json?access_token=MAPBOX_KEY"
+    return axios.get(link)
+}
+
 module.exports = {
     getUser: getUser,
     listAllCompendia: listAllCompendia,
@@ -83,4 +89,5 @@ module.exports = {
     runManipulationService: runManipulationService,
     getCodelines: getCodelines,
     searchBinding: searchBinding,
+    geocodingRequest: geocodingRequest,
 };
