@@ -206,7 +206,7 @@ class Check extends Component {
                         <DialogActions>
                             <Button onClick={this.handleClose.bind(this)} color="primary">
                                 OK
-                                </Button>
+                            </Button>
                         </DialogActions> </div>
                 </Dialog>
                 <div>

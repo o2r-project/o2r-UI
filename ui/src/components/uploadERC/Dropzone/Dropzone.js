@@ -11,10 +11,17 @@ class Dropzone extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      files: []
+      files: [],
+      progress: 0,
     };
   }
 
+  config = {
+    onUploadProgress: (progressEvent) =>{
+      var percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total * 0.8 );
+      this.setState({progress : percentCompleted})
+    }
+  }
   handleChange(files) {
     this.setState({
       files: files
@@ -28,7 +35,7 @@ class Dropzone extends Component {
     data.append('compendium', this.state.files[0]);
     data.append('content_type', 'workspace');
     state.setState({ title: "uploading ERC", open: true, errorMessage: null })
-    httpRequests.uploadWorkspace(data)
+    httpRequests.uploadWorkspace(data, this.config)
       .then(function (response) {
         self.history.push({
           pathname: '/createERC/' + response.data.id,
@@ -74,7 +81,8 @@ class Dropzone extends Component {
 
               </DialogActions> </div> :
             <DialogContent style={{"align-self": "center", "overflow-y": "unset"}}>
-              <CircularProgress />
+              <CircularProgress variant="static" value={this.state.progress}/>
+              <p> {this.state.progress} % </p>
             </DialogContent>
           }
         </Dialog>:

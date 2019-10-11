@@ -20,9 +20,9 @@ function uploadViaSciebo(url, folder) {
     return axios.post(_env.api + 'compendium', {content_type:'workspace', share_url: url, path:folder});
 }
 
-function uploadWorkspace(workspace) {
+function uploadWorkspace(workspace, config) {
     console.log(workspace)
-    return axios.post(_env.api + 'compendium', workspace);
+    return axios.post(_env.api + 'compendium', workspace, config);
 }
 
 function singleCompendium(id) {
