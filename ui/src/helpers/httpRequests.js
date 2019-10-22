@@ -69,7 +69,8 @@ function searchBinding(term, metadata){
 
 function geocodingRequest(query){
     var encodedQuery= escape(query)
-    const link ="https://api.mapbox.com/geocoding/v5/mapbox.places/" + encodedQuery + ".json?access_token=MAPBOX_KEY"
+    var access_token='Mapbox Key'
+    const link ="https://api.mapbox.com/geocoding/v5/mapbox.places/" + encodedQuery + ".json?access_token=" + access_token
     return axios.get(link)
 }
 

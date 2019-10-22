@@ -6,6 +6,7 @@ import { EditControl } from 'react-leaflet-draw'
 let GeoJSON
 let firstTime = true;
 export let ref;
+export let ref2;
 
 
 class OwnMap extends React.Component {
@@ -18,6 +19,7 @@ class OwnMap extends React.Component {
 
     componentDidMount() {
         firstTime = true;
+        ref2=this.refs.map.leafletElement;
     }
 
     forceRerender() {
@@ -149,7 +151,7 @@ class OwnMap extends React.Component {
         const position = [52, 7.6]
 
         return (
-            <Map center={position} zoom={1}>
+            <Map center={position} zoom={1} ref="map">
                 <TileLayer
                     attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

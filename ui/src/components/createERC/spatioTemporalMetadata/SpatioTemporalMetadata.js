@@ -5,7 +5,7 @@ import './spatioTemporalMetadata.css';
 import React from 'react'
 import { Card, TextField, Button, Grid } from "@material-ui/core";
 
-import OwnMap, { ref } from "./Map"
+import OwnMap, { ref, ref2 } from "./Map"
 import L from 'leaflet'
 import { valid2 } from '../requiredMetadata/Form.js'
 import httpRequests from '../../../helpers/httpRequests';
@@ -117,7 +117,9 @@ class SpatioTemporalMetadata extends React.Component {
     let leafletFG = this._editableFG.leafletElement;
     leafletFG.clearLayers()
     leafletGeoJSON.eachLayer(layer => leafletFG.addLayer(layer));
-    //leafletFG.flyToBounds(leafletGeoJSON)
+    var northeast=[GeoJSON.geometry.coordinates[0][0][1],GeoJSON.geometry.coordinates[0][0][0]]
+    var southwest=[GeoJSON.geometry.coordinates[0][2][1],GeoJSON.geometry.coordinates[0][2][0]]
+    ref2.fitBounds([northeast ,southwest])
     this.setChanged()
   }
 
