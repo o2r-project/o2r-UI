@@ -188,7 +188,7 @@ class SpatioTemporalMetadata extends React.Component {
             <Card>
               <h1>Specify the spatial properties of your dataset(s):</h1>
               Search for Address/Region/Country 
-              <TextField id="search" value={this.state.search} style={{marign :"10px"}}
+              <TextField id="search" value={this.state.search}
                 onChange={(e) => this.handleChange(e, "search")} />
               <Button onClick={this.handleSearch.bind(null)}
                 style={{"margin": "10px"}}
