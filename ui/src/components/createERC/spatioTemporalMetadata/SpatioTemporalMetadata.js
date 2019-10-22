@@ -1,10 +1,7 @@
-
-
 import './spatioTemporalMetadata.css';
 
 import React from 'react'
 import { Card, TextField, Button, Grid } from "@material-ui/core";
-
 import OwnMap, { ref, ref2 } from "./Map"
 import L from 'leaflet'
 import { valid2 } from '../requiredMetadata/Form.js'
@@ -102,7 +99,7 @@ class SpatioTemporalMetadata extends React.Component {
     var metadata = this.props.metadata
     this.props.setMetadata(metadata, false)
 
-    metadata.spatial.union.bbox=bbox
+    metadata.spatial.union.bbox = bbox
 
     this._editableFG = ref;
     var GeoJSON = this.getGeoJson()
@@ -117,9 +114,9 @@ class SpatioTemporalMetadata extends React.Component {
     let leafletFG = this._editableFG.leafletElement;
     leafletFG.clearLayers()
     leafletGeoJSON.eachLayer(layer => leafletFG.addLayer(layer));
-    var northeast=[GeoJSON.geometry.coordinates[0][0][1],GeoJSON.geometry.coordinates[0][0][0]]
-    var southwest=[GeoJSON.geometry.coordinates[0][2][1],GeoJSON.geometry.coordinates[0][2][0]]
-    ref2.fitBounds([northeast ,southwest])
+    var northeast = [GeoJSON.geometry.coordinates[0][0][1], GeoJSON.geometry.coordinates[0][0][0]]
+    var southwest = [GeoJSON.geometry.coordinates[0][2][1], GeoJSON.geometry.coordinates[0][2][0]]
+    ref2.fitBounds([northeast, southwest])
     this.setChanged()
   }
 
@@ -133,9 +130,9 @@ class SpatioTemporalMetadata extends React.Component {
       httpRequests.geocodingRequest(query)
         .then(function (res) {
           console.log(res)
-          const resultBBox= res.data.features[0].bbox
-          if(!resultBBox) {alert("No result found"); return;}
-          const bbox=[]
+          const resultBBox = res.data.features[0].bbox
+          if (!resultBBox) { alert("No result found"); return; }
+          const bbox = []
           bbox.push([resultBBox[2], resultBBox[3]])
           bbox.push([resultBBox[2], resultBBox[1]])
           bbox.push([resultBBox[0], resultBBox[1]])
@@ -148,8 +145,8 @@ class SpatioTemporalMetadata extends React.Component {
     catch (err) { console.log(err) }
   }
 
-  handleGeoJsonWorld = () =>{
-   const  bbox=   [
+  handleGeoJsonWorld = () => {
+    const bbox = [
       [180, 180],
       [180, -180],
       [-180, -180],
@@ -187,16 +184,16 @@ class SpatioTemporalMetadata extends React.Component {
           <Grid item xs={10}>
             <Card>
               <h1>Specify the spatial properties of your dataset(s):</h1>
-              Search for Address/Region/Country 
+              Search for Address/Region/Country
               <TextField id="search" value={this.state.search}
                 onChange={(e) => this.handleChange(e, "search")} />
               <Button onClick={this.handleSearch.bind(null)}
-                style={{"margin": "10px"}}
+                style={{ "margin": "10px" }}
                 type="button"
                 variant="contained"
                 color="primary"> Search </Button>
               <Button onClick={this.handleGeoJsonWorld.bind(null)}
-                style={{"margin": "10px"}}
+                style={{ "margin": "10px" }}
                 type="button"
                 variant="contained"
                 color="primary"> The ERC is important for the whole World </Button>

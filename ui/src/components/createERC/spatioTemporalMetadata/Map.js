@@ -19,7 +19,7 @@ class OwnMap extends React.Component {
 
     componentDidMount() {
         firstTime = true;
-        ref2=this.refs.map.leafletElement;
+        ref2 = this.refs.map.leafletElement;
     }
 
     forceRerender() {
