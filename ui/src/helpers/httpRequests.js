@@ -20,9 +20,9 @@ function uploadViaSciebo(url, folder) {
     return axios.post(_env.api + 'compendium', {content_type:'workspace', share_url: url, path:folder});
 }
 
-function uploadWorkspace(workspace) {
+function uploadWorkspace(workspace, config) {
     console.log(workspace)
-    return axios.post(_env.api + 'compendium', workspace);
+    return axios.post(_env.api + 'compendium', workspace, config);
 }
 
 function singleCompendium(id) {
@@ -67,6 +67,13 @@ function searchBinding(term, metadata){
     return axios.post(_env.api + 'bindings/searchBinding', {term:term, metadata: metadata});
 }
 
+function geocodingRequest(query){
+    var encodedQuery= escape(query)
+    var access_token='Mapbox Key'
+    const link ="https://api.mapbox.com/geocoding/v5/mapbox.places/" + encodedQuery + ".json?access_token=" + access_token
+    return axios.get(link)
+}
+
 module.exports = {
     getUser: getUser,
     listAllCompendia: listAllCompendia,
@@ -83,4 +90,5 @@ module.exports = {
     runManipulationService: runManipulationService,
     getCodelines: getCodelines,
     searchBinding: searchBinding,
+    geocodingRequest: geocodingRequest,
 };

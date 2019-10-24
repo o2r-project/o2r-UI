@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, TextField, Button, MenuItem, CardContent, Grid } from "@material-ui/core";
 import Authors from './Authors/Authors';
+import './form.css'
 export let valid2;
 
 export const Form = props => {
@@ -9,15 +10,10 @@ export const Form = props => {
         values: { title, abstract, publicationDate, displayFile, mainFile, textLicense, dataLicense, codeLicense },
         errors,
         resetForm,
-        dirty,
         touched,
         handleChange,
-        isValid,
         setFieldTouched,
-        setFieldValue,
         setValues,
-        initialValues,
-        validateForm
     } = props;
 
 
@@ -29,22 +25,25 @@ export const Form = props => {
         return true;
     }
 
-    const valid = (props.authorsChanged && props.authorsValid && isEmpty(errors)) || (props.changed && isEmpty(errors) && props.authorsValid) || (props.spatioTemporalChanged && props.authorsValid && isEmpty(errors))
+    const valid = (props.authorsChanged && props.authorsValid && isEmpty(errors)) || (props.changed && isEmpty(errors) && props.authorsValid) 
+    || (props.spatioTemporalChanged && props.authorsValid && isEmpty(errors)) || (isEmpty(errors) && props.candidate)
 
     valid2 = isEmpty(errors) && props.authorsValid
 
     const reset = props.authorsChanged || props.changed
 
+    const handleReset = async () => {
 
-    const handleReset = () => {
-
+        console.log(props.originalMetadata)
         resetForm(props.originalMetadata)
         for(var i in props.resetAuthors){
             props.resetAuthors[i].getFormikActions().resetForm(props.originalAuthors[i])
         }
         props.onUpdate(JSON.parse(JSON.stringify(props.originalAuthors)));
         props.setChangedFalse("all");
-        props.setFormValues(props.originalMetadata)
+        await props.setFormValues(props.originalMetadata)
+        props.validateForm()
+        props.setTouched({ "title": true, "abstract": true, "publicationDate": true, "textLicense": true, "dataLicense": true, "codeLicense": true });
 
     };
 
@@ -69,9 +68,9 @@ export const Form = props => {
 
     const setMostRestrictive = () => {
         var values = props.values
-        values.textLicense = props.mostRestrictiveData[0].id;
-        values.codeLicense = props.mostRestrictiveData[1].id;
-        values.dataLicense = props.mostRestrictiveData[2].id;
+        values.textLicense = props.mostRestrictiveData[0];
+        values.codeLicense = props.mostRestrictiveData[1];
+        values.dataLicense = props.mostRestrictiveData[2];
         setValues(values)
         props.setFormValues(values)
     }
@@ -79,9 +78,9 @@ export const Form = props => {
 
     const setLeastRestrictive = () => {
         var values = props.values
-        values.textLicense = props.leastRestrictiveData[0].id;
-        values.codeLicense = props.leastRestrictiveData[1].id;
-        values.dataLicense = props.leastRestrictiveData[2].id;
+        values.textLicense = props.leastRestrictiveData[0];
+        values.codeLicense = props.leastRestrictiveData[1];
+        values.dataLicense = props.leastRestrictiveData[2];
         setValues(values)
         props.setFormValues(values)
     }
@@ -225,7 +224,16 @@ export const Form = props => {
                                 onBlur={blur.bind(null)}
                                 margin="normal"
                                 variant="outlined"
+                                InputLabelProps={{
+                                    shrink: true,
+                                  }}
                             >
+                                <MenuItem id={"menuItem"} key={props.leastRestrictiveData[0]} value={props.leastRestrictiveData[0]}>
+                                        Least Restrictive
+                                    </MenuItem>
+                                <MenuItem id={"menuItem"} key={props.mostRestrictiveData[0]} value={props.mostRestrictiveData[0]}>
+                                        Most Restrictive
+                                    </MenuItem>
                                 {props.textLicenses.map(option => (
                                     <MenuItem key={option.id} value={option.id}>
                                         {option.title}
@@ -245,7 +253,16 @@ export const Form = props => {
                                 onBlur={blur.bind(null)}
                                 margin="normal"
                                 variant="outlined"
+                                InputLabelProps={{
+                                    shrink: true,
+                                  }}
                             >
+                                 <MenuItem id={"menuItem"} key={props.leastRestrictiveData[1]} value={props.leastRestrictiveData[1]}>
+                                        Least Restrictive
+                                    </MenuItem>
+                                <MenuItem id={"menuItem"} key={props.mostRestrictiveData[1]} value={props.mostRestrictiveData[1]}>
+                                        Most Restrictive
+                                    </MenuItem>
                                 {props.codeLicenses.map(option => (
                                     <MenuItem key={option.id} value={option.id}>
                                         {option.title}
@@ -266,8 +283,17 @@ export const Form = props => {
                                 onBlur={blur.bind(null)}
                                 margin="normal"
                                 variant="outlined"
+                                InputLabelProps={{
+                                    shrink: true,
+                                  }}
                             >
-                                {props.dataLicenses.map(option => (
+                                <MenuItem id={"menuItem"} key={props.leastRestrictiveData[2]} value={props.leastRestrictiveData[2]}>
+                                        Least Restrictive
+                                    </MenuItem>
+                                <MenuItem id={"menuItem"} key={props.mostRestrictiveData[2]} value={props.mostRestrictiveData[2]}>
+                                        Most Restrictive
+                                    </MenuItem>
+                                {    props.dataLicenses.map(option => (
                                     <MenuItem key={option.id} value={option.id}>
                                         {option.title}
                                     </MenuItem>
@@ -300,6 +326,26 @@ export const Form = props => {
                             Go To ERC
                             </Button>
                     </Card>
+                    <div id={"errorMessage"}>
+                       { errors.title ? errors.title : "" } 
+                        { errors.title ? <br/> : "" } 
+                        { errors.abstract ? errors.abstract: "" }
+                        { errors.abstract ? <br/> : "" } 
+                        { errors.publicationDate ? errors.publicationDate: "" }
+                        { errors.publicationDate ? <br/> : "" } 
+                        { errors.displayFile ? errors.displayFile : "" }
+                        { errors.displayFile ? <br/> : "" } 
+                        { errors.mainFile ? errors.mainFile : "" }
+                        { errors.mainFile ? <br/> : "" } 
+                        { errors.textLicense ? errors.textLicense : "" } 
+                        { errors.textLicense ? <br/> : "" } 
+                        { errors.dataLicense ? errors.dataLicense : "" } 
+                        { errors.dataLicense ? <br/> : "" } 
+                        { errors.codeLicense ? errors.codeLicense : "" }
+                        { errors.codeLicense ? <br/> : "" } 
+                        { !props.authorsValid ? "Authors are not valid" : ""}
+                     </div> 
+                                     
 
                 </Grid>
             </Grid>

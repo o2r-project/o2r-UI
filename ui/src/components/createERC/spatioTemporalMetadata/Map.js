@@ -6,6 +6,7 @@ import { EditControl } from 'react-leaflet-draw'
 let GeoJSON
 let firstTime = true;
 export let ref;
+export let ref2;
 
 
 class OwnMap extends React.Component {
@@ -18,9 +19,10 @@ class OwnMap extends React.Component {
 
     componentDidMount() {
         firstTime = true;
+        ref2 = this.refs.map.leafletElement;
     }
 
-    forceRerender(){
+    forceRerender() {
         this.forceUpdate()
     }
 
@@ -36,24 +38,24 @@ class OwnMap extends React.Component {
     _onEdited = (e) => {
 
         var bounds;
-        if(this.isEmpty(e.layers._layers)){
+        if (this.isEmpty(e.layers._layers)) {
             return
         }
 
         e.layers.eachLayer((layer) => {
 
             GeoJSON = layer.toGeoJSON();
-            bounds= layer.getBounds();
+            bounds = layer.getBounds();
 
 
         });
-        
+
         const metadata = this.props.metadata;
 
-        var northEast= [bounds._northEast.lng, bounds._northEast.lat]
-        var southEast= [bounds._southWest.lng, bounds._northEast.lat]
-        var southWest= [bounds._southWest.lng, bounds._southWest.lat]
-        var northWest= [bounds._northEast.lng, bounds._southWest.lat] 
+        var northEast = [bounds._northEast.lng, bounds._northEast.lat]
+        var southEast = [bounds._southWest.lng, bounds._northEast.lat]
+        var southWest = [bounds._southWest.lng, bounds._southWest.lat]
+        var northWest = [bounds._northEast.lng, bounds._southWest.lat]
 
 
 
@@ -71,8 +73,8 @@ class OwnMap extends React.Component {
     _onCreated = (e) => {
 
         GeoJSON = e.layer.toGeoJSON();
-        this.props.setDrawn(true);
-        const metadata = this.state.metadata;
+        this.props.setState("drawn", true);
+        const metadata = this.props.metadata;
 
         metadata.spatial.union.bbox[0] = GeoJSON.geometry.coordinates[0][0];
         metadata.spatial.union.bbox[1] = GeoJSON.geometry.coordinates[0][1];
@@ -80,13 +82,18 @@ class OwnMap extends React.Component {
         metadata.spatial.union.bbox[3] = GeoJSON.geometry.coordinates[0][3];
         this.props.setMetadata(metadata, false);
         this.props.setChanged();
+    }
 
+    _onEditStart = (e) => {
+        this.props.setState("editing", true)
+    }
 
-
+    _onEditStop = (e) => {
+        this.props.setState("editing", false)
     }
 
     _onDeleted = (e) => {
-        this.props.setDrawn(false);
+        this.props.setState("drawn", false);
         const metadata = this.props.metadata;
 
         metadata.spatial.union.bbox[0] = [181, 181]
@@ -144,7 +151,7 @@ class OwnMap extends React.Component {
         const position = [52, 7.6]
 
         return (
-            <Map center={position} zoom={1}>
+            <Map center={position} zoom={1} ref="map">
                 <TileLayer
                     attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -155,6 +162,8 @@ class OwnMap extends React.Component {
                         onEdited={this._onEdited}
                         onCreated={this._onCreated}
                         onDeleted={this._onDeleted}
+                        onEditStart={this._onEditStart}
+                        onEditStop={this._onEditStop}
                         edit={this.props.drawn ? { remove: true } : { remove: false }}
                         draw={this.props.drawn ? {
                             circle: false,

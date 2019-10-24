@@ -11,8 +11,9 @@
 
 .progress {
     position: fixed !important;
-    margin-top: 9%;
-    left:83%;
-    width:12%;
+    top: 113px;
+    width:90%;
+    margin-left: 5%;
+    
   }
 

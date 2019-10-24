@@ -41,10 +41,15 @@ function ComparisonView(props) {
                 </AppBar>
                 {job.status === 'success' ?
                     <div className="compare">
+                        <h4 className="title" style={{ "margin-left": "3%"}}> original HTML File </h4>
+                        <h4 className="title"> calculated HTML File </h4>
                         <Iframe className="display" url={config.baseUrl + "job/" + job.id + "/data/display.html"}></Iframe>
                         <Iframe className="check"   url={config.baseUrl + "job/" + job.id + "/data/check.html"}></Iframe>
                     </div> : 
                     <div className="compare"> 
+                        <h4 className="title_" style={{ "margin-left": "3%"}}> original HTML File </h4>
+                        <h4 className="title_"> calculated HTML File </h4>
+                        <h4 className="title_"> HTML File to show differences </h4>
                         <Iframe className="display_" url={config.baseUrl + "compendium/" + job.compendium_id + "/data/display.html"}></Iframe>
                         <Iframe className="check_"   url={config.baseUrl + "job/" + job.id + "/data/display.html"}></Iframe>
                         <Iframe className="diff"     url={config.baseUrl + "job/" + job.id + "/data/check.html"}></Iframe>
