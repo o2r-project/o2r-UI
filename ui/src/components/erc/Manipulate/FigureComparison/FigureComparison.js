@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Button, Dialog, AppBar, Toolbar, Slide, Tabs, Tab,Grid } from "@material-ui/core";
 import ReactCompareImage from 'react-compare-image';
+import ImageDiff from "..//..//..//..//helpers/react-image-diff.js";
 //import VisualDiff from 'react-visual-diff'; Interesting for later when bindings are used for numbers in the text
 
 import './figureComparison.css'
@@ -51,6 +52,7 @@ function ComparisonView(props) {
                     >
                         <Tab label="Side-by-Side" />
                         <Tab label="Overlay" />
+                        <Tab label="Differences" />
                     </Tabs>
                     {tabValue === 0 &&
                         <Grid container spacing={3} >
@@ -67,6 +69,13 @@ function ComparisonView(props) {
                     {tabValue === 1 &&
                         <div className="overlay">
                             <ReactCompareImage leftImage={props.settings[0]} rightImage={props.settings[1]} />
+                        </div>
+                    }
+                    {tabValue === 2 &&
+                        <div className="differences">
+                            <p> Differences </p>
+                            {<ImageDiff before={props.settings[0]} after={props.settings[1]} type="difference" value={.5} />
+                            }
                         </div>
                     }
                 </div>
