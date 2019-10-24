@@ -177,7 +177,6 @@ class SpatioTemporalMetadata extends React.Component {
   }
 
   render() {
-    let to;
     return (
       <div id="form">
         <Grid container spacing={2}>

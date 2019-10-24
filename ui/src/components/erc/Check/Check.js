@@ -14,7 +14,7 @@ function Status(status) {
         case 'success':
             return <span className="success">Success</span>
         case 'failure':
-            if (status.checkStatus != "failure") {
+            if (status.checkStatus !== "failure") {
                 return <span className="failure">Process Failed (check logs)</span>
             }
             else {

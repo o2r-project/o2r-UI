@@ -10,15 +10,10 @@ export const Form = props => {
         values: { title, abstract, publicationDate, displayFile, mainFile, textLicense, dataLicense, codeLicense },
         errors,
         resetForm,
-        dirty,
         touched,
         handleChange,
-        isValid,
         setFieldTouched,
-        setFieldValue,
         setValues,
-        initialValues,
-        validateForm
     } = props;
 
 

@@ -48,7 +48,7 @@ class CreateERC extends Component {
             .then(function (res) {
                 const metadata = res.data.metadata.o2r;
                 var candidate = res.data.candidate;
-                if( candidate != true) candidate =false;
+                if( candidate !== true) candidate =false;
                 httpRequests.getFile("compendium/" + self.state.compendium_id + "/data/" + metadata.mainfile)
                     .then(function (res2) {
                         self.setState({
@@ -118,7 +118,7 @@ class CreateERC extends Component {
     }
 
     setChangedFalse = (x) => {
-        if (x == "all") {
+        if (x === "all") {
             this.setState({ changed: false, authorsChanged: false, spatioTemporalChanged: false })
         }
         else {

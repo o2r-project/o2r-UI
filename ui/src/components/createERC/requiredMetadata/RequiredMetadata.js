@@ -47,7 +47,8 @@ const validationSchema = Yup.object({
     abstract: Yup.string()
         .required('Abstract is required')
         .min(5, 'Abstract must be at least 5 characters long'),
-    publicationDate: Yup.date().max(new Date, 'No Valid Date')
+    publicationDate: Yup.date()
+        .max(new Date, 'No Valid Date')
         .required("Date is required"),
     displayFile: Yup.string()
         .required('DisplayFile is required'),
@@ -134,7 +135,7 @@ class RequiredMetadata extends Component {
     setFormValues = (values) => {
 
 
-        if (JSON.stringify(this.originialValues) == JSON.stringify(values)) {
+        if (JSON.stringify(this.originialValues) === JSON.stringify(values)) {
             this.props.setChangedFalse("changed")
         }
         else {
