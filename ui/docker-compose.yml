@@ -242,7 +242,7 @@ services:
     container_name: ui
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     volumes:
       - '.:/usr/src/app'
       - '/usr/src/app/node_modules'
