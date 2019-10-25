@@ -1,6 +1,0 @@
-library("plumber")
-#r <- plumb("/tmp/o2r/compendium/L7fDT/figure4.R")
-#path = paste("/tmp/o2r/compendium/", input[[1]], "/figure4.R", sep="") 
-#path = ("/home/markus/o2r-platform/bindings/o2r-bindings/controllers/", input[[1]], "/figure4.R", sep="") 
-r <- plumb("figure4old.R")
-r$run(host = '0.0.0.0', port=8010)

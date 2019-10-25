@@ -1,9 +1,0 @@
----
-title: "Untitled"
-output: html_document
----
-```{r}
-summary(cars)
-
-plot(pressure)
-```
