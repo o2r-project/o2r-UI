@@ -1,0 +1,270 @@
+# (C) Copyright 2016 The o2r project. https://o2r.info
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#
+---
+version: '2' # version 3 is for stack deployments, see https://github.com/docker/compose/issues/4513
+
+volumes:
+  o2rstorage: {}
+
+services:
+  mongodb:
+    image: mongo:3.4
+    command: "--replSet rso2r"
+
+  configmongodb:
+    image: mongo:3.4
+    depends_on:
+      - mongodb
+    command: bash -c "sleep 5; mongo --verbose --host mongodb --eval 'printjson(rs.initiate()); printjson(rs.conf()); printjson(rs.status()); printjson(rs.slaveOk());'"
+
+  adminmongo:
+    image: adicom/admin-mongo:latest
+    depends_on:
+      - mongodb
+    environment:
+      - DB_HOST=mongodb
+      - CONN_NAME=Local
+    ports:
+      - "1234:1234"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.4
+    environment:
+      - cluster.name=o2rplatform-es-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "xpack.security.enabled=false"
+      - "cluster.routing.allocation.disk.watermark.low=5gb"
+      - "cluster.routing.allocation.disk.watermark.high=5gb"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 1g
+    #ports:
+    #  - "9200:9200"
+  elasticsearch2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.4
+    environment:
+      - cluster.name=o2rplatform-es-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.zen.ping.unicast.hosts=elasticsearch"
+      - "xpack.security.enabled=false"
+      - "cluster.routing.allocation.disk.watermark.low=5gb"
+      - "cluster.routing.allocation.disk.watermark.high=5gb"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 1g
+
+  #kibana:
+  #  image: docker.elastic.co/kibana/kibana:5.6.4
+  #  environment:
+  #    - "ELASTICSEARCH_URL=http://elasticsearch:9200"
+  #  ports:
+  #    - "5601:5601"
+  #  depends_on:
+  #    - elasticsearch
+
+  muncher:
+    image: o2rproject/o2r-muncher:0.21.0
+    depends_on:
+      - mongodb
+      - configmongodb
+    volumes:
+      - o2rstorage:/tmp/o2r
+      - /var/run/docker.sock:/var/run/docker.sock
+      # FIXME: remove mount to volumes, only works under Linux, see https://github.com/o2r-project/o2r-muncher/issues/80
+      - /var/lib/docker/volumes/:/var/lib/docker/volumes
+    environment:
+      - "MUNCHER_MONGODB=mongodb://mongodb:27017/"
+      - MUNCHER_PORT=8080
+      - MUNCHER_VOLUME=o2rplatform_o2rstorage
+      - MUNCHER_CONTAINER_USER=root
+      - MUNCHER_CONTAINERIT_USER=root
+      - DEBUG=*,-mquery,-express:*,-express-session,-body-parser:*
+      - "MUNCHER_META_TOOL_CONTAINER=o2rproject/o2r-meta:f79cc1f"
+     #- "MUNCHER_META_TOOL_CONTAINER=o2rproject/o2r-meta:9198450"
+      - MUNCHER_SAVE_IMAGE_TARBALL=false # saves space and time during dev
+      - MUNCHER_CONTAINERIT_IMAGE=o2rproject/containerit:geospatial-0.5.0.9003
+      - MUNCHER_CONTAINERIT_FILTER_BASE_IMAGE_PKGS=true
+      #- "MUNCHER_META_TOOL_CONTAINER=meta:dev"
+      #- MUNCHER_ALLOW_INVALID_METADATA=true
+
+  loader:
+    image: o2rproject/o2r-loader:0.12.0
+    depends_on:
+      - mongodb
+      - configmongodb
+    volumes:
+      - o2rstorage:/tmp/o2r
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - "LOADER_MONGODB=mongodb://mongodb:27017/"
+      - LOADER_PORT=8088
+      - DEBUG=*,-mquery,-express:*,-express-session,-body-parser:*
+      - LOADER_VOLUME=o2rplatform_o2rstorage
+      - "LOADER_META_TOOL_CONTAINER=o2rproject/o2r-meta:9198450"
+      #- "LOADER_META_TOOL_CONTAINER=meta:dev"
+      
+  informer:
+    image: o2rproject/o2r-informer:0.5.0
+    depends_on:
+      - mongodb
+      - configmongodb
+    environment:
+      - "INFORMER_MONGODB=mongodb://mongodb:27017/"
+      - INFORMER_MONGODB_HOST=mongodb
+      - INFORMER_MONGODB_PORT=27017
+      - INFORMER_PORT=8082
+      - DEBUG=informer,informer:*
+
+  bouncer:
+    image: o2rproject/o2r-bouncer:0.13.0
+    depends_on:
+      - mongodb
+      - configmongodb
+    environment:
+      - "BOUNCER_MONGODB=mongodb://mongodb:27017/"
+      - BOUNCER_PORT=8083
+      - DEBUG=bouncer,bouncer:*
+      - OAUTH_URL_CALLBACK=${OAUTH_URL_CALLBACK}
+      - OAUTH_URL_AUTHORIZATION=${OAUTH_URL_AUTHORIZATION}
+      - OAUTH_URL_TOKEN=${OAUTH_URL_TOKEN}
+      - SLACK_VERIFICATION_TOKEN=${SLACK_VERIFICATION_TOKEN}
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
+      - OAUTH_STARTUP_FAIL_ON_ERROR=false
+
+  finder:
+    image: o2rproject/o2r-finder:0.6.2
+    depends_on:
+      - mongodb
+      - configmongodb
+      - elasticsearch
+    volumes:
+      - o2rstorage:/tmp/o2r
+    environment:
+      - "FINDER_MONGODB=mongodb://mongodb:27017/"
+      - FINDER_PORT=8084
+      - DEBUG=finder,finder:*
+      - ELASTIC_SEARCH_URL=elasticsearch:9200
+      - "MONGO_DATA_URL=mongodb://mongodb/muncher"
+      - "MONGO_OPLOG_URL=mongodb://mongodb/muncher"
+      - BATCH_COUNT=20
+
+  transporter:
+    image: o2rproject/o2r-transporter:0.6.0
+    depends_on:
+      - mongodb
+      - configmongodb
+    volumes:
+      - o2rstorage:/tmp/o2r
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      - "TRANSPORTER_MONGODB=mongodb://mongodb:27017/"
+      - TRANSPORTER_PORT=8081
+      - DEBUG=transporter,transporter:*
+
+  shipper:
+    image: o2rproject/o2r-shipper:8f95fd6
+    depends_on:
+      - mongodb
+      - configmongodb
+    volumes:
+      - o2rstorage:/tmp/o2r
+    environment:
+      SHIPPER_MONGODB: "mongodb://mongodb"
+      #SHIPPER_REPO_TOKENS: "${SHIPPER_REPO_TOKENS}"
+      SHIPPER_REPO_TOKENS: '{"download": "" }'
+      SHIPPER_BOTTLE_HOST: "0.0.0.0"
+      SHIPPER_BASE_PATH: "/tmp/o2r"
+      PYTHONUNBUFFERED: "0"
+
+  substituter:
+    image: o2rproject/o2r-substituter:0.5.0
+    depends_on:
+      - mongodb
+      - configmongodb
+    volumes:
+      - o2rstorage:/tmp/o2r
+    environment:
+      - "SUBSTITUTER_MONGODB=mongodb://mongodb:27017/"
+      - SUBSTITUTER_PORT=8090
+      - DEBUG=substituter,substituter:*
+
+  inspecter:
+    image: o2rproject/o2r-inspecter:0.0.1
+    volumes:
+      - o2rstorage:/tmp/o2r
+    environment:
+      - INSPECTER_PORT=8091
+      - DEBUGME=inspecter
+
+  bindings:
+    image: o2rproject/o2r-bindings:0.0.1
+    #build: ./bindings/o2r-bindings
+    ports:
+     - "5000-5499:5000-5499"
+    volumes:
+     - o2rstorage:/tmp/o2r
+    environment: 
+     - DEBUG=bindings
+     
+  guestlister:
+    image: o2rproject/o2r-guestlister:0.2.1
+    depends_on:
+      - mongodb
+      - configmongodb
+    environment:
+      - "GUESTLISTER_MONGODB=mongodb://mongodb:27017/"
+      - GUESTLISTER_PORT=8383
+      - DEBUG=guestlister,guestlister:*
+      - OAUTH_URL_CALLBACK=${OAUTH_URL_CALLBACK}
+      - OAUTH_URL_AUTHORIZATION=${OAUTH_URL_AUTHORIZATION}
+      - OAUTH_URL_TOKEN=${OAUTH_URL_TOKEN}
+
+  ui:
+    container_name: ui
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - '.:/usr/src/app'
+      - '/usr/src/app/node_modules'
+    ports:
+      - '81:3000'
+    environment:
+      - NODE_ENV=development
+
+  webserver:
+    image: nginx:latest
+    depends_on:
+      - bouncer
+      - finder
+      - muncher
+      - informer
+      - loader
+      - transporter
+      - shipper
+      - substituter
+      - bindings
+      - ui
+    volumes:
+      - "./dev/nginx.conf:/etc/nginx/nginx.conf:ro"
+    ports:
+      - "80:80"
