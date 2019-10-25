@@ -1,0 +1,17 @@
+.view {
+    margin-top: 5%;
+}
+
+.slider {
+    width: 70%;
+    margin-left: 5%;
+    float: left;
+}
+
+.image {
+    margin-right: 15%;
+}
+
+.maniBtn {
+    width: 30%;
+}

@@ -1,0 +1,19 @@
+
+.MuiAppBar-positionFixed {
+    top: auto !important
+}
+
+#appBar{
+
+    top: 64px !important;
+}
+
+
+.progress {
+    position: fixed !important;
+    top: 113px;
+    width:90%;
+    margin-left: 5%;
+    
+  }
+
