@@ -64,7 +64,7 @@ const Footer = () => {
           <a id="link" href="https://o2r.info/api/"> API</a> |
           <a id="link" href="https://o2r.uni-muenster.de/api/v1/"> Endpoint</a> |
           <a id="link" href="https://github.com/o2r-project/reference-implementation"> Implementation</a> | 
-          Version 0.0.1
+          Version 0.2.0
       </div>
       </HashRouter>
     </div>
