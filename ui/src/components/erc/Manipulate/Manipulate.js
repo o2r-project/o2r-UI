@@ -44,16 +44,20 @@ class Manipulate extends React.Component {
 
     setParameter() {
         let parameter = this.state.binding.sourcecode.parameter;
+        let params = this.state.params;
         for (let i = 0; i < parameter.length; i++) {
-            this.setState({
-                [parameter[i].name]: parameter[i].val,
-            }, () => {
-                setTimeout(() => {
-                    this.buildFullUrl(this.state.binding);
-                }, 1500);
-            })
+                params[i]= parameter[i].name;
         }
+        for (let i = 0; i < parameter.length; i++) {
+        this.setState({
+            [parameter[i].name]: parameter[i].val,
+        }, () => {
+            setTimeout(() => {
+                this.buildFullUrl(this.state.binding);
+            }, 1500);
+        })
     }
+}
 
     buildFullUrl(binding) {
         let url = config.baseUrl + 'compendium/' + binding.id + "/binding/" + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?';
@@ -197,7 +201,7 @@ class Manipulate extends React.Component {
                                             value={option}
                                             control={<Radio color="primary" />}
                                             label={option}
-                                        //checked={parameter.val === Number(option)}
+                                            checked={option === this.state[parameter.name]}
                                         />
                                     ))}
                                 </RadioGroup>
@@ -217,8 +221,8 @@ class Manipulate extends React.Component {
                                 settings={this.state.settingsText}
                                 removeItem={this.removeItem.bind(this)} />
                             : ''}
-                        <FigureComparison settings={this.state.settings} settingsText={this.state.settingsText}/>
-                        <img src={this.state.fullUrl} alt="" />
+                        <FigureComparison settings={this.state.settings} settingsText={this.state.settingsText} />
+                        <img src={this.state.fullUrl} alt="Image Loading" />
                     </div>
                 </div>
             </div>
