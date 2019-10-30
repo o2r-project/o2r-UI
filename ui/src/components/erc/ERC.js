@@ -10,6 +10,7 @@ import MainView from './MainView/MainView';
 import Inspect from './Inspect/Inspect';
 import Check from './Check/Check';
 import Manipulate from './Manipulate/Manipulate';
+import Substitution from './Substitution/Substitution';
 
 class ERC extends React.Component {
     constructor(props) {
@@ -168,6 +169,7 @@ class ERC extends React.Component {
                                     <Tab label="Inspect" />
                                     <Tab label="Check" />
                                     <Tab label="Manipulate" />
+                                    <Tab label="Substitution" />
                             </Tabs>
                         </Paper>
                         {this.state.tabValue === 0 &&
@@ -189,6 +191,12 @@ class ERC extends React.Component {
                                 {this.state.metadata.interaction.length > 0 ?
                                 <Manipulate bindings={this.state.metadata.interaction} id={this.state.id} />
                                 : 'No interactive figures were made for this paper'}
+                            </div>
+                        }
+                        {
+                            this.state.tabValue === 3 && 
+                            <div>
+                                <Substitution />
                             </div>
                         }
                     </ReflexElement>
