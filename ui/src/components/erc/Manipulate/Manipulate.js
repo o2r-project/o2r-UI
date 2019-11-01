@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Button, Tabs, Tab, Radio, RadioGroup, FormControlLabel } from '@material-ui/core';
+import { Typography, Button, Tabs, Tab, Radio, RadioGroup, FormControlLabel, CircularProgress } from '@material-ui/core';
 
 import httpRequests from '../../../helpers/httpRequests';
 import FigureComparison from './FigureComparison/FigureComparison';
@@ -22,6 +22,8 @@ class Manipulate extends React.Component {
             settingsText: [],
             text: "",
             index: 0,
+            loading: false,
+            processURL: false
         }
 
     }
@@ -43,6 +45,7 @@ class Manipulate extends React.Component {
     }
 
     setParameter() {
+        this.setState({loading :true, processURL: true});
         let parameter = this.state.binding.sourcecode.parameter;
         let params = this.state.params;
         for (let i = 0; i < parameter.length; i++) {
@@ -60,6 +63,7 @@ class Manipulate extends React.Component {
 }
 
     buildFullUrl(binding) {
+        this.setState({loading :true, processURL: true});
         let url = config.baseUrl + 'compendium/' + binding.id + "/binding/" + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?';
         let settingsText = ""
         for (let i = 0; i < this.state.params.length; i++) {
@@ -71,8 +75,13 @@ class Manipulate extends React.Component {
         }
         this.setState({
             fullUrl: url,
-            text: settingsText
+            text: settingsText,
+            processURL: false
         })
+    }
+
+    imageLoaded= () => {
+        this.setState({loading:false})
     }
 
     getParams(parameter) {
@@ -100,6 +109,7 @@ class Manipulate extends React.Component {
     handleChange = name => (evt, newVal) => {
         this.setState({
             [name]: newVal,
+            loading: true
         }, () => {
             this.buildFullUrl(this.state.binding);
         });
@@ -222,7 +232,10 @@ class Manipulate extends React.Component {
                                 removeItem={this.removeItem.bind(this)} />
                             : ''}
                         <FigureComparison settings={this.state.settings} settingsText={this.state.settingsText} />
-                        <img src={this.state.fullUrl} alt="Image Loading" />
+                        <br/>
+                        {this.state.loading? <CircularProgress /> : "" }
+                        <br/>
+                        {this.state.processURL ? "" : <img src={this.state.fullUrl} alt="Image Loading Failed" onLoad={this.imageLoaded} onError={this.imageLoaded}/>}
                     </div>
                 </div>
             </div>
