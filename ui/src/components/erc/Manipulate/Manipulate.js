@@ -16,6 +16,7 @@ class Manipulate extends React.Component {
         this.state = {
             bindings: props.bindings,
             binding: props.bindings[0],
+            variant: "standart",
             params: this.getParams(props.bindings[0].sourcecode.parameter),
             fullUrl: '',
             settings: [],
@@ -102,6 +103,9 @@ class Manipulate extends React.Component {
     componentDidMount = () => {
         this.runManipulateService();
         this.highlight();
+        if(this.state.bindings.length > 5){
+            this.setState({variant: "scrollable"})
+        }
     }
 
     componentWillUnmount = () => removeHighlight();
@@ -181,7 +185,8 @@ class Manipulate extends React.Component {
                         onChange={this.changeFigure.bind(this)}
                         indicatorColor="primary"
                         textColor="primary"
-                        centered
+                        variant= {this.state.variant}
+                        centered={this.state.bindings.length <= 5}
                     >
                         {this.state.bindings.map((binding, index) => (
                             <Tab label={binding.computationalResult.result} key={index} />
