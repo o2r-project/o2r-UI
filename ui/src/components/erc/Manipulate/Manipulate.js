@@ -206,7 +206,7 @@ class Manipulate extends React.Component {
                                 ?
                                 <OwnSlider value={this.state[parameter.name]} parameter={parameter} onChange={this.handleChange}
                                 />
-                                : '1'}
+                                : ''}
                             {parameter.uiWidget.type === 'radio'
                                 ? <RadioGroup aria-label="position" name="position" value={this.state[parameter.name]} onChange={this.handleChange(parameter.name)} row>
                                     {parameter.uiWidget.options.map((option, index) => (
@@ -214,7 +214,7 @@ class Manipulate extends React.Component {
                                             value={option}
                                             control={<Radio color="primary" />}
                                             label={option}
-                                            checked={option === this.state[parameter.name]}
+                                            checked={option == this.state[parameter.name]}
                                         />
                                     ))}
                                 </RadioGroup>
