@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Button, Tabs, Tab, Radio, RadioGroup, FormControlLabel } from '@material-ui/core';
+import { Typography, Button, Tabs, Tab, Radio, RadioGroup, FormControlLabel, CircularProgress } from '@material-ui/core';
 
 import httpRequests from '../../../helpers/httpRequests';
 import FigureComparison from './FigureComparison/FigureComparison';
@@ -16,12 +16,15 @@ class Manipulate extends React.Component {
         this.state = {
             bindings: props.bindings,
             binding: props.bindings[0],
+            variant: "standart",
             params: this.getParams(props.bindings[0].sourcecode.parameter),
             fullUrl: '',
             settings: [],
             settingsText: [],
             text: "",
             index: 0,
+            loading: false,
+            processURL: false
         }
 
     }
@@ -43,10 +46,13 @@ class Manipulate extends React.Component {
     }
 
     setParameter() {
+        this.setState({ loading: true, processURL: true });
         let parameter = this.state.binding.sourcecode.parameter;
+        let params = this.getParams(parameter)
         for (let i = 0; i < parameter.length; i++) {
             this.setState({
                 [parameter[i].name]: parameter[i].val,
+                params: params
             }, () => {
                 setTimeout(() => {
                     this.buildFullUrl(this.state.binding);
@@ -56,6 +62,7 @@ class Manipulate extends React.Component {
     }
 
     buildFullUrl(binding) {
+        this.setState({ loading: true, processURL: true });
         let url = config.baseUrl + 'compendium/' + binding.id + "/binding/" + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?';
         let settingsText = ""
         for (let i = 0; i < this.state.params.length; i++) {
@@ -67,8 +74,13 @@ class Manipulate extends React.Component {
         }
         this.setState({
             fullUrl: url,
-            text: settingsText
+            text: settingsText,
+            processURL: false
         })
+    }
+
+    imageLoaded = () => {
+        this.setState({ loading: false })
     }
 
     getParams(parameter) {
@@ -89,6 +101,9 @@ class Manipulate extends React.Component {
     componentDidMount = () => {
         this.runManipulateService();
         this.highlight();
+        if (this.state.bindings.length > 5) {
+            this.setState({ variant: "scrollable" })
+        }
     }
 
     componentWillUnmount = () => removeHighlight();
@@ -96,6 +111,7 @@ class Manipulate extends React.Component {
     handleChange = name => (evt, newVal) => {
         this.setState({
             [name]: newVal,
+            loading: true
         }, () => {
             this.buildFullUrl(this.state.binding);
         });
@@ -129,10 +145,10 @@ class Manipulate extends React.Component {
 
     setOriginalSettings(name) {
         this.setParameter()
-        this.setState({
+        /**this.setState({
             value: 5
         })
-        /**this.setState({
+        this.setState({
             [name]: 24,
         }, () => {
             alert("Sorry, this function isn't working, yet :(.")
@@ -167,7 +183,8 @@ class Manipulate extends React.Component {
                         onChange={this.changeFigure.bind(this)}
                         indicatorColor="primary"
                         textColor="primary"
-                        centered
+                        variant={this.state.variant}
+                        centered={this.state.bindings.length <= 5}
                     >
                         {this.state.bindings.map((binding, index) => (
                             <Tab label={binding.computationalResult.result} key={index} />
@@ -197,7 +214,7 @@ class Manipulate extends React.Component {
                                             value={option}
                                             control={<Radio color="primary" />}
                                             label={option}
-                                        //checked={parameter.val === Number(option)}
+                                            checked={option === this.state[parameter.name]}
                                         />
                                     ))}
                                 </RadioGroup>
@@ -217,8 +234,11 @@ class Manipulate extends React.Component {
                                 settings={this.state.settingsText}
                                 removeItem={this.removeItem.bind(this)} />
                             : ''}
-                        <FigureComparison settings={this.state.settings} settingsText={this.state.settingsText}/>
-                        <img src={this.state.fullUrl} alt="" />
+                        <FigureComparison settings={this.state.settings} settingsText={this.state.settingsText} />
+                        <br />
+                        {this.state.loading ? <CircularProgress /> : ""}
+                        <br />
+                        {this.state.processURL ? "" : <img src={this.state.fullUrl} alt="Image Loading Failed" onLoad={this.imageLoaded} onError={this.imageLoaded} />}
                     </div>
                 </div>
             </div>
