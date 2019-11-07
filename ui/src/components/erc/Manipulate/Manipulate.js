@@ -46,25 +46,23 @@ class Manipulate extends React.Component {
     }
 
     setParameter() {
-        this.setState({loading :true, processURL: true});
+        this.setState({ loading: true, processURL: true });
         let parameter = this.state.binding.sourcecode.parameter;
-        let params = this.state.params;
+        let params = this.getParams(parameter)
         for (let i = 0; i < parameter.length; i++) {
-                params[i]= parameter[i].name;
+            this.setState({
+                [parameter[i].name]: parameter[i].val,
+                params: params
+            }, () => {
+                setTimeout(() => {
+                    this.buildFullUrl(this.state.binding);
+                }, 1500);
+            })
         }
-        for (let i = 0; i < parameter.length; i++) {
-        this.setState({
-            [parameter[i].name]: parameter[i].val,
-        }, () => {
-            setTimeout(() => {
-                this.buildFullUrl(this.state.binding);
-            }, 1500);
-        })
     }
-}
 
     buildFullUrl(binding) {
-        this.setState({loading :true, processURL: true});
+        this.setState({ loading: true, processURL: true });
         let url = config.baseUrl + 'compendium/' + binding.id + "/binding/" + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?';
         let settingsText = ""
         for (let i = 0; i < this.state.params.length; i++) {
@@ -81,8 +79,8 @@ class Manipulate extends React.Component {
         })
     }
 
-    imageLoaded= () => {
-        this.setState({loading:false})
+    imageLoaded = () => {
+        this.setState({ loading: false })
     }
 
     getParams(parameter) {
@@ -103,8 +101,8 @@ class Manipulate extends React.Component {
     componentDidMount = () => {
         this.runManipulateService();
         this.highlight();
-        if(this.state.bindings.length > 5){
-            this.setState({variant: "scrollable"})
+        if (this.state.bindings.length > 5) {
+            this.setState({ variant: "scrollable" })
         }
     }
 
@@ -147,10 +145,10 @@ class Manipulate extends React.Component {
 
     setOriginalSettings(name) {
         this.setParameter()
-        this.setState({
+        /**this.setState({
             value: 5
         })
-        /**this.setState({
+        this.setState({
             [name]: 24,
         }, () => {
             alert("Sorry, this function isn't working, yet :(.")
@@ -185,7 +183,7 @@ class Manipulate extends React.Component {
                         onChange={this.changeFigure.bind(this)}
                         indicatorColor="primary"
                         textColor="primary"
-                        variant= {this.state.variant}
+                        variant={this.state.variant}
                         centered={this.state.bindings.length <= 5}
                     >
                         {this.state.bindings.map((binding, index) => (
@@ -237,10 +235,10 @@ class Manipulate extends React.Component {
                                 removeItem={this.removeItem.bind(this)} />
                             : ''}
                         <FigureComparison settings={this.state.settings} settingsText={this.state.settingsText} />
-                        <br/>
-                        {this.state.loading? <CircularProgress /> : "" }
-                        <br/>
-                        {this.state.processURL ? "" : <img src={this.state.fullUrl} alt="Image Loading Failed" onLoad={this.imageLoaded} onError={this.imageLoaded}/>}
+                        <br />
+                        {this.state.loading ? <CircularProgress /> : ""}
+                        <br />
+                        {this.state.processURL ? "" : <img src={this.state.fullUrl} alt="Image Loading Failed" onLoad={this.imageLoaded} onError={this.imageLoaded} />}
                     </div>
                 </div>
             </div>
