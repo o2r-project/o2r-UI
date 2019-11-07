@@ -82,6 +82,7 @@ function geocodingRequest(query){
 module.exports = {
     getUser: getUser,
     listAllCompendia: listAllCompendia,
+    listUserCompendia: listUserCompendia,
     uploadViaSciebo: uploadViaSciebo,
     uploadWorkspace: uploadWorkspace,
     singleCompendium: singleCompendium,
