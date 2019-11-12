@@ -248,8 +248,8 @@ services:
       - '/usr/src/app/node_modules'
     ports:
       - '81:3000'
-    environment:
-      - NODE_ENV=development
+    #environment:
+     # - NODE_ENV=development
 
   webserver:
     image: nginx:latest
