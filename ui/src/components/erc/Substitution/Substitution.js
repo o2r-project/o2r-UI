@@ -1,14 +1,19 @@
 import React from 'react';
 
 import httpRequests from '../../../helpers/httpRequests';
-import { Card, CardHeader, CardContent, CardActions, Button } from '@material-ui/core';
+import { Card, CardHeader, CardContent, CardActions, Button, IconButton, Collapse } from '@material-ui/core';
+
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import './substitution.css'
 
 class Substitution extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            ERC: []
+            ERC: [],
+            expanded: null
         }
 
     }
@@ -52,22 +57,35 @@ class Substitution extends React.Component {
 
     }
 
+    setExpand = (index) => {
+        let expand = index;
+        if (this.state.expanded === index) { expand = null }
+        this.setState({ expanded: expand })
+    }
+
 
     render() {
         return (
             <div>
                 {this.state.ERC.length > 0 ?
-                    this.state.ERC.map((erc) => (
+                    this.state.ERC.map((erc, index) => (
                         <div>
                             <br />
-                            <Card>
+                            <Card style={{ "text-align": "left", "display": "inline-block" }}>
                                 <CardHeader title={erc.metadata.o2r.title} />
                                 <CardContent>
-                                    <p style={{ "textAlign": "left" }}>{erc.metadata.o2r.description}</p>
+                                    {erc.metadata.o2r.description.substr(0, 300)}
+                                    <Collapse component={"span"} in={this.state.expanded === index} unmountOnExit>
+                                        <span>{erc.metadata.o2r.description.substring(300, erc.metadata.o2r.description.length)}</span>
+                                    </Collapse>
+                                    <IconButton aria-label='more_horiz' style={{ "padding": "0px", "margin-left": "5px" }}
+                                        onClick={() => this.setExpand(index)}>
+                                        {this.state.expanded === index ? <ExpandLessIcon /> : <MoreHorizIcon />}
+                                    </IconButton>
                                     <CardActions>
                                         <Button size="small" color="primary">
                                             Substitute
-                                 </Button>
+                                         </Button>
                                     </CardActions>
                                 </CardContent>
                             </Card>
