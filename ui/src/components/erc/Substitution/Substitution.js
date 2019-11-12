@@ -2,6 +2,7 @@ import React from 'react';
 
 import httpRequests from '../../../helpers/httpRequests';
 import { Card, CardHeader, CardContent, CardActions, Button, IconButton, Collapse } from '@material-ui/core';
+import Substitute from './Substitute/Subsititute'
 
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
@@ -13,7 +14,8 @@ class Substitution extends React.Component {
         super(props);
         this.state = {
             ERC: [],
-            expanded: null
+            expanded: null,
+            erc: 0
         }
 
     }
@@ -63,6 +65,10 @@ class Substitution extends React.Component {
         this.setState({ expanded: expand })
     }
 
+    setErc = (erc) => {
+        this.setState({ erc })
+    }
+
 
     render() {
         return (
@@ -83,7 +89,7 @@ class Substitution extends React.Component {
                                         {this.state.expanded === index ? <ExpandLessIcon /> : <MoreHorizIcon />}
                                     </IconButton>
                                     <CardActions>
-                                        <Button size="small" color="primary">
+                                        <Button size="small" color="primary" onClick={() => this.setErc(erc)}>
                                             Substitute
                                          </Button>
                                     </CardActions>
@@ -91,6 +97,7 @@ class Substitution extends React.Component {
                             </Card>
                         </div>
                     )) : ""}
+                    <Substitute erc={this.state.erc} setErc={this.setErc}/>
             </div>
         )
     }
