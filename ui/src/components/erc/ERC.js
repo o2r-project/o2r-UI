@@ -1,7 +1,8 @@
 import React from 'react';
 import 'react-reflex/styles.css';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
-import { Paper, Tabs, Tab, Button } from "@material-ui/core";
+import { Paper, Tabs, Tab, Button, IconButton } from "@material-ui/core";
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 import config from '../../helpers/config';
 import './erc.css';
@@ -10,6 +11,7 @@ import MainView from './MainView/MainView';
 import Inspect from './Inspect/Inspect';
 import Check from './Check/Check';
 import Manipulate from './Manipulate/Manipulate';
+import DownloadPop from './Download/DownloadPop';
 
 class ERC extends React.Component {
     constructor(props) {
@@ -24,6 +26,7 @@ class ERC extends React.Component {
             tabValue: 0,
             html:true,
         };  
+        this.handleClose =this.handleClose.bind(this);
     }
 
     componentDidMount = () => this.getMetadata();
@@ -135,6 +138,14 @@ class ERC extends React.Component {
             html: !this.state.html
         })
     }
+
+    openPop = () =>{
+        this.setState({open: true})
+    }
+
+    handleClose()  {
+        this.setState({open: false})
+    }
   
     render () {
         return (
@@ -148,6 +159,10 @@ class ERC extends React.Component {
                         >
                             {this.state.html ? 'Show PDf' : 'Show HTML'}
                         </Button>
+                        <IconButton style={{float: "right"}} onClick={this.openPop}>
+                        <GetAppIcon/>
+                        </IconButton>
+                        <DownloadPop id={this.state.id} open={this.state.open} handleClose={this.handleClose} />
                         {this.state.displayfile!=null 
                         ?<MainView 
                             metadata={this.state.metadata}
