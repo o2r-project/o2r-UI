@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, FormControl, RadioGroup, Slide, Radio, FormControlLabel } from "@material-ui/core";
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, FormControl, RadioGroup, Slide, Radio, FormControlLabel, Grid } from "@material-ui/core";
 
 import httpRequests from '../../../helpers/httpRequests';
 
@@ -7,7 +7,7 @@ class DownloadPop extends Component {
 
     constructor(props) {
         super(props);
-        this.state={
+        this.state = {
             value: 0,
             successfulJob: false
         }
@@ -26,22 +26,22 @@ class DownloadPop extends Component {
                 for (let i = 0; i < res.data.results.length; i++) {
                     httpRequests.getSingleJob(res.data.results[i])
                         .then(function (res2) {
-                            if(res2.data.status === "success"){
-                                self.setState({successfulJob : true})
+                            if (res2.data.status === "success") {
+                                self.setState({ successfulJob: true })
                             }
                         })
                 }
             });
     }
 
-    handleChange = event =>{
-        this.setState({value : event.target.value})
+    handleChange = event => {
+        this.setState({ value: event.target.value })
     }
 
-   
-      
 
-    handleDownload = () =>{
+
+
+    handleDownload = () => {
 
         const downloadUrl = httpRequests.downloadERC(this.props.id, this.state.value)
 
@@ -49,7 +49,7 @@ class DownloadPop extends Component {
         this.handleClose();
     }
 
-    handleClose()  {
+    handleClose() {
         this.props.handleClose();
     }
 
@@ -59,20 +59,27 @@ class DownloadPop extends Component {
         return (
             <div>
                 <Dialog open={this.props.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
-                    <DialogTitle style={{"align-self" : "center" }} id="form-dialog-title">Download</DialogTitle>
+                    <DialogTitle style={{ "align-self": "center" }} id="form-dialog-title">Download</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
                             Please specify if you want to download the image of the ERC as well
                         </DialogContentText>
                     </DialogContent>
-                    <FormControl style={{"align-self" : "center" }} component="fieldset">
+                    <Grid container spacing={0}>
+                    <Grid item xs={4}>
+                    {this.state.successfulJob ? "" : <div style={{"margin-left": "10px"}}> <DialogContentText>
+                        Image tarball is missing, so it cannot be included. Please ensure a successful analysis execution first.
+                    </DialogContentText> </div>}
+                    </Grid>
+                    <Grid item xs={4} style={{ "text-align": "center"}}>
+                    <FormControl style={{"top" : "20%"}} component="fieldset">
                         <RadioGroup aria-label="position" name="position" value={this.state.value} onChange={this.handleChange} row>
                             <FormControlLabel
                                 value="true"
                                 control={<Radio color="primary" />}
                                 label="Yes"
                                 labelPlacement="top"
-                                disabled= {!this.state.successfulJob}
+                                disabled={!this.state.successfulJob}
                             />
                             <FormControlLabel
                                 value="false"
@@ -82,10 +89,8 @@ class DownloadPop extends Component {
                             />
                         </RadioGroup>
                     </FormControl>
-                    {this.state.successfulJob ? "" : <DialogContentText>
-                        Image tarball is missing, so it cannot be included. Please ensure a successful analysis execution first.
-                    </DialogContentText> 
-                    }
+                    </Grid>
+                    </Grid>             
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">
                             Cancel
