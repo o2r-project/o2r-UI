@@ -14,12 +14,16 @@ const DataTable = (props) => {
         if (data.tree[i].name === data.datafile) {
             dataFormat = data.tree[i].type
             dataSize = data.tree[i].size
-            console.log(dataSize)
-        }
-        if (data.datafile.trim().toLowerCase().indexOf('.rdata') !== -1) {
-            dataFormat = '.rdata';
         }
     }
+
+    if (data.datafile.trim().toLowerCase().indexOf('.rdata') !== -1) {
+        dataFormat = '.rdata';
+    }
+    else if(data.datafile.trim().toLowerCase().indexOf('.csv') !== -1){
+        dataFormat= 'text/csv'
+    }
+
     // 5mb = 5000000 byte
     if (dataSize > 5000000) {
         return <Download file={data.datafile} id={props.data.id} />
