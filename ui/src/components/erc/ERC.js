@@ -19,6 +19,7 @@ class ERC extends React.Component {
         this.state = { 
             id: this.props.match.params.id,
             displayfile: null,
+            pdfFile: null,
             dataset: null,
             datafiles: null,
             codefile: null,
@@ -91,6 +92,33 @@ class ERC extends React.Component {
             displayfile: displayfile,
         });        
     }
+    
+    setPdfFile() {
+        const self=this;
+        httpRequests.getFile("compendium/" + self.state.id + "/data/")
+            .then(function (res) {
+                const dataset = res.data.children
+                const pdfs= [];
+                for (var element of dataset) {
+                    if (element.extension === ".pdf") {
+                        pdfs.push(element)
+                    }
+                }
+                console.log(pdfs)
+                if(pdfs.length === 1){
+                    self.setState({ pdfFile: pdfs[0] })
+                }else{
+                    for (var element of pdfs) {
+                        if (element.name === "paper.pdf") {
+                            self.setState({ pdfFile: element })
+                        }
+                    }
+                }
+            })
+            .catch((res) => {
+                 console.log(res)
+            })
+    }
 
     handleDataChange = ( evt ) => this.setDataFile(evt.target.value);
     handleCodeChange = ( evt ) => this.setCodeFile(evt.target.value);
@@ -121,6 +149,7 @@ class ERC extends React.Component {
                     self.setDataFile(data.inputfiles);
                 }
                 self.setCodeFile(data.mainfile);
+                self.setPdfFile();
             })
             .catch(function (response) {
                 console.log(response)
@@ -169,7 +198,7 @@ class ERC extends React.Component {
                             handleTabChange={this.handleTabChange}
                             filePath={this.state.html 
                                 ? config.baseUrl + "compendium/" + this.state.id + "/data/" + this.state.displayfile
-                                : this.state.metadata.identifier.doiurl}>
+                                : this.state.pdfFile  !== null ? this.state.pdfFile.path : this.state.metadata.identifier.doiurl}>
                         </MainView> 
                         :<div>There is no file to display</div>}
                     </ReflexElement>
