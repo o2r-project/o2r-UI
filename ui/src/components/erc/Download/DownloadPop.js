@@ -3,14 +3,13 @@ import { Button, Dialog, DialogTitle, DialogContent, DialogActions, DialogConten
 
 import httpRequests from '../../../helpers/httpRequests';
 
-
 class DownloadPop extends Component {
 
     constructor(props) {
         super(props);
         this.state={
             value: 0,
-            jobsCount: 0
+            successfulJob: false
         }
 
         this.handleClose = this.handleClose.bind(this)
@@ -24,21 +23,22 @@ class DownloadPop extends Component {
         const self = this;
         httpRequests.listJobs(this.props.id)
             .then(function (res) {
-                self.setState({jobsCount: res.data.results.length})
-                });
-            }
+                for (let i = 0; i < res.data.results.length; i++) {
+                    httpRequests.getSingleJob(res.data.results[i])
+                        .then(function (res2) {
+                            if(res2.data.status === "success"){
+                                self.setState({successfulJob : true})
+                            }
+                        })
+                }
+            });
+    }
 
     handleChange = event =>{
         this.setState({value : event.target.value})
     }
 
-    onStartedDownload(id) {
-        console.log(`Started downloading: ${id}`);
-      }
-      
-    onFailed(error) {
-        console.log(`Download failed: ${error}`);
-      }
+   
       
 
     handleDownload = () =>{
@@ -50,7 +50,6 @@ class DownloadPop extends Component {
     }
 
     handleClose()  {
-        console.log(2)
         this.props.handleClose();
     }
 
@@ -73,7 +72,7 @@ class DownloadPop extends Component {
                                 control={<Radio color="primary" />}
                                 label="Yes"
                                 labelPlacement="top"
-                                disabled= {this.state.jobsCount === 0}
+                                disabled= {!this.state.successfulJob}
                             />
                             <FormControlLabel
                                 value="false"
@@ -83,9 +82,9 @@ class DownloadPop extends Component {
                             />
                         </RadioGroup>
                     </FormControl>
-                    {this.state.jobsCount === 0 ? <DialogContentText>
-                        To download an image, you must first generate it. Please perform an analysis.
-                    </DialogContentText> : ""
+                    {this.state.successfulJob ? "" : <DialogContentText>
+                        Image tarball is missing, so it cannot be included. Please ensure a successful analysis execution first.
+                    </DialogContentText> 
                     }
                     <DialogActions>
                         <Button onClick={this.handleClose} color="primary">

@@ -162,7 +162,7 @@ class ERC extends React.Component {
                         <IconButton style={{float: "right"}} onClick={this.openPop}>
                         <GetAppIcon/>
                         </IconButton>
-                        <DownloadPop id={this.state.id} open={this.state.open} handleClose={this.handleClose} />
+                        {this.state.open? <DownloadPop id={this.state.id} open={this.state.open} handleClose={this.handleClose} /> : ""}
                         {this.state.displayfile!=null 
                         ?<MainView 
                             metadata={this.state.metadata}
