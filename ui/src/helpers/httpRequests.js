@@ -79,6 +79,10 @@ function geocodingRequest(query){
     return axios.get(link)
 }
 
+function downloadERC(id, image){
+    return _env.api + 'compendium/' + id + '.zip?image=' + image
+}
+
 module.exports = {
     getUser: getUser,
     listAllCompendia: listAllCompendia,
@@ -97,4 +101,5 @@ module.exports = {
     getCodelines: getCodelines,
     searchBinding: searchBinding,
     geocodingRequest: geocodingRequest,
+    downloadERC: downloadERC,
 };
