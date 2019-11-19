@@ -18,7 +18,11 @@ constructor(props) {
 handleSelectedText(e) {
     var self = this;
     var answerText = "";
+    try{
     var text = window.getSelection().getRangeAt(0).toString();
+    }catch(err){
+        return;
+    }
     if (text === '' || text.length < 4) return;
     let bindings = this.props.metadata.interaction;
     let foundParameters = [];
