@@ -31,7 +31,7 @@ function SpacingGrid(props) {
         <Grid item xs={12}>
           <Grid container justify="center" spacing={spacing}>
             {props.ercs.map( (erc, index ) =>
-                <div key={index} style={{width:'20%', marginRight:'2%', marginTop:'1%', marginBottom: '0%'}}>
+                <div key={index} style={{width:'20%', marginRight:'2%', marginTop:'1%', marginBottom: '3%'}}>
                     <Card className="example">
                         <CardActionArea onClick={()=>props.forward(erc)}>
                             <CardHeader
