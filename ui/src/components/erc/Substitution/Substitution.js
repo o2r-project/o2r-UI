@@ -96,7 +96,7 @@ class Substitution extends React.Component {
                             </Card>
                         </div>
                     )) : ""}
-                    <Substitute erc={this.state.erc} setErc={this.setErc}/>
+                    {this.state.erc !== 0 ? <Substitute baseErc={this.props.baseErcMetadata} baseErcId ={this.props.baseErcId} erc={this.state.erc.metadata.o2r} ercId={this.state.erc.id} setErc={this.setErc}/> : ""}
             </div>
         )
     }

@@ -240,7 +240,7 @@ class ERC extends React.Component {
                         {
                             this.state.tabValue === 3 && 
                             <div>
-                                <Substitution />
+                                <Substitution baseErcMetadata={this.state.metadata} baseErcId={this.state.id} />
                             </div>
                         }
                     </ReflexElement>

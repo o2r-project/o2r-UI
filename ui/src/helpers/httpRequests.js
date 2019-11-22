@@ -83,6 +83,11 @@ function downloadERC(id, image){
     return _env.api + 'compendium/' + id + '.zip?image=' + image
 }
 
+function createSubstitution(baseId, overlayId, substitutionFiles){
+    const body={"base": baseId, "overlay": overlayId, "substitutionFiles": substitutionFiles, "metadataHandling": "keepBase"}
+    return axios.post(_env.api + 'substitution', body);
+}
+
 module.exports = {
     getUser: getUser,
     listAllCompendia: listAllCompendia,
@@ -102,4 +107,5 @@ module.exports = {
     searchBinding: searchBinding,
     geocodingRequest: geocodingRequest,
     downloadERC: downloadERC,
+    createSubstitution: createSubstitution,
 };
