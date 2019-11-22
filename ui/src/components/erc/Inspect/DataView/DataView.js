@@ -1,6 +1,7 @@
 import React from 'react';
 
 import CSV from './CSV/CSV';
+import Txt from './Txt/Txt';
 import JSON from './JSON/JSON';
 import RData from './RData/RData';
 import Download from './Download/Download';
@@ -36,6 +37,8 @@ const DataTable = (props) => {
             return <JSON json={data.data[0]} file={data.datafile} />
         case '.rdata':
             return <RData rdata={data.data} id={props.data.id} />
+        case 'text/plain':
+            return <Txt txt={data.data} file={data.datafile} />
         default:
             return <div>No data</div>
     }
