@@ -24,6 +24,7 @@ const rscript = require('r-script');
 const path = require('path');
 const net = require('net');
 const fn = require('./generalFunctions');
+const rules = require('./rules');
 const processJson = require('./processJson');
 const request = require('request');
 const exec = require('child_process').exec;
@@ -47,7 +48,6 @@ bindings.start = (conf) => {
         app.post('/api/v1/bindings/searchBinding', function ( req, res ) {
             bindings.searchBinding( req.body, res);
         });
-
 
         app.post('/api/v1/bindings/binding', function(req, res) {
             bindings.createBinding(req.body, res);
@@ -161,18 +161,28 @@ bindings.createBinding = function(binding, response) {
 };
 
 bindings.implementExtractR = function (binding,response) {
-    debug( 'Start to extract codelines for result: %s, compendium: %s', binding.computationalResult.result, binding.id );
-
-    //Used for testing
-    //let file = fn.readFile('test',binding);
-
+    //debug( 'Start to extract codelines for result: %s, compendium: %s', binding.computationalResult.result, binding.id );
     //Comment in if used with Service
-    let file = fn.readRmarkdown(binding.id, binding.sourcecode.file);
+    let file = fn.readRmarkdown(binding.id, binding.file);
 
-    //Mock response TODO --> REPLACE CODED LINES
-    // Codelines = {"start":30,"end":424} 
-    binding.sourcecode.codelines = processJson.getCodeLines(file);
-    console.log(binding.sourcecode.codelines)
+    let lines = file.split('\n');
+    let codeLines = fn.extractCodeLines(lines);
+    let code = fn.extractCode(lines,codeLines.start,codeLines.end);
+    let codeparts = fn.splitCodeIntoLines(code,codeLines.start[0]);
+    let type = rules.getTypeOfLine(codeparts);
+    let comments = fn.deleteComments(type);
+    let json = fn.array2Json(comments);
+    let jsonObj = {'Lines': json};
+    let processedJson = processJson.addFileContentToJson(jsonObj);
+    let varsInLines = processJson.getVarsAndValuesOfLines(processedJson);
+    //Insert binding.plot
+    let valuesToSearchFor = processJson.valuesToSearchFor(binding.plot);
+    let codeLinesForValues = processJson.getAllCodeLines(varsInLines,valuesToSearchFor,[],[]);
+
+    debug('Codelines: ',codeLinesForValues);
+    
+    binding.codelines = processJson.getCodeLines(codeLinesForValues);
+    debug(binding.codelines)
     response.send({
         callback: 'ok',
         data: binding});
