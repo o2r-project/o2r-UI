@@ -5,6 +5,7 @@ import Txt from './Txt/Txt';
 import JSON from './JSON/JSON';
 import RData from './RData/RData';
 import FourteenC from './FourteenC/FourteenC';
+import Dat from './Dat/Dat';
 import Download from './Download/Download';
 
 const DataTable = (props) => {
@@ -15,11 +16,12 @@ const DataTable = (props) => {
     for (let i = 0; i < data.tree.length; i++) {
         if (data.tree[i].name === data.datafile) {
             if (data.tree[i].type === undefined){
-                dataFormat = data.tree[i].extension    
-            } else {
-                dataFormat = data.tree[i].type
+                dataFormat = data.tree[i].extension; 
+            } 
+            else {
+                dataFormat = data.tree[i].type;
             }
-            dataSize = data.tree[i].size
+            dataSize = data.tree[i].size;
         }
     }
 
@@ -27,9 +29,11 @@ const DataTable = (props) => {
         dataFormat = '.rdata';
     }
     else if(data.datafile.trim().toLowerCase().indexOf('.csv') !== -1){
-        dataFormat= 'text/csv'
+        dataFormat= 'text/csv';
     }
-
+    if (data.datafile.split(".").pop() === 'dat') {
+        dataFormat= '.dat';
+    }
     // 5mb = 5000000 byte
     if (dataSize > 5000000) {
         return <Download file={data.datafile} id={props.data.id} />
@@ -46,6 +50,10 @@ const DataTable = (props) => {
             return <Txt txt={data.data} file={data.datafile} />
         case '.14c':
             return <FourteenC content={data.data} file={data.datafile} />
+        case '.dat':
+            return <Dat content={data.data} file={data.datafile} />
+        case undefined:
+            return <div>Dataformat not supported</div>
         default:
             return <div>No data</div>
     }
