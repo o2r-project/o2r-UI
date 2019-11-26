@@ -178,4 +178,147 @@ fn.saveRFile = function(data, compendiumId, fileName) {
     debug('End saving result under the directory %s', dir);
 };
 
+fn.extractCode = function(fileContent, codelines) {
+    debug('Start extracting code');
+    let newContent = '';
+    let splitFileContent = fileContent.split('\n');
+    codelines.forEach(function(elem) {
+        newContent += splitFileContent[elem] + '\n';
+    });
+    debug('End extracting code');
+    return newContent;
+};
+
+fn.extractFigureSize = function (binding, fileContent){
+    debug('Start extracting figure width');
+    let figureSize = '';
+    let splitFileContent = fileContent.split('\n');
+    splitFileContent.forEach(function(elem) {
+        if ( elem.indexOf("out.width=")>=0 ) {
+            debug(elem.split('out.width=')[1].split('}')[0])
+            figureSize=elem.split('out.width=')[1].split('}')[0];
+        }
+    });
+    debug('End extracting figure width');
+    return figureSize;
+}
+
+fn.createPureCode = function (codelines) {
+    debug('Start creating pure code: %s', codelines);
+    codelines = fn.removeYaml(codelines);
+    codelines = fn.removeCommentsChunksSpaces(codelines);
+    let comment = /^\s*#.*/;
+    let pureCode = [];
+    let firstCodeline;
+    for( let lineNumber = 0; lineNumber < codelines.length; lineNumber++ ) {
+        if ( yaml.test(codelines[lineNumber]) ) 
+        if ( chunk.test(codelines[lineNumber]) || comment.test(codelines[lineNumber])) {
+            //skip
+        } else {
+            pureCode.push(codelines[lineNumber]);
+        }
+    }
+    //debug('End creating pure code: %s', pureCode)
+    return pureCode;
+};
+
+fn.removeYaml = function (codelines) {
+    let codeWithoutYaml = [];
+    let firstChunk = new RegExp('```');
+    for( let lineNumber = 0; lineNumber < codelines.length; lineNumber++ ) {
+        if ( firstChunk.test(codelines[lineNumber]) ) {
+            codeWithoutYaml = codelines.slice(lineNumber+1,codelines.length-1);
+            break;
+        }
+    }
+    return codeWithoutYaml;
+}
+
+fn.removeCommentsChunksSpaces = function (codelines) {
+    let codeWithoutComments = [];
+    for( let lineNumber = 0; lineNumber < codelines.length; lineNumber++ ) {
+        if ( codelines[lineNumber].startsWith('#') ||
+             codelines[lineNumber].startsWith('```') ||
+             codelines[lineNumber].trim() === ''
+            ) {
+            //do nothing
+        } else {
+            codeWithoutComments.push(codelines[lineNumber]);
+        }
+    }
+    //debug('code wothout comments: %s', codeWithoutComments)
+    return codeWithoutComments;
+} 
+
+fn.createCodeParts = function(file,start,end){
+    debug('Start creating code parts')
+    let code = [];
+    for(let i = 0; i < start.length;i++){
+        let codeparts = file.slice(start[i],end[i]);
+        if(end[i] != start[i+1] + 1){
+            for (let j = end[i]; j < start[i+1]; j++){
+                codeparts.splice(j,0,'');
+            }   
+        }
+        code.push(codeparts);
+     }
+    // Replace \r through ''
+    for(let i = 0; i<code.length;i++) {
+        code[i] = code[i].map((x) => x.replace('\r', ''));
+    }
+    debug('End creating code parts: %s', code)
+    return code;
+ };
+
+/**
+ * @param code
+ * @returns {Array} including the codeline, the block and the line number of that specific block
+ */
+fn.splitCodeIntoLines = function (code,startLine) {
+    debug('Start splitting code into lines')
+    let codeStart = startLine + 1; 
+    let codeLines = [];
+    let commentOnly = /^\s*#.*/;
+    let counter = 0;
+    let index = 0;
+
+    for ( let i = 0; i < code.length; i++ ) {
+        code[i].forEach((element) => {
+            if (element.length > 0){
+                let noComment = commentOnly.test(element)
+                if(noComment == false){ 
+                    let value = element
+                    codeLines.push({"value":value,"codeBlock": i + 1, "Line": counter, "index": index + codeStart});
+                    counter++
+                }
+            }
+            index++;
+        });
+    }
+    //debug('CL ' + JSON.stringify(codeLines))
+    debug('End splitting code into lines')
+    return codeLines;
+};
+
+fn.deleteComments = function (code) {
+    debug('Start deleting comments')
+    let commentExpression = /#(.*)/g;
+    for(let i = 0; i<code.length;i++) {
+            if (commentExpression.test(code[i].value)) {
+                let comment = code[i].value.match(commentExpression)[0];
+                code[i].value = code[i].value.replace(comment,'');
+            }
+        }
+    debug('End deleting comments')
+    return code;
+};
+
+fn.array2Json = function (array) {
+    debug('Start to json')
+    let jsonString = JSON.stringify(array);
+    let jsonObject = JSON.parse(jsonString);
+    debug('End to json')
+    return jsonObject;
+};
+
 module.exports = fn;

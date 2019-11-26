@@ -277,7 +277,7 @@ class Bindings extends Component {
       let figures = this.state.figures;
       for(let i=0;i<figures.length;i++){
         if (figures[i].figure === result){
-          state.tmpCodelines=figures[i].lines
+          //state.tmpCodelines=figures[i].lines
         }
       }
       this.setState(state);
@@ -322,12 +322,15 @@ class Bindings extends Component {
   }
 
   setCode ( code ) {
+    let self = this;
     let state = this.state;
     state.tmpPlotFunction = code;
     this.setState(state, () => {
       httpRequests.getCodelines({id: state.tmpCompId, plot:state.tmpPlotFunction, file:state.tmpFile})
       .then( function ( res ) {
-        console.log(res);
+        self.setState({
+          tmpCodelines: res.data.data.codelines
+        })
       })
       .catch( function (res) {
         console.log(res)
@@ -369,6 +372,7 @@ class Bindings extends Component {
       }
     };
     this.setState({tmpBinding:binding});
+    console.log(binding)
     return binding;
   }
 

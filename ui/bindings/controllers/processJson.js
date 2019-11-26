@@ -7,9 +7,8 @@ let pJ = {};
 
 
 pJ.addFileContentToJson = function (jsonObj) {
-    debug('Add file content to JSON')
+    debug('Start add file content to JSON')
     let processedJson = [];
-    let numberOfLoopRuns = 0;
     for (let i = 0; i < jsonObj.Lines.length; i++) {
         if (jsonObj.Lines[i].type == 'function') {
             let fun = rules.processFunction(jsonObj.Lines, i);
@@ -47,13 +46,13 @@ pJ.addFileContentToJson = function (jsonObj) {
             let seq = rules.processSequence(jsonObj.Lines, i);
             processedJson.push(seq);
         }
-        numberOfLoopRuns++;
     }
+    debug('End add file content to JSON')
     return processedJson;
 };
 
 pJ.getVarsAndValuesOfLines = function (processedJson) {
-    debug('Get vars and values');
+    debug('Start get vars and values');
     let varsAndValues = [];
     for (let i = 0; i < processedJson.length; i++) {
         if (processedJson[i].json.type == 'function') {
@@ -189,8 +188,9 @@ pJ.getVarsAndValuesOfLines = function (processedJson) {
         
     }
     let singleVarsAndValues = getSingleVarsAndValues(varsAndValues);
-        debug('Processed variables ' + JSON.stringify(singleVarsAndValues,null,2));
-        return singleVarsAndValues;
+    //debug('Processed variables ' + JSON.stringify(singleVarsAndValues,null,2));
+    debug('End get vars and values: %s');
+    return singleVarsAndValues;
     //console.log('VARS ' + JSON.stringify(varsAndValues,null,2));
 }
 
@@ -361,11 +361,6 @@ pJ.ProcessNestedCont = function (jsonObj) {
     return jsonObj;
 };
 
-pJ.valuesToSearchFor = function (plotFunction) {
-    let valuesForSearch = rules.getContentInBrackets(plotFunction);
-    return valuesForSearch;
-}
-
 isRegExp = function(regExp){
     try {
           new RegExp('\\b' + regExp + '\\b');
@@ -375,75 +370,74 @@ isRegExp = function(regExp){
    return true
 }
 
-pJ.getAllCodeLines = function (processedJson, varToSearchFor, lines, searched) {
-    let indexFun = 0;
-    let filteredJson;
-    varToSearchFor.forEach(entry => {
-        if (!searched.includes(entry)) {
-            searched.push(entry);
+pJ.backtrackCodelines = function ( allCodeAsJson, backtrackFromTerms, lines, searchForTermsArray ) {
+    debug( 'Start backtracking codelines' );
+    backtrackFromTerms.forEach( codeTerm => {
+        if ( !searchForTermsArray.includes( codeTerm ) ) {
+            searchForTermsArray.push( codeTerm );
         }
-    })
-    let plotFunctions = ['lines', 'plot', 'axis', 'mtext', 'legend', 'par'];
-    let libAndFun = ['library', 'function'];
-    let data = new RegExp('\\b' + 'load' + '\\b');
-    if (lines.length == 0) {
-        indexFun = processedJson.findIndex(fun => fun.vars.every(elem => searched.includes(elem)))
-        if(indexFun != -1){
-            filteredJson = processedJson.slice(0,indexFun + 1);
-            debug('JSON sliced to ', indexFun);
+    });
+    let indexOfFunction = 0;
+    let codeSubset = '';
+    if ( lines.length == 0 ) {
+        indexOfFunction = allCodeAsJson.findIndex(fun => fun.vars.every(elem => searchForTermsArray.includes(elem)));
+        if ( indexOfFunction != -1 ) {
+            codeSubset = allCodeAsJson.slice(0,indexOfFunction + 1);
         } else {
-            debug('PlotFunction not found.')
+            debug('PlotFunction not found.');
         }
-        filteredJson.forEach(line => {
-                if (plotFunctions.some(fun => line.name.includes(fun)) || libAndFun.some(fun => line.type.includes(fun)) || line.vars.find(value => data.test(value)) != -1) {
-                    lines.push({
-                        start: line.start,
-                        end: line.end,
-                        codeBlock: line.codeBlock
-                    });
-                    let start = line.start;
-                    let end = line.end;
-                    filteredJson = filteredJson.filter(entry => entry.end != end && entry.start != start);
-                }
-        })
+        let plotFunctionComponents = ['lines', 'plot', 'axis', 'mtext', 'legend', 'par'];
+        let libraryAndFunction = ['library', 'function'];
+        let data = new RegExp('\\b' + 'load' + '\\b');
+        codeSubset.forEach( line => {
+            if ( plotFunctionComponents.some(fun => line.name.includes(fun)) || 
+                                            libraryAndFunction.some(fun => line.type.includes(fun)) || 
+                                            line.vars.find(value => data.test(value)) != -1) {
+                lines.push({
+                    start: line.start,
+                    end: line.end,
+                    codeBlock: line.codeBlock
+                });
+                let start = line.start;
+                let end = line.end;
+                codeSubset = codeSubset.filter(entry => entry.end != end && entry.start != start);
+            }
+        });
     }
     let search = [];
-    varToSearchFor.forEach(entry => {
-        //isValid = true;
-        let noWhiteSpace = entry.replace(/\s/g, "");
-        if (noWhiteSpace != "" && isRegExp(noWhiteSpace)) {
-            let expression = new RegExp('(?<=^([^"\']|"\'[^"\']*"\')*)' + '\\b' + noWhiteSpace + '\\b');
-            //console.log('expression')
-            //console.log(expression)
-            if (!search.includes(expression)) {
+    backtrackFromTerms.forEach(codeTerm => {
+        let removeWhitespaces = codeTerm.replace(/\s/g, "");
+        if (removeWhitespaces != "" && isRegExp(removeWhitespaces)) {
+            let expression = new RegExp('(?<=^([^"\']|"\'[^"\']*"\')*)' + '\\b' + removeWhitespaces + '\\b');
+            if ( !search.includes(expression) ) {
                 search.push(expression);
             }
         }
-    })
-    if (search.length > 0) {
-        filteredJson.forEach(line => {
-                let value = line.vars.some(rx => search.some(elem => elem.test(rx)));
-                if (value) {
-                    lines.push({
-                        start: line.start,
-                        end: line.end,
-                        codeBlock: line.codeBlock
-                    });
-                    if (line.vars.length > 1) {
-                        const index = line.vars.findIndex(value => search.some(elem => elem.test(value)));
-                        if (index != -1) {
-                            line.vars.forEach(elem => {
-                                if (!varToSearchFor.includes(elem)) {
-                                    varToSearchFor.push(elem);
-                                }
-                            })
-                        }
+    });
+    if ( search.length > 0 ) {
+        codeSubset.forEach( line => {
+            let value = line.vars.some(rx => search.some(elem => elem.test(rx)));
+            if (value) {
+                lines.push({
+                    start: line.start,
+                    end: line.end,
+                    codeBlock: line.codeBlock
+                });
+                if (line.vars.length > 1) {
+                    const index = line.vars.findIndex(value => search.some(elem => elem.test(value)));
+                    if (index != -1) {
+                        line.vars.forEach(elem => {
+                            if (!backtrackFromTerms.includes(elem)) {
+                                backtrackFromTerms.push(elem);
+                            }
+                        });
                     }
                 }
+            }
         });
-        varToSearchForNew = varToSearchFor.filter((elem) => searched.indexOf(elem) == -1);
+        varToSearchForNew = backtrackFromTerms.filter((elem) => searchForTermsArray.indexOf(elem) == -1);
         if (varToSearchForNew.length > 0) {
-            pJ.getAllCodeLines(filteredJson, varToSearchForNew, lines, searched);
+            pJ.backtrackCodelines(codeSubset, varToSearchForNew, lines, searchForTermsArray);
         }
     }
 
@@ -453,14 +447,12 @@ pJ.getAllCodeLines = function (processedJson, varToSearchFor, lines, searched) {
         }
         return noDups;
     }, []);
-
+    debug('End backtracking codelines, num of obgjects: %s', lines.length);
     return lines.sort((a, b) => (a.start > b.start) ? 1 : -1);
-    //lines.push({"start":30,"end":424})
-
 };
 
 
-pJ.getCodeLines = function (codeLines) {
+pJ.getCodeLines = function (codelines) {
     let codeLinesOfValues = [];
     let min;
     let max;
@@ -469,26 +461,27 @@ pJ.getCodeLines = function (codeLines) {
     let maxValue = 0;
     let startIndex = 0;
 
-    while (codeLines.length > index + 1) {
-                    //console.log(codeLines[startIndex])
-                    //console.log(codeLines[index])
-                if(codeLines[index].end + 1 != codeLines[index + 1].start){
-                    min = codeLines[startIndex].start < minValue ? codeLines[startIndex].start : minValue;
-                    max = codeLines[index].end > maxValue ? codeLines[index].end : maxValue;
-                    codeLinesOfValues.push({
-                        start: min,
-                        end: max
-                    })
-                    startIndex = index + 1;
-                } if(codeLines[index].end + 1 == codeLines[codeLines.length-1].start) {
-                    codeLinesOfValues.push({
-                        start: codeLines[index].start,
-                        end: codeLines[codeLines.length-1].end
-                    })
-                }
+    while (codelines.length > index) {
+        //console.log(codeLines[startIndex])
+        //console.log(codeLines[index])
+        //debug('index: %s', JSON.stringify(codelines[index]))
+        //if(codelines[index].end + 1 != codelines[index + 1].start){
+            min = codelines[startIndex].start < minValue ? codelines[startIndex].start : minValue;
+            max = codelines[index].end > maxValue ? codelines[index].end : maxValue;
+            codeLinesOfValues.push({
+                start: min,
+                end: max
+            })
+            startIndex = index + 1;
+        //} 
+        /*if(codelines[index].end + 1 == codelines[codelines.length-1].start) {
+            codeLinesOfValues.push({
+                start: codelines[index].start,
+                end: codelines[codelines.length-1].end
+            })
+        }*/
         index++;
     }
-
 
     /** 
     const min = codeLines.reduce(

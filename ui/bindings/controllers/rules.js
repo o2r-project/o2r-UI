@@ -85,6 +85,7 @@ const inlineFunction = function (content) {
         return isInlineFunction;
     }
 };
+
 const variableCall = function (content) {
     const isVariableCall = /^\s*((?![=:(){}]).)*$/;
     const isVariableCall2 = /([\w])_([\w])/;

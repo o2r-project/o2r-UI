@@ -138,7 +138,7 @@ bindings.start = (conf) => {
 var cron = require('node-cron');
  
 cron.schedule('* * * * *', () => {
-    debug('cleaning up containers');
+    //debug('cleaning up containers');
     // durch container-Liste durchgehen
     // alle container älter als 25 stunden stoppen und aus der container-Liste entfernen
 
@@ -161,28 +161,21 @@ bindings.createBinding = function(binding, response) {
 };
 
 bindings.implementExtractR = function (binding,response) {
-    //debug( 'Start to extract codelines for result: %s, compendium: %s', binding.computationalResult.result, binding.id );
-    //Comment in if used with Service
+    debug('Start extracting codelines');
     let file = fn.readRmarkdown(binding.id, binding.file);
-
     let lines = file.split('\n');
-    let codeLines = fn.extractCodeLines(lines);
-    let code = fn.extractCode(lines,codeLines.start,codeLines.end);
-    let codeparts = fn.splitCodeIntoLines(code,codeLines.start[0]);
+    let codelines = fn.createPureCode(lines);
+    /*let code = fn.createCodeParts(lines,codelines.start,codelines.end);
+    let codeparts = fn.splitCodeIntoLines(code,codelines.start[0]);
     let type = rules.getTypeOfLine(codeparts);
     let comments = fn.deleteComments(type);
     let json = fn.array2Json(comments);
     let jsonObj = {'Lines': json};
-    let processedJson = processJson.addFileContentToJson(jsonObj);
-    let varsInLines = processJson.getVarsAndValuesOfLines(processedJson);
-    //Insert binding.plot
-    let valuesToSearchFor = processJson.valuesToSearchFor(binding.plot);
-    let codeLinesForValues = processJson.getAllCodeLines(varsInLines,valuesToSearchFor,[],[]);
-
-    debug('Codelines: ',codeLinesForValues);
-    
-    binding.codelines = processJson.getCodeLines(codeLinesForValues);
-    debug(binding.codelines)
+    let codeAsJson = processJson.addFileContentToJson(jsonObj);
+    let varsInLines = processJson.getVarsAndValuesOfLines(codeAsJson);
+    let plotFunctionParameters = rules.getContentInBrackets(binding.plot);
+    let backtrackedCode = processJson.backtrackCodelines(varsInLines,plotFunctionParameters,[],[]);
+    binding.codelines = processJson.getCodeLines(backtrackedCode);*/
     response.send({
         callback: 'ok',
         data: binding});
