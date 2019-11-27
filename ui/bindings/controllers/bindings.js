@@ -169,8 +169,7 @@ bindings.implementExtractR = function (binding,response) {
     let codeAsJson = fn.codeAsJson(chunksOfCode);
     let codeAsJsonWithTypes = rules.getCodeTypes(codeAsJson);
     codeAsJson = fn.array2Json(codeAsJsonWithTypes);
-    debug(codeAsJson)
-    //codeAsJson = processJson.addFileContentToJson(codeAsJsonWithTypes);
+    codeAsJson = processJson.addFileContentToJson(codeAsJsonWithTypes);
     //debug(codeAsJson)
     /*let varsInLines = processJson.getVarsAndValuesOfLines(codeAsJson);
     let plotFunctionParameters = rules.getContentInBrackets(binding.plot);
