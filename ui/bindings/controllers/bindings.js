@@ -164,18 +164,22 @@ bindings.implementExtractR = function (binding,response) {
     debug('Start extracting codelines');
     let file = fn.readRmarkdown(binding.id, binding.file);
     let lines = file.split('\n');
-    let codelines = fn.createPureCode(lines);
-    /*let code = fn.createCodeParts(lines,codelines.start,codelines.end);
-    let codeparts = fn.splitCodeIntoLines(code,codelines.start[0]);
-    let type = rules.getTypeOfLine(codeparts);
-    let comments = fn.deleteComments(type);
-    let json = fn.array2Json(comments);
-    let jsonObj = {'Lines': json};
-    let codeAsJson = processJson.addFileContentToJson(jsonObj);
-    let varsInLines = processJson.getVarsAndValuesOfLines(codeAsJson);
+    let chunksLineNumbers = fn.extractChunks(lines);
+    let chunksOfCode = fn.extractCodeFromChunks(lines,chunksLineNumbers.start,chunksLineNumbers.end);
+    let codeAsJson = fn.codeAsJson(chunksOfCode);
+    let codeAsJsonWithTypes = rules.getCodeTypes(codeAsJson);
+    codeAsJson = fn.array2Json(codeAsJsonWithTypes);
+    debug(codeAsJson)
+    //codeAsJson = processJson.addFileContentToJson(codeAsJsonWithTypes);
+    //debug(codeAsJson)
+    /*let varsInLines = processJson.getVarsAndValuesOfLines(codeAsJson);
     let plotFunctionParameters = rules.getContentInBrackets(binding.plot);
     let backtrackedCode = processJson.backtrackCodelines(varsInLines,plotFunctionParameters,[],[]);
+
+    //debug('Codelines: ',backtrackedCode);
+    
     binding.codelines = processJson.getCodeLines(backtrackedCode);*/
+    //debug('Codelines2: %s', JSON.stringify(binding.codelines))
     response.send({
         callback: 'ok',
         data: binding});

@@ -199,118 +199,74 @@ fn.extractFigureSize = function (binding, fileContent){
             figureSize=elem.split('out.width=')[1].split('}')[0];
         }
     });
+    debug(figureSize);
     debug('End extracting figure width');
     return figureSize;
 }
 
-fn.createPureCode = function (codelines) {
-    debug('Start creating pure code: %s', codelines);
-    codelines = fn.removeYaml(codelines);
-    codelines = fn.removeCommentsChunksSpaces(codelines);
-    let comment = /^\s*#.*/;
-    let pureCode = [];
-    let firstCodeline;
-    for( let lineNumber = 0; lineNumber < codelines.length; lineNumber++ ) {
-        if ( yaml.test(codelines[lineNumber]) ) 
-        if ( chunk.test(codelines[lineNumber]) || comment.test(codelines[lineNumber])) {
-            //skip
-        } else {
-            pureCode.push(codelines[lineNumber]);
+fn.extractChunks = function (lines) {
+    debug('Start extracting code lines')
+    let linesExp = new RegExp('```');
+    let start = [], end = [];
+    let found = 0;
+    for( let codeline = 0; codeline < lines.length; codeline++ ) { 
+        if ( linesExp.test(lines[codeline]) ) {
+            if ( found % 2 === 0 ) {
+                start.push(codeline+1);
+                found++;
+            } else {
+                end.push(codeline);
+                found++;
+            }
         }
     }
-    //debug('End creating pure code: %s', pureCode)
-    return pureCode;
+    debug('End extracting code lines')
+    return {
+        start: start,
+        end: end
+    };
 };
 
-fn.removeYaml = function (codelines) {
-    let codeWithoutYaml = [];
-    let firstChunk = new RegExp('```');
-    for( let lineNumber = 0; lineNumber < codelines.length; lineNumber++ ) {
-        if ( firstChunk.test(codelines[lineNumber]) ) {
-            codeWithoutYaml = codelines.slice(lineNumber+1,codelines.length-1);
-            break;
-        }
-    }
-    return codeWithoutYaml;
-}
-
-fn.removeCommentsChunksSpaces = function (codelines) {
-    let codeWithoutComments = [];
-    for( let lineNumber = 0; lineNumber < codelines.length; lineNumber++ ) {
-        if ( codelines[lineNumber].startsWith('#') ||
-             codelines[lineNumber].startsWith('```') ||
-             codelines[lineNumber].trim() === ''
-            ) {
-            //do nothing
-        } else {
-            codeWithoutComments.push(codelines[lineNumber]);
-        }
-    }
-    //debug('code wothout comments: %s', codeWithoutComments)
-    return codeWithoutComments;
-} 
-
-fn.createCodeParts = function(file,start,end){
+fn.extractCodeFromChunks = function(lines,start,end){
     debug('Start creating code parts')
-    let code = [];
-    for(let i = 0; i < start.length;i++){
-        let codeparts = file.slice(start[i],end[i]);
-        if(end[i] != start[i+1] + 1){
-            for (let j = end[i]; j < start[i+1]; j++){
-                codeparts.splice(j,0,'');
+    let chunksOfCode = [];
+    for ( let chunk = 0; chunk < start.length; chunk++) {
+        let codeInChunk = lines.slice(start[chunk], end[chunk]);
+        if ( end[chunk] != start[chunk+1] + 1 ) {
+            for (let j = end[chunk]; j < start[chunk+1]; j++){
+                codeInChunk.splice(j,0,'');
             }   
         }
-        code.push(codeparts);
+        chunksOfCode.push(codeInChunk);
      }
     // Replace \r through ''
-    for(let i = 0; i<code.length;i++) {
-        code[i] = code[i].map((x) => x.replace('\r', ''));
+    for( let i = 0; i < chunksOfCode.length; i++) {
+        chunksOfCode[i] = chunksOfCode[i].map((x) => x.replace('\r', ''));
     }
-    debug('End creating code parts: %s', code)
-    return code;
+    debug('End creating code parts')
+    return chunksOfCode;
  };
 
-/**
- * @param code
- * @returns {Array} including the codeline, the block and the line number of that specific block
- */
-fn.splitCodeIntoLines = function (code,startLine) {
-    debug('Start splitting code into lines')
-    let codeStart = startLine + 1; 
-    let codeLines = [];
-    let commentOnly = /^\s*#.*/;
-    let counter = 0;
-    let index = 0;
+fn.codeAsJson = function (chunks) {
+    debug('Start creating json from code');
+    let codeAsJson = [];
+    let commentIndicator = /^\s*#.*/;
+    let codeLineCounter = 1;
 
-    for ( let i = 0; i < code.length; i++ ) {
-        code[i].forEach((element) => {
-            if (element.length > 0){
-                let noComment = commentOnly.test(element)
-                if(noComment == false){ 
-                    let value = element
-                    codeLines.push({"value":value,"codeBlock": i + 1, "Line": counter, "index": index + codeStart});
-                    counter++
-                }
+    for ( let chunk = 0; chunk < chunks.length; chunk++ ) {
+        chunks[chunk].forEach( codeline => {
+            if ( codeline.length > 0 && !commentIndicator.test(codeline) ){
+                codeAsJson.push({
+                    "code":codeline,
+                    "codeblock": chunk + 1, 
+                    "codeline": codeLineCounter
+                });
             }
-            index++;
+            codeLineCounter++;
         });
     }
-    //debug('CL ' + JSON.stringify(codeLines))
-    debug('End splitting code into lines')
-    return codeLines;
-};
-
-fn.deleteComments = function (code) {
-    debug('Start deleting comments')
-    let commentExpression = /#(.*)/g;
-    for(let i = 0; i<code.length;i++) {
-            if (commentExpression.test(code[i].value)) {
-                let comment = code[i].value.match(commentExpression)[0];
-                code[i].value = code[i].value.replace(comment,'');
-            }
-        }
-    debug('End deleting comments')
-    return code;
+    debug('End creating json from code')
+    return codeAsJson;
 };
 
 fn.array2Json = function (array) {
@@ -318,7 +274,7 @@ fn.array2Json = function (array) {
     let jsonString = JSON.stringify(array);
     let jsonObject = JSON.parse(jsonString);
     debug('End to json')
-    return jsonObject;
+    return [jsonObject];
 };
 
 module.exports = fn;

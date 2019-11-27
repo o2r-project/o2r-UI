@@ -2,48 +2,50 @@ const rules = require('./rules');
 const fn = require('./generalFunctions');
 const debug = require('debug')('bindings');
 
-
 let pJ = {};
 
-
-pJ.addFileContentToJson = function (jsonObj) {
-    debug('Start add file content to JSON')
+pJ.addFileContentToJson = function (codeAsJson) {
+    debug( 'Start add file content to JSON' )
+    debug(codeAsJson.length)
+    debug(codeAsJson[0].codeType == 'inlineFunction')
     let processedJson = [];
-    for (let i = 0; i < jsonObj.Lines.length; i++) {
-        if (jsonObj.Lines[i].type == 'function') {
-            let fun = rules.processFunction(jsonObj.Lines, i);
+    for (let codeline = 0; codeline < codeAsJson.length; codeline++) {
+        if (codeAsJson[codeline].codeType == 'function') {
+            let fun = rules.processFunction(codeAsJson, codeline);
             processedJson.push(fun);
-            i = fun.end;
-        } else if (jsonObj.Lines[i].type == 'conditional') {
-            let cond = rules.processCond(jsonObj.Lines, i);
+            codeline = fun.end;
+        } else if (codeAsJson[codeline].codeType == 'conditional') {
+            let cond = rules.processCond(codeAsJson, codeline);
             processedJson.push(cond);
-            i = cond.end
-        } else if (jsonObj.Lines[i].type == 'forLoop' || jsonObj.Lines[i].type == 'whileLoop' || jsonObj.Lines[i].type == 'repeatLoop') {
-            let loop = rules.processLoop(jsonObj.Lines, i);
+            codeline = cond.end
+        } else if (codeAsJson[codeline].codeType == 'forLoop' || 
+                    codeAsJson[codeline].codeType == 'whileLoop' || 
+                    codeAsJson[codeline].codeType == 'repeatLoop') {
+            let loop = rules.processLoop(codeAsJson, codeline);
             processedJson.push(loop);
-            i = loop.end
-        } else if (jsonObj.Lines[i].type == 'inlineFunction') {
-            let inline = rules.processInlineFunction(jsonObj.Lines, i);
+            codeline = loop.end
+        } else if (codeAsJson[codeline].codeType == 'inlineFunction') {
+            let inline = rules.processInlineFunction(codeAsJson, codeline);
             processedJson.push(inline);
-        } else if (jsonObj.Lines[i].type == 'variable') {
-            let variable = rules.processVariables(jsonObj.Lines, i, false);
+        } else if (codeAsJson[codeline].codeType == 'variable') {
+            let variable = rules.processVariables(codeAsJson, codeline, false);
             if (variable.multi == false) {
                 processedJson.push(variable);
             } else {
                 processedJson.push(variable);
-                i = variable.end
+                codeline = variable.end
             }
-        } else if (jsonObj.Lines[i].type == 'variable call') {
-            let varCall = rules.processVarCall(jsonObj.Lines, i);
+        } else if (codeAsJson[codeline].codeType == 'variable call') {
+            let varCall = rules.processVarCall(codeAsJson, codeline);
             processedJson.push(varCall);
-        } else if (jsonObj.Lines[i].type == 'library') {
-            let lib = rules.processLib(jsonObj.Lines, i);
+        } else if (codeAsJson[codeline].codeType == 'library') {
+            let lib = rules.processLib(codeAsJson, codeline);
             processedJson.push(lib);
-        } else if (jsonObj.Lines[i].type == 'exFile') {
-            let exFile = rules.processExFile(jsonObj.Lines, i);
+        } else if (codeAsJson[codeline].codeType == 'exFile') {
+            let exFile = rules.processExFile(codeAsJson, codeline);
             processedJson.push(exFile);
-        } else if (jsonObj.Lines[i].type == 'sequence') {
-            let seq = rules.processSequence(jsonObj.Lines, i);
+        } else if (codeAsJson[codeline].codeType == 'sequence') {
+            let seq = rules.processSequence(codeAsJson, codeline);
             processedJson.push(seq);
         }
     }

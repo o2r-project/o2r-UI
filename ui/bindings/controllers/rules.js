@@ -2,15 +2,32 @@ const debug = require('debug')('bindings');
 
 let areYou = {};
 
-const variable = function (content) {
-    //Test for variable of form v = x or v <- x
-    const isVariable1 = /^\s*\b(?![(])[\w\[\],.\s]*\s?=\s?[".\w\[\]]+/;
-    const isVariable2 = /^\s*\b(?![(])[\w\[\],.\s]*\s?<-\s?[".\w\[\]]+/;
+const isVariable = function (code) {
+    const equalitySignDeclaration = /^\s*\b(?![(])[\w\[\],.\s]*\s?=\s?[".\w\[\]]+/;
+    const arrowDeclaration = /^\s*\b(?![(])[\w\[\],.\s]*\s?<-\s?[".\w\[\]]+/;
+    return !isFunction(code) && 
+            (equalitySignDeclaration.test(code) || 
+            arrowDeclaration.test(code));
+};
 
-    if (!fun(content) && (isVariable1.test(content) || isVariable2.test(content))) {
-        return isVariable1;
-    }
+const isFunction = function (code) {
+    return /(?:function)/.test(code);
+};
 
+const isInlineFunction = function (code) {
+    const isInlineFunction = findFunctions(code);
+    return isInlineFunction == true 
+            || /\w+(.)::(.)\w+/.test(code);
+};
+
+const isScriptloader = function (code) {
+    return /(?:source)/.test(code);
+};
+
+const isLibrary = function (code) {
+    const library = /(?:library)/;
+    const loadData = /(?:load)/;
+    return loadData.test(code) || library.test(code);
 };
 
 const forloop = function (content) {
@@ -45,44 +62,15 @@ const conditional = function (content) {
     }
 };
 
-const fun = function (content) {
-    const isFunction = /(?:function)/;
 
-    if (isFunction.test(content) == true) {
-        return isFunction;
-    }
-};
 
-const lib = function (content) {
-    const isLibrary = /(?:library)/;
-    const loadData = /(?:load)/;
 
-    if (loadData.test(content) == true || isLibrary.test(content) == true) {
-        return isLibrary;
-    }
-};
-
-const loadOtherFile = function (content) {
-    const isExFile = /(?:source)/;
-
-    if (isExFile.test(content) == true) {
-        return isExFile;
-    }
-};
 
 const sequence = function (content) {
     const isSequence = /(?<!:):(?!:)/;
 
     if (isSequence.test(content) == true) {
         return isSequence;
-    }
-};
-
-const inlineFunction = function (content) {
-    const isInlineFunction = findFunctions(content);
-    const inlineFunctionFromLibrary = /\w+(.)::(.)\w+/;
-    if (isInlineFunction == true || inlineFunctionFromLibrary == true) {
-        return isInlineFunction;
     }
 };
 
@@ -95,57 +83,58 @@ const variableCall = function (content) {
     }
 };
 
-areYou.getTypeOfLine = function (lines) {
-    for (let i = 0; i < lines.length; i++) {
-        let type = areYou.findType(lines[i].value);
-        if (type !== 'undefined') {
-            lines[i].type = type;
+areYou.getCodeTypes = function (codeAsJson) {
+    debug('Start getting code types');
+    for ( let codeObject = 0; codeObject < codeAsJson.length; codeObject++ ) {
+        let codeType = areYou.findType(codeAsJson[codeObject].code);
+        if (codeType !== 'undefined') {
+            codeAsJson[codeObject].codeType = codeType;
         } else {
             console.log('Unable to detect type.')
         }
     }
-    return lines;
+    debug('End getting code types');
+    return codeAsJson;
 };
 
-areYou.findType = function (file) {
-    let type = '';
-    if (variable(file)) {
-        type = 'variable';
+areYou.findType = function (codeline) {
+    let codeType = '';
+    if (isVariable(codeline)) {
+        codeType = 'variable';
     }
-    else if (fun(file)) {
-        type = 'function';
+    else if (isFunction(codeline)) {
+        codeType = 'function';
     }
-    else if (inlineFunction(file)) {
-        type = 'inlineFunction';
+    else if (isInlineFunction(codeline)) {
+        codeType = 'inlineFunction';
     }
-    else if (loadOtherFile(file)) {
-        type = 'exFile';
+    else if (isScriptloader(codeline)) {
+        codeType = 'exFile';
     }
-    else if (lib(file)) {
-        type = 'library';
+    else if (isLibrary(codeline)) {
+        codeType = 'library';
     }
-    else if (forloop(file)) {
-        type = 'forLoop';
+    else if (forloop(codeline)) {
+        codeType = 'forLoop';
     }
-    else if (whileloop(file)) {
-        type = 'whileLoop';
+    else if (whileloop(codeline)) {
+        codeType = 'whileLoop';
     }
-    else if (repeatloop(file)) {
-        type = 'repeatLoop';
+    else if (repeatloop(codeline)) {
+        codeType = 'repeatLoop';
     }
-    else if (variableCall(file)) {
-        type = 'variable call';
+    else if (variableCall(codeline)) {
+        codeType = 'variable call';
     }
-    else if (conditional(file)) {
-        type = 'conditional';
+    else if (conditional(codeline)) {
+        codeType = 'conditional';
     }
-    else if (sequence(file)) {
-        type = 'sequence';
+    else if (sequence(codeline)) {
+        codeType = 'sequence';
     } else {
-        type = '';
-
+        codeType = '';
     }
-    return type;
+    return codeType;
 };
 
 
@@ -244,19 +233,19 @@ processMultiLineVarContent = function (jsonAtVarLine, startIndex) {
 
 areYou.processFunction = function (json,index) {
     let startEnd = [];
-    let varCont = json[index].value
+    let varCont = json[index].code
     if (varCont.indexOf('(') != -1 && varCont.indexOf(')') != -1 || varCont.indexOf('(') == -1 && varCont.indexOf(')') == -1) {
-        let end = searchEnd(json, json[index].codeBlock, json[index].Line);
+        let end = searchEnd(json, json[index].codeBlock, json[index].codeline);
         let start = index;
-        let vars = areYou.getContentInBrackets(json[index].value);
-        let name = areYou.getName(json[index].value);
+        let vars = areYou.getContentInBrackets(json[index].code);
+        let name = areYou.getName(json[index].code);
         json[index].content = { 'vars': vars,'name': name };
         startEnd.push(start, end.line,end.endIndex);
     } else {
         let preprocessMultiLineArgFun = processMultiLineVarContent(json, index);
         let start = index
         let endOfFunArgs = preprocessMultiLineArgFun.end
-        let end = searchEnd(json, json[index].codeBlock, json[endOfFunArgs].Line);
+        let end = searchEnd(json, json[index].codeBlock, json[endOfFunArgs].codeline);
         let vars = areYou.getContentInBrackets(preprocessMultiLineArgFun.value);
         let name = areYou.getName(preprocessMultiLineArgFun.value);
         json[index].content = { 'vars': vars,'name': name };
@@ -276,14 +265,15 @@ areYou.processFunction = function (json,index) {
         endIndex: startEnd[2]
     }
 };
+
 areYou.processLoop = function (json,index) {
     let end = searchEnd(json, json[index].codeBlock, json[index].Line);
-    let start = json[index].Line;
+    let start = json[index].codeline;
     addLoopContent(json,index,start, end.line);
-    if (json[index].type != 'repeatLoop') {
-        let brCont = areYou.getContentInBrackets(json[index].value, json[index].type);
-        let brContProccessed = processBracketContentLoops(brCont, json[index].type);
-        brContProccessed.type = areYou.findType(brContProccessed.sequence);
+    if (json[index].codeType != 'repeatLoop') {
+        let brCont = areYou.getContentInBrackets(json[index].value, json[index].codeType);
+        let brContProccessed = processBracketContentLoops(brCont, json[index].codeType);
+        brContProccessed.codeType = areYou.findType(brContProccessed.sequence);
         json[index].loopOver = brContProccessed;
     }
     let processedLoop = deleteDups(json,index,end.line);
@@ -308,7 +298,7 @@ addLoopContent = function (json,index,startOfLoopLine, endOfLoopIndex) {
     for (let i = index + 1; i < endOfJsonLoop; i++) {
         
         let line = i;
-        let value = json[i].value;
+        let value = json[i].code;
        
         let type = areYou.findType(value);
         
@@ -330,7 +320,7 @@ addLoopContent = function (json,index,startOfLoopLine, endOfLoopIndex) {
 //TODO: Change also other parts, but it works for INSYDE
 findValue = function(json,index){
     //console.log("FindVALue " + JSON.stringify(json[index]))
-    if(json[index].type == 'function'){
+    if(json[index].codeType == 'function'){
         //console.log('function');
         let fun = areYou.processFunction(json,index);
         return {
@@ -350,7 +340,7 @@ findValue = function(json,index){
            endIndex: cond.endIndex
        }
     }
-    else if(json[index].type == 'forLoop' || json[index].type == 'whileLoop' || json[index].type == 'repeatLoop'){    
+    else if(json[index].codeType == 'forLoop' || json[index].codeType == 'whileLoop' || json[index].codeType == 'repeatLoop'){    
         //console.log('loop');
         let loop = areYou.processLoop(json,index);
         return{
@@ -393,12 +383,12 @@ searchEnd = function (json, blockIndex, lineIndex) {
     let opening = /{/g;
     let closing = /}/g;
     for (let i = lineIndex; i < json.length; i++) {
-        if (opening.test(json[i].value)) {
-            openCount += json[i].value.match(opening).length;
+        if (opening.test(json[i].code)) {
+            openCount += json[i].code.match(opening).length;
         }
-        if (closing.test(json[i].value)) {
-            closedCount += json[i].value.match(closing).length;
-            openCount -= json[i].value.match(closing).length;
+        if (closing.test(json[i].code)) {
+            closedCount += json[i].code.match(closing).length;
+            openCount -= json[i].code.match(closing).length;
      
         }
 
@@ -409,7 +399,7 @@ searchEnd = function (json, blockIndex, lineIndex) {
         }
         if ((openCount == 0) && i != lineIndex) {
             return {
-                line:json[i].Line,
+                line:json[i].codeline,
                 endIndex: json[i].index
             }
         }
@@ -468,7 +458,7 @@ findNested = function (json, outerType, innerType) {
 
 deleteDups = function (json,index,end) {
     let lineOfLoopContent = [];
-        if (json[index].type === 'forLoop' || json[index].type === 'whileLoop' || json[index].type === 'repeatLoop' || json[index].type === 'conditional') {
+        if (json[index].codeType === 'forLoop' || json[index].codeType === 'whileLoop' || json[index].codeType === 'repeatLoop' || json[index].type === 'conditional') {
             if (json[index].content != undefined) {
                 let noDuplicateIndex = json.filter(a => a.Line <= end);
                 json = noDuplicateIndex;
@@ -481,9 +471,9 @@ deleteDups = function (json,index,end) {
 //TODO Inline functions...
 areYou.processInlineFunction = function (json,index) {
     let typeArray = [];
-
-    let funCont = areYou.getContentInBrackets(json[index].value);
-    let fun = areYou.getFunction(json[index].value);
+    debug('')
+    let funCont = areYou.getContentInBrackets(json[index].code);
+    let fun = areYou.getFunction(json[index].code);
 
     let funContProcessed = processBracketContentInFun(funCont);
     json[index].call = fun;
@@ -505,7 +495,7 @@ areYou.processVariables = function (json, index,multi) {
     let linesOfMultiVar = [];
     let end;
     let endIndexMulti;
-    let varCont = json[index].value;
+    let varCont = json[index].code;
     if (varCont.indexOf('(') != -1 && varCont.indexOf(')') != -1 && varCont.indexOf('%>%') == -1 || varCont.indexOf('(') == -1 && varCont.indexOf(')') == -1 && varCont.indexOf('%>%') == -1) {
         let varContProcessed = processVarContent(varCont);
         varContProcessed.type = areYou.findType(varContProcessed.value);
@@ -541,8 +531,8 @@ areYou.processVariables = function (json, index,multi) {
 
 //TODO Cond
 areYou.processCond = function (json,index) {
-    let endLine = searchEnd(json, json[index].codeBlock, json[index].Line);
-    let startLine = json[index].Line;
+    let endLine = searchEnd(json, json[index].codeBlock, json[index].codeline);
+    let startLine = json[index].codeline;
 
     addLoopContent(json,index,startLine, endLine.line);
 
@@ -556,7 +546,7 @@ areYou.processCond = function (json,index) {
 
 
 areYou.processVarCall = function (json,index) {
-    let varCallCont = json[index].value;
+    let varCallCont = json[index].code;
     json[index].content = { 'value': varCallCont };
 
     return {
@@ -566,7 +556,7 @@ areYou.processVarCall = function (json,index) {
 };
 
 areYou.processLib = function (json,index) {
-    let libCont = json[index].value;
+    let libCont = json[index].code;
     let calledLib = areYou.getContentInBrackets(libCont);
     json[index].content = calledLib;
     return {
@@ -576,7 +566,7 @@ areYou.processLib = function (json,index) {
 };
 
 areYou.processExFile = function (json,index) {
-    let file = json[index].value;
+    let file = json[index].code;
     let LinkToFile = areYou.getContentInBrackets(file)[0];
     json[index].content = LinkToFile;
     return {
@@ -586,7 +576,7 @@ areYou.processExFile = function (json,index) {
 };
 
 areYou.processSequence = function (json,index) {
-    let seq = json[index].value;
+    let seq = json[index].code;
     json[index].content = seq;
 
     return {
@@ -599,11 +589,8 @@ areYou.processSequence = function (json,index) {
 
 const findFunctions = function (content) {
     let isFunction = /(?!\bif\b|\bfor\b|\bwhile\b|\brepeat\b|\blibrary\b|\bsource\b)(\b[\w]+\b)[\s\n\r]*(?=\(.*\))/g;
-
     if (!forloop(content) || !whileloop || !repeatloop) {
-        if (isFunction.test(content)) {
-            return true;
-        }
+        return isFunction.test(content);
     }
 };
 
