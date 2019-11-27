@@ -25,9 +25,7 @@ const isScriptloader = function (code) {
 };
 
 const isLibrary = function (code) {
-    const library = /(?:library)/;
-    const loadData = /(?:load)/;
-    return loadData.test(code) || library.test(code);
+    return /(?:load)/.test(code) || /(?:library)/.test(code);
 };
 
 const forloop = function (content) {
