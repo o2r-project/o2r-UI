@@ -4,9 +4,9 @@ import JSONFile from 'react-json-tree';
 
 class JSON extends React.Component {
 
-    render () {
+    render() {
         return (
-            <div style={{textAlign:'left'}}>
+            <div style={{ textAlign: 'left' }}>
                 <JSONFile data={this.props.json} />
             </div>
         )
