@@ -1,7 +1,7 @@
 import React from 'react';
 import 'react-reflex/styles.css';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
-import { Paper, Tabs, Tab, Button, IconButton } from "@material-ui/core";
+import { Paper, Tabs, Tab, Button, IconButton, Grid } from "@material-ui/core";
 import GetAppIcon from '@material-ui/icons/GetApp';
 
 import config from '../../helpers/config';
@@ -13,6 +13,7 @@ import Check from './Check/Check';
 import Manipulate from './Manipulate/Manipulate';
 import Substitution from './Substitution/Substitution';
 import DownloadPop from './Download/DownloadPop';
+import SubstitutionInfoPop from './Substitution/SubstitutionInfo'
 
 class ERC extends React.Component {
     constructor(props) {
@@ -128,8 +129,12 @@ class ERC extends React.Component {
         const self = this;
         httpRequests.singleCompendium(this.state.id)
             .then(function (response) {
+                console.log(response.data)
+                let substituted= null;
+                if(response.data.substituted){
+                    substituted = response.data.metadata.substitution
+                }
                 const data = response.data.metadata.o2r;
-                console.log(data)
                 let dataset = '';
                 if (Array.isArray(data.inputfiles)) {
                     dataset = data.inputfiles[0];
@@ -142,6 +147,7 @@ class ERC extends React.Component {
                     dataset: dataset,
                     codefiles: data.codefiles,
                     binding: data.interaction[0],
+                    substituted: substituted
                 });
                 self.setDisplayFile(data.displayfile);
                 if (Array.isArray(data.inputfiles)) {
@@ -169,12 +175,12 @@ class ERC extends React.Component {
         })
     }
 
-    openPop = () => {
-        this.setState({ open: true })
+    openPop = (name) => {
+        this.setState({ [name]: true })
     }
 
     handleClose() {
-        this.setState({ open: false })
+        this.setState({ downloadOpen: false, substitutionInfoOpen: false })
     }
 
     render() {
@@ -182,17 +188,28 @@ class ERC extends React.Component {
             <div className="Erc" >
                 <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
                     <ReflexElement>
+                    <Grid container>
+                        <Grid item xs={4}>
+                        {this.state.substituted? <span style={{ float: "left"}}> <span style={{top: "1px", position: "relative"}}> This is an substituted ERC</span> <Button onClick={() => this.openPop("substitutionInfoOpen")}>More Info</Button> </span>: ""}
+                        </Grid>                  
+                    {this.state.substitutionInfoOpen ? <SubstitutionInfoPop id={this.state.id} open={this.state.substitutionInfoOpen} handleClose={this.handleClose} /> : ""}
+                    <Grid item xs={4}>
                         <Button
                             onClick={this.handleDisplayFile.bind(this)}
                             variant='contained'
                             color='inherit'
+                            style={{float : "center"}}
                         >
                             {this.state.html ? 'Show PDf' : 'Show HTML'}
                         </Button>
-                        <IconButton size='large' style={{ float: "right" }} onClick={this.openPop}>
+                        </Grid>
+                        <Grid xs={4}>
+                        <IconButton size='large' style={{ float: "right" }} onClick={() => this.openPop("downloadOpen")}>
                             <GetAppIcon />
                         </IconButton>
-                        {this.state.open ? <DownloadPop id={this.state.id} open={this.state.open} handleClose={this.handleClose} /> : ""}
+                        </Grid>
+                        </Grid>
+                        {this.state.downloadOpen ? <DownloadPop id={this.state.id} open={this.state.downloadOpen} handleClose={this.handleClose} /> : ""}
                         {this.state.displayfile != null
                             ? <MainView
                                 metadata={this.state.metadata}
