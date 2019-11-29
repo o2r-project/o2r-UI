@@ -10,7 +10,7 @@ class Inspect extends Component {
     render() {
         const props=this.props.state;
         return (
-            <ReflexContainer orientation="horizontal">
+            <ReflexContainer orientation="horizontal" style={{height: "92%"}}>
                 <ReflexElement>
                     {props.codefiles != null && props.codefile != null 
                     ?<SelectFile 

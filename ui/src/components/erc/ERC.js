@@ -52,7 +52,7 @@ class ERC extends React.Component {
                                     });
                                 })
                                 .catch((res3) => {
-                                    console.log(res)
+                                    console.log(res3)
                                 })
                         } else {
                             self.setState({
@@ -187,7 +187,7 @@ class ERC extends React.Component {
         return (
             <div className="Erc" >
                 <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
-                    <ReflexElement>
+                    <ReflexElement style={{ overflow: "hidden"}}>
                         <Grid container>
                             <Grid item xs={4}>
                                 {this.state.substituted ?

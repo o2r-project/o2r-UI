@@ -1,6 +1,7 @@
 const axios = require('axios');
+const config = require('./config');
 const _env = {
-    api: "http://localhost/api/v1/"
+    api: config.baseUrl
 }
 
 function getUser() {
@@ -26,7 +27,6 @@ function uploadViaSciebo(url, folder) {
 }
 
 function uploadWorkspace(workspace, config) {
-    console.log(workspace)
     return axios.post(_env.api + 'compendium', workspace, config);
 }
 

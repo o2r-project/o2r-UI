@@ -29,6 +29,3 @@ The platform is available at http://localhost and the API at `http://localhost/a
 
 1. Click the "Log in" button in the UI
 1. Obtain the authentication token by 
-
-
-
