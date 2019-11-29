@@ -1,18 +1,20 @@
 import React from 'react';
-import { tsBooleanKeyword } from '@babel/types';
+
+import config from '../../../../../helpers/config'
+
 
 class Download extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            url: "/api/v1/compendium/" + props.id + "/data/" + props.file
+            url: config.baseUrl + "compendium/" + props.id + "/data/" + props.file
         };
     }
 
     componentDidUpdate(prevProps) {
         if (this.props.file !== prevProps.file) {
-            this.setState({ url: "/api/v1/compendium/" + this.props.id + "/data/" + this.props.file })
+            this.setState({ url: config.baseUrl + "compendium/" + this.props.id + "/data/" + this.props.file })
         }
     }
 

@@ -11,6 +11,11 @@ function getUser() {
 function listAllCompendia() {
     return axios.get(_env.api + 'compendium');
 }
+
+function listUserCompendia(user) {
+    return axios.get(_env.api + 'compendium?user=' + user);
+}
+
 function updateMetadata(id, data){
     var _url = _env.api + 'compendium/' + id + '/metadata';
     var body = {o2r: data};
@@ -78,9 +83,15 @@ function downloadERC(id, image){
     return _env.api + 'compendium/' + id + '.zip?image=' + image
 }
 
+function createSubstitution(baseId, overlayId, substitutionFiles){
+    const body={"base": baseId, "overlay": overlayId, "substitutionFiles": substitutionFiles, "metadataHandling": "keepBase"}
+    return axios.post(_env.api + 'substitution', body);
+}
+
 module.exports = {
     getUser: getUser,
     listAllCompendia: listAllCompendia,
+    listUserCompendia: listUserCompendia,
     uploadViaSciebo: uploadViaSciebo,
     uploadWorkspace: uploadWorkspace,
     singleCompendium: singleCompendium,
@@ -96,4 +107,5 @@ module.exports = {
     searchBinding: searchBinding,
     geocodingRequest: geocodingRequest,
     downloadERC: downloadERC,
+    createSubstitution: createSubstitution,
 };
