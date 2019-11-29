@@ -50,7 +50,7 @@ class ERC extends React.Component {
                                     });
                                 })
                                 .catch((res3) => {
-                                    console.log(res)
+                                    console.log(res3)
                                 })
                         } else {
                             self.setState({
