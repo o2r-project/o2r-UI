@@ -180,7 +180,7 @@ class ERC extends React.Component {
         return (
             <div className="Erc" >
                 <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
-                    <ReflexElement>
+                    <ReflexElement style={{ overflow: "hidden"}}>
                         <Button
                             onClick={this.handleDisplayFile.bind(this)}
                             variant='contained'
