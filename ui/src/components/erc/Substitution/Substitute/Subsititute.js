@@ -23,6 +23,7 @@ class Substitute extends Component {
 
     }
 
+    componentDidMount() {this.getMetadata()}
     handleClose = () => {
         this.props.setErc(0);
     }
@@ -39,11 +40,26 @@ class Substitute extends Component {
             })
     }
 
+    getMetadata = () =>{
+        const self = this;
+        httpRequests.singleCompendium(this.props.baseErcId)
+        .then(function (response){
+                const files = response.data.files.children;
+                for (var file of files){
+                    if(file.name == "erc.yml"){
+                        console.log(file.name)
+                        self.setState({configurationFile:true})
+                    }
+                }
+        })
+    }
+
     goToErc = () => {
         this.handleClose();
         this.props.history.push({
             pathname: '/erc/' + this.state.substitutedErc,
         });
+        window.location.reload(true);
     }
 
     removeSelection = () => {
@@ -69,11 +85,11 @@ class Substitute extends Component {
             if (this.state.substitutionFile) {
                 substitutionFiles.push({ "base": file, "overlay": this.state.substitutionFile })
                 selected.push(file);
-                selected.push(this.state.substitutionFile)
+                selected.push(this.state.substitutionFile);
                 this.setState({ basefile: null, substitutionFile: null, substitutionFiles, selected })
             }
             else {
-                this.setState({ [name]: event.target.value })
+                this.setState({ [name]: event.target.value });
             }
         }
     }
@@ -157,10 +173,11 @@ class Substitute extends Component {
                     </Button>
                     <br />
                     <Button style={{ width: "10%", left: "12%" }} variant="contained" color="primary"
-                        disabled={this.state.substitutedErc !== null || this.state.substitutionFiles.length === 0}
+                        disabled={this.state.substitutedErc !== null || this.state.substitutionFiles.length === 0 || !this.state.configurationFile}
                         onClick={() => this.substitute()}>
                         Substitute
                     </Button>
+                    {!this.state.configurationFile ? <> <br/> <span style={{"padding-left": "12%"}}>Configuration file is missing, so it cannot be included. <br/> Please ensure a successful analysis execution first </span> </>: ""}
                     {this.state.open ? <CircularProgress /> : ''}
                     <br />
                     <Button style={{ width: "10%", left: "12%" }} variant="contained" color="primary"
