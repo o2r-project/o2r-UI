@@ -5,9 +5,10 @@ const debug = require('debug')('bindings');
 let pJ = {};
 
 pJ.addFileContentToJson = function ( codeAsJson ) {
-    debug( 'Start add file content to JSON' )
+    debug( 'Start add file content to JSON: %s', JSON.stringify(codeAsJson) )
     let processedJson = [];
     for (let codeline = 0; codeline < codeAsJson.length; codeline++) {
+        debug(codeAsJson[codeline])
         if (codeAsJson[codeline].codeType === 'function') {
             let fun = rules.processFunction(codeAsJson, codeline);
             processedJson.push(fun);
@@ -21,33 +22,33 @@ pJ.addFileContentToJson = function ( codeAsJson ) {
                     codeAsJson[codeline].codeType === 'repeatLoop') {
             let loop = rules.processLoop( codeAsJson, codeline );
             processedJson.push(loop);
-            codeline = loop.end
+            codeline = loop.end;
         } else if (codeAsJson[codeline].codeType === 'inlineFunction') {
-            let inline = rules.processInlineFunction(codeAsJson, codeline);
-            processedJson.push(inline);
-        } else if (codeAsJson[codeline].codeType === 'variable') {
+            let inline = rules.processInlineFunction( codeAsJson, codeline );
+            processedJson.push( inline );
+        } else if ( codeAsJson[codeline].codeType === 'variable' ) {
             let variable = rules.processVariables( codeAsJson, codeline );
-            if (variable.multi === false) {
-                processedJson.push(variable);
+            if ( variable.isMultiLinesVariable === false ) {
+                processedJson.push( variable );
             } else {
-                processedJson.push(variable);
-                codeline = variable.end
+                processedJson.push( variable );
+                codeline = variable.end;
             }
-        }/* else if (codeAsJson[codeline].codeType == 'variable call') {
-            let varCall = rules.processVarCall(codeAsJson, codeline);
-            processedJson.push(varCall);
-        } else if (codeAsJson[codeline].codeType == 'library') {
-            let lib = rules.processLib(codeAsJson, codeline);
-            processedJson.push(lib);
-        } else if (codeAsJson[codeline].codeType == 'exFile') {
-            let exFile = rules.processExFile(codeAsJson, codeline);
-            processedJson.push(exFile);
-        } else if (codeAsJson[codeline].codeType == 'sequence') {
-            let seq = rules.processSequence(codeAsJson, codeline);
-            processedJson.push(seq);
-        }*/
+        } else if ( codeAsJson[codeline].codeType === 'variableCall' ) {
+            let varCall = rules.processVarCall( codeAsJson, codeline );
+            processedJson.push( varCall );
+        } else if ( codeAsJson[codeline].codeType === 'library' ) {
+            let library = rules.processLibrary( codeAsJson, codeline );
+            processedJson.push( library );
+        } else if ( codeAsJson[codeline].codeType === 'exFile' ) {
+            let exFile = rules.processExFile( codeAsJson, codeline );
+            processedJson.push( exFile );
+        } else if ( codeAsJson[codeline].codeType === 'sequence' ) {
+            let sequence = rules.processSequence( codeAsJson, codeline );
+            processedJson.push( sequence );
+        }
     }
-    debug('End add file content to JSON: %s', JSON.stringify(processedJson))
+    debug('End add file content to JSON')
     return processedJson;
 };
 
