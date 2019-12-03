@@ -207,7 +207,6 @@ areYou.processFunction = function (fullCode, linenumber) {
     if (code.indexOf('(') != -1 && code.indexOf(')') != -1 || 
         code.indexOf('(') == -1 && code.indexOf(')') == -1) {
         let end = searchEnd(fullCode, fullCode[linenumber].codeline);
-        console.log("end:", end)
         let start = linenumber;
         let functionParameters = areYou.getContentInBrackets(fullCode[linenumber].code);
         let functionName = areYou.getName(fullCode[linenumber].code);
@@ -492,6 +491,7 @@ searchEnd = function ( json, lineIndex ) {
     let closedCount = 0;
     let opening = /{/g;
     let closing = /}/g;
+    console.log("li",lineIndex)
     for (let i = lineIndex; i < json.length; i++) {
         //console.log("oc:", openCount)
         //console.log("cc:", closedCount)
