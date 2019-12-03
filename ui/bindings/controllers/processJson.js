@@ -10,8 +10,8 @@ pJ.addFileContentToJson = function ( codeAsJson ) {
     let processedJson = [];
     //console.log(codeAsJson.length)
     for (let codeline = 0; codeline < codeAsJson.length; codeline++) {
-        //console.log(codeline)
-        if (codeAsJson[codeline].codeType === 'function') {
+        console.log(codeline)
+        /*if (codeAsJson[codeline].codeType === 'function') {
             let fun = rules.processFunction(codeAsJson, codeline);
             processedJson.push(fun);
             codeline = fun.end;
@@ -50,7 +50,7 @@ pJ.addFileContentToJson = function ( codeAsJson ) {
         } else if ( codeAsJson[codeline].codeType === 'sequence' ) {
             let sequence = rules.processSequence( codeAsJson, codeline );
             processedJson.push( sequence );
-        }
+        }*/
     }
     //console.log(JSON.stringify(processedJson))
     //console.log('End add file content to JSON')
