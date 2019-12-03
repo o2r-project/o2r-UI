@@ -275,7 +275,7 @@ fn.array2Json = function (array) {
     let jsonString = JSON.stringify(array);
     let jsonObject = JSON.parse(jsonString);
     debug('End to json')
-    return [jsonObject];
+    return jsonObject;
 };
 
 module.exports = fn;

@@ -171,9 +171,9 @@ bindings.implementExtractR = function (binding,response) {
     let codeAsJson = fn.codeAsJson(chunksOfCode);
     let codeAsJsonWithTypes = rules.getCodeTypes(codeAsJson);
     codeAsJson = fn.array2Json(codeAsJsonWithTypes);
-    //console.log(codeAsJson)
-    codeAsJson = processJson.addFileContentToJson(codeAsJsonWithTypes);
-    console.log(codeAsJson)
+    console.log(codeAsJson.length)
+    codeAsJson = processJson.addFileContentToJson(codeAsJson);
+    //console.log(codeAsJson.length)
     /*let varsInLines = processJson.getVarsAndValuesOfLines(codeAsJson);
     let plotFunctionParameters = rules.getContentInBrackets(binding.plot);
     let backtrackedCode = processJson.backtrackCodelines(varsInLines,plotFunctionParameters,[],[]);

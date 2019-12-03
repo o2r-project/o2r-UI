@@ -207,7 +207,6 @@ areYou.processFunction = function (fullCode, linenumber) {
     if (code.indexOf('(') != -1 && code.indexOf(')') != -1 || 
         code.indexOf('(') == -1 && code.indexOf(')') == -1) {
         let end = searchEnd(fullCode, fullCode[linenumber].codeline);
-        console.log("end", end)
         let start = linenumber;
         let functionParameters = areYou.getContentInBrackets(fullCode[linenumber].code);
         let functionName = areYou.getName(fullCode[linenumber].code);
@@ -237,7 +236,6 @@ areYou.processFunction = function (fullCode, linenumber) {
                                             line.codeline > functionRange[1]);
         fullCode = jsonNew;
     }
-    console.log("range",functionRange[1])
     return {
         code:fullCode[linenumber],
         end: functionRange[1]

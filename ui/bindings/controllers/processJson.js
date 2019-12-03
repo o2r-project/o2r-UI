@@ -10,7 +10,7 @@ pJ.addFileContentToJson = function ( codeAsJson ) {
     let processedJson = [];
     //console.log(codeAsJson.length)
     for (let codeline = 0; codeline < codeAsJson.length; codeline++) {
-        console.log(codeline)
+        //console.log(codeline)
         if (codeAsJson[codeline].codeType === 'function') {
             let fun = rules.processFunction(codeAsJson, codeline);
             processedJson.push(fun);
