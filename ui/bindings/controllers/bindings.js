@@ -173,7 +173,7 @@ bindings.implementExtractR = function (binding,response) {
     codeAsJson = fn.array2Json(codeAsJsonWithTypes);
     //console.log(codeAsJson)
     codeAsJson = processJson.addFileContentToJson(codeAsJsonWithTypes);
-    //debug(codeAsJson)
+    console.log(codeAsJson)
     /*let varsInLines = processJson.getVarsAndValuesOfLines(codeAsJson);
     let plotFunctionParameters = rules.getContentInBrackets(binding.plot);
     let backtrackedCode = processJson.backtrackCodelines(varsInLines,plotFunctionParameters,[],[]);

@@ -262,8 +262,8 @@ fn.codeAsJson = function (chunks) {
                     "codeblock": chunk + 1, 
                     "codeline": codeLineCounter
                 });
+                codeLineCounter++;
             }
-            codeLineCounter++;
         });
     }
     debug('End creating json from code')

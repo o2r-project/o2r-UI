@@ -207,6 +207,7 @@ areYou.processFunction = function (fullCode, linenumber) {
     if (code.indexOf('(') != -1 && code.indexOf(')') != -1 || 
         code.indexOf('(') == -1 && code.indexOf(')') == -1) {
         let end = searchEnd(fullCode, fullCode[linenumber].codeline);
+        console.log("end", end)
         let start = linenumber;
         let functionParameters = areYou.getContentInBrackets(fullCode[linenumber].code);
         let functionName = areYou.getName(fullCode[linenumber].code);
@@ -214,7 +215,7 @@ areYou.processFunction = function (fullCode, linenumber) {
             'functionParameters': functionParameters,
             'functionName': functionName 
         };
-        functionRange.push(start, end.line, end.endIndex);
+        functionRange.push(start, end.line);
     } else {
         let preprocessMultiLineArgFun = processMultiLineVarContent(fullCode, linenumber);
         let start = linenumber
@@ -228,7 +229,7 @@ areYou.processFunction = function (fullCode, linenumber) {
         };
         let max = 3;
         if (functionRange.length < max) {
-            functionRange.push( start, end.line, end.endIndex );
+            functionRange.push( start, end.line );
         }
     }
     if (functionRange.length > 1) {
@@ -236,11 +237,10 @@ areYou.processFunction = function (fullCode, linenumber) {
                                             line.codeline > functionRange[1]);
         fullCode = jsonNew;
     }
-    //console.log("range",functionRange[1])
+    console.log("range",functionRange[1])
     return {
         code:fullCode[linenumber],
-        end: functionRange[1],
-        endIndex: functionRange[2]
+        end: functionRange[1]
     }
 };
 
@@ -486,9 +486,9 @@ areYou.processConditional = function ( fullCode, linenumber) {
 };
 
 searchEnd = function ( json, lineIndex ) {
-    console.log("lineindex", json[1])
+    //console.log("lineindex", json[1])
     lineIndex = json.findIndex(a => a.codeline == lineIndex);
-    console.log("lineindex", lineIndex)
+    //console.log("lineindex", lineIndex)
     let openCount = 0;
     let closedCount = 0;
     let opening = /{/g;
@@ -505,15 +505,14 @@ searchEnd = function ( json, lineIndex ) {
             openCount -= json[i].code.match(closing).length;
         }
         if (openCount === closedCount & openCount != 0 & i == json.length - 1) {
-            console.log("find loops...")
+            //console.log("find loops...")
             let loopsAndConds = findLoopsAndConds(json);
             return loopsAndConds;
         }
         if ((openCount === 0) && i != lineIndex) {
-            console.log("end", json[i].codeline)
+            //console.log("end", json[i].codeline)
             return {
-                line:i,
-                endIndex: json[i].index
+                line: json[i].codeline
             }
         }
     }
