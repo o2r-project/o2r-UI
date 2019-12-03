@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Button, Tabs, Tab, Radio, RadioGroup, FormControlLabel, CircularProgress } from '@material-ui/core';
+import { Typography, Button, Tabs, Tab, Radio, RadioGroup, FormControlLabel, CircularProgress, Grid } from '@material-ui/core';
 
 import httpRequests from '../../../helpers/httpRequests';
 import FigureComparison from './FigureComparison/FigureComparison';
@@ -192,11 +192,8 @@ class Manipulate extends React.Component {
                     </Tabs>
                     : ''}
                 <div className="view">
-                    <Button variant='contained' color='primary'
-                        onClick={this.setOriginalSettings.bind(this, "duration")}
-                    >
-                        Original settings
-                    </Button>
+                    <Grid container>
+                        <Grid item xs={8}>
                     {this.state.binding.sourcecode.parameter.map((parameter, index) => (
                         <div className="slider" key={index}>
                             <Typography variant='caption'>
@@ -221,7 +218,20 @@ class Manipulate extends React.Component {
                                 : ''}
 
                         </div>
+                       
                     ))}
+                    </Grid>
+                    <Grid item xs={4} style={{"min-height": "100px"}}>
+                    <Button variant='contained' color='primary'
+                        onClick={this.setOriginalSettings.bind(this)}
+                    >
+                        Original settings
+                    </Button>
+                    <br/>
+                    <br/>
+                    {this.state.loading ? <CircularProgress /> : ""}
+                    </Grid>
+                    </Grid>
                     <div className="image">
                         <Button variant="contained" color="primary" className="maniBtn"
                             onClick={this.saveForComparison.bind(this)}
@@ -235,8 +245,6 @@ class Manipulate extends React.Component {
                                 removeItem={this.removeItem.bind(this)} />
                             : ''}
                         <FigureComparison settings={this.state.settings} settingsText={this.state.settingsText} />
-                        <br />
-                        {this.state.loading ? <CircularProgress /> : ""}
                         <br />
                         {this.state.processURL ? "" : <img src={this.state.fullUrl} alt="Image Loading Failed" onLoad={this.imageLoaded} onError={this.imageLoaded} />}
                     </div>
