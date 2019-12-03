@@ -1,4 +1,6 @@
 .code {
     text-align: left;
     position: relative;
+    overflow-x: initial;
+    inline-size: fit-content;
 }
