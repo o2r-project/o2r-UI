@@ -47,33 +47,17 @@ const isRepeatloop = function (code) {
 };
 
 const isConditional = function (code) {
-    const conditional = /(?:if)/;
-    return conditional.test(code);
+    return /(?:if)/.test(code);
 };
 
 const isSequence = function (code) {
-    const sequence = /(?<!:):(?!:)/;
-    return sequence.test(code);
+    return /(?<!:):(?!:)/.test(code);
 };
 
 const isVariableCall = function (code) {
     const isVariableCall = /^\s*((?![=:(){}]).)*$/;
     const isVariableCall2 = /([\w])_([\w])/;
     return isVariableCall.test(code) || isVariableCall2.test(code);
-};
-
-areYou.getCodeTypes = function (codeAsJson) {
-    debug('Start getting code types');
-    for ( let codeObject = 0; codeObject < codeAsJson.length; codeObject++ ) {
-        let codeType = areYou.findType(codeAsJson[codeObject].code);
-        if (codeType !== 'undefined') {
-            codeAsJson[codeObject].codeType = codeType;
-        } else {
-            console.log('Unable to detect type.')
-        }
-    }
-    debug('End getting code types');
-    return codeAsJson;
 };
 
 areYou.findType = function (codeline) {
@@ -103,7 +87,7 @@ areYou.findType = function (codeline) {
         codeType = 'repeatLoop';
     }
     else if (isVariableCall(codeline)) {
-        codeType = 'variable call';
+        codeType = 'variableCall';
     }
     else if (isConditional(codeline)) {
         codeType = 'conditional';
@@ -116,8 +100,20 @@ areYou.findType = function (codeline) {
     return codeType;
 };
 
-//Content in Brackets
-//Loops
+areYou.getCodeTypes = function ( codeAsJson ) {
+    debug('Start getting code types');
+    for ( let codeObject = 0; codeObject < codeAsJson.length; codeObject++ ) {
+        let codeType = areYou.findType(codeAsJson[codeObject].code);
+        if (codeType !== 'undefined') {
+            codeAsJson[codeObject].codeType = codeType;
+        } else {
+            console.log('Unable to detect type.')
+        }
+    }
+    debug('End getting code types');
+    return codeAsJson;
+};
+
 processBracketContentLoops = function (brContent, type) {
     let parts = brContent[0].split(' ');
     if (type == 'forLoop') {
@@ -139,35 +135,34 @@ processBracketContentLoops = function (brContent, type) {
     }
 };
 
-processBracketContentInFun = function (funContent) {
+processParametersOfInlineFunction = function ( inlineFunctionContent) {
     let parts = [];
-    for (let i = 0; i < funContent.length; i++) {
-        let con = funContent[i].split(',');
-        parts.push(con[0]);
+    for ( let parameters = 0; parameters < inlineFunctionContent.length; parameters++ ) {
+        let content = inlineFunctionContent[parameters].split(',');
+        parts.push(content[0]);
     }
     return {
         args: { 'value': parts }
-    }
+    };
 };
 
 //Variables
-processVarContent = function (varContent) {
-    if (varContent.indexOf('=') != -1 && varContent.indexOf('<-') == -1) {
-        let variable = varContent.substring(0, varContent.indexOf('='));
-        let value = varContent.substring(varContent.indexOf('=') + 1);
+processVariableCode = function (variableCode) {
+    if ( variableCode.indexOf('=') != -1 ) {
+        let variableName = variableCode.substring(0, variableCode.indexOf('='));
+        let value = variableCode.substring(variableCode.indexOf('=') + 1);
         return {
-            variable: variable,
+            variableName: variableName,
             value: value
-        }
+        };
     } else {
-        let variable = varContent.substring(0, varContent.indexOf('<'));
-        let value = varContent.substring(varContent.indexOf('<') + 2);
+        let variableName = variableCode.substring(0, variableCode.indexOf('<'));
+        let value = variableCode.substring(variableCode.indexOf('<') + 2);
         return {
-            variable: variable,
+            variableName: variableName,
             value: value
-        }
+        };
     }
-
 };
 
 processMultiLineVarContent = function (jsonAtVarLine, startIndex) {
@@ -225,7 +220,7 @@ areYou.processFunction = function (fullCode, linenumber) {
         let start = linenumber
         let endOfFunArgs = preprocessMultiLineArgFun.end
         let end = searchEnd(fullCode, fullCode[endOfFunArgs].codeline);
-        let functionParameters = areYou.getContentInBrackets(preprocessMultiLineArgFun.code);
+        let functionParameters = areYou.getContentInBrackets(preprocessMultiLineArgFun.value);
         let functionName = areYou.getName(preprocessMultiLineArgFun.value);
         fullCode[linenumber].content = { 
             'functionParameters': functionParameters,
@@ -241,9 +236,8 @@ areYou.processFunction = function (fullCode, linenumber) {
                                             line.codeline > functionRange[1]);
         fullCode = jsonNew;
     }
-    //debug(functionRange[2])
     return {
-        fullCode:fullCode[linenumber],
+        code:fullCode[linenumber],
         end: functionRange[1],
         endIndex: functionRange[2]
     }
@@ -261,8 +255,8 @@ areYou.processLoop = function ( fullCode, linenumber) {
     }
     let processedLoop = deleteDups(fullCode, linenumber, end.line);
     return {
-        json:processedLoop[linenumber],
-        end:end.line,
+        code: processedLoop[linenumber],
+        end: end.line,
         endIndex: end.endIndex
     }
 };
@@ -359,37 +353,6 @@ findValue = function(json,index){
     }
 };
 
-searchEnd = function ( json, lineIndex ) {
-    debug('start search end')
-    lineIndex = json.findIndex(a => a.codeline == lineIndex);
-    let openCount = 0;
-    let closedCount = 0;
-    let opening = /{/g;
-    let closing = /}/g;
-    for (let i = lineIndex; i < json.length; i++) {
-        if (opening.test(json[i].code)) {
-            openCount += json[i].code.match(opening).length;
-        }
-        if (closing.test(json[i].code)) {
-            closedCount += json[i].code.match(closing).length;
-            openCount -= json[i].code.match(closing).length;
-     
-        }
-
-        if (openCount == closedCount & openCount != 0 & i == json.length - 1) {
-            let loopsAndConds = findLoopsAndConds(json);
-            return loopsAndConds;
-
-        }
-        if ((openCount == 0) && i != lineIndex) {
-            return {
-                line:json[i].codeline,
-                endIndex: json[i].index
-            }
-        }
-    }
-};
-
 //ATTENTION: Only works for one neasted loop or cond in this version TODO
 findLoopsAndConds = function (json) {
     let forLoopInCond = findNested(json, 'conditional', 'forLoop')
@@ -453,61 +416,56 @@ deleteDups = function (json,index,end) {
 };
 
 //TODO Inline functions...
-areYou.processInlineFunction = function (json,index) {
+areYou.processInlineFunction = function ( fullCode, linenumber ) {
+    let functionParameters = areYou.getContentInBrackets(fullCode[linenumber].code);
+    let functionCode = areYou.getFunction(fullCode[linenumber].code);
+    let functionParametersProcessed = processParametersOfInlineFunction(functionParameters);
+    fullCode[linenumber].call = functionCode;
+    fullCode[linenumber].content = [functionParametersProcessed];
     let typeArray = [];
-    debug('aa')
-    let funCont = areYou.getContentInBrackets(json[index].code);
-    let fun = areYou.getFunction(json[index].code);
-
-    let funContProcessed = processBracketContentInFun(funCont);
-    json[index].call = fun;
-    json[index].content = [funContProcessed];
-    typeArray = [];
-    for (let j = 0; j < funContProcessed.args.value.length; j++) {
-        let type = areYou.findType(funContProcessed.args[j]);
+    for (let j = 0; j < functionParametersProcessed.args.value.length; j++) {
+        let type = areYou.findType(functionParametersProcessed.args[j]);
         typeArray.push(type);
-        funContProcessed.type = typeArray;
+        functionParametersProcessed.type = typeArray;
     }
     return {
-        json:json[index],
-        index: json[index].index
+        code:fullCode[linenumber]
     }
 };
 
 //TODO: Add brackets to all content
-areYou.processVariables = function ( json, index ) {
+areYou.processVariables = function ( fullCode, linenumber ) {
     let linesOfMultiVar = [];
     let end;
     let endIndexMulti;
-    let varCont = json[index].code;
-    if (varCont.indexOf('(') != -1 && varCont.indexOf(')') != -1 && varCont.indexOf('%>%') == -1 || varCont.indexOf('(') == -1 && varCont.indexOf(')') == -1 && varCont.indexOf('%>%') == -1) {
-        let varContProcessed = processVarContent(varCont);
-        varContProcessed.type = areYou.findType(varContProcessed.value);
-        json[index].content = [varContProcessed];
+    let code = fullCode[linenumber].code;
+    //Check whether variable goes over more than one line
+    if ( code.indexOf('(') != -1 && code.indexOf(')') != -1 && code.indexOf('%>%') == -1 || 
+            code.indexOf('(') == -1 && code.indexOf(')') == -1 && code.indexOf('%>%') == -1 ) {
+        let codeProcessed = processVariableCode(code);
+        codeProcessed.type = areYou.findType(codeProcessed.value);
+        fullCode[linenumber].content = [codeProcessed];
         return {
-            json:json[index],
-            multi:false,
-            index: json[index].index
+            code:fullCode[linenumber],
+            isMultiLinesVariable:false
         }
     } else {
-        let preprocessVarCond = processMultiLineVarContent(json, index);
-        let varContProcessed = processVarContent(preprocessVarCond.value);
-        varContProcessed.type = areYou.findType(varContProcessed.value);
-        json[index].content = [varContProcessed];
-        let start = index + 1;
+        let preprocessVarCond = processMultiLineVarContent( fullCode, linenumber);
+        let codeProcessed = processVariableCode(preprocessVarCond.value);
+        codeProcessed.type = areYou.findType(codeProcessed.value);
+        fullCode[linenumber].content = [codeProcessed];
+        let start = linenumber + 1;
         end = preprocessVarCond.end;
         endIndexMulti = preprocessVarCond.endIndex;
         linesOfMultiVar.push(start, end);
     }
     //Filter out duplicates
-    if (linesOfMultiVar.length > 0) {
-        json = json.filter(line => !linesOfMultiVar.includes(line.Line));
-        linesOfMultiVar = [];
+    if ( linesOfMultiVar.length > 0 ) {
+        fullCode = fullCode.filter(line => !linesOfMultiVar.includes(line.Line));
         return {
-            json:json[index],
+            code:fullCode[linenumber],
             end:end,
-            index:json[index].index,
-            multi:true,
+            isMultiLinesVariable: true,
             endIndex: endIndexMulti
         }
     }
@@ -515,55 +473,78 @@ areYou.processVariables = function ( json, index ) {
 
 //TODO Cond
 areYou.processConditional = function ( fullCode, linenumber) {
-    let endLine = searchEnd(fullCode, linenumber);
+    let endLine = searchEnd(fullCode, fullCode[linenumber].codeline);
     let startLine = fullCode[linenumber].codeline;
     addLoopContent(fullCode, linenumber, startLine, endLine.line);
     let processedCond = deleteDups( fullCode, linenumber, endLine.line );
     return {
-        json:processedCond[index],
+        code:processedCond[linenumber],
         end:endLine.line,
         endIndex: endLine.endIndex
     }
 };
 
+searchEnd = function ( json, lineIndex ) {
+    lineIndex = json.findIndex(a => a.codeline == lineIndex);
+    let openCount = 0;
+    let closedCount = 0;
+    let opening = /{/g;
+    let closing = /}/g;
+    for (let i = lineIndex; i < json.length; i++) {
+        debug(lineIndex)
+        if (opening.test(json[i].code)) {
+            openCount += json[i].code.match(opening).length;
+        }
+        if (closing.test(json[i].code)) {
+            closedCount += json[i].code.match(closing).length;
+            openCount -= json[i].code.match(closing).length;
+     
+        }
 
-areYou.processVarCall = function (json,index) {
-    let varCallCont = json[index].code;
-    json[index].content = { 'value': varCallCont };
+        if (openCount == closedCount & openCount != 0 & i == json.length - 1) {
+            let loopsAndConds = findLoopsAndConds(json);
+            return loopsAndConds;
 
-    return {
-        json:json[index],
-        index: json[index].index
-    };
-};
-
-areYou.processLib = function (json,index) {
-    let libCont = json[index].code;
-    let calledLib = areYou.getContentInBrackets(libCont);
-    json[index].content = calledLib;
-    return {
-        json:json[index],
-        index: json[index].index
-    };
-};
-
-areYou.processExFile = function (json,index) {
-    let file = json[index].code;
-    let LinkToFile = areYou.getContentInBrackets(file)[0];
-    json[index].content = LinkToFile;
-    return {
-        json:json[index],
-        index: json[index].index
+        }
+        if ((openCount == 0) && i != lineIndex) {
+            return {
+                line:json[i].codeline,
+                endIndex: json[i].index
+            }
+        }
     }
 };
 
-areYou.processSequence = function (json,index) {
-    let seq = json[index].code;
-    json[index].content = seq;
-
+areYou.processVarCall = function ( fullCode, linenumber ) {
+    let code = fullCode[linenumber].code;
+    fullCode[linenumber].content = { 'code': code };
     return {
-        json:json[index],
-        index: json[index].index
+        code: fullCode[linenumber]
+    };
+};
+
+areYou.processLibrary = function ( fullCode, linenumber ) {
+    let libraryCall = fullCode[linenumber].code;
+    let library = areYou.getContentInBrackets(libraryCall);
+    fullCode[linenumber].content = library;
+    return {
+        code:fullCode[linenumber]
+    };
+};
+
+areYou.processExFile = function ( fullCode, linenumber ) {
+    let code = fullCode[linenumber].code;
+    let file = areYou.getContentInBrackets(code)[0];
+    fullCode[linenumber].content = file;
+    return {
+        code:fullCode[linenumber]
+    }
+};
+
+areYou.processSequence = function ( fullCode, linenumber ) {
+    fullCode[linenumber].content = fullCode[linenumber].code;
+    return {
+        code: fullCode[linenumber]
     }
 };
 
@@ -572,15 +553,12 @@ areYou.getFunction = function (code) {
     return code.substring(0, code.indexOf('('));
 };
 
-areYou.getName = function(content){
-    if(content.indexOf('=') != -1 && content.indexOf('(') > content.indexOf('=')){
-
-        let name = content.substring(0,content.indexOf('='));
-        return name
-    } else {
-
-        let name = content.substring(0,content.indexOf('<-'));
-        return name
+areYou.getName = function(code){
+    if ( code.indexOf('=') != -1 ) {
+        return code.substring(0,code.indexOf('='));
+    } 
+    if ( code.indexOf('<-') != -1 ) {
+        return code.substring(0,code.indexOf('<-'));
     }
 }
 
