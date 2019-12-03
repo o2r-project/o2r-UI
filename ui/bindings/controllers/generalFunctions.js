@@ -29,7 +29,8 @@ fn.readRmarkdown = function(compendiumId, mainfile) {
     if ( !compendiumId | !mainfile ) {
         throw new Error('File does not exist.');
     }
-    let paper = path.join('tmp', 'o2r', 'compendium', compendiumId, mainfile);
+    //let paper = path.join('tmp', 'o2r', 'compendium', compendiumId, mainfile);
+    let paper = path.join(compendiumId, mainfile);
     fs.exists(paper, function(ex) {
         if (!ex) {
             debug('Cannot open file %s', paper);

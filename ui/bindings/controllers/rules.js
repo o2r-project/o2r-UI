@@ -2,7 +2,7 @@ const debug = require('debug')('bindings');
 
 let areYou = {};
 
-const isVariable = function (code) {
+const isVariable = function ( code ) {
     const equalitySignDeclaration = /^\s*\b(?![(])[\w\[\],.\s]*\s?=\s?[".\w\[\]]+/;
     const arrowDeclaration = /^\s*\b(?![(])[\w\[\],.\s]*\s?<-\s?[".\w\[\]]+/;
     return !isFunction(code) && 
@@ -10,7 +10,7 @@ const isVariable = function (code) {
             arrowDeclaration.test(code));
 };
 
-const findFunctions = function (code) {
+const findFunctions = function ( code ) {
     let isFunction = /(?!\bif\b|\bfor\b|\bwhile\b|\brepeat\b|\blibrary\b|\bsource\b)(\b[\w]+\b)[\s\n\r]*(?=\(.*\))/g;
     if (!isForloop(code) || !isWhileloop(code) || !isRepeatloop(code)) {
         return isFunction.test(code);
@@ -203,7 +203,7 @@ processMultiLineVarContent = function (jsonAtVarLine, startIndex) {
 
 areYou.processFunction = function (fullCode, linenumber) {
     let functionRange = [];
-    let code = fullCode[linenumber].code
+    let code = fullCode[linenumber].code;
     if (code.indexOf('(') != -1 && code.indexOf(')') != -1 || 
         code.indexOf('(') == -1 && code.indexOf(')') == -1) {
         let end = searchEnd(fullCode, fullCode[linenumber].codeline);
@@ -236,6 +236,7 @@ areYou.processFunction = function (fullCode, linenumber) {
                                             line.codeline > functionRange[1]);
         fullCode = jsonNew;
     }
+    //console.log("range",functionRange[1])
     return {
         code:fullCode[linenumber],
         end: functionRange[1],
@@ -485,30 +486,33 @@ areYou.processConditional = function ( fullCode, linenumber) {
 };
 
 searchEnd = function ( json, lineIndex ) {
+    console.log("lineindex", json[1])
     lineIndex = json.findIndex(a => a.codeline == lineIndex);
+    console.log("lineindex", lineIndex)
     let openCount = 0;
     let closedCount = 0;
     let opening = /{/g;
     let closing = /}/g;
     for (let i = lineIndex; i < json.length; i++) {
-        debug(lineIndex)
+        //console.log("oc:", openCount)
+        //console.log("cc:", closedCount)
+        //debug(lineIndex)
         if (opening.test(json[i].code)) {
             openCount += json[i].code.match(opening).length;
         }
         if (closing.test(json[i].code)) {
             closedCount += json[i].code.match(closing).length;
             openCount -= json[i].code.match(closing).length;
-     
         }
-
-        if (openCount == closedCount & openCount != 0 & i == json.length - 1) {
+        if (openCount === closedCount & openCount != 0 & i == json.length - 1) {
+            console.log("find loops...")
             let loopsAndConds = findLoopsAndConds(json);
             return loopsAndConds;
-
         }
-        if ((openCount == 0) && i != lineIndex) {
+        if ((openCount === 0) && i != lineIndex) {
+            console.log("end", json[i].codeline)
             return {
-                line:json[i].codeline,
+                line:i,
                 endIndex: json[i].index
             }
         }
@@ -554,10 +558,9 @@ areYou.getFunction = function (code) {
 };
 
 areYou.getName = function(code){
-    if ( code.indexOf('=') != -1 ) {
+    if ( code.indexOf('=') != -1 && code.indexOf('(') > code.indexOf('=')) {
         return code.substring(0,code.indexOf('='));
-    } 
-    if ( code.indexOf('<-') != -1 ) {
+    } else {
         return code.substring(0,code.indexOf('<-'));
     }
 }
