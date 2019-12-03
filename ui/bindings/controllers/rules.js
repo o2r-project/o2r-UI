@@ -492,6 +492,7 @@ searchEnd = function ( json, lineIndex ) {
     let opening = /{/g;
     let closing = /}/g;
     console.log("li",lineIndex)
+    console.log(json[lineIndex])
     for (let i = lineIndex; i < json.length; i++) {
         //console.log("oc:", openCount)
         //console.log("cc:", closedCount)

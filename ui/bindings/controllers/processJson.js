@@ -16,6 +16,7 @@ pJ.addFileContentToJson = function ( codeAsJson ) {
             codeline = fun.end;
             //console.log("func: ",codeline)
         } else if (codeAsJson[codeline].codeType === 'conditional') {
+            console.log("foundcondi")
             let conditional = rules.processConditional( codeAsJson, codeline );
             processedJson.push(conditional);
             codeline = conditional.end;
