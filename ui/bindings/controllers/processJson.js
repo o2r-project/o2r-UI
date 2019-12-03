@@ -12,46 +12,47 @@ pJ.addFileContentToJson = function ( codeAsJson ) {
     for (let codeline = 0; codeline < codeAsJson.length; codeline++) {
         if (codeAsJson[codeline].codeType === 'function') {
             let fun = rules.processFunction(codeAsJson, codeline);
-            processedJson.push(fun);
+            //processedJson.push(fun);
             codeline = fun.end;
             //console.log("func: ",codeline)
         } else if (codeAsJson[codeline].codeType === 'conditional') {
             console.log("foundcondi")
             let conditional = rules.processConditional( codeAsJson, codeline );
-            processedJson.push(conditional);
+            //processedJson.push(conditional);
             codeline = conditional.end;
         } else if (codeAsJson[codeline].codeType === 'forLoop' || 
                     codeAsJson[codeline].codeType === 'whileLoop' || 
                     codeAsJson[codeline].codeType === 'repeatLoop') {
             let loop = rules.processLoop( codeAsJson, codeline );
-            processedJson.push(loop);
+            //processedJson.push(loop);
             codeline = loop.end;
         } else if (codeAsJson[codeline].codeType === 'inlineFunction') {
             let inline = rules.processInlineFunction( codeAsJson, codeline );
-            processedJson.push( inline );
+            //processedJson.push( inline );
         } else if ( codeAsJson[codeline].codeType === 'variable' ) {
             let variable = rules.processVariables( codeAsJson, codeline );
             if ( variable.isMultiLinesVariable === false ) {
-                processedJson.push( variable );
+                //processedJson.push( variable );
             } else {
-                processedJson.push( variable );
+                //processedJson.push( variable );
                 codeline = variable.end;
             }
             //debug('end of variable call: %s', codeline)
         } else if ( codeAsJson[codeline].codeType === 'variableCall' ) {
             let varCall = rules.processVarCall( codeAsJson, codeline );
-            processedJson.push( varCall );
+            //processedJson.push( varCall );
         } else if ( codeAsJson[codeline].codeType === 'library' ) {
             let library = rules.processLibrary( codeAsJson, codeline );
-            processedJson.push( library );
+            //processedJson.push( library );
         } else if ( codeAsJson[codeline].codeType === 'exFile' ) {
             let exFile = rules.processExFile( codeAsJson, codeline );
-            processedJson.push( exFile );
+            //processedJson.push( exFile );
         } else if ( codeAsJson[codeline].codeType === 'sequence' ) {
             let sequence = rules.processSequence( codeAsJson, codeline );
-            processedJson.push( sequence );
+            //processedJson.push( sequence );
         }
     }
+    console.log(processedJson)
     //console.log(JSON.stringify(processedJson))
     //console.log('End add file content to JSON')
     return processedJson;
