@@ -12,11 +12,11 @@ pJ.addFileContentToJson = function ( codeAsJson ) {
     for (let codeline = 0; codeline < codeAsJson.length; codeline++) {
         if (codeAsJson[codeline].codeType === 'function') {
             let fun = rules.processFunction(codeAsJson, codeline);
-            //processedJson.push(fun);
+            processedJson.push(fun);
             codeline = fun.end;
             //console.log("func: ",codeline)
         } else if (codeAsJson[codeline].codeType === 'conditional') {
-            console.log("foundcondi")
+            //console.log("foundcondi")
             let conditional = rules.processConditional( codeAsJson, codeline );
             //processedJson.push(conditional);
             codeline = conditional.end;
@@ -52,7 +52,7 @@ pJ.addFileContentToJson = function ( codeAsJson ) {
             //processedJson.push( sequence );
         }
     }
-    console.log(processedJson)
+    console.log("pj", processedJson)
     //console.log(JSON.stringify(processedJson))
     //console.log('End add file content to JSON')
     return processedJson;
