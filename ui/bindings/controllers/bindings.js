@@ -20,7 +20,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const debug = require('debug')('bindings');
-const rscript = require('r-script');
+//const rscript = require('r-script');
 const path = require('path');
 const net = require('net');
 const fn = require('./generalFunctions');
@@ -136,14 +136,14 @@ bindings.start = (conf) => {
     });
 };
 
-var cron = require('node-cron');
+/*var cron = require('node-cron');
  
 cron.schedule('* * * * *', () => {
     debug('cleaning up containers');
     // durch container-Liste durchgehen
     // alle container älter als 25 stunden stoppen und aus der container-Liste entfernen
 
-});
+});*/
 
 bindings.createBinding = function(binding, response) {
     debug( 'Start creating binding for result: %s, compendium: %s', binding.computationalResult.result, binding.id );
@@ -175,8 +175,11 @@ bindings.implementExtractR = function (binding,response) {
     let type = rules.getTypeOfLine(codeparts);
     let comments = fn.deleteComments(type);
     let json = fn.array2Json(comments);
+    //console.log(json)
     let jsonObj = {'Lines': json};
+    //console.log("between")
     let processedJson = processJson.addFileContentToJson(jsonObj);
+    console.log(JSON.stringify(processedJson));
     let varsInLines = processJson.getVarsAndValuesOfLines(processedJson);
     //Insert binding.plot
     let valuesToSearchFor = processJson.valuesToSearchFor(binding.plot);
@@ -188,9 +191,9 @@ bindings.implementExtractR = function (binding,response) {
     
     binding.codelines = processJson.getCodeLines(codeLinesForValues);
     debug(binding.codelines)
-    response.send({
+    /*response.send({
         callback: 'ok',
-        data: binding});
+        data: binding});*/
 };
 
 bindings.searchBinding = function ( req, res) {
