@@ -109,12 +109,14 @@ class Manipulate extends React.Component {
     componentWillUnmount = () => removeHighlight();
 
     handleChange = name => (evt, newVal) => {
-        this.setState({
-            [name]: newVal,
-            loading: true
-        }, () => {
-            this.buildFullUrl(this.state.binding);
-        });
+        if (this.state[name] !== newVal) {
+            this.setState({
+                [name]: newVal,
+                loading: true
+            }, () => {
+                this.buildFullUrl(this.state.binding);
+            });
+        }
     }
 
     saveForComparison = () => {
@@ -194,43 +196,43 @@ class Manipulate extends React.Component {
                 <div className="view">
                     <Grid container>
                         <Grid item xs={8}>
-                    {this.state.binding.sourcecode.parameter.map((parameter, index) => (
-                        <div className="slider" key={index}>
-                            <Typography variant='caption'>
-                                {parameter.uiWidget.caption}
-                            </Typography>
-                            {parameter.uiWidget.type === 'slider'
-                                ?
-                                <OwnSlider value={this.state[parameter.name]} parameter={parameter} onChange={this.handleChange}
-                                />
-                                : ''}
-                            {parameter.uiWidget.type === 'radio'
-                                ? <RadioGroup aria-label="position" name="position" value={this.state[parameter.name]} onChange={this.handleChange(parameter.name)} row>
-                                    {parameter.uiWidget.options.map((option, index) => (
-                                        <FormControlLabel key={index}
-                                            value={option}
-                                            control={<Radio color="primary" />}
-                                            label={option}
-                                            checked={option == this.state[parameter.name]}
+                            {this.state.binding.sourcecode.parameter.map((parameter, index) => (
+                                <div className="slider" key={index}>
+                                    <Typography variant='caption'>
+                                        {parameter.uiWidget.caption}
+                                    </Typography>
+                                    {parameter.uiWidget.type === 'slider'
+                                        ?
+                                        <OwnSlider value={this.state[parameter.name]} parameter={parameter} onChange={this.handleChange}
                                         />
-                                    ))}
-                                </RadioGroup>
-                                : ''}
+                                        : ''}
+                                    {parameter.uiWidget.type === 'radio'
+                                        ? <RadioGroup aria-label="position" name="position" value={this.state[parameter.name]} onChange={this.handleChange(parameter.name)} row>
+                                            {parameter.uiWidget.options.map((option, index) => (
+                                                <FormControlLabel key={index}
+                                                    value={option}
+                                                    control={<Radio color="primary" />}
+                                                    label={option}
+                                                    checked={option == this.state[parameter.name]}
+                                                />
+                                            ))}
+                                        </RadioGroup>
+                                        : ''}
 
-                        </div>
-                       
-                    ))}
-                    </Grid>
-                    <Grid item xs={4} style={{"min-height": "100px"}}>
-                    <Button variant='contained' color='primary'
-                        onClick={this.setOriginalSettings.bind(this)}
-                    >
-                        Original settings
+                                </div>
+
+                            ))}
+                        </Grid>
+                        <Grid item xs={4} style={{ "min-height": "100px" }}>
+                            <Button variant='contained' color='primary'
+                                onClick={this.setOriginalSettings.bind(this)}
+                            >
+                                Original settings
                     </Button>
-                    <br/>
-                    <br/>
-                    {this.state.loading ? <CircularProgress /> : ""}
-                    </Grid>
+                            <br />
+                            <br />
+                            {this.state.loading ? <CircularProgress /> : ""}
+                        </Grid>
                     </Grid>
                     <div className="image">
                         <Button variant="contained" color="primary" className="maniBtn"
