@@ -74,7 +74,7 @@ function searchBinding(term, metadata){
 
 function geocodingRequest(query){
     var encodedQuery= escape(query)
-    var access_token='Mapbox Key'
+    var access_token=''
     const link ="https://api.mapbox.com/geocoding/v5/mapbox.places/" + encodedQuery + ".json?access_token=" + access_token
     return axios.get(link)
 }
@@ -86,6 +86,11 @@ function downloadERC(id, image){
 function createSubstitution(baseId, overlayId, substitutionFiles){
     const body={"base": baseId, "overlay": overlayId, "substitutionFiles": substitutionFiles, "metadataHandling": "keepBase"}
     return axios.post(_env.api + 'substitution', body);
+}
+
+function complexSearch(query){
+    var _url = _env.api + 'search';
+    return axios.post(_url, query);
 }
 
 module.exports = {
@@ -108,4 +113,5 @@ module.exports = {
     geocodingRequest: geocodingRequest,
     downloadERC: downloadERC,
     createSubstitution: createSubstitution,
+    complexSearch: complexSearch,
 };

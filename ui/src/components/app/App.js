@@ -26,8 +26,7 @@ const Header = ( props ) => {
         <HashRouter>
           <NavLink id="link" to="/discover">
             <Button color="inherit" label="test">
-              {//Discover ERC
-              }
+              Discover ERC
             </Button>
           </NavLink>
           <NavLink id="link" to="/author">
