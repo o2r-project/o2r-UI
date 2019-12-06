@@ -6,13 +6,16 @@ let pJ = {};
 
 pJ.addFileContentToJson = function ( codeAsJson ) {
     debug( 'Start add file content to JSON: %s', JSON.stringify(codeAsJson) )
+    //console.log( 'Start add file content to JSON')
     let processedJson = [];
+    //console.log(codeAsJson.length)
     for (let codeline = 0; codeline < codeAsJson.length; codeline++) {
-        debug(codeAsJson[codeline])
+        console.log(codeline)
         if (codeAsJson[codeline].codeType === 'function') {
             let fun = rules.processFunction(codeAsJson, codeline);
             processedJson.push(fun);
             codeline = fun.end;
+            //console.log("func: ",codeline)
         } else if (codeAsJson[codeline].codeType === 'conditional') {
             let conditional = rules.processConditional( codeAsJson, codeline );
             processedJson.push(conditional);
@@ -34,6 +37,7 @@ pJ.addFileContentToJson = function ( codeAsJson ) {
                 processedJson.push( variable );
                 codeline = variable.end;
             }
+            //debug('end of variable call: %s', codeline)
         } else if ( codeAsJson[codeline].codeType === 'variableCall' ) {
             let varCall = rules.processVarCall( codeAsJson, codeline );
             processedJson.push( varCall );
@@ -48,7 +52,8 @@ pJ.addFileContentToJson = function ( codeAsJson ) {
             processedJson.push( sequence );
         }
     }
-    debug('End add file content to JSON')
+    //console.log(JSON.stringify(processedJson))
+    //console.log('End add file content to JSON')
     return processedJson;
 };
 

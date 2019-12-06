@@ -20,7 +20,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const debug = require('debug')('bindings');
-const rscript = require('r-script');
+//const rscript = require('r-script');
 const path = require('path');
 const net = require('net');
 const fn = require('./generalFunctions');
@@ -135,14 +135,14 @@ bindings.start = (conf) => {
     });
 };
 
-var cron = require('node-cron');
+/*var cron = require('node-cron');
  
 cron.schedule('* * * * *', () => {
     //debug('cleaning up containers');
     // durch container-Liste durchgehen
     // alle container älter als 25 stunden stoppen und aus der container-Liste entfernen
 
-});
+});*/
 
 bindings.createBinding = function(binding, response) {
     debug( 'Start creating binding for result: %s, compendium: %s', binding.computationalResult.result, binding.id );
@@ -161,7 +161,9 @@ bindings.createBinding = function(binding, response) {
 };
 
 bindings.implementExtractR = function (binding,response) {
-    debug('Start extracting codelines');
+    debug('Start extracting codelines: %s', JSON.stringify(binding));
+    debug('Start extracting codelines2: %s', response);
+    console.log("start extractR")
     let file = fn.readRmarkdown(binding.id, binding.file);
     let lines = file.split('\n');
     let chunksLineNumbers = fn.extractChunks(lines);
@@ -169,8 +171,9 @@ bindings.implementExtractR = function (binding,response) {
     let codeAsJson = fn.codeAsJson(chunksOfCode);
     let codeAsJsonWithTypes = rules.getCodeTypes(codeAsJson);
     codeAsJson = fn.array2Json(codeAsJsonWithTypes);
+    //console.log(codeAsJson)
     codeAsJson = processJson.addFileContentToJson(codeAsJsonWithTypes);
-    //debug(codeAsJson)
+    console.log(codeAsJson)
     /*let varsInLines = processJson.getVarsAndValuesOfLines(codeAsJson);
     let plotFunctionParameters = rules.getContentInBrackets(binding.plot);
     let backtrackedCode = processJson.backtrackCodelines(varsInLines,plotFunctionParameters,[],[]);
@@ -179,9 +182,10 @@ bindings.implementExtractR = function (binding,response) {
     
     binding.codelines = processJson.getCodeLines(backtrackedCode);*/
     //debug('Codelines2: %s', JSON.stringify(binding.codelines))
-    response.send({
+    console.log("end extractR")
+    /*response.send({
         callback: 'ok',
-        data: binding});
+        data: binding});*/
 };
 
 bindings.searchBinding = function ( req, res) {
