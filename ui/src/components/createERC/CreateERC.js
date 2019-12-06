@@ -35,6 +35,7 @@ class CreateERC extends Component {
             spatioTemporalChanged: false,
             authorsValid: false,
             candidate: true,
+            showProgress: false,
         }
     }
 
@@ -185,6 +186,7 @@ class CreateERC extends Component {
                                 setChanged={this.setChanged}
                                 authorsValid={this.state.authorsValid}
                                 candidate={this.state.candidate}
+                                showProgress={this.state.showProgress}
                             />
                             : ''}
                     </TabContainer>

@@ -69,8 +69,8 @@ class Substitution extends React.Component {
                     this.state.ERC.map((erc, index) => (
                         <div>
                             <Card style={{ "text-align": "justify", "margin": "10px" }}>
-                                {erc.substituted ? <CardHeader title={erc.metadata.o2r.title} style={{"padding-bottom" : "0px"}} /> :
-                                <CardHeader title={erc.metadata.o2r.title + " [SUBSTITUTED]"} style={{"padding-bottom" : "0px"}} />}
+                                {erc.substituted ? <CardHeader title={erc.metadata.o2r.title + " [SUBSTITUTED]"} style={{"padding-bottom" : "0px"}} /> :
+                                <CardHeader title={erc.metadata.o2r.title } style={{"padding-bottom" : "0px"}} />}
                                 <CardContent>
                                     <Grid container spacing={3}>
                                         <Grid item xs={10} style={{"padding-top" : "0px"}}>
