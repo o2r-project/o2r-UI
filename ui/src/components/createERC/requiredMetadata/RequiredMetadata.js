@@ -191,7 +191,8 @@ class RequiredMetadata extends Component {
                             dataLicenses={dataLicenses}
                             mostRestrictiveData={mostRestrictiveData}
                             leastRestrictiveData={leastRestrictiveData}
-                            candidate={this.props.candidate} />}
+                            candidate={this.props.candidate} 
+                            showProgress={this.props.showProgress} />}
                         initialValues={this.formValues}
                         validationSchema={validationSchema}
                     />

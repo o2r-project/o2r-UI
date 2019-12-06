@@ -307,7 +307,7 @@ export const Form = props => {
                         <Button
                             onClick={handleReset.bind(null)}
                             type="button"
-                            disabled={!reset}
+                            disabled={!reset || props.showProgress}
                         >
                             Reset
                         </Button>
@@ -315,7 +315,7 @@ export const Form = props => {
                             type="submit"
                             variant="contained"
                             color="primary"
-                            disabled={!valid}
+                            disabled={!valid || props.showProgress}
                         >
                             Save
                          </Button>
