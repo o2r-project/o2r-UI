@@ -53,12 +53,16 @@ const validationSchema = Yup.object({
     displayFile: Yup.string()
         .required('DisplayFile is required'),
     mainFile: Yup.string()
+        .notOneOf([0])
         .required('MainFile is required'),
     textLicense: Yup.mixed()
+        .notOneOf([0], 'Text License is required')
         .required('Text License is required'),
     codeLicense: Yup.mixed()
+        .notOneOf([0], 'Code License is required')
         .required('Code License is required'),
     dataLicense: Yup.mixed()
+        .notOneOf([0], 'Data License is required')
         .required('Data License is required')
 });
 
@@ -82,9 +86,9 @@ class RequiredMetadata extends Component {
         publicationDate: this.props.metadata.publication_date,
         displayFile: this.props.metadata.displayfile,
         mainFile: this.props.metadata.mainfile,
-        dataLicense: this.props.metadata.license.data,
-        textLicense: this.props.metadata.license.text,
-        codeLicense: this.props.metadata.license.code,
+        dataLicense: this.props.metadata.license.data ? this.props.metadata.license.data : 0,
+        textLicense: this.props.metadata.license.text ? this.props.metadata.license.text : 0,
+        codeLicense: this.props.metadata.license.code ? this.props.metadata.license.code : 0,
     }
 
 
@@ -187,7 +191,8 @@ class RequiredMetadata extends Component {
                             dataLicenses={dataLicenses}
                             mostRestrictiveData={mostRestrictiveData}
                             leastRestrictiveData={leastRestrictiveData}
-                            candidate={this.props.candidate} />}
+                            candidate={this.props.candidate} 
+                            showProgress={this.props.showProgress} />}
                         initialValues={this.formValues}
                         validationSchema={validationSchema}
                     />
