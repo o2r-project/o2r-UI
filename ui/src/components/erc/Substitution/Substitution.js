@@ -8,6 +8,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
 import './substitution.css'
+import { file } from '@babel/types';
 
 class Substitution extends React.Component {
 
@@ -21,7 +22,11 @@ class Substitution extends React.Component {
 
     }
 
-    componentDidMount() {this.getCompendia()}
+    componentDidMount() {
+        if (this.props.baseErcData.metadata.o2r.inputfiles.length !== 0) {
+            this.getCompendia()
+        }
+    }
 
     getCompendia = () => {
         const self = this
@@ -41,13 +46,16 @@ class Substitution extends React.Component {
         for (var compendia of compenidaList) {
             httpRequests.singleCompendium(compendia)
                 .then(function (res) {
-                    ERCs.push(res.data)
-                    self.setState({ ERC: ERCs })
+                    if(self.proofIfErcIsSubstitudeable(res.data)){
+                        ERCs.push(res.data)
+                        self.setState({ ERC: ERCs })
+                 }
                 })
                 .catch(function (res) {
                     console.log(res)
                 })
         }
+
 
     }
 
@@ -61,6 +69,32 @@ class Substitution extends React.Component {
         this.setState({ erc })
     }
 
+    proofIfErcIsSubstitudeable= (erc) =>{
+        let baseFiles = [];
+        let substitutionFiles = []
+        if(erc.metadata.o2r.inputfiles.length === 0){
+            return false
+        }
+        for(var file of this.props.baseErcData.files.children){
+            if (file.name == this.props.baseErcData.metadata.o2r.inputfiles || this.props.baseErcData.metadata.o2r.inputfiles.includes(file.name)){
+                baseFiles.push(file)
+            }
+        }
+        for(var file of erc.files.children){
+            if (file.name == erc.metadata.o2r.inputfiles || erc.metadata.o2r.inputfiles.includes(file.name)){
+                substitutionFiles.push(file)
+            }
+        }
+        for(var file of baseFiles){
+            for( var file2 of substitutionFiles){
+                if(file.extension=== file2.extension){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     render() {
         return (
@@ -69,8 +103,8 @@ class Substitution extends React.Component {
                     this.state.ERC.map((erc, index) => (
                         <div>
                             <Card style={{ "text-align": "justify", "margin": "10px" }}>
-                                {erc.substituted ? <CardHeader title={erc.metadata.o2r.title} style={{"padding-bottom" : "0px"}} /> :
-                                <CardHeader title={erc.metadata.o2r.title + " [SUBSTITUTED]"} style={{"padding-bottom" : "0px"}} />}
+                                {erc.substituted ? <CardHeader title={erc.metadata.o2r.title + " [SUBSTITUTED]"} style={{"padding-bottom" : "0px"}} /> :
+                                <CardHeader title={erc.metadata.o2r.title } style={{"padding-bottom" : "0px"}} />}
                                 <CardContent>
                                     <Grid container spacing={3}>
                                         <Grid item xs={10} style={{"padding-top" : "0px"}}>
@@ -98,7 +132,7 @@ class Substitution extends React.Component {
                             </Card>
                         </div>
                     )) : ""}
-                    {this.state.erc !== 0 ? <Substitute baseErc={this.props.baseErcMetadata} baseErcId ={this.props.baseErcId} erc={this.state.erc.metadata.o2r} ercId={this.state.erc.id} setErc={this.setErc}/> : ""}
+                    {this.state.erc !== 0 ? <Substitute baseErc={this.props.baseErcData.metadata.o2r} baseErcId ={this.props.baseErcId} erc={this.state.erc.metadata.o2r} ercId={this.state.erc.id} setErc={this.setErc}/> : ""}
             </div>
         )
     }

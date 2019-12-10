@@ -18,12 +18,29 @@ class Substitute extends Component {
             substitutedErc: null,
             open: false,
             selected: [],
-            substitutionFiles: []
+            substitutionFiles: [],
+            baseErcFiles: [],
+            substitutionErcFiles: []
         }
 
     }
 
-    componentDidMount() {this.getMetadata()}
+    componentDidMount() {
+        this.checkConfigurationFile();
+        let baseErcFiles = [];
+        let substitutionErcFiles = [];
+        if (!Array.isArray(this.props.erc.inputfiles)) {
+            substitutionErcFiles.push(this.props.erc.inputfiles);
+        } else {
+            substitutionErcFiles  = this.props.erc.inputfiles;
+        }
+        if (!Array.isArray(this.props.baseErc.inputfiles)) {
+            baseErcFiles.push(this.props.baseErc.inputfiles);
+        } else {
+            baseErcFiles  = this.props.baseErc.inputfiles;
+        }
+        this.setState({baseErcFiles, substitutionErcFiles})
+    }
     handleClose = () => {
         this.props.setErc(0);
     }
@@ -40,18 +57,17 @@ class Substitute extends Component {
             })
     }
 
-    getMetadata = () =>{
+    checkConfigurationFile= () =>{
         const self = this;
         httpRequests.singleCompendium(this.props.baseErcId)
         .then(function (response){
                 const files = response.data.files.children;
                 for (var file of files){
                     if(file.name == "erc.yml"){
-                        console.log(file.name)
                         self.setState({configurationFile:true})
                     }
                 }
-        })
+            })
     }
 
     goToErc = () => {
@@ -112,7 +128,7 @@ class Substitute extends Component {
                             <Card >
                                 <CardHeader title={"Base ERC: " + this.props.baseErc.title}>
                                 </CardHeader>
-                                {this.props.baseErc.inputfiles.map((datafile, index) => (
+                                {this.state.baseErcFiles.map((datafile, index) => (
                                     <><Card className={"class" + Math.ceil((this.state.selected.indexOf(datafile) + 1) / 2)} style={{ width: "70%", "margin-left": "15%" }}>
                                         <CardContent style={{ "padding-bottom": "16px" }}>
                                             <Grid container>
@@ -140,7 +156,7 @@ class Substitute extends Component {
                             <Card >
                                 <CardHeader title={"Substitute ERC: " + this.props.erc.title}>
                                 </CardHeader>
-                                {this.props.erc.inputfiles.map((datafile, index) => (
+                                {this.state.substitutionErcFiles.map((datafile, index) => (
                                     <><Card className={"class" + Math.ceil((this.state.selected.indexOf(datafile) + 1) / 2)} style={{ width: "70%", "margin-left": "15%" }}>
                                         <CardContent style={{ "padding-bottom": "16px" }}>
                                             <Grid container>
