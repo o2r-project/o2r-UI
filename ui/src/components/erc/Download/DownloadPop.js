@@ -62,13 +62,13 @@ class DownloadPop extends Component {
                     <DialogTitle style={{ "align-self": "center" }} id="form-dialog-title">Download</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            Please specify if you want to download the image of the ERC as well
+                            Do you want to download the image as well?
                         </DialogContentText>
                     </DialogContent>
                     <Grid container spacing={0}>
                     <Grid item xs={4}>
                     {this.state.successfulJob ? "" : <div style={{"margin-left": "10px"}}> <DialogContentText>
-                        Image tarball is missing, so it cannot be included. Please ensure a successful analysis execution first.
+                        Image tarball is missing, so it is not available for download. Please run the analysis first.
                     </DialogContentText> </div>}
                     </Grid>
                     <Grid item xs={4} style={{ "text-align": "center"}}>
