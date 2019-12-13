@@ -134,6 +134,7 @@ class ERC extends React.Component {
                 if (response.data.substituted) {
                     substituted = response.data.metadata.substitution
                 }
+                
                 const data = response.data.metadata.o2r;
                 let dataset = '';
                 if (Array.isArray(data.inputfiles)) {
@@ -142,6 +143,7 @@ class ERC extends React.Component {
                     dataset = data.inputfiles;
                 }
                 self.setState({
+                    data: response.data,
                     metadata: data,
                     datafiles: data.inputfiles,
                     dataset: dataset,
@@ -192,7 +194,7 @@ class ERC extends React.Component {
                             <Grid item xs={4}>
                                 {this.state.substituted ?
                                     <span style={{ float: "left" }}>
-                                        <span style={{ top: "1px", position: "relative" }}> This is an substituted ERC</span>
+                                        <span style={{ top: "1px", position: "relative" }}> This is a substituted ERC</span>
                                         <Button onClick={() => this.openPop("substitutionInfoOpen")}>More Info</Button>
                                     </span>
                                     : ""}
@@ -262,7 +264,7 @@ class ERC extends React.Component {
                         {
                             this.state.tabValue === 3 &&
                             <div>
-                                <Substitution baseErcMetadata={this.state.metadata} baseErcId={this.state.id} />
+                                <Substitution baseErcData={this.state.data} baseErcId={this.state.id} handleTabChange={this.handleTabChange} />
                             </div>
                         }
                     </ReflexElement>

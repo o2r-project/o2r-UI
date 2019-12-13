@@ -33,7 +33,7 @@ class SubstitutionInfoPop extends Component {
                     <DialogTitle style={{ "align-self": "center" }} id="form-dialog-title">Substitution Info</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                        Substitution is the combination of an base compendium, "base" for short, and an overlay compendium, or "overlay". 
+                        Substitution is the combination of a base compendium, "base" for short, and an overlay compendium, or "overlay". 
                         A user can choose files from the overlay to replace files of the base.
 
                         Substituted Files:
