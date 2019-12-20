@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 
 import httpRequests from '../../helpers/httpRequests';
-import { Button, Slider, FormControlLabel, Checkbox, Grid, Paper, TextField } from '@material-ui/core';
+import { Button, Slider, FormControlLabel, Checkbox, Grid, Paper, TextField, LinearProgress, withStyles } from '@material-ui/core';
 import L from 'leaflet'
 import prepareQuery from './/queryBuilder'
 import OwnMap, { ref, ref2 } from "./Map"
 import ResultList from './resultList'
 
-import './discovery.css';
+import './discovery.css'
 
 
 class Discovery extends Component {
@@ -27,53 +27,48 @@ class Discovery extends Component {
         }
     }
 
-    componentDidMount() { this.searchCompendia(); this.calculateDateRange()}
+    componentDidMount() { this.searchCompendia(); this.calculateDateRange() }
 
     calculateDateRange = () => {
         const result = []
         const self = this
         httpRequests.complexSearch(prepareQuery())
-        .then(function (res) {
-            console.log(res)
-            
-            for (var erc of res.data.hits.hits) {
-                result.push(erc._source)
-            }
-            
-       
+            .then(function (res) {
 
-        let min = new Date(result[0].metadata.o2r.temporal.begin);
-        let max = new Date(result[0].metadata.o2r.temporal.end);
+                for (var erc of res.data.hits.hits) {
+                    result.push(erc._source)
+                }
+                let min = new Date(result[0].metadata.o2r.temporal.begin);
+                let max = new Date(result[0].metadata.o2r.temporal.end);
 
-        for(var date of result){
-            console.log(date.metadata.o2r.temporal.begin)
-            if(!(date.metadata.o2r.temporal.begin === null)) {
-            var tmp_begin = new Date(date.metadata.o2r.temporal.begin);
-            var tmp_bg_year = JSON.parse(tmp_begin.getUTCFullYear());
-            var tmp_bg_month = JSON.parse(tmp_begin.getUTCMonth()+1);
-            if(tmp_bg_month.length == 1) tmp_bg_month = '0' + tmp_bg_month;
-            tmp_begin = new Date(tmp_bg_year + '-' + tmp_bg_month);
-            console.log(tmp_begin)
+                for (var date of result) {
+                    if (!(date.metadata.o2r.temporal.begin === null)) {
+                        var tmp_begin = new Date(date.metadata.o2r.temporal.begin);
+                        var tmp_bg_year = JSON.parse(tmp_begin.getUTCFullYear());
+                        var tmp_bg_month = JSON.parse(tmp_begin.getUTCMonth() + 1);
+                        if (tmp_bg_month.length == 1) tmp_bg_month = '0' + tmp_bg_month;
+                        tmp_begin = new Date(tmp_bg_year + '-' + tmp_bg_month);
 
-            var tmp_end = new Date(date.metadata.o2r.temporal.end);
-            var tmp_en_year = JSON.parse(tmp_end.getUTCFullYear());
-            var tmp_en_month = JSON.parse(tmp_end.getUTCMonth()+2);
-            if(tmp_en_month.length == 1) tmp_en_month = '0' + tmp_en_month;
-            tmp_end = new Date(tmp_en_year + '-' + tmp_en_month);
+                        var tmp_end = new Date(date.metadata.o2r.temporal.end);
+                        var tmp_en_year = JSON.parse(tmp_end.getUTCFullYear());
+                        var tmp_en_month = JSON.parse(tmp_end.getUTCMonth() + 2);
+                        if (tmp_en_month.length == 1) tmp_en_month = '0' + tmp_en_month;
+                        tmp_end = new Date(tmp_en_year + '-' + tmp_en_month);
 
-            if(tmp_begin < min) min = tmp_begin;
-            if(tmp_end > max) max = tmp_end;
-            
-            }
-        }
-        self.calculateMarks(min, max)
-    });
+                        if (tmp_begin < min) min = tmp_begin;
+                        if (tmp_end > max) max = tmp_end;
+
+                    }
+                }
+                self.calculateMarks(min, max)
+            });
     }
 
 
 
 
     searchCompendia = () => {
+        this.setState({ open: true })
         const self = this;
         httpRequests.complexSearch(prepareQuery(this.state.keyword, this.state.coordinates, this.state.from, this.state.to, null, null, this.state.libraries))
             .then(function (res) {
@@ -82,7 +77,7 @@ class Discovery extends Component {
                 for (var erc of res.data.hits.hits) {
                     result.push(erc._source)
                 }
-                self.setState({ ERC: result });
+                self.setState({ ERC: result, open: false });
             })
             .catch(function (res) {
                 console.log(res)
@@ -108,16 +103,12 @@ class Discovery extends Component {
             }
             marks.push(mark);
         }
-        console.log(maxDate2)
-        console.log(maxDate2.getUTCMonth())
         marks.push({ value: maxDate2.getTime(), label: (maxDate2.getUTCMonth() + 1) + "/" + maxDate2.getUTCFullYear() })
         this.setState({ marks, temporal: [minDate.getTime(), maxDate2.getTime()] })
     }
 
     handleChange = async (e, name, search) => {
-        console.log(e.target)
         const value = name === "libraries" ? e.target.checked : e.target.value
-        console.log(value)
         if (this.state[name] === value) return;
         this.setState({
             [name]: value
@@ -125,7 +116,6 @@ class Discovery extends Component {
     }
 
     handleSliderChange = (e, value) => {
-        console.log(value)
         if (this.state.temporal === value) return;
         this.setState({
             temporal: value,
@@ -135,13 +125,11 @@ class Discovery extends Component {
     }
 
     setPropsState = (state, result, search) => {
-        console.log(state)
         this.setState({ [state]: result }, () => { if (search) { this.searchCompendia() } })
     }
 
     setGeojson = async (bbox) => {
 
-        console.log(bbox)
         const GeoJSON = {
             "type": "FeatureCollection",
             "features": [
@@ -239,9 +227,9 @@ class Discovery extends Component {
                 <Grid container spacing={3}>
                     <Grid item xs={8} >
                         <Paper>
-                            <div style={{padding: "50px", paddingTop: "0px"}}>
+                            <div style={{ padding: "50px", paddingTop: "0px" }}>
                                 <Button onClick={this.handleReset.bind(null)}
-                                    style={{ "margin": "10px", float : "right" }}
+                                    style={{ "margin": "10px", float: "right" }}
                                     type="button"
                                     variant="contained"
                                     color="primary">
@@ -281,8 +269,8 @@ class Discovery extends Component {
                                 <OwnMap setState={this.setPropsState} drawn={this.state.drawn} />
                                 <br />
                                 <h4> Temporal Search </h4>
-                                <br/>
-                                <br/>
+                                <br />
+                                <br />
                                 <Slider
                                     value={this.state.temporal}
                                     marks={this.state.marks}
@@ -298,11 +286,12 @@ class Discovery extends Component {
                         </Paper>
                     </Grid>
                     <Grid item xs={4}>
+                        <h4>Results: </h4>
+                        {this.state.open ? <div style={{ minHeight: "20px" }}><LinearProgress /></div> : <div style={{ minHeight: "20px" }}> </div>}
                         {this.state.ERC.length > 0 ?
                             <>
-                                <h4>Results: </h4>
                                 <ResultList ercs={this.state.ERC} goToErc={this.goToErc}></ResultList>
-                            </> : ""}
+                            </> : "No Results found"}
                     </Grid>
                 </Grid>
             </div>
