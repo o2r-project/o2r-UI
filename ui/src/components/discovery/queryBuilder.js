@@ -1,6 +1,5 @@
 export default function prepareQuery(term, coordinates_selected, from, to, start, size, libraries) {
 
-
     var query = {
             query: {
                 "bool": {
@@ -20,7 +19,8 @@ export default function prepareQuery(term, coordinates_selected, from, to, start
                     "_all": term
                 }
             }
-    } else {
+    }
+    else {
         query.query.bool.must= {
             "match_all": {}
         }
@@ -47,13 +47,8 @@ export default function prepareQuery(term, coordinates_selected, from, to, start
         query.query.bool.filter.push({
             "geo_shape": {
                 "metadata.o2r.spatial.union.geojson.geometry": {
-                    "shape": {
-                        "type": "polygon",
-                        "coordinates": coordinates_selected
-                        
-                        
-                    },
-                    "relation": "intersects"
+                    "shape": coordinates_selected,
+                    "relation": "within"
                 }
             }
         });
@@ -64,5 +59,6 @@ export default function prepareQuery(term, coordinates_selected, from, to, start
     if(size){
         query.size = size;
     }
+    console.log(query)
     return query;
 }

@@ -63,6 +63,13 @@ class OwnMap extends React.Component {
         metadata.spatial.union.bbox[1] = southEast
         metadata.spatial.union.bbox[2] = southWest
         metadata.spatial.union.bbox[3] = northWest
+        metadata.spatial.union.bbox[4] = northEast
+        metadata.spatial.union.geojson= {
+            geometry:{
+            type: "Polygon",
+            coordinates: [metadata.spatial.union.bbox]
+            }
+          }
         this.props.setMetadata(metadata, false);
         this.setState({ GeoJSON: GeoJSON });
         this.props.setChanged();
@@ -80,6 +87,13 @@ class OwnMap extends React.Component {
         metadata.spatial.union.bbox[1] = GeoJSON.geometry.coordinates[0][1];
         metadata.spatial.union.bbox[2] = GeoJSON.geometry.coordinates[0][2];
         metadata.spatial.union.bbox[3] = GeoJSON.geometry.coordinates[0][3];
+        metadata.spatial.union.bbox[4] = GeoJSON.geometry.coordinates[0][0]
+        metadata.spatial.union.geojson= {
+            geometry:{
+            type: "Polygon",
+            coordinates: [metadata.spatial.union.bbox]
+            }
+          }
         this.props.setMetadata(metadata, false);
         this.props.setChanged();
     }
@@ -100,6 +114,7 @@ class OwnMap extends React.Component {
         metadata.spatial.union.bbox[1] = [-181, 181]
         metadata.spatial.union.bbox[2] = [-181, -181]
         metadata.spatial.union.bbox[3] = [181, -181]
+        metadata.spatial.union.geojson = null;
         this.props.setMetadata(metadata, false);
         this.props.setChanged();
     }

@@ -5,7 +5,6 @@ import { Card, CardHeader, CardContent, CardActions, Button, IconButton, Collaps
 
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import prepareQuery from './/queryBuilder'
 
 const ResultList= (props) => 
 {
