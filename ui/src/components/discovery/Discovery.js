@@ -7,7 +7,7 @@ import prepareQuery from './/queryBuilder'
 import OwnMap, { ref, ref2 } from "./Map"
 import ResultList from './resultList'
 
-import './discovery.css'
+import './discovery.css';
 
 
 class Discovery extends Component {
@@ -27,7 +27,51 @@ class Discovery extends Component {
         }
     }
 
-    componentDidMount() { this.searchCompendia(); this.calculateMarks() }
+    componentDidMount() { this.searchCompendia(); this.calculateDateRange()}
+
+    calculateDateRange = () => {
+        const result = []
+        const self = this
+        httpRequests.complexSearch(prepareQuery())
+        .then(function (res) {
+            console.log(res)
+            
+            for (var erc of res.data.hits.hits) {
+                result.push(erc._source)
+            }
+            
+       
+
+        let min = new Date(result[0].metadata.o2r.temporal.begin);
+        let max = new Date(result[0].metadata.o2r.temporal.end);
+
+        for(var date of result){
+            console.log(date.metadata.o2r.temporal.begin)
+            if(!(date.metadata.o2r.temporal.begin === null)) {
+            var tmp_begin = new Date(date.metadata.o2r.temporal.begin);
+            var tmp_bg_year = JSON.parse(tmp_begin.getUTCFullYear());
+            var tmp_bg_month = JSON.parse(tmp_begin.getUTCMonth()+1);
+            if(tmp_bg_month.length == 1) tmp_bg_month = '0' + tmp_bg_month;
+            tmp_begin = new Date(tmp_bg_year + '-' + tmp_bg_month);
+            console.log(tmp_begin)
+
+            var tmp_end = new Date(date.metadata.o2r.temporal.end);
+            var tmp_en_year = JSON.parse(tmp_end.getUTCFullYear());
+            var tmp_en_month = JSON.parse(tmp_end.getUTCMonth()+2);
+            if(tmp_en_month.length == 1) tmp_en_month = '0' + tmp_en_month;
+            tmp_end = new Date(tmp_en_year + '-' + tmp_en_month);
+
+            if(tmp_begin < min) min = tmp_begin;
+            if(tmp_end > max) max = tmp_end;
+            
+            }
+        }
+        self.calculateMarks(min, max)
+    });
+    }
+
+
+
 
     searchCompendia = () => {
         const self = this;
@@ -45,15 +89,13 @@ class Discovery extends Component {
             })
     }
 
-    calculateMarks = () => {
+    calculateMarks = (min, max) => {
         const marks = []
-        let minDate = new Date(2014, 7, 1)
-        let changeDate = new Date(2014, 7, 1)
-        let maxDate = new Date(2016, 7, 2)
+        let minDate = new Date(min)
+        let changeDate = new Date(minDate)
+        let maxDate = new Date(max)
         const maxDate2 = new Date(maxDate)
         maxDate.setUTCMonth(maxDate.getUTCMonth() - 1);
-        console.log(maxDate)
-        console.log(maxDate2)
         marks.push({ value: minDate.getTime(), label: (minDate.getUTCMonth() + 1) + "/" + minDate.getUTCFullYear() })
         while (changeDate < maxDate) {
             // always use first of month for slider
@@ -61,9 +103,7 @@ class Discovery extends Component {
 
             const date = new Date(changeDate).getTime()
             const mark = { value: date }
-            console.log(changeDate.getUTCMonth())
             if (changeDate.getUTCMonth() == 0) {
-                console.log(true)
                 mark.label = (changeDate.getUTCMonth() + 1) + "/" + changeDate.getUTCFullYear()
             }
             marks.push(mark);
