@@ -97,9 +97,18 @@ class SpatioTemporalMetadata extends React.Component {
 
   setGeojson(bbox) {
     var metadata = this.props.metadata
-    this.props.setMetadata(metadata, false)
+    
 
-    metadata.spatial.union.bbox = bbox
+    metadata.spatial.union.bbox = bbox;
+
+    metadata.spatial.union.geojson= {
+      geometry:{
+      type: "Polygon",
+      coordinates: [bbox]
+      }
+    }
+    console.log(metadata)
+    this.props.setMetadata(metadata, false)
 
     this._editableFG = ref;
     var GeoJSON = this.getGeoJson()
@@ -137,6 +146,7 @@ class SpatioTemporalMetadata extends React.Component {
           bbox.push([resultBBox[2], resultBBox[1]])
           bbox.push([resultBBox[0], resultBBox[1]])
           bbox.push([resultBBox[0], resultBBox[3]])
+          bbox.push([resultBBox[2], resultBBox[3]])
           self.setGeojson(bbox)
         })
 

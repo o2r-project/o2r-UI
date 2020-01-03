@@ -1,0 +1,9 @@
+span[class^="PrivateValueLabel-circle"]{
+    width: 45px !important;
+    height: 45px !important;
+}
+
+.MuiSlider-valueLabel{
+    top: -50px !important;
+    left: auto !important;
+}
