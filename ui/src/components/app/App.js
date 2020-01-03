@@ -24,11 +24,11 @@ const Header = ( props ) => {
           <a href="/"><img src={logo} alt="o2r" id="headerLogo"/></a>
         </Typography>
         <HashRouter>
-          <NavLink id="link" to="/discover">
+          {/*<NavLink id="link" to="/discover">
             <Button color="inherit" label="test">
               Discover ERC
             </Button>
-          </NavLink>
+  </NavLink>*/}
           <NavLink id="link" to="/author">
             {props.loggedIn ? 
               <Button color="inherit">
