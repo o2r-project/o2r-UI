@@ -7,6 +7,7 @@ let GeoJSON
 let firstTime = true;
 export let ref;
 export let ref2;
+export let ref3
 
 
 class OwnMap extends React.Component {
@@ -98,6 +99,9 @@ class OwnMap extends React.Component {
                                 point: false,
                                 polygon: false
                             }} />
+
+                </FeatureGroup>
+                <FeatureGroup ref={(fg) => ref3= fg}>
 
                 </FeatureGroup>
 

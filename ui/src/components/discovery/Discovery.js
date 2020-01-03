@@ -38,8 +38,18 @@ class Discovery extends Component {
                 for (var erc of res.data.hits.hits) {
                     result.push(erc._source)
                 }
-                let min = new Date(result[0].metadata.o2r.temporal.begin);
-                let max = new Date(result[0].metadata.o2r.temporal.end);
+                let min;
+                let max;
+                if (result.length > 0) {
+                    min = new Date(result[0].metadata.o2r.temporal.begin);
+                    max = new Date(result[0].metadata.o2r.temporal.end);
+                }
+                else {
+                    let date = new Date("2020-3-2")
+                    max = new Date(date)
+                    date.setFullYear(date.getUTCFullYear() - 5)
+                    min = new Date(date)
+                }
 
                 for (var date of result) {
                     if (!(date.metadata.o2r.temporal.begin === null)) {
@@ -86,6 +96,9 @@ class Discovery extends Component {
 
     calculateMarks = (min, max) => {
         const marks = []
+        let steps = (max.getUTCFullYear() - min.getUTCFullYear()) / 5 + 1;
+        const labels = min.getUTCMonth();
+        console.log(labels)
         let minDate = new Date(min)
         let changeDate = new Date(minDate)
         let maxDate = new Date(max)
@@ -94,11 +107,11 @@ class Discovery extends Component {
         marks.push({ value: minDate.getTime(), label: (minDate.getUTCMonth() + 1) + "/" + minDate.getUTCFullYear() })
         while (changeDate < maxDate) {
             // always use first of month for slider
-            changeDate.setUTCMonth(changeDate.getUTCMonth() + 1);
+            changeDate.setUTCMonth(changeDate.getUTCMonth() + steps);
 
             const date = new Date(changeDate).getTime()
             const mark = { value: date }
-            if (changeDate.getUTCMonth() == 0) {
+            if (changeDate.getUTCMonth() == labels) {
                 mark.label = (changeDate.getUTCMonth() + 1) + "/" + changeDate.getUTCFullYear()
             }
             marks.push(mark);
@@ -233,7 +246,7 @@ class Discovery extends Component {
                                     type="button"
                                     variant="contained"
                                     color="primary">
-                                    Reset
+                                    Clear Search
                                 </Button>
                                 <TextField
                                     type="search"

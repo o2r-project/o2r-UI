@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import L, { geoJSON } from "leaflet"
 
-import httpRequests from '../../helpers/httpRequests';
+
 import { Card, CardHeader, CardContent, CardActions, Button, IconButton, Collapse, Grid, Paper, TextField } from '@material-ui/core';
 
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+
+import { ref3 } from "./Map"
 
 const ResultList= (props) => 
 {
@@ -12,17 +15,32 @@ const ResultList= (props) =>
     const [expanded, setExpanded] = useState(null);
 
     const setExpand = (index) => {
-        if(expanded === null){
+        if(expanded !== index){
             setExpanded(index)
+            showExtend(index)
         }
         else{
             setExpanded(null);
+            let leafletFG = ref3.leafletElement;
+            leafletFG.clearLayers()
         }
     }
+
+    const showExtend = (index) => {
+        const geoJSON= props.ercs[index].metadata.o2r.spatial.union.geojson;
+        let leafletFG = ref3.leafletElement;
+        leafletFG.clearLayers()
+        if(geoJSON){
+        let leafletGeoJSON = new L.GeoJSON({type: "Feature", geometry: geoJSON.geometry});
+        leafletGeoJSON.eachLayer(layer => {leafletFG.addLayer(layer); layer.setStyle({fillColor: 'green', color: "green"})});
+        }
+    }
+
+
     return(
         <Paper style={{ "max-height": "80vh", "overflow": "auto" }}>
                                 {props.ercs.map((erc, index) => (
-                                    <div>
+                                    <div key={index}>
                                         <Card style={{ "text-align": "justify", "margin": "10px" }}>
                                             {erc.substituted ? <CardHeader title={erc.metadata.o2r.title + " [SUBSTITUTED]"} style={{ "padding-bottom": "0px" }} /> :
                                                 <CardHeader title={erc.metadata.o2r.title} style={{ "padding-bottom": "0px" }} />}
