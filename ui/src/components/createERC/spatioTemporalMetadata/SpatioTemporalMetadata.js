@@ -166,6 +166,23 @@ class SpatioTemporalMetadata extends React.Component {
 
   }
 
+  startEdit = () =>{
+    let editingLayer
+    ref2.eachLayer((layer)=> {if(layer._latlngs){editingLayer= layer}})
+    this.refs.child._onEditStart(editingLayer);
+  }
+
+  saveEdit = () =>{
+    let editingLayer
+    ref2.eachLayer((layer)=> {if(layer._latlngs){editingLayer= layer}})
+    this.refs.child._onEdited(editingLayer);
+  }
+
+  cancelEdit= () => {
+    let editingLayer
+    ref2.eachLayer((layer)=> {if(layer._latlngs){editingLayer= layer}})
+    this.refs.child._onCancel(editingLayer);
+  }
 
   getGeoJson = () => {
     return {
@@ -193,7 +210,8 @@ class SpatioTemporalMetadata extends React.Component {
           <Grid item xs={10}>
             <Card>
               <h1>Specify the spatial properties of your dataset(s):</h1>
-              Search for Address/Region/Country
+              <h4>You have two options: 1. Search for an Address/Region/Country, which will be displayed on the Map 2. Edit the Polygon in the Map</h4>
+              1. Search for Address/Region/Country
               <TextField id="search" value={this.state.search}
                 onChange={(e) => this.handleChange(e, "search")} />
               <Button onClick={this.handleSearch.bind(null)}
@@ -201,12 +219,29 @@ class SpatioTemporalMetadata extends React.Component {
                 type="button"
                 variant="contained"
                 color="primary"> Search </Button>
+               <br/>
+              2. Edit: 
+              <Button onClick={this.startEdit.bind(null)}
+                style={{ "margin": "10px" }}
+                type="button"
+                variant="contained"
+                color="primary"> Start Edit </Button>  
+                <Button onClick={this.saveEdit.bind(null)}
+                style={{ "margin": "10px" }}
+                type="button"
+                variant="contained"
+                color="primary"> Save Edit </Button>  
+              <Button onClick={this.cancelEdit.bind(null)}
+                style={{ "margin": "10px" }}
+                type="button"
+                variant="contained"
+                color="primary"> Cancel Edit </Button> 
               <Button onClick={this.handleGeoJsonWorld.bind(null)}
                 style={{ "margin": "10px" }}
                 type="button"
                 variant="contained"
                 color="primary"> The ERC is important for the whole World </Button>
-              <OwnMap metadata={this.props.metadata} setMetadata={this.props.setMetadata} setChanged={this.setChanged} drawn={this.state.drawn} setState={this.setPropsState} />
+              <OwnMap ref="child" metadata={this.props.metadata} setMetadata={this.props.setMetadata} setChanged={this.setChanged} drawn={this.state.drawn} setState={this.setPropsState} />
               <h1> Specify the temporal properties of your dataset(s):</h1>
 
               <TextField

@@ -5,6 +5,7 @@ import { EditControl } from 'react-leaflet-draw'
 
 let GeoJSON
 let firstTime = true;
+let editHandler
 export let ref;
 export let ref2;
 
@@ -13,7 +14,6 @@ class OwnMap extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
         };
     };
 
@@ -35,20 +35,18 @@ class OwnMap extends React.Component {
     }
 
 
-    _onEdited = (e) => {
+    _onEdited = (layer) => {
 
+        editHandler._disableLayerEdit(layer)
+        editHandler._uneditedLayerProps[65].latlngs= layer._latlngs
+        console.log("edited")
         var bounds;
-        if (this.isEmpty(e.layers._layers)) {
+        if (this.isEmpty(layer)) {
             return
         }
 
-        e.layers.eachLayer((layer) => {
-
-            GeoJSON = layer.toGeoJSON();
+           GeoJSON = layer.toGeoJSON();
             bounds = layer.getBounds();
-
-
-        });
 
         const metadata = this.props.metadata;
 
@@ -73,10 +71,38 @@ class OwnMap extends React.Component {
         this.props.setMetadata(metadata, false);
         this.setState({ GeoJSON: GeoJSON });
         this.props.setChanged();
-
-
+        this.props.setState("editing", false)
     }
 
+    _onCancel = (layer) => {
+        //editHandler.revertLayers()
+        editHandler._disableLayerEdit(layer)
+        this.props.setState("editing", false)
+        this.revertLayers();
+    }
+
+    revertLayers = () => {
+        console.log(editHandler)
+        const latlngs = editHandler._uneditedLayerProps[65].latlngs
+        this._editableFG = ref;
+
+        var GeoJSON = this.getGeoJson()
+        
+
+        const array = [[]]
+        for(var latlng of latlngs[0]){
+            const coordinates = [latlng.lng, latlng.lat]
+            array[0].push(coordinates)
+        }
+        GeoJSON.geometry.coordinates = array;
+
+        console.log(GeoJSON)
+
+        let leafletGeoJSON = new L.GeoJSON(GeoJSON);
+        let leafletFG = this._editableFG.leafletElement;
+        leafletFG.clearLayers()
+        leafletGeoJSON.eachLayer(layer => leafletFG.addLayer(layer));
+    }
     _onCreated = (e) => {
 
         GeoJSON = e.layer.toGeoJSON();
@@ -98,12 +124,10 @@ class OwnMap extends React.Component {
         this.props.setChanged();
     }
 
-    _onEditStart = (e) => {
+    _onEditStart = (layer) => {
+        console.log(editHandler)
+        editHandler._enableLayerEdit(layer)
         this.props.setState("editing", true)
-    }
-
-    _onEditStop = (e) => {
-        this.props.setState("editing", false)
     }
 
     _onDeleted = (e) => {
@@ -119,6 +143,14 @@ class OwnMap extends React.Component {
         this.props.setChanged();
     }
 
+    _onMounted = drawControl => {
+        console.log(drawControl)
+        editHandler = drawControl._toolbars.edit._modes.edit.handler;
+        //editHandler.enable()
+
+		// this.drawControl = drawControl;
+	};
+
     _onFeatureGroupReady = (ref) => {
 
         if (!firstTime) {
@@ -133,13 +165,13 @@ class OwnMap extends React.Component {
         }
 
         //GeoJSON.geometry.coordinates[0][4] = metadata.spatial.union.bbox[0];
-
+        const fg=this.state.drawnItems
         let leafletGeoJSON = new L.GeoJSON(GeoJSON);
         let leafletFG = this._editableFG.leafletElement;
-        leafletGeoJSON.eachLayer(layer => leafletFG.addLayer(layer));
+        leafletGeoJSON.eachLayer(layer => {leafletFG.addLayer(layer);});
+        this.setState({drawnItems: fg})
         firstTime = false;
-
-
+        
     }
 
     getGeoJson = () => {
@@ -173,13 +205,16 @@ class OwnMap extends React.Component {
                 />
                 <FeatureGroup ref={(reactFGref) => { this._onFeatureGroupReady(reactFGref); ref = reactFGref }}>
                     <EditControl
+                        onMounted={this._onMounted}
                         position='topright'
                         onEdited={this._onEdited}
                         onCreated={this._onCreated}
                         onDeleted={this._onDeleted}
                         onEditStart={this._onEditStart}
                         onEditStop={this._onEditStop}
-                        edit={this.props.drawn ? { remove: true } : { remove: false }}
+                        edit={this.props.drawn ? 
+                            { featureGroup: this.state.drawnItems, remove: true } : 
+                            { featureGroup: this.state.drawnItems, remove: false }}                     
                         draw={this.props.drawn ? {
                             circle: false,
                             circlemarker: false,

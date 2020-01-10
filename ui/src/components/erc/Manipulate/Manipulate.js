@@ -56,7 +56,7 @@ class Manipulate extends React.Component {
             }, () => {
                 setTimeout(() => {
                     this.buildFullUrl(this.state.binding);
-                }, 1500);
+                }, 2000);
             })
         }
     }

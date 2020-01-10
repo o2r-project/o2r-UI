@@ -59,7 +59,7 @@ class DownloadPop extends Component {
         return (
             <div>
                 <Dialog open={this.props.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
-                    <DialogTitle style={{ "align-self": "center" }} id="form-dialog-title">Download</DialogTitle>
+                    <DialogTitle style={{ "align-self": "center" }} id="form-dialog-title">ERC Download</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
                             Do you want to download the image as well?
