@@ -1,7 +1,7 @@
 import './spatioTemporalMetadata.css';
 
 import React from 'react'
-import { Card, TextField, Button, Grid } from "@material-ui/core";
+import { Card, TextField, Button, Grid, CardContent } from "@material-ui/core";
 import OwnMap, { ref, ref2 } from "./Map"
 import L from 'leaflet'
 import { valid2 } from '../requiredMetadata/Form.js'
@@ -18,7 +18,7 @@ class SpatioTemporalMetadata extends React.Component {
     this.state = {
       from: begin,
       to: end,
-      drawn: true,
+      drawing: false,
       editing: false,
     };
   };
@@ -80,7 +80,8 @@ class SpatioTemporalMetadata extends React.Component {
     this.setState({
       from: begin,
       to: end,
-      drawn: true,
+      drawing: false,
+      editing: false,
     })
 
     var metadata = this.props.metadata
@@ -96,15 +97,16 @@ class SpatioTemporalMetadata extends React.Component {
   }
 
   setGeojson(bbox) {
-    var metadata = this.props.metadata
-    
+    var metadata = this.props.metadata;
+    this.refs.child.stopCreate();
+
 
     metadata.spatial.union.bbox = bbox;
 
-    metadata.spatial.union.geojson= {
-      geometry:{
-      type: "Polygon",
-      coordinates: [bbox]
+    metadata.spatial.union.geojson = {
+      geometry: {
+        type: "Polygon",
+        coordinates: [bbox]
       }
     }
     console.log(metadata)
@@ -118,6 +120,10 @@ class SpatioTemporalMetadata extends React.Component {
     }
 
     GeoJSON.geometry.coordinates[0][4] = bbox[0];
+
+    this.refs.child.setUneditedLayerProps(GeoJSON);
+
+    this.setState({ editing: false, drawing: false })
 
     let leafletGeoJSON = new L.GeoJSON(GeoJSON);
     let leafletFG = this._editableFG.leafletElement;
@@ -139,6 +145,7 @@ class SpatioTemporalMetadata extends React.Component {
       httpRequests.geocodingRequest(query)
         .then(function (res) {
           console.log(res)
+          if (res.data.features.length == 0) { alert("No result found"); return; }
           const resultBBox = res.data.features[0].bbox
           if (!resultBBox) { alert("No result found"); return; }
           const bbox = []
@@ -166,22 +173,26 @@ class SpatioTemporalMetadata extends React.Component {
 
   }
 
-  startEdit = () =>{
+  startEdit = () => {
     let editingLayer
-    ref2.eachLayer((layer)=> {if(layer._latlngs){editingLayer= layer}})
+    ref2.eachLayer((layer) => { if (layer._latlngs) { editingLayer = layer } })
     this.refs.child._onEditStart(editingLayer);
   }
 
-  saveEdit = () =>{
+  saveEdit = () => {
     let editingLayer
-    ref2.eachLayer((layer)=> {if(layer._latlngs){editingLayer= layer}})
+    ref2.eachLayer((layer) => { if (layer._latlngs) { editingLayer = layer } })
     this.refs.child._onEdited(editingLayer);
   }
 
-  cancelEdit= () => {
+  cancelEdit = () => {
     let editingLayer
-    ref2.eachLayer((layer)=> {if(layer._latlngs){editingLayer= layer}})
+    ref2.eachLayer((layer) => { if (layer._latlngs) { editingLayer = layer } })
     this.refs.child._onCancel(editingLayer);
+  }
+
+  drawPolygon = () => {
+    this.refs.child.startCreate();
   }
 
   getGeoJson = () => {
@@ -209,63 +220,78 @@ class SpatioTemporalMetadata extends React.Component {
         <Grid container spacing={2}>
           <Grid item xs={10}>
             <Card>
-              <h1>Specify the spatial properties of your dataset(s):</h1>
-              <h4>You have two options: 1. Search for an Address/Region/Country, which will be displayed on the Map 2. Edit the Polygon in the Map</h4>
-              1. Search for Address/Region/Country
+              <CardContent>
+                <h1>Specify the spatial properties of your dataset(s):</h1>
+                <h4>You have two options: 1. Search for an Address/Region/Country, which will be displayed on the Map. 2. Edit the Polygon in the Map or draw a new one.</h4>
+                1. Search for Address/Region/Country
               <TextField id="search" value={this.state.search}
-                onChange={(e) => this.handleChange(e, "search")} />
-              <Button onClick={this.handleSearch.bind(null)}
-                style={{ "margin": "10px" }}
-                type="button"
-                variant="contained"
-                color="primary"> Search </Button>
-               <br/>
-              2. Edit: 
+                  onChange={(e) => this.handleChange(e, "search")} />
+                <Button onClick={this.handleSearch.bind(null)}
+                  style={{ "margin": "10px" }}
+                  type="button"
+                  variant="contained"
+                  color="primary"> Search </Button>
+                <br />
+                2. Edit:
               <Button onClick={this.startEdit.bind(null)}
-                style={{ "margin": "10px" }}
-                type="button"
-                variant="contained"
-                color="primary"> Start Edit </Button>  
+                  style={{ "margin": "10px" }}
+                  disabled={this.state.editing || this.state.drawing}
+                  type="button"
+                  variant="contained"
+                  color="primary"> Start Edit </Button>
                 <Button onClick={this.saveEdit.bind(null)}
-                style={{ "margin": "10px" }}
-                type="button"
-                variant="contained"
-                color="primary"> Save Edit </Button>  
-              <Button onClick={this.cancelEdit.bind(null)}
-                style={{ "margin": "10px" }}
-                type="button"
-                variant="contained"
-                color="primary"> Cancel Edit </Button> 
+                  style={{ "margin": "10px" }}
+                  disabled={!this.state.editing}
+                  type="button"
+                  variant="contained"
+                  color="primary"> Save Edit </Button>
+                <Button onClick={this.cancelEdit.bind(null)}
+                  style={{ "margin": "10px" }}
+                  disabled={!this.state.editing}
+                  type="button"
+                  variant="contained"
+                  color="primary"> Cancel Edit </Button>
+                Draw:
+              <Button onClick={this.drawPolygon.bind(null)}
+                  style={{ "margin": "10px" }}
+                  disabled={this.state.editing}
+                  type="button"
+                  variant="contained"
+                  color="primary"> Draw a new bbox </Button>
+                <br />
+                3.
               <Button onClick={this.handleGeoJsonWorld.bind(null)}
-                style={{ "margin": "10px" }}
-                type="button"
-                variant="contained"
-                color="primary"> The ERC is important for the whole World </Button>
-              <OwnMap ref="child" metadata={this.props.metadata} setMetadata={this.props.setMetadata} setChanged={this.setChanged} drawn={this.state.drawn} setState={this.setPropsState} />
-              <h1> Specify the temporal properties of your dataset(s):</h1>
+                  style={{ "margin": "10px" }}
+                  type="button"
+                  variant="contained"
+                  color="primary"> The ERC is important for the whole World </Button>
+                <OwnMap ref="child" metadata={this.props.metadata} setMetadata={this.props.setMetadata} setChanged={this.setChanged} setState={this.setPropsState} />
+                <h1> Specify the temporal properties of your dataset(s):</h1>
 
-              <TextField
-                id="date"
-                label="Begin"
-                type="date"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                value={this.state.from}
-                onChange={(e) => this.handleChange(e, "from")}
-              />
+                <TextField
+                  id="date"
+                  label="Begin"
+                  type="date"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  style={{marginLeft: "5px", marginRight: "100px"}}
+                  value={this.state.from}
+                  onChange={(e) => this.handleChange(e, "from")}
+                />
 
-              <TextField
-                id="date"
-                label="End"
-                type="date"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                value={this.state.to}
-                onChange={(e) => this.handleChange(e, "to")
-                }
-              />
+                <TextField
+                  id="date"
+                  label="End"
+                  type="date"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  value={this.state.to}
+                  onChange={(e) => this.handleChange(e, "to")
+                  }
+                />
+              </CardContent>
             </Card>
           </Grid>
           <Grid item xs={2} >
@@ -282,7 +308,7 @@ class SpatioTemporalMetadata extends React.Component {
                 type="submit"
                 variant="contained"
                 color="primary"
-                disabled={!(this.props.spatioTemporalChanged || this.props.authorsChanged || this.props.changed) || !valid2 || this.state.editing}
+                disabled={!(this.props.spatioTemporalChanged || this.props.authorsChanged || this.props.changed) || !valid2 || this.state.editing || this.state.drawing}
               >
                 Save
             </Button>
@@ -295,7 +321,8 @@ class SpatioTemporalMetadata extends React.Component {
             </Card>
             <div id={"errorMessage"}>
               {!valid2 ? "Required Metadata is not valid" : ""} <br />
-              {this.state.editing ? "Please save or cancel the editing on the map" : ""}
+              {this.state.editing ? "Please save or cancel the editing of the bbox" : ""}
+              {this.state.drawing ? "Please finish drawing a new bbox" : ""}
             </div>
 
           </Grid>
