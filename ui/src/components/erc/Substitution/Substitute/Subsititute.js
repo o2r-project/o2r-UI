@@ -149,7 +149,7 @@ class Substitute extends Component {
                         Substitute
                     </Button>
                     {!this.state.configurationFile ?
-                     <> <br/> <span style={{"padding-left": "12%"}}>
+                     <> <br/> <span style={{"padding-left": "12%", color : "red"}}>
                          Configuration file is missing, so it cannot be included. <br/> Please ensure a successful analysis execution first. 
                          <Button color="primary" onClick={() => this.props.handleTabChange("e",1)}> Go there </Button>
                          </span> </>

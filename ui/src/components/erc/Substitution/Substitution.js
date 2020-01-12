@@ -131,7 +131,7 @@ class Substitution extends React.Component {
                                 </CardContent>
                             </Card>
                         </div>
-                    )) : ""}
+                    )) : <> <br/> <span>No ERCs to substitute found </span> </>}
                     {this.state.erc !== 0 ? <Substitute handleTabChange={this.props.handleTabChange} baseErc={this.props.baseErcData.metadata.o2r} baseErcId ={this.props.baseErcId} erc={this.state.erc.metadata.o2r} ercId={this.state.erc.id} setErc={this.setErc}/> : ""}
             </div>
         )
