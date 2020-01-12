@@ -15,6 +15,7 @@ import Author from '../authorView/Author';
 import CreateERC from '../createERC/CreateERC';
 import Discovery from '../discovery/Discovery';
 import ERC from '../erc/ERC';
+import Dashboard from '../dashboard/Dashboard';
 
 const Header = ( props ) => {
   return (        
@@ -114,6 +115,7 @@ class App extends Component {
           <Route path="/createERC/:id" component={CreateERC}/>
           <Route path="/discover" component={Discovery}/>
           <Route path="/erc/:id" component={ERC}/>
+          <Route path="/dashboard" component={Dashboard}/>
         </div>
       </div>
       </HashRouter>
