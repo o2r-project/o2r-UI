@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import BarChart from './Charts/BarChart'
+
 class Dashboard extends Component {
     constructor(props){
       super(props);
@@ -9,7 +11,7 @@ class Dashboard extends Component {
 
     render() {
         return (
-           <p> Dashboard View </p>
+           <BarChart />
         )
     }
 }
