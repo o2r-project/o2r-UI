@@ -51,7 +51,7 @@ class LineChart extends Component {
     }
 
     render() {
-        return (<div class="chart" ref="chart"></div>)
+        return (<div  ref="chart"></div>)
     }
 }
 export default LineChart
