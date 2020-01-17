@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import BarChart from './Charts/BarChart'
+import PieChart from './Charts/PieChart'
 
 class Dashboard extends Component {
     constructor(props){
@@ -10,8 +11,10 @@ class Dashboard extends Component {
     };
 
     render() {
-        return (
+        return (<>
            <BarChart />
+           <PieChart />
+           </>
         )
     }
 }

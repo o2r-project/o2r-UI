@@ -45,7 +45,7 @@ class BarChart extends Component {
             .attr("width", width)
             .attr("height", (datapoint) => canvasHeight - yScale(datapoint.value))
             .attr("fill", (d) => color(d.value))
-            .attr("x", (datapoint) => {console.log(datapoint); return xScale(new Date(datapoint.label))})
+            .attr("x", (datapoint) => {return xScale(new Date(datapoint.label))})
             .attr("y", (datapoint) =>  yScale(datapoint.value))
             .on("mouseover", function(d) {
                 d3.select(this).style("fill", "red")
