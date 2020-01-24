@@ -45,6 +45,14 @@ class LineChart extends Component {
         svg.append("g").call(xAxis).attr("transform", "translate (0, " + height + ")");
         svg.append("g").call(yAxis).attr("transform", "translate(" + margin.left + ",0)");
 
+        svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", (margin.top))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .style("text-decoration", "underline")  
+        .text(this.props.title);
+
         svg.append("path")
             .data([data])
             .attr("class", "line")

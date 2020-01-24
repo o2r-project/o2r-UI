@@ -19,7 +19,7 @@ class Dashboard extends Component {
     return (<>
     <Grid container spacing={2}>
         <Grid item xs={3}>
-          <BarChart />
+          <BarChart title={"Uploaded ERCs"} />
         </Grid>
         <Grid item xs={6}>
          <Table />
@@ -30,10 +30,10 @@ class Dashboard extends Component {
         <Grid item xs ={3}>
           <Grid container  spacing={1} direction="column" style={{height: "60vh"}}>
             <Grid item style={{width:"100%"}}>
-             <LineChart />
+             <LineChart title={"Duration of Analysis Execution"}/>
             </Grid>
             <Grid item>
-             <PieChart />
+             <PieChart title={"Reproducibility Analysis"}/>
             </Grid>
            </Grid>
         </Grid>

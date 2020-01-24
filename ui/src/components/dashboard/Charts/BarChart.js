@@ -71,6 +71,14 @@ class BarChart extends Component {
             .attr("dy", ".75em")
             .text(function (d) { return d.value; });
 
+            svgCanvas.append("text")
+                .attr("x", (canvasWidth / 2))             
+                .attr("y", (margin.top))
+                .attr("text-anchor", "middle")  
+                .style("font-size", "16px") 
+                .style("text-decoration", "underline")  
+                .text(this.props.title);
+
         const xAxis = d3.axisBottom(xScale).ticks(d3.timeMonth.every(1))
         const yAxis = d3.axisLeft(yScale).ticks(4)
         svgCanvas.append("g")
