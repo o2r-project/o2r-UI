@@ -4,16 +4,19 @@ import './charts.css'
 class LineChart extends Component {
     componentDidMount() {
         const data = [{ value: 2, label: new Date(2019, 5) }, { value: 3, label: new Date(2019, 6) }, { value: 4, label: new Date(2019, 7) }, { value: 5, label: new Date(2019, 8) }, { value: 8, label: new Date(2019, 9) }, { value: 7, label: new Date(2019, 10) }, { value: 3, label: new Date(2019, 11) }, { value: 20, label: new Date(2020, 0) }]
-        this.drawLineChart(data)
+        const timer = setTimeout(() => {
+            this.drawLineChart(data)
+          }, 1000); 
     }
 
     drawLineChart(data) {
-        var margin = { top: 20, right: 20, bottom: 20, left: 20 };
-        const height = 400 - margin.left - margin.right
-        const width = 600 - margin.bottom - margin.top;
+        console.log(this.refs.chart.clientHeight)
+        var margin = { top: 20, right: 20, bottom: 20, left: 25 };
+        const  height = this.refs.chart.clientHeight -margin.bottom -margin.top;
+        const width = this.refs.chart.clientWidth -margin.left -margin.right;
         const svg = d3.select(this.refs.chart)
             .append("svg")
-            .attr("width", width + margin.left + margin.right)
+            .attr("width", width + 40)
             .attr("height", height + margin.bottom + margin.top)
             .style("border", "1px solid black")
 
@@ -51,7 +54,7 @@ class LineChart extends Component {
     }
 
     render() {
-        return (<div  ref="chart"></div>)
+        return (<div id={"g2"} style={{minWidth: "100%", minHeight: "100%"}} class="chart" ref="chart"></div>)
     }
 }
 export default LineChart

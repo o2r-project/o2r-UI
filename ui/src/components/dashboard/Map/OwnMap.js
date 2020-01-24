@@ -4,6 +4,7 @@ import { Map, TileLayer, FeatureGroup, Marker } from 'react-leaflet'
 import MarkerClusterGroup from 'react-leaflet-markercluster';
 import 'react-leaflet-markercluster/dist/styles.min.css';
 
+import '../dashboard.css'
 export let ref;
 export let ref2;
 

@@ -3,17 +3,20 @@ import * as d3 from 'd3'
 import './charts.css'
 class BarChart extends Component {
     componentDidMount() {
+       
         const data = [{ value: 2, label: new Date(2019, 5) }, { value: 3, label: new Date(2019, 6) }, { value: 4, label: new Date(2019, 7) }, { value: 5, label: new Date(2019, 8) }, { value: 8, label: new Date(2019, 9) }, { value: 7, label: new Date(2019, 10) }, { value: 3, label: new Date(2019, 11) }, { value: 20, label: new Date(2020, 0) }]
-        this.drawBarChart(data)
+        const timer = setTimeout(() => {
+            this.drawBarChart(data)
+          }, 1000); 
     }
 
 
 
     drawBarChart(data) {
-        var margin = { top: 20, right: 20, bottom: 20, left: 20 };
-        const canvasHeight = 400 - margin.left - margin.right
-        const canvasWidth = 600 - margin.bottom - margin.top,
-            width = canvasWidth / (data.length + 1) * 0.9;
+        var margin = { top: 20, right: 20, bottom: 20, left: 25 };
+        const canvasHeight = this.refs.chart.clientHeight -margin.bottom -margin.top;
+        const canvasWidth = this.refs.chart.clientWidth - margin.bottom - margin.top;
+        const width = canvasWidth / (data.length + 1) * 0.9;
 
         const yScale = d3.scaleLinear()
             .domain([0, d3.max(data, (d) => { return d.value })])
@@ -37,7 +40,7 @@ class BarChart extends Component {
             .range(["lightblue", "blue", "darkblue"]);
         const svgCanvas = d3.select(this.refs.chart)
             .append("svg")
-            .attr("width", canvasWidth + margin.left + margin.right)
+            .attr("width", canvasWidth + 35)
             .attr("height", canvasHeight + margin.bottom + margin.top)
             .style("border", "1px solid black")
         svgCanvas.selectAll("rect")
@@ -81,7 +84,7 @@ class BarChart extends Component {
     }
 
     render() {
-        return (<div class="chart" ref="chart"></div>)
+        return (<div id={"g1"} style={{minWidth: "100%", minHeight: "100%"}} class="chart" ref="chart"></div>)
     }
 }
 export default BarChart
