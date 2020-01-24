@@ -6,6 +6,7 @@ import LineChart from './Charts/LineChart'
 import OwnMap from './Map/OwnMap';
 import './dashboard.css'
 import {Grid } from '@material-ui/core'
+import Table from './Charts/Table';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -21,7 +22,7 @@ class Dashboard extends Component {
           <BarChart />
         </Grid>
         <Grid item xs={6}>
-         <PieChart />
+         <Table />
         </Grid>
         <Grid item xs ={3} >
          <LineChart />
