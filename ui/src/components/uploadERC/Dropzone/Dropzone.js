@@ -60,10 +60,10 @@ class Dropzone extends Component {
       <div>
         <DropzoneArea
           onChange={this.handleChange.bind(this)}
-          maxFileSize={262144000}
+          maxFileSize={962144000}
         />
         <Button
-          className="uploadButton" variant="contained" color="primary"
+          className="uploadButton" variant="contained" color="primary" style={{marginTop:"3%"}}
           onClick={this.uploadFolder.bind(this)}>
           Load workspace
         </Button>
@@ -85,8 +85,7 @@ class Dropzone extends Component {
               <p> {this.state.progress} % </p>
             </DialogContent>
           }
-        </Dialog>:
-
+        </Dialog>
       </div>
     )
   }

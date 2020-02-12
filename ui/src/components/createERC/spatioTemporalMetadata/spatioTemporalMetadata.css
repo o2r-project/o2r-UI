@@ -2,6 +2,10 @@
     height: 400px;
 }
 
+.leaflet-draw{
+    visibility: hidden;
+}
+
 #form{
     margin-bottom: 50px;
     margin-top: 50px;
@@ -22,4 +26,8 @@
 
 #search{
       margin: 10px;
+  }
+
+#grid1{
+
   }

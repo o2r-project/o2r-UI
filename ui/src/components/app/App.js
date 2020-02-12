@@ -7,9 +7,9 @@ import logo from '../../assets/img/o2r-logo-only-white.svg';
 import orcidLogo from '../../assets/img/orcid.png';
 import Privacy from './footerLinks/Privacy';
 import Impressum from './footerLinks/Impressum';
-import Startpage from '../startpage/Startpage';
+//import Startpage from '../startpage/Startpage';
 //Demo
-//import Startpage from '../startpageDemo/Startpage';
+import Startpage from '../startpageDemo/Startpage';
 import httpRequests from '../../helpers/httpRequests';
 import Author from '../authorView/Author';
 import CreateERC from '../createERC/CreateERC';
@@ -24,12 +24,11 @@ const Header = ( props ) => {
           <a href="/"><img src={logo} alt="o2r" id="headerLogo"/></a>
         </Typography>
         <HashRouter>
-          <NavLink id="link" to="/discover">
+          {/*<NavLink id="link" to="/discover">
             <Button color="inherit" label="test">
-              {//Discover ERC
-              }
+              Discover ERC
             </Button>
-          </NavLink>
+          </NavLink>*/}
           <NavLink id="link" to="/author">
             {props.loggedIn ? 
               <Button color="inherit">

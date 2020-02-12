@@ -43,7 +43,7 @@ const DataTable = (props) => {
         case 'text/csv':
             return <CSV csv={data.data} file={data.datafile} />
         case 'application/json':
-            return <JSON json={data.data[0]} file={data.datafile} />
+            return <JSON json={data.data} file={data.datafile} />
         case '.rdata':
             return <RData rdata={data.data} id={props.data.id} />
         case 'text/plain':

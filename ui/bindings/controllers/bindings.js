@@ -20,10 +20,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const debug = require('debug')('bindings');
-const rscript = require('r-script');
+//const rscript = require('r-script');
 const path = require('path');
 const net = require('net');
 const fn = require('./generalFunctions');
+const rules = require('./rules');
 const processJson = require('./processJson');
 const request = require('request');
 const exec = require('child_process').exec;
@@ -47,7 +48,6 @@ bindings.start = (conf) => {
         app.post('/api/v1/bindings/searchBinding', function ( req, res ) {
             bindings.searchBinding( req.body, res);
         });
-
 
         app.post('/api/v1/bindings/binding', function(req, res) {
             bindings.createBinding(req.body, res);
@@ -135,14 +135,14 @@ bindings.start = (conf) => {
     });
 };
 
-var cron = require('node-cron');
+/*var cron = require('node-cron');
  
 cron.schedule('* * * * *', () => {
-    debug('cleaning up containers');
+    //debug('cleaning up containers');
     // durch container-Liste durchgehen
     // alle container älter als 25 stunden stoppen und aus der container-Liste entfernen
 
-});
+});*/
 
 bindings.createBinding = function(binding, response) {
     debug( 'Start creating binding for result: %s, compendium: %s', binding.computationalResult.result, binding.id );
@@ -161,21 +161,29 @@ bindings.createBinding = function(binding, response) {
 };
 
 bindings.implementExtractR = function (binding,response) {
-    debug( 'Start to extract codelines for result: %s, compendium: %s', binding.computationalResult.result, binding.id );
+    debug('Start extracting codelines: %s', JSON.stringify(binding));
+    debug('Start extracting codelines2: %s', response);
+    console.log("start extractR")
+    let file = fn.readRmarkdown(binding.id, binding.file);
+    let lines = file.split('\n');
+    let chunksLineNumbers = fn.extractChunks(lines);
+    let chunksOfCode = fn.extractCodeFromChunks(lines,chunksLineNumbers.start,chunksLineNumbers.end);
+    let codeAsJson = fn.codeAsJson(chunksOfCode);
+    let codeAsJsonWithTypes = rules.getCodeTypes(codeAsJson);
+    codeAsJson = fn.array2Json(codeAsJsonWithTypes);
+    codeAsJson = processJson.addFileContentToJson(codeAsJson);
+    /*let varsInLines = processJson.getVarsAndValuesOfLines(codeAsJson);
+    let plotFunctionParameters = rules.getContentInBrackets(binding.plot);
+    let backtrackedCode = processJson.backtrackCodelines(varsInLines,plotFunctionParameters,[],[]);
 
-    //Used for testing
-    //let file = fn.readFile('test',binding);
-
-    //Comment in if used with Service
-    let file = fn.readRmarkdown(binding.id, binding.sourcecode.file);
-
-    //Mock response TODO --> REPLACE CODED LINES
-    // Codelines = {"start":30,"end":424} 
-    binding.sourcecode.codelines = processJson.getCodeLines(file);
-    console.log(binding.sourcecode.codelines)
-    response.send({
+    //debug('Codelines: ',backtrackedCode);
+    
+    binding.codelines = processJson.getCodeLines(backtrackedCode);*/
+    //debug('Codelines2: %s', JSON.stringify(binding.codelines))
+    console.log("end extractR")
+    /*response.send({
         callback: 'ok',
-        data: binding});
+        data: binding});*/
 };
 
 bindings.searchBinding = function ( req, res) {

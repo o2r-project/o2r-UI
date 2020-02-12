@@ -5,6 +5,9 @@ import { EditControl } from 'react-leaflet-draw'
 
 let GeoJSON
 let firstTime = true;
+let editHandler;
+let drawHandler;
+let uneditedLayerProps;
 export let ref;
 export let ref2;
 
@@ -13,17 +16,12 @@ class OwnMap extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
         };
     };
 
     componentDidMount() {
         firstTime = true;
         ref2 = this.refs.map.leafletElement;
-    }
-
-    forceRerender() {
-        this.forceUpdate()
     }
 
     isEmpty(obj) {
@@ -34,21 +32,25 @@ class OwnMap extends React.Component {
         return true;
     }
 
+    setUneditedLayerProps = (_uneditedLayerProps) =>{
+        uneditedLayerProps = _uneditedLayerProps;
+    }
 
-    _onEdited = (e) => {
 
+    _onEdited = (layer) => {
+
+        editHandler._disableLayerEdit(layer)
+
+        console.log("edited")
         var bounds;
-        if (this.isEmpty(e.layers._layers)) {
+        if (this.isEmpty(layer)) {
             return
         }
 
-        e.layers.eachLayer((layer) => {
+           GeoJSON = layer.toGeoJSON();
 
-            GeoJSON = layer.toGeoJSON();
+           uneditedLayerProps = GeoJSON;
             bounds = layer.getBounds();
-
-
-        });
 
         const metadata = this.props.metadata;
 
@@ -63,33 +65,75 @@ class OwnMap extends React.Component {
         metadata.spatial.union.bbox[1] = southEast
         metadata.spatial.union.bbox[2] = southWest
         metadata.spatial.union.bbox[3] = northWest
+        metadata.spatial.union.bbox[4] = northEast
+        metadata.spatial.union.geojson= {
+            geometry:{
+            type: "Polygon",
+            coordinates: [metadata.spatial.union.bbox]
+            }
+          }
         this.props.setMetadata(metadata, false);
         this.setState({ GeoJSON: GeoJSON });
         this.props.setChanged();
+        this.props.setState("editing", false)
+    }
 
+    _onCancel = (layer) => {
+        editHandler._disableLayerEdit(layer)
+        this.props.setState("editing", false)
+        this.revertLayers();
+    }
 
+    revertLayers = () => {
+        const latlngs = uneditedLayerProps
+        this._editableFG = ref;
+        
+        GeoJSON = uneditedLayerProps;
+
+        console.log(GeoJSON)
+
+        let leafletGeoJSON = new L.GeoJSON(GeoJSON);
+        let leafletFG = this._editableFG.leafletElement;
+        leafletFG.clearLayers()
+        leafletGeoJSON.eachLayer(layer => leafletFG.addLayer(layer));
+    }
+
+    startCreate = () =>{
+        let leafletFG = this._editableFG.leafletElement;
+        this.props.setState("drawing", true);
+        leafletFG.clearLayers();
+        drawHandler.enable()
+    }
+
+    stopCreate= () => {
+        drawHandler.disable()
     }
 
     _onCreated = (e) => {
-
         GeoJSON = e.layer.toGeoJSON();
-        this.props.setState("drawn", true);
+        uneditedLayerProps = GeoJSON;
+        this.props.setState("drawing", false);
         const metadata = this.props.metadata;
 
         metadata.spatial.union.bbox[0] = GeoJSON.geometry.coordinates[0][0];
         metadata.spatial.union.bbox[1] = GeoJSON.geometry.coordinates[0][1];
         metadata.spatial.union.bbox[2] = GeoJSON.geometry.coordinates[0][2];
         metadata.spatial.union.bbox[3] = GeoJSON.geometry.coordinates[0][3];
+        metadata.spatial.union.bbox[4] = GeoJSON.geometry.coordinates[0][0]
+        metadata.spatial.union.geojson= {
+            geometry:{
+            type: "Polygon",
+            coordinates: [metadata.spatial.union.bbox]
+            }
+          }
         this.props.setMetadata(metadata, false);
         this.props.setChanged();
     }
 
-    _onEditStart = (e) => {
+    _onEditStart = (layer) => {
+        console.log(editHandler)
+        editHandler._enableLayerEdit(layer)
         this.props.setState("editing", true)
-    }
-
-    _onEditStop = (e) => {
-        this.props.setState("editing", false)
     }
 
     _onDeleted = (e) => {
@@ -100,9 +144,16 @@ class OwnMap extends React.Component {
         metadata.spatial.union.bbox[1] = [-181, 181]
         metadata.spatial.union.bbox[2] = [-181, -181]
         metadata.spatial.union.bbox[3] = [181, -181]
+        metadata.spatial.union.geojson = null;
         this.props.setMetadata(metadata, false);
         this.props.setChanged();
     }
+
+    _onMounted = drawControl => {
+        console.log(drawControl)
+        drawHandler = drawControl._toolbars.draw._modes.rectangle.handler;
+        editHandler = drawControl._toolbars.edit._modes.edit.handler;
+	};
 
     _onFeatureGroupReady = (ref) => {
 
@@ -117,14 +168,16 @@ class OwnMap extends React.Component {
             GeoJSON.geometry.coordinates[0][i] = metadata.spatial.union.bbox[i];
         }
 
-        //GeoJSON.geometry.coordinates[0][4] = metadata.spatial.union.bbox[0];
+        uneditedLayerProps = GeoJSON;
 
+        //GeoJSON.geometry.coordinates[0][4] = metadata.spatial.union.bbox[0];
+        const fg=this.state.drawnItems
         let leafletGeoJSON = new L.GeoJSON(GeoJSON);
         let leafletFG = this._editableFG.leafletElement;
-        leafletGeoJSON.eachLayer(layer => leafletFG.addLayer(layer));
+        leafletGeoJSON.eachLayer(layer => {leafletFG.addLayer(layer);});
+        this.setState({drawnItems: fg})
         firstTime = false;
-
-
+        
     }
 
     getGeoJson = () => {
@@ -158,24 +211,10 @@ class OwnMap extends React.Component {
                 />
                 <FeatureGroup ref={(reactFGref) => { this._onFeatureGroupReady(reactFGref); ref = reactFGref }}>
                     <EditControl
+                        onMounted={this._onMounted}
                         position='topright'
-                        onEdited={this._onEdited}
-                        onCreated={this._onCreated}
-                        onDeleted={this._onDeleted}
-                        onEditStart={this._onEditStart}
-                        onEditStop={this._onEditStop}
-                        edit={this.props.drawn ? { remove: true } : { remove: false }}
-                        draw={this.props.drawn ? {
-                            circle: false,
-                            circlemarker: false,
-                            marker: false,
-                            polyline: false,
-                            rectangle: false,
-                            point: false,
-                            polygon: false
-                        } :
-                            {
-                                circle: false,
+                        onCreated={this._onCreated}                  
+                        draw={{circle: false,
                                 circlemarker: false,
                                 marker: false,
                                 polyline: false,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Button, Tabs, Tab, Radio, RadioGroup, FormControlLabel, CircularProgress } from '@material-ui/core';
+import { Typography, Button, Tabs, Tab, Radio, RadioGroup, FormControlLabel, CircularProgress, Grid } from '@material-ui/core';
 
 import httpRequests from '../../../helpers/httpRequests';
 import FigureComparison from './FigureComparison/FigureComparison';
@@ -56,7 +56,7 @@ class Manipulate extends React.Component {
             }, () => {
                 setTimeout(() => {
                     this.buildFullUrl(this.state.binding);
-                }, 1500);
+                }, 2000);
             })
         }
     }
@@ -109,12 +109,14 @@ class Manipulate extends React.Component {
     componentWillUnmount = () => removeHighlight();
 
     handleChange = name => (evt, newVal) => {
-        this.setState({
-            [name]: newVal,
-            loading: true
-        }, () => {
-            this.buildFullUrl(this.state.binding);
-        });
+        if (this.state[name] !== newVal) {
+            this.setState({
+                [name]: newVal,
+                loading: true
+            }, () => {
+                this.buildFullUrl(this.state.binding);
+            });
+        }
     }
 
     saveForComparison = () => {
@@ -192,36 +194,46 @@ class Manipulate extends React.Component {
                     </Tabs>
                     : ''}
                 <div className="view">
-                    <Button variant='contained' color='primary'
-                        onClick={this.setOriginalSettings.bind(this, "duration")}
-                    >
-                        Original settings
-                    </Button>
-                    {this.state.binding.sourcecode.parameter.map((parameter, index) => (
-                        <div className="slider" key={index}>
-                            <Typography variant='caption'>
-                                {parameter.uiWidget.caption}
-                            </Typography>
-                            {parameter.uiWidget.type === 'slider'
-                                ?
-                                <OwnSlider value={this.state[parameter.name]} parameter={parameter} onChange={this.handleChange}
-                                />
-                                : ''}
-                            {parameter.uiWidget.type === 'radio'
-                                ? <RadioGroup aria-label="position" name="position" value={this.state[parameter.name]} onChange={this.handleChange(parameter.name)} row>
-                                    {parameter.uiWidget.options.map((option, index) => (
-                                        <FormControlLabel key={index}
-                                            value={option}
-                                            control={<Radio color="primary" />}
-                                            label={option}
-                                            checked={option == this.state[parameter.name]}
+                    <Grid container>
+                        <Grid item xs={8}>
+                            {this.state.binding.sourcecode.parameter.map((parameter, index) => (
+                                <div className="slider" key={index}>
+                                    <Typography variant='caption'>
+                                        {parameter.uiWidget.caption}
+                                    </Typography>
+                                    {parameter.uiWidget.type === 'slider'
+                                        ?
+                                        <OwnSlider value={this.state[parameter.name]} parameter={parameter} onChange={this.handleChange}
                                         />
-                                    ))}
-                                </RadioGroup>
-                                : ''}
+                                        : ''}
+                                    {parameter.uiWidget.type === 'radio'
+                                        ? <RadioGroup aria-label="position" name="position" value={this.state[parameter.name]} onChange={this.handleChange(parameter.name)} row>
+                                            {parameter.uiWidget.options.map((option, index) => (
+                                                <FormControlLabel key={index}
+                                                    value={option}
+                                                    control={<Radio color="primary" />}
+                                                    label={option}
+                                                    checked={option == this.state[parameter.name]}
+                                                />
+                                            ))}
+                                        </RadioGroup>
+                                        : ''}
 
-                        </div>
-                    ))}
+                                </div>
+
+                            ))}
+                        </Grid>
+                        <Grid item xs={4} style={{ "min-height": "100px" }}>
+                            <Button variant='contained' color='primary'
+                                onClick={this.setOriginalSettings.bind(this)}
+                            >
+                                Original settings
+                    </Button>
+                            <br />
+                            <br />
+                            {this.state.loading ? <CircularProgress /> : ""}
+                        </Grid>
+                    </Grid>
                     <div className="image">
                         <Button variant="contained" color="primary" className="maniBtn"
                             onClick={this.saveForComparison.bind(this)}
@@ -235,8 +247,6 @@ class Manipulate extends React.Component {
                                 removeItem={this.removeItem.bind(this)} />
                             : ''}
                         <FigureComparison settings={this.state.settings} settingsText={this.state.settingsText} />
-                        <br />
-                        {this.state.loading ? <CircularProgress /> : ""}
                         <br />
                         {this.state.processURL ? "" : <img src={this.state.fullUrl} alt="Image Loading Failed" onLoad={this.imageLoaded} onError={this.imageLoaded} />}
                     </div>
