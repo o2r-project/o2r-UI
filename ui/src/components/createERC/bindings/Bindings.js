@@ -403,10 +403,13 @@ class Bindings extends Component {
 
   render() {
     return (
-      <div className="bindingsView">
+      <div className="bindingsView" style = {{marginTop:"5%"}}>
+        <h4>The feature for creating interactive figures by yourself is still in its infancy. 
+            Contact us and we will create them for you: 
+              <a href="mailto:o2r.team@uni-muenster.de"> o2r.team [ at ] uni-muenster [.de]</a>
+        </h4>
         {this.state.codeview ?
           <div>
-            <h4>Create an interactive figure</h4>
             <div className='codeView'
               onMouseUp={this.handleMouseUp.bind(this)}
             >

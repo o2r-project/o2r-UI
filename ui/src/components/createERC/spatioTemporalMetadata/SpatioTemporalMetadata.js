@@ -222,7 +222,7 @@ class SpatioTemporalMetadata extends React.Component {
             <Card>
               <CardContent>
                 <h1>Specify the spatial properties of your dataset(s):</h1>
-                <h4>You have two options: 1. Search for an Address/Region/Country, which will be displayed on the Map. 2. Edit the Polygon in the Map or draw a new one.</h4>
+                {/*<h4>You have two options: 1. Search for an Address/Region/Country, which will be displayed on the Map. 2. Edit the Polygon in the Map or draw a new one.</h4>
                 1. Search for Address/Region/Country
               <TextField id="search" value={this.state.search}
                   onChange={(e) => this.handleChange(e, "search")} />
@@ -231,27 +231,25 @@ class SpatioTemporalMetadata extends React.Component {
                   type="button"
                   variant="contained"
                   color="primary"> Search </Button>
-                <br />
-                2. Edit:
+                <br />*/}
               <Button onClick={this.startEdit.bind(null)}
                   style={{ "margin": "10px" }}
                   disabled={this.state.editing || this.state.drawing}
                   type="button"
                   variant="contained"
-                  color="primary"> Start Edit </Button>
+                  color="primary"> Start Editing </Button>
                 <Button onClick={this.saveEdit.bind(null)}
                   style={{ "margin": "10px" }}
                   disabled={!this.state.editing}
                   type="button"
                   variant="contained"
-                  color="primary"> Save Edit </Button>
+                  color="primary"> Stop Editing </Button>
                 <Button onClick={this.cancelEdit.bind(null)}
                   style={{ "margin": "10px" }}
                   disabled={!this.state.editing}
                   type="button"
                   variant="contained"
-                  color="primary"> Cancel Edit </Button>
-                Draw:
+                  color="primary"> Cancel Editing </Button>
               <Button onClick={this.drawPolygon.bind(null)}
                   style={{ "margin": "10px" }}
                   disabled={this.state.editing}
@@ -259,7 +257,6 @@ class SpatioTemporalMetadata extends React.Component {
                   variant="contained"
                   color="primary"> Draw a new bbox </Button>
                 <br />
-                3.
               <Button onClick={this.handleGeoJsonWorld.bind(null)}
                   style={{ "margin": "10px" }}
                   type="button"
