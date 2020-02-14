@@ -33,3 +33,7 @@ overflow: auto;
 #moreInfo {
 text-align: center;
 }
+
+.instruction{
+  margin-bottom: 2%;
+}
