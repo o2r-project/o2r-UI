@@ -2,6 +2,10 @@
 
 This project is a re-implementation of the o2r-platform (https://github.com/o2r-project/o2r-platform) and thus in progress. The original platform was based on AngularJS and is still working. But we decided to switch to React in order to have a more current software. Hence, in case you would like to try out, please check https://github.com/o2r-project/o2r-platform.
 
+## Configuration
+
+The API endpoint and the base URL for sharing ERCs on other platforms must be configured in `ui/src/helpers/config.json`.
+
 ## Development environment with Docker Compose
 
 You can start all required o2r microservices (using latest images from [Docker Hub](https://hub.docker.com/r/o2rproject)) with just two commands using `docker-compose` (version `1.20.0+`) and Docker (version `1.18.0+`).
@@ -13,7 +17,7 @@ If you see an error related to the MongoDB or HTTP request timeouts during the f
 
 **UI container**
 
-The container for the UI is built locally based on `ui/Dockerfile`.
+The container for the development of the UI is built locally based on `ui/Dockerfile.dev`.
 Only the directory `/ui` is mounted into the container, so if dependencies in `ui/package.json` change, you must update the container with `docker-compose build ui`.
 
 **Running the platform**
@@ -28,4 +32,5 @@ The platform is available at http://localhost and the API at `http://localhost/a
 **Accessing the API directly**
 
 1. Click the "Log in" button in the UI
-1. Obtain the authentication token by 
+1. Obtain the authentication token from the cookies
+1. Use it for requests outside of the UI, e.g. with curl [as described in the API docs](https://o2r.info/api/user/#client-authentication)
