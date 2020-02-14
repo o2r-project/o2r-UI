@@ -22,7 +22,7 @@ class Startpage extends Component {
               </div>
               <div className="instruction">
                 <b>Step 2: Add metadata to your RMarkdown in YML format like 
-                  <a target="_blank" rel="noopener" href="https://github.com/o2r-project/erc-examples/blob/master/ERC/Finished/INSYDE/workspace/main.Rmd">here</a>
+                  <a target="_blank" rel="noopener" href="https://github.com/o2r-project/erc-examples/blob/master/ERC/Finished/INSYDE/workspace/main.Rmd"> here</a>
                 </b><br/>
               </div>
               <div className="instruction">
