@@ -23,6 +23,9 @@ const Header = ( props ) => {
         <Typography variant="h6" color="inherit" style={{ flex: 1 }}>
           <a href="/"><img src={logo} alt="o2r" id="headerLogo"/></a>
         </Typography>
+        <Button target="_blank" rel="noopener" color="inherit" href="http://www.dlib.org/dlib/january17/nuest/01nuest.html">
+          Learn more about ERCs
+        </Button>
         <HashRouter>
           {/*<NavLink id="link" to="/discover">
             <Button color="inherit" label="test">
@@ -42,9 +45,9 @@ const Header = ( props ) => {
           href={props.loggedIn ? "api/v1/auth/logout" : "api/v1/auth/login"} 
           onClick={() => props.login()}>{props.loggedIn ? 'Logout' : 'Login'}
         </Button>
-        <Button color="inherit">
+        {/*<Button color="inherit">
           Help
-        </Button>
+            </Button>*/}
       </Toolbar> 
     </AppBar>
   );
