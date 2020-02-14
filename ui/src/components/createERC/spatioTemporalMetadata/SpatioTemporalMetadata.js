@@ -221,7 +221,7 @@ class SpatioTemporalMetadata extends React.Component {
           <Grid item xs={10}>
             <Card>
               <CardContent>
-                <h1>Specify the spatial properties of your dataset(s):</h1>
+                <h3>Specify the spatial properties of your dataset(s) to make your work better discoverable:</h3>
                 {/*<h4>You have two options: 1. Search for an Address/Region/Country, which will be displayed on the Map. 2. Edit the Polygon in the Map or draw a new one.</h4>
                 1. Search for Address/Region/Country
               <TextField id="search" value={this.state.search}
