@@ -31,7 +31,7 @@ export default function SelectedSettings(props) {
           <Chip
             key={index}
             label={setting}
-            onDelete={handleDelete(setting)}
+            onDelete={handleDelete(index)}
             className={classes.chip}
           />
         );

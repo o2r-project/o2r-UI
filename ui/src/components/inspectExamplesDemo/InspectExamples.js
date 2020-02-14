@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Card, CardContent, CardActionArea, CardActions, Typography, Button, CardHeader, Grid, makeStyles } from "@material-ui/core/";
 import { withRouter } from 'react-router-dom';
 import {TwitterShareButton, TwitterIcon} from 'react-share';
+import '../../../node_modules/react-modal-video/css/modal-video.min.css';
+import ModalVideo from 'react-modal-video';
 
 import './inspectExamples.css';
 import httpRequests from '../../helpers/httpRequests';
@@ -29,7 +31,7 @@ function SpacingGrid(props) {
         <Grid item xs={12}>
           <Grid container justify="center" spacing={spacing}>
             {props.ercs.map( (erc, index ) =>
-                <div key={index} style={{width:'20%', marginRight:'2%', marginTop:'1%', marginBottom: '0%'}}>
+                <div key={index} style={{width:'20%', marginRight:'2%', marginTop:'1%', marginBottom: '3%'}}>
                     <Card className="example">
                         <CardActionArea onClick={()=>props.forward(erc)}>
                             <CardHeader
@@ -69,6 +71,7 @@ class InspectExamples extends Component {
         super(props);
         this.state={
             ercs: [],
+            isOpen: false,
         }
         this.getErcs = this.getErcs.bind(this);
         this.forward = this.forward.bind(this);
@@ -105,12 +108,27 @@ class InspectExamples extends Component {
             state: {data:erc.metadata}
         });
     }
+
+    openModal = () => this.setState({isOpen:true});
  
     render() {
         console.log(this.state)
         return(
             <div>
-                <h1 style={{textAlign:'center', marginBottom:'2%', marginTop: '5%'}}>Examine Executable Research Compendia</h1>
+                <h1 style={{textAlign:'center', marginBottom:'2%', marginTop: '5%'}}>
+                    Examine Executable Research Compendia
+                    <Button 
+                        onClick={this.openModal.bind(this)}
+                        variant="contained"
+                        color="primary"
+                        style = {{marginLeft:'5%'}}
+                    >
+                        Show me what I can do
+                    </Button>
+                </h1>
+                <ModalVideo channel='youtube' isOpen={this.state.isOpen} videoId='e37bzH4cXF4' onClose={() => this.setState({isOpen: false})} 
+                    style={{width:'10%'}}
+                />
                 <SpacingGrid 
                     ercs={this.state.ercs}
                     forward={this.forward}

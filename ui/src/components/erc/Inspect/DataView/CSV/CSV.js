@@ -8,7 +8,7 @@ class CSV extends React.Component {
         const csv = csvstring.parse(this.props.csv);
         
         return (
-            <Paper>
+            <Paper style={{width : "fit-content"}}>
             <Table>
               <TableHead>
                 <TableRow>

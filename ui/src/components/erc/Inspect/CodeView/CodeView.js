@@ -18,7 +18,11 @@ constructor(props) {
 handleSelectedText(e) {
     var self = this;
     var answerText = "";
+    try{
     var text = window.getSelection().getRangeAt(0).toString();
+    }catch(err){
+        return;
+    }
     if (text === '' || text.length < 4) return;
     let bindings = this.props.metadata.interaction;
     let foundParameters = [];
@@ -30,7 +34,7 @@ handleSelectedText(e) {
         })
     });
 
-    if (foundParameters.length != 0) {
+    if (foundParameters.length !== 0) {
         answerText = "This Codeline is the Parameter for "
 
         for (var i = 0; i < foundParameters.length - 1; i++) {
@@ -45,20 +49,20 @@ handleSelectedText(e) {
 
                 for (var i in res.data.data) {
                     for (var j in foundParameters) {
-                        if (res.data.data[i] == foundParameters[j].computationalResult.result) {
+                        if (res.data.data[i] === foundParameters[j].computationalResult.result) {
                             res.data.data.splice(i, 1)
                         }
                     }
                 }
-                if (res.data.data.length != 0) {
-                    for (var i = 0; i < res.data.data.length - 1; i++) {
+                if (res.data.data.length !== 0) {
+                    for (i = 0; i < res.data.data.length - 1; i++) {
                         answerText += res.data.data[i] + " and "
                     }
                     answerText += res.data.data[res.data.data.length - 1] + " using this Codeline."
 
                 }
 
-                if (foundParameters.length != 0 || res.data.data.length != 0) {
+                if (foundParameters.length !== 0 || res.data.data.length !== 0) {
                     answerText += " Please check in the \"Manipulate\" view"
                     self.setState({ title: "Codeline in Bindings found", selectedText: answerText, popup: true })
                 }

@@ -240,19 +240,16 @@ class Bindings extends Component {
         tmpComputResult: {},
         tmpParam: '',
         tmpParams: [],
-        tmpPort:'',
         tmpCodelines: '',
         tmpPlotFunction: '',
         tmpFile: props.metadata.mainfile,
         tmpBinding: '',
         figures:'',
       }
-      this.getPort = this.getPort.bind(this);
       this.getFakeData = this.getFakeData.bind(this);
     }
 
   componentDidMount () {
-    this.getPort();
     this.getFakeData();
   }
 
@@ -269,29 +266,6 @@ class Bindings extends Component {
     });
   }
 
-  getPort () {
-    let existingPort = 5000;
-    httpRequests.listAllCompendia()
-    .then ( ( res ) => {
-      let ercs = res.data.results;
-      if ( ercs.length === 0) {
-        this.setState({tmpPort:existingPort});
-      }else{
-        for ( let i=0;i<ercs.length;i++ ){
-          httpRequests.singleCompendium(ercs[i])
-          .then ( ( res2 ) => {
-            existingPort += res2.data.metadata.o2r.interaction.length;
-            if ( i+1 === ercs.length ){
-              this.setState({tmpPort:existingPort});
-            }
-          })
-          .catch ( ( res2 ) => console.log(res2))
-        } 
-      }
-    })
-    .catch ( ( res ) => console.log(res))
-  }
-
   setResult ( result ) {
     if (result.indexOf("Figure") >= 0) {
       let state = this.state;
@@ -303,7 +277,7 @@ class Bindings extends Component {
       let figures = this.state.figures;
       for(let i=0;i<figures.length;i++){
         if (figures[i].figure === result){
-          state.tmpCodelines=figures[i].lines
+          //state.tmpCodelines=figures[i].lines
         }
       }
       this.setState(state);
@@ -348,17 +322,19 @@ class Bindings extends Component {
   }
 
   setCode ( code ) {
+    let self = this;
     let state = this.state;
     state.tmpPlotFunction = code;
     this.setState(state, () => {
-      //console.log(this.state)
-      /*httpRequests.getCodelines(state.binding)
+      httpRequests.getCodelines({id: state.tmpCompId, plot:state.tmpPlotFunction, file:state.tmpFile})
       .then( function ( res ) {
-        console.log(res);
+        self.setState({
+          tmpCodelines: res.data.data.codelines
+        })
       })
       .catch( function (res) {
         console.log(res)
-      })*/
+      })
     });
   }
 
@@ -393,10 +369,10 @@ class Bindings extends Component {
         "file": this.state.tmpFile,
         "codelines": this.state.tmpCodelines,
         "parameter": this.state.tmpParams,
-      },
-      "port": this.state.tmpPort,
+      }
     };
     this.setState({tmpBinding:binding});
+    console.log(binding)
     return binding;
   }
 
@@ -423,15 +399,17 @@ class Bindings extends Component {
     state.tmpPlotFunction='';
     state.tmpBinding='';
     this.setState(state);
-    state.tmpPort=state.tmpPort+1;
   }
 
   render() {
     return (
-      <div className="bindingsView">
+      <div className="bindingsView" style = {{marginTop:"5%"}}>
+        <h3>The feature for creating interactive figures by yourself is still in its infancy. 
+            Please, contact us since we are strongly interested in creating them for you: 
+              <a href="mailto:o2r.team@uni-muenster.de"> o2r.team [ at ] uni-muenster [.de]</a>
+        </h3>
         {this.state.codeview ?
           <div>
-            <h4>Create an interactive figure</h4>
             <div className='codeView'
               onMouseUp={this.handleMouseUp.bind(this)}
             >

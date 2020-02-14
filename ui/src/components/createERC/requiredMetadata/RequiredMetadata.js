@@ -31,32 +31,39 @@ function prepareLicense() {
         }
         ;
     }
-    mostRestrictiveData.push(textLicenses[3]);
-    mostRestrictiveData.push(codeLicenses[28]);
-    mostRestrictiveData.push(dataLicenses[1]);
-    leastRestrictiveData.push(textLicenses[5]);
-    leastRestrictiveData.push(codeLicenses[39]);
-    leastRestrictiveData.push(dataLicenses[4]);
+    mostRestrictiveData.push(textLicenses[3].id);
+    mostRestrictiveData.push(codeLicenses[28].id);
+    mostRestrictiveData.push(dataLicenses[1].id);
+    leastRestrictiveData.push(textLicenses[5].id);
+    leastRestrictiveData.push(codeLicenses[39].id);
+    leastRestrictiveData.push(dataLicenses[4].id);
 }
 
 
 const validationSchema = Yup.object({
     title: Yup.string()
-        .required('Titel is required'),
+        .required('Title is required')
+        .min(5, 'Title must be at least 5 characters long'),
     abstract: Yup.string()
-        .required('Abstract is required'),
-    publicationDate: Yup.date().max(new Date, 'No Valid Date')
-        .required("Date is require"),
+        .required('Abstract is required')
+        .min(5, 'Abstract must be at least 5 characters long'),
+    publicationDate: Yup.date()
+        .max(new Date, 'No Valid Date')
+        .required("Date is required"),
     displayFile: Yup.string()
         .required('DisplayFile is required'),
     mainFile: Yup.string()
+        .notOneOf([0])
         .required('MainFile is required'),
     textLicense: Yup.mixed()
-        .required(),
+        .notOneOf([0], 'Text License is required')
+        .required('Text License is required'),
     codeLicense: Yup.mixed()
-        .required(),
+        .notOneOf([0], 'Code License is required')
+        .required('Code License is required'),
     dataLicense: Yup.mixed()
-        .required()
+        .notOneOf([0], 'Data License is required')
+        .required('Data License is required')
 });
 
 
@@ -73,18 +80,17 @@ class RequiredMetadata extends Component {
     };
 
 
-    initialValues = {
+    formValues = {
         title: this.props.metadata.title,
         abstract: this.props.metadata.description,
         publicationDate: this.props.metadata.publication_date,
         displayFile: this.props.metadata.displayfile,
         mainFile: this.props.metadata.mainfile,
-        dataLicense: this.props.metadata.license.data,
-        textLicense: this.props.metadata.license.text,
-        codeLicense: this.props.metadata.license.code,
+        dataLicense: this.props.metadata.license.data ? this.props.metadata.license.data : 0,
+        textLicense: this.props.metadata.license.text ? this.props.metadata.license.text : 0,
+        codeLicense: this.props.metadata.license.code ? this.props.metadata.license.code : 0,
     }
 
-    formValues = this.initialValues
 
     originialValues = {
         title: this.props.originalMetadata.title,
@@ -97,7 +103,6 @@ class RequiredMetadata extends Component {
         codeLicense: this.props.originalMetadata.license.code,
 
     }
-
     
     componentDidMount() {
         prepareLicense();
@@ -134,7 +139,7 @@ class RequiredMetadata extends Component {
     setFormValues = (values) => {
 
 
-        if (JSON.stringify(this.originialValues) == JSON.stringify(values)) {
+        if (JSON.stringify(this.originialValues) === JSON.stringify(values)) {
             this.props.setChangedFalse("changed")
         }
         else {
@@ -161,6 +166,7 @@ class RequiredMetadata extends Component {
                             newMetadata.license.data = values.dataLicense;
                             newMetadata.license.text = values.textLicense;
                             newMetadata.license.code = values.codeLicense;
+                            this.originialValues = JSON.parse(JSON.stringify(values));
                             this.props.setMetadata(newMetadata, true);
                             actions.resetForm(values);
                         }
@@ -185,8 +191,9 @@ class RequiredMetadata extends Component {
                             dataLicenses={dataLicenses}
                             mostRestrictiveData={mostRestrictiveData}
                             leastRestrictiveData={leastRestrictiveData}
-                            candidate={this.props.candidate} />}
-                        initialValues={this.initialValues}
+                            candidate={this.props.candidate} 
+                            showProgress={this.props.showProgress} />}
+                        initialValues={this.formValues}
                         validationSchema={validationSchema}
                     />
                 }

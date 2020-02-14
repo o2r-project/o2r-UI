@@ -35,6 +35,7 @@ class CreateERC extends Component {
             spatioTemporalChanged: false,
             authorsValid: false,
             candidate: true,
+            showProgress: false,
         }
     }
 
@@ -48,7 +49,7 @@ class CreateERC extends Component {
             .then(function (res) {
                 const metadata = res.data.metadata.o2r;
                 var candidate = res.data.candidate;
-                if( candidate != true) candidate =false;
+                if( candidate !== true) candidate =false;
                 httpRequests.getFile("compendium/" + self.state.compendium_id + "/data/" + metadata.mainfile)
                     .then(function (res2) {
                         self.setState({
@@ -81,8 +82,6 @@ class CreateERC extends Component {
         this.setState({ showProgress: true });
         const self = this;
         this.setState({
-            authorsChanged: false,
-            changed: false,
             open: true,
             message: "Updating Metadata",
             backgroundColor: "blue",
@@ -90,6 +89,7 @@ class CreateERC extends Component {
         })
         httpRequests.updateMetadata(self.state.compendium_id, self.state.metadata)
             .then(function (res2) {
+                self.setChangedFalse("all");
                 self.setState({ showProgress: false, saved: true, open: true, message: "Metadata updated", backgroundColor: "green", candidate: false })
             })
             .catch(function (res2) {
@@ -119,7 +119,7 @@ class CreateERC extends Component {
     }
 
     setChangedFalse = (x) => {
-        if (x == "all") {
+        if (x === "all") {
             this.setState({ changed: false, authorsChanged: false, spatioTemporalChanged: false })
         }
         else {
@@ -186,6 +186,7 @@ class CreateERC extends Component {
                                 setChanged={this.setChanged}
                                 authorsValid={this.state.authorsValid}
                                 candidate={this.state.candidate}
+                                showProgress={this.state.showProgress}
                             />
                             : ''}
                     </TabContainer>
@@ -196,7 +197,7 @@ class CreateERC extends Component {
                             goToErc={this.goToErc}
                             metadata={this.state.metadata}
                             setMetadata={this.setMetadata}
-                            originalMetadata={this.state.originalMetadata}
+                            originalMetadata={JSON.parse(JSON.stringify(this.state.originalMetadata))}
                             setChanged={this.setChanged}
                             setChangedFalse={this.setChangedFalse}
                             changed={this.state.changed}

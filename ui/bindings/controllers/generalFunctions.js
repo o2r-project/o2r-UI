@@ -29,7 +29,8 @@ fn.readRmarkdown = function(compendiumId, mainfile) {
     if ( !compendiumId | !mainfile ) {
         throw new Error('File does not exist.');
     }
-    let paper = path.join('tmp', 'o2r', 'compendium', compendiumId, mainfile);
+    //let paper = path.join('tmp', 'o2r', 'compendium', compendiumId, mainfile);
+    let paper = path.join(compendiumId, mainfile);
     fs.exists(paper, function(ex) {
         if (!ex) {
             debug('Cannot open file %s', paper);
@@ -168,18 +169,6 @@ fn.saveResult = function(data, compendiumId, fileName) {
     debug('End saving result');
 };
 
-fn.createRunFile = function(compendiumId, result, port) {
-    debug('Start creating run file for compendium %s for result %s running under port %s',
-            compendiumId, result, port);
-    let content = 'library("plumber")' + '\n' +
-                    'setwd(file.path("tmp", "o2r", "compendium", "' + compendiumId + '"))' + '\n' +
-                    'path = paste("'+result + '.R", sep = "")\n' +
-                    'r <- plumb(path)\n' +
-                    'r$run(host = "0.0.0.0", port=' + port + ')';
-    fn.saveRFile(content, compendiumId, result+'run.R');
-    debug('End creating run file');
-};
-
 fn.saveRFile = function(data, compendiumId, fileName) {
     debug('Start saving file for compendium %s under file name %s',
             compendiumId, fileName);
@@ -188,6 +177,105 @@ fn.saveRFile = function(data, compendiumId, fileName) {
         debug(err);
     });
     debug('End saving result under the directory %s', dir);
+};
+
+fn.extractCode = function(fileContent, codelines) {
+    debug('Start extracting code');
+    let newContent = '';
+    let splitFileContent = fileContent.split('\n');
+    codelines.forEach(function(elem) {
+        newContent += splitFileContent[elem] + '\n';
+    });
+    debug('End extracting code');
+    return newContent;
+};
+
+fn.extractFigureSize = function (binding, fileContent){
+    debug('Start extracting figure width');
+    let figureSize = '';
+    let splitFileContent = fileContent.split('\n');
+    splitFileContent.forEach(function(elem) {
+        if ( elem.indexOf("out.width=")>=0 ) {
+            debug(elem.split('out.width=')[1].split('}')[0])
+            figureSize=elem.split('out.width=')[1].split('}')[0];
+        }
+    });
+    debug(figureSize);
+    debug('End extracting figure width');
+    return figureSize;
+}
+
+fn.extractChunks = function (lines) {
+    debug('Start extracting code lines')
+    let linesExp = new RegExp('```');
+    let start = [], end = [];
+    let found = 0;
+    for( let codeline = 0; codeline < lines.length; codeline++ ) { 
+        if ( linesExp.test(lines[codeline]) ) {
+            if ( found % 2 === 0 ) {
+                start.push(codeline+1);
+                found++;
+            } else {
+                end.push(codeline);
+                found++;
+            }
+        }
+    }
+    debug('End extracting code lines')
+    return {
+        start: start,
+        end: end
+    };
+};
+
+fn.extractCodeFromChunks = function(lines,start,end){
+    debug('Start creating code parts')
+    let chunksOfCode = [];
+    for ( let chunk = 0; chunk < start.length; chunk++) {
+        let codeInChunk = lines.slice(start[chunk], end[chunk]);
+        if ( end[chunk] != start[chunk+1] + 1 ) {
+            for (let j = end[chunk]; j < start[chunk+1]; j++){
+                codeInChunk.splice(j,0,'');
+            }   
+        }
+        chunksOfCode.push(codeInChunk);
+     }
+    // Replace \r through ''
+    for( let i = 0; i < chunksOfCode.length; i++) {
+        chunksOfCode[i] = chunksOfCode[i].map((x) => x.replace('\r', ''));
+    }
+    debug('End creating code parts')
+    return chunksOfCode;
+ };
+
+fn.codeAsJson = function (chunks) {
+    debug('Start creating json from code');
+    let codeAsJson = [];
+    let commentIndicator = /^\s*#.*/;
+    let codeLineCounter = 1;
+
+    for ( let chunk = 0; chunk < chunks.length; chunk++ ) {
+        chunks[chunk].forEach( codeline => {
+            if ( codeline.length > 0 && !commentIndicator.test(codeline) ){
+                codeAsJson.push({
+                    "code":codeline,
+                    "codeblock": chunk + 1, 
+                    "codeline": codeLineCounter
+                });
+                codeLineCounter++;
+            }
+        });
+    }
+    debug('End creating json from code')
+    return codeAsJson;
+};
+
+fn.array2Json = function (array) {
+    debug('Start to json')
+    let jsonString = JSON.stringify(array);
+    let jsonObject = JSON.parse(jsonString);
+    debug('End to json')
+    return jsonObject;
 };
 
 module.exports = fn;

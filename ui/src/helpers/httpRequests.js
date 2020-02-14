@@ -1,6 +1,7 @@
 const axios = require('axios');
+const config = require('./config');
 const _env = {
-    api: "http://localhost/api/v1/"
+    api: config.baseUrl
 }
 
 function getUser() {
@@ -10,6 +11,11 @@ function getUser() {
 function listAllCompendia() {
     return axios.get(_env.api + 'compendium');
 }
+
+function listUserCompendia(user) {
+    return axios.get(_env.api + 'compendium?user=' + user);
+}
+
 function updateMetadata(id, data){
     var _url = _env.api + 'compendium/' + id + '/metadata';
     var body = {o2r: data};
@@ -20,9 +26,8 @@ function uploadViaSciebo(url, folder) {
     return axios.post(_env.api + 'compendium', {content_type:'workspace', share_url: url, path:folder});
 }
 
-function uploadWorkspace(workspace) {
-    console.log(workspace)
-    return axios.post(_env.api + 'compendium', workspace);
+function uploadWorkspace(workspace, config) {
+    return axios.post(_env.api + 'compendium', workspace, config);
 }
 
 function singleCompendium(id) {
@@ -67,9 +72,31 @@ function searchBinding(term, metadata){
     return axios.post(_env.api + 'bindings/searchBinding', {term:term, metadata: metadata});
 }
 
+function geocodingRequest(query){
+    var encodedQuery= escape(query)
+    var access_token='token'
+    const link ="https://api.mapbox.com/geocoding/v5/mapbox.places/" + encodedQuery + ".json?access_token=" + access_token
+    return axios.get(link)
+}
+
+function downloadERC(id, image){
+    return _env.api + 'compendium/' + id + '.zip?image=' + image
+}
+
+function createSubstitution(baseId, overlayId, substitutionFiles){
+    const body={"base": baseId, "overlay": overlayId, "substitutionFiles": substitutionFiles, "metadataHandling": "keepBase"}
+    return axios.post(_env.api + 'substitution', body);
+}
+
+function complexSearch(query){
+    var _url = _env.api + 'search';
+    return axios.post(_url, query);
+}
+
 module.exports = {
     getUser: getUser,
     listAllCompendia: listAllCompendia,
+    listUserCompendia: listUserCompendia,
     uploadViaSciebo: uploadViaSciebo,
     uploadWorkspace: uploadWorkspace,
     singleCompendium: singleCompendium,
@@ -83,4 +110,8 @@ module.exports = {
     runManipulationService: runManipulationService,
     getCodelines: getCodelines,
     searchBinding: searchBinding,
+    geocodingRequest: geocodingRequest,
+    downloadERC: downloadERC,
+    createSubstitution: createSubstitution,
+    complexSearch: complexSearch,
 };

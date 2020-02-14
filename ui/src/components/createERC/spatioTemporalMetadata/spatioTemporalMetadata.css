@@ -2,11 +2,32 @@
     height: 400px;
 }
 
+.leaflet-draw{
+    visibility: hidden;
+}
+
 #form{
     margin-bottom: 50px;
+    margin-top: 50px;
 }
 
 #date{
     margin-bottom: 20px;
     margin-right: 20px;
 }
+
+#errorMessage {
+    position: fixed !important;
+    color: red;
+    margin-top: 13%;
+    left:83%;
+    width:12%;
+  }
+
+#search{
+      margin: 10px;
+  }
+
+#grid1{
+
+  }
