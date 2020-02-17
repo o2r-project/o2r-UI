@@ -8,6 +8,7 @@ RUN R -e 'install.packages(c("plyr", "reshape2", "wesanderson", "grid", "plotrix
 RUN R -e 'install.packages(c("rioja", "FME", "SoilR", "verification", "MASS", "stringr", "plyr", "lubridate", "metafor", "forecast", "expsmooth", "mice", "mitools", "Zelig", "VIM"))'
 RUN R -e 'install.packages(c("caTools", "Cairo", "stats", "extrafont", "xts", "maps"))'
 RUN R -e 'install.packages("INLA", repos=c(getOption("repos"), INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE)'
+RUN R -e 'install.packages(c("truncnorm"))'
 # based on https://gist.github.com/remarkablemark/aacf14c29b3f01d6900d13137b21db3a
 RUN apt-get update \
     && apt-get install -y curl \

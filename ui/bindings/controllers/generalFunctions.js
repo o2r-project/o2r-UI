@@ -31,15 +31,13 @@ fn.readRmarkdown = function(compendiumId, mainfile) {
         throw new Error('File does not exist.');
     }
     let paper = path.join(config.fs.compendium, compendiumId, mainfile);
-    fs.exists(paper, function(exists) {
-        if (!exists) {
-            debug('Cannot open file %s', paper);
-            throw new Error('File does not exist.');
-        }
-
-        debug('Start reading RMarkdown from %s', paper);
+    if(fs.existsSync(paper)) {
+    debug('Start reading RMarkdown from %s', paper);
         return fs.readFileSync(paper, 'utf8');
-    });
+    } else {
+        debug('Cannot open file %s', paper);
+        throw new Error('File does not exist.');
+    };
 };
 
 fn.modifyMainfile = function(fileContent, result, file, compendiumId) {
@@ -157,28 +155,30 @@ fn.readCsv = function(compendiumId, datasets) {
 };
 
 fn.saveResult = function(data, compendiumId, fileName) {
-    debug('Start saving result for compendium %s under files name %s',
+    debug('Start saving result for compendium %s under file name %s',
             compendiumId, fileName);
-    fileName = fileName.replace(' ', '');
-    fileName = fileName.replace('.', '_');
-    fileName = fileName.replace(',', '_');
-    resultPath = path.join(config.fs.compendium, compendiumId);
+    let outputFileName = fileName.replace(' ', '');
+    outputFileName = fileName.replace('.', '_');
+    outputFileName = fileName.replace(',', '_');
+    let resultPath = path.join(config.fs.compendium, compendiumId);
     if (!fs.existsSync(resultPath)) {
         fs.mkdirSync(resultPath);
     }
-    fileName = path.join(fileName + '.R');
-    fn.saveRFile(data, compendiumId, fileName);
+    outputFileName = path.join(outputFileName + '.R');
+    debug('Saving %s to %s', outputFileName, resultPath);
+    
+    fn.saveRFile(data, compendiumId, outputFileName);
     debug('End saving result');
 };
 
 fn.saveRFile = function(data, compendiumId, fileName) {
     debug('Start saving file for compendium %s under file name %s',
             compendiumId, fileName);
-    let dir = path.join(config.fs.compendium, compendiumId, fileName);
-    fs.writeFile(dir, data, 'utf8', function(err) {
-        debug(err);
-    });
-    debug('End saving result under the directory %s', dir);
+    // FIXME the path is created in the calling function fn.saveResult, maybe create it here?
+    let filePath = path.join(config.fs.compendium, compendiumId, fileName);
+    fs.writeFileSync(filePath, data, 'utf8');
+    debug('Wrote file %s', filePath);
+    return true;
 };
 
 fn.extractCode = function(fileContent, codelines) {
