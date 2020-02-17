@@ -220,12 +220,11 @@ services:
     #image: o2rproject/o2r-bindings:latest
     build: ./bindings
     #restart: always
-    ports:
-     - "5000-5499:5000-5499"
     volumes:
      - o2rstorage:/tmp/o2r
     environment: 
      - DEBUG=bindings
+     - BINDINGS_PORT=8092
      
   guestlister:
     image: o2rproject/o2r-guestlister:0.2.1
