@@ -1,13 +1,13 @@
 .success {
-    color:green;
+    color: #008643;
 }
 
 .failure {
-    color: red;
+    color: #860000;
 }
 
 .running {
-    color: blue;
+    color: #004286;
 }
 
 .steps {
@@ -15,11 +15,11 @@
 }
 
 .skipped {
-    color: rgb(82, 79, 79);
+    color: rgb(67, 69, 83);
 }
 
 .queued {
-    color: rgb(255, 123, 0);
+    color: rgb(206, 81, 0);
 }
 
 .runAnalysisBtn {

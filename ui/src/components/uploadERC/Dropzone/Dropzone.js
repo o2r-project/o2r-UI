@@ -61,6 +61,7 @@ class Dropzone extends Component {
         <DropzoneArea
           onChange={this.handleChange.bind(this)}
           maxFileSize={962144000}
+          filesLimit={1}
         />
         <Button
           className="uploadButton" variant="contained" color="primary" style={{marginTop:"3%"}}
