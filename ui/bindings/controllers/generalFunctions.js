@@ -37,7 +37,7 @@ fn.readRmarkdown = function(compendiumId, mainfile) {
             throw new Error('File does not exist.');
         }
 
-        debug('Start reading RMarkdown');
+        debug('Start reading RMarkdown from %s', paper);
         return fs.readFileSync(paper, 'utf8');
     });
 };
