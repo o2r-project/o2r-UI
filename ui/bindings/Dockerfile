@@ -1,4 +1,4 @@
-FROM rocker/geospatial:latest
+FROM rocker/geospatial:3.6.2
 
 SHELL ["/bin/bash", "-c"]
 
@@ -35,6 +35,12 @@ COPY config config
 COPY index.js index.js
 COPY controllers controllers
 COPY controllers/bindings.js controllers/bindings.js 
+
+# Metadata params provided with docker build command
+ARG VERSION=dev
+ARG VCS_URL
+ARG VCS_REF
+ARG BUILD_DATE
 
 # Metadata http://label-schema.org/rc1/
 LABEL maintainer="o2r-project <https://o2r.info>" \
