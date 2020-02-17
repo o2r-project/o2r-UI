@@ -104,6 +104,7 @@ services:
       - MUNCHER_SAVE_IMAGE_TARBALL=false # saves space and time during dev
       - MUNCHER_CONTAINERIT_IMAGE=o2rproject/containerit:geospatial-0.6.0
       - MUNCHER_CONTAINERIT_FILTER_BASE_IMAGE_PKGS=true
+      - "MUNCHER_CONTAINERIT_BASE_IMAGE=rocker/geospatial:3.6.2"
       #- "MUNCHER_META_TOOL_CONTAINER=meta:dev"
       #- MUNCHER_ALLOW_INVALID_METADATA=true
 
