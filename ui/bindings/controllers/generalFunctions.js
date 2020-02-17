@@ -30,15 +30,15 @@ fn.readRmarkdown = function(compendiumId, mainfile) {
         throw new Error('File does not exist.');
     }
     let paper = path.join('tmp', 'o2r', 'compendium', compendiumId, mainfile);
-    //let paper = path.join(compendiumId, mainfile);
-    fs.exists(paper, function(ex) {
-        if (!ex) {
+    fs.exists(paper, function(exists) {
+        if (!exists) {
             debug('Cannot open file %s', paper);
             throw new Error('File does not exist.');
         }
+
+        debug('Start reading RMarkdown');
+        return fs.readFileSync(paper, 'utf8');
     });
-    debug('End reading RMarkdown');
-    return fs.readFileSync(paper, 'utf8');
 };
 
 fn.modifyMainfile = function(fileContent, result, file, compendiumId) {

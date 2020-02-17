@@ -219,7 +219,7 @@ services:
   bindings:
     #image: o2rproject/o2r-bindings:latest
     build: ./bindings
-    restart: always
+    #restart: always
     ports:
      - "5000-5499:5000-5499"
     volumes:
