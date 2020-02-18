@@ -17,6 +17,7 @@
 
 'use strict';
 
+const config = require('../config/config');
 const fs = require('fs');
 const debug = require('debug')('bindings');
 const path = require('path');
@@ -29,16 +30,14 @@ fn.readRmarkdown = function(compendiumId, mainfile) {
     if ( !compendiumId | !mainfile ) {
         throw new Error('File does not exist.');
     }
-    //let paper = path.join('tmp', 'o2r', 'compendium', compendiumId, mainfile);
-    let paper = path.join(compendiumId, mainfile);
-    fs.exists(paper, function(ex) {
-        if (!ex) {
-            debug('Cannot open file %s', paper);
-            throw new Error('File does not exist.');
-        }
-    });
-    debug('End reading RMarkdown');
-    return fs.readFileSync(paper, 'utf8');
+    let paper = path.join(config.fs.compendium, compendiumId, mainfile);
+    if(fs.existsSync(paper)) {
+    debug('Start reading RMarkdown from %s', paper);
+        return fs.readFileSync(paper, 'utf8');
+    } else {
+        debug('Cannot open file %s', paper);
+        throw new Error('File does not exist.');
+    };
 };
 
 fn.modifyMainfile = function(fileContent, result, file, compendiumId) {
@@ -56,7 +55,7 @@ fn.modifyMainfile = function(fileContent, result, file, compendiumId) {
     } else if (result.type == 'figure') {
         fileContent = fileContent.replace(new RegExp(result.result, 'g'), '**_' + result.result + '_**');
         fn.saveRFile(fileContent, compendiumId, file);
-        //exec('Rscript -e "rmarkdown::render(\'' + path.join('tmp', 'o2r', 'compendium', compendiumId, file) + '\', output_file = ' + "'display.html'" + ')"', function(err) {
+        //exec('Rscript -e "rmarkdown::render(\'' + path.join(config.fs.compendium, compendiumId, file) + '\', output_file = ' + "'display.html'" + ')"', function(err) {
         //    if (err) throw err;
         //});
         debug('End modifying file');
@@ -152,31 +151,34 @@ fn.readCsv = function(compendiumId, datasets) {
     if ( !compendiumId | datasets ) {
         throw new Error('File does not exist.');
     }
-    let datafile = path.join('tmp', 'o2r', 'compendium', compendiumId, datasets[0].file.split('/').pop());
+    let datafile = path.join(config.fs.compendium, compendiumId, datasets[0].file.split('/').pop());
 };
 
 fn.saveResult = function(data, compendiumId, fileName) {
-    debug('Start saving result for compendium %s under files name %s',
+    debug('Start saving result for compendium %s under file name %s',
             compendiumId, fileName);
-    fileName = fileName.replace(' ', '');
-    fileName = fileName.replace('.', '_');
-    fileName = fileName.replace(',', '_');
-    if (!fs.existsSync(path.join('tmp', 'o2r', 'compendium', compendiumId))) {
-        fs.mkdirSync(path.join('tmp', 'o2r', 'compendium', compendiumId));
+    let outputFileName = fileName.replace(' ', '');
+    outputFileName = fileName.replace('.', '_');
+    outputFileName = fileName.replace(',', '_');
+    let resultPath = path.join(config.fs.compendium, compendiumId);
+    if (!fs.existsSync(resultPath)) {
+        fs.mkdirSync(resultPath);
     }
-    fileName = path.join(fileName + '.R');
-    fn.saveRFile(data, compendiumId, fileName);
+    outputFileName = path.join(outputFileName + '.R');
+    debug('Saving %s to %s', outputFileName, resultPath);
+    
+    fn.saveRFile(data, compendiumId, outputFileName);
     debug('End saving result');
 };
 
 fn.saveRFile = function(data, compendiumId, fileName) {
     debug('Start saving file for compendium %s under file name %s',
             compendiumId, fileName);
-    let dir = path.join('tmp', 'o2r', 'compendium', compendiumId, fileName);
-    fs.writeFile(dir, data, 'utf8', function(err) {
-        debug(err);
-    });
-    debug('End saving result under the directory %s', dir);
+    // FIXME the path is created in the calling function fn.saveResult, maybe create it here?
+    let filePath = path.join(config.fs.compendium, compendiumId, fileName);
+    fs.writeFileSync(filePath, data, 'utf8');
+    debug('Wrote file %s', filePath);
+    return true;
 };
 
 fn.extractCode = function(fileContent, codelines) {

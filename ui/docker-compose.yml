@@ -102,7 +102,7 @@ services:
       - "MUNCHER_META_TOOL_CONTAINER=o2rproject/o2r-meta:1447d43"
       #- MUNCHER_META_TOOL_CONTAINER_RM=false
       - MUNCHER_SAVE_IMAGE_TARBALL=false # saves space and time during dev
-      - MUNCHER_CONTAINERIT_IMAGE=o2rproject/containerit:geospatial-0.5.0.9003
+      - MUNCHER_CONTAINERIT_IMAGE=o2rproject/containerit:geospatial-0.6.0
       - MUNCHER_CONTAINERIT_FILTER_BASE_IMAGE_PKGS=true
       #- "MUNCHER_META_TOOL_CONTAINER=meta:dev"
       #- MUNCHER_ALLOW_INVALID_METADATA=true
@@ -219,12 +219,12 @@ services:
   bindings:
     #image: o2rproject/o2r-bindings:latest
     build: ./bindings
-    ports:
-     - "5000-5499:5000-5499"
+    #restart: always
     volumes:
      - o2rstorage:/tmp/o2r
     environment: 
      - DEBUG=bindings
+     - BINDINGS_PORT=8092
      
   guestlister:
     image: o2rproject/o2r-guestlister:0.2.1

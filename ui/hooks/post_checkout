@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+
+PACKAGE_VERSION=$(sed -nE 's/^\s*"version": "(.*?)",$/\1/p' package.json)
+echo Add version tag $PACKAGE_VERSION to App.js
+
+sed -i "s/#dev#/$PACKAGE_VERSION/g" src/components/app/App.js

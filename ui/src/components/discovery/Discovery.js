@@ -52,7 +52,7 @@ class Discovery extends Component {
                 }
 
                 for (var date of result) {
-                    if (!(date.metadata.o2r.temporal.begin === null)) {
+                    if (date.metadata && !(date.metadata.o2r.temporal.begin === null)) {
                         var tmp_begin = new Date(date.metadata.o2r.temporal.begin);
                         var tmp_bg_year = JSON.parse(tmp_begin.getUTCFullYear());
                         var tmp_bg_month = JSON.parse(tmp_begin.getUTCMonth() + 1);

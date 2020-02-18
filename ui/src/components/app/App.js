@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import {Button, AppBar, Toolbar, Typography } from '@material-ui/core';
+import {Button, AppBar, Toolbar, Typography, ThemeProvider } from '@material-ui/core';
 import { Route, NavLink, HashRouter } from "react-router-dom";
 
+import theme from '../../helpers/theme';
 import './App.css';
 import logo from '../../assets/img/o2r-logo-only-white.svg';
 import orcidLogo from '../../assets/img/orcid.png';
@@ -66,7 +67,7 @@ const Footer = () => {
           <a id="link" href="https://o2r.info/api/"> API</a> |
           <a id="link" href="https://o2r.uni-muenster.de/api/v1/"> Endpoint</a> |
           <a id="link" href="https://github.com/o2r-project/reference-implementation"> Implementation</a> | 
-          Version 0.2.0
+          Version&nbsp;<code>#dev#</code>
       </div>
       </HashRouter>
     </div>
@@ -99,6 +100,7 @@ class App extends Component {
 
   render() {
     return (
+      <ThemeProvider theme={theme}>
       <div id="pageContainer">
       <Header 
         loggedIn={this.state.loggedIn} 
@@ -106,7 +108,7 @@ class App extends Component {
         userName={this.state.userName}
         userOrcid={this.state.userOrcid}>  
       </Header>
-      <Footer></Footer>
+      
       <HashRouter>
       <div>
         <div className="content" id="mainView">
@@ -120,7 +122,9 @@ class App extends Component {
         </div>
       </div>
       </HashRouter>
+      <Footer></Footer>
       </div>
+      </ThemeProvider>
     )
   }
 }

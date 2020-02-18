@@ -1,4 +1,4 @@
-FROM rocker/geospatial:latest
+FROM rocker/geospatial:3.6.2
 
 SHELL ["/bin/bash", "-c"]
 
@@ -8,6 +8,7 @@ RUN R -e 'install.packages(c("plyr", "reshape2", "wesanderson", "grid", "plotrix
 RUN R -e 'install.packages(c("rioja", "FME", "SoilR", "verification", "MASS", "stringr", "plyr", "lubridate", "metafor", "forecast", "expsmooth", "mice", "mitools", "Zelig", "VIM"))'
 RUN R -e 'install.packages(c("caTools", "Cairo", "stats", "extrafont", "xts", "maps"))'
 RUN R -e 'install.packages("INLA", repos=c(getOption("repos"), INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE)'
+RUN R -e 'install.packages(c("truncnorm"))'
 # based on https://gist.github.com/remarkablemark/aacf14c29b3f01d6900d13137b21db3a
 RUN apt-get update \
     && apt-get install -y curl \
@@ -35,6 +36,12 @@ COPY config config
 COPY index.js index.js
 COPY controllers controllers
 COPY controllers/bindings.js controllers/bindings.js 
+
+# Metadata params provided with docker build command
+ARG VERSION=dev
+ARG VCS_URL
+ARG VCS_REF
+ARG BUILD_DATE
 
 # Metadata http://label-schema.org/rc1/
 LABEL maintainer="o2r-project <https://o2r.info>" \
