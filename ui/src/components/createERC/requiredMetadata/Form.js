@@ -229,9 +229,9 @@ export const Form = props => {
                                     shrink: true,
                                   }}
                             >
-                                {(Array.from(props.textLicenses, x => x.id).includes(props.values.textLicense) || props.values.textLicense === "" )? "": 
-                                    <MenuItem key={props.values.textLicense} value={props.values.textLicense}>
-                                        {props.values.textLicense}
+                                {(Array.from(props.textLicenses, x => x.id).includes(props.originalMetadata.textLicense) || props.originalMetadata.textLicense === "" )? "": 
+                                    <MenuItem key={props.originalMetadata.textLicense} value={props.originalMetadata.textLicense}>
+                                        {props.originalMetadata.textLicense}
                                     </MenuItem>}
                                 <MenuItem id={"menuItem"} key={props.leastRestrictiveData[0]} value={props.leastRestrictiveData[0]}>
                                         Least Restrictive
@@ -262,9 +262,9 @@ export const Form = props => {
                                     shrink: true,
                                   }}
                             >
-                                {(Array.from(props.codeLicenses, x => x.id).includes(props.values.codeLicense) || props.values.codeLicense === "") ? "": 
-                                    <MenuItem key={props.values.codeLicense} value={props.values.codeLicense}>
-                                        {props.values.codeLicense}
+                                {(Array.from(props.codeLicenses, x => x.id).includes(props.originalMetadata.codeLicense) || props.originalMetadata.codeLicense === "") ? "": 
+                                    <MenuItem key={props.originalMetadata.codeLicense} value={props.originalMetadata.codeLicense}>
+                                        {props.originalMetadata.codeLicense}
                                     </MenuItem>}
                                  <MenuItem id={"menuItem"} key={props.leastRestrictiveData[1]} value={props.leastRestrictiveData[1]}>
                                         Least Restrictive
@@ -297,9 +297,9 @@ export const Form = props => {
                                     shrink: true,
                                   }}
                             >
-                                {(Array.from(props.dataLicenses, x => x.id).includes(props.values.dataLicense) || props.values.dataLicense === "")  ? "": 
-                                    <MenuItem key={props.values.dataLicense} value={props.values.dataLicense}>
-                                        {props.values.dataLicense}
+                                {(Array.from(props.dataLicenses, x => x.id).includes(props.originalMetadata.dataLicense) || props.originalMetadata.dataLicense === "")  ? "": 
+                                    <MenuItem key={props.originalMetadata.dataLicense} value={props.originalMetadata.dataLicense}>
+                                        {props.originalMetadata.dataLicense}
                                     </MenuItem>
                                     }
                                 <MenuItem id={"menuItem"} key={props.leastRestrictiveData[2]} value={props.leastRestrictiveData[2]}>
