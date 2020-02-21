@@ -45,6 +45,11 @@ class Manipulate extends React.Component {
         })
     }
 
+    downloadBinding() {
+        const self = this;
+        window.open(httpRequests.downloadBinding(self.state.binding))
+    }
+
     setParameter() {
         this.setState({ loading: true, processURL: true });
         let parameter = this.state.binding.sourcecode.parameter;
@@ -228,7 +233,14 @@ class Manipulate extends React.Component {
                                 onClick={this.setOriginalSettings.bind(this)}
                             >
                                 Original settings
-                    </Button>
+                            </Button>
+                            <br/>
+                            <br/>
+                            <Button variant='contained' color='primary'
+                                onClick={this.downloadBinding.bind(this)}
+                            >
+                                Download Binding
+                            </Button>
                             <br />
                             <br />
                             {this.state.loading ? <CircularProgress /> : ""}

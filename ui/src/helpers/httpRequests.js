@@ -72,6 +72,10 @@ function searchBinding(term, metadata){
     return axios.post(_env.api + 'bindings/searchBinding', {term:term, metadata: metadata});
 }
 
+function downloadBinding(binding){
+    return _env.api + 'compendium/'+binding.id+'/binding/' + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '/zip'
+}
+
 function geocodingRequest(query){
     var encodedQuery= escape(query)
     var access_token='token'
@@ -107,6 +111,7 @@ module.exports = {
     getSingleJob: getSingleJob,
     getLogs: getLogs,
     sendBinding: sendBinding,
+    downloadBinding: downloadBinding,
     runManipulationService: runManipulationService,
     getCodelines: getCodelines,
     searchBinding: searchBinding,

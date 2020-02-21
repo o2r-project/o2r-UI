@@ -22,6 +22,7 @@ const fs = require('fs');
 const debug = require('debug')('bindings');
 const path = require('path');
 const exec = require('child_process').exec;
+const Timer = require('timer-machine');
 
 let fn = {};
 
@@ -153,6 +154,51 @@ fn.readCsv = function(compendiumId, datasets) {
     }
     let datafile = path.join(config.fs.compendium, compendiumId, datasets[0].file.split('/').pop());
 };
+
+fn.readFolder = function(compendiumId, fileName) {
+    const folder= path.join(config.fs.compendium, compendiumId, fileName);
+    return fs.readdirSync(folder)
+}
+
+fn.buildDownloadFolder = function(extractedCode, compendiumId, fileName) {
+    let resultPath = path.join(config.fs.compendium, compendiumId, fileName);
+    if (!fs.existsSync(resultPath)) {
+        fs.mkdirSync(resultPath);
+    }
+    let filePath = path.join(config.fs.compendium, compendiumId, fileName, fileName + ".R");
+    fs.writeFileSync(filePath, extractedCode, 'utf8');
+}
+
+fn.returnArchive = function(res, compendiumId, fileName, archive){
+    const localPath= path.join(config.fs.compendium, compendiumId, fileName);
+
+    fs.accessSync(localPath);
+
+    let timer = new Timer();
+    timer.start();
+
+  archive.on('error', function (err) {
+    res.status(500).send(err.message);
+  });
+
+  archive.on('end', function () {
+    timer.stop();
+    debug('[%s] Wrote %d bytes in %s ms to archive', compendiumId, archive.pointer(), timer.time());
+  });
+
+  //set the archive name
+  res.attachment(fileName + '.zip');
+
+  //this is the streaming magic
+  archive.pipe(res);
+  let options = {};
+  options.cwd = localPath;
+  options.dot = true;
+
+  archive.glob('**', options)
+  archive.finalize();
+
+}
 
 fn.saveResult = function(data, compendiumId, fileName) {
     debug('Start saving result for compendium %s under file name %s',

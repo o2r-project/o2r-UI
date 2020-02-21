@@ -28,6 +28,7 @@ const rules = require('./rules');
 const processJson = require('./processJson');
 const request = require('request');
 const exec = require('child_process').exec;
+const archiver = require('archiver');
 
 const baseUrl = "http://localhost:";
 let bindings = {};
@@ -132,6 +133,23 @@ bindings.start = (conf) => {
             debug('Bindings server listening on port %s', conf.port);
             resolve(bindingsListen);
         });
+
+        app.get('/api/v1/compendium/:compendium/binding/:binding/zip', function(req,res){
+            let compendium = req.params.compendium;
+            let binding = req.params.binding;
+            console.log(binding)
+            debug('Starting download of Binding %s from Compendium %s', binding, compendium);
+            try {
+                let archive = archiver('zip', {
+                  comment: 'Created by o2r [' + baseUrl + ']'
+                });
+        
+                fn.returnArchive(res, compendium, binding, archive);
+              } catch (e) {
+                debug('[%s] Error: %s', compendium, e);
+                res.status(500).send({ error: e.message});
+              }
+        });
     });
 };
 
@@ -151,8 +169,9 @@ bindings.createBinding = function(binding, response) {
     fn.modifyMainfile( fileContent, binding.computationalResult, binding.sourcecode.file, binding.id );
     let codelines = fn.handleCodeLines( binding.sourcecode.codelines );
     let extractedCode = fn.extractCode( fileContent, codelines );
-        extractedCode = fn.replaceVariable( extractedCode, binding.sourcecode.parameter );
-    let wrappedCode = fn.wrapCode( extractedCode, binding.computationalResult.result, binding.sourcecode.parameter, figureSize );
+    let replacedCode = fn.replaceVariable( extractedCode, binding.sourcecode.parameter );
+    let wrappedCode = fn.wrapCode( replacedCode, binding.computationalResult.result, binding.sourcecode.parameter, figureSize );
+    fn.buildDownloadFolder(extractedCode, binding.id, binding.computationalResult.result.replace(/\s/g, '').toLowerCase())
     fn.saveResult( wrappedCode, binding.id, binding.computationalResult.result.replace(/\s/g, '').toLowerCase() );
     binding.codesnippet = binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '.R';
     response.send({
