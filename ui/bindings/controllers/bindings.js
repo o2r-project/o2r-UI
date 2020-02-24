@@ -149,6 +149,7 @@ bindings.start = (conf) => {
                 debug('[%s] Error: %s', compendium, e);
                 res.status(500).send({ error: e.message});
               }
+              debug('ZIP of Binding %s from Compendium %s send', binding, compendium);
         });
     });
 };

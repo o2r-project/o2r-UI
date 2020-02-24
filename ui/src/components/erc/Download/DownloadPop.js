@@ -59,7 +59,7 @@ class DownloadPop extends Component {
         return (
             <div>
                 <Dialog open={this.props.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
-                    <DialogTitle style={{ "align-self": "center" }} id="form-dialog-title">ERC Download</DialogTitle>
+                    <DialogTitle style={{ alignSelf: "center" }} id="form-dialog-title">ERC Download</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
                             Do you want to download the image as well?
@@ -67,11 +67,11 @@ class DownloadPop extends Component {
                     </DialogContent>
                     <Grid container spacing={0}>
                     <Grid item xs={4}>
-                    {this.state.successfulJob ? "" : <div style={{"margin-left": "10px"}}> <DialogContentText>
+                    {this.state.successfulJob ? "" : <div style={{marginLeft: "10px"}}> <DialogContentText>
                         Image tarball is missing, so it is not available for download. Please run the analysis first.
                     </DialogContentText> </div>}
                     </Grid>
-                    <Grid item xs={4} style={{ "text-align": "center"}}>
+                    <Grid item xs={4} style={{ textAlign: "center"}}>
                     <FormControl style={{"top" : "20%"}} component="fieldset">
                         <RadioGroup aria-label="position" name="position" value={this.state.value} onChange={this.handleChange} row>
                             <FormControlLabel

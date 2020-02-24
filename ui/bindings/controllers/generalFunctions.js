@@ -161,16 +161,82 @@ fn.readFolder = function(compendiumId, fileName) {
 }
 
 fn.buildDownloadFolder = function(extractedCode, compendiumId, fileName) {
+    debug('[%s] Start building folder for Binding %s', compendiumId, fileName);
     let resultPath = path.join(config.fs.compendium, compendiumId, fileName);
     if (!fs.existsSync(resultPath)) {
         fs.mkdirSync(resultPath);
     }
     let filePath = path.join(config.fs.compendium, compendiumId, fileName, fileName + ".R");
-    fs.writeFileSync(filePath, extractedCode, 'utf8');
+    fs.writeFileSync(filePath, extractedCode);
+
+    debug('[%s] Start adding binding specifc files to folder for Binding %s', compendiumId, fileName);
+    let begin = extractedCode.indexOf("load")
+    while (begin != -1)
+    {
+        let stringStart= extractedCode.indexOf('"', begin)
+        fn.addFiletoDownloadFolder(extractedCode, compendiumId, fileName, stringStart + 1);
+        begin = extractedCode.indexOf("load", begin + 1)
+    }
+    begin = extractedCode.indexOf("read")
+    while (begin != -1)
+    {
+        let stringStart= extractedCode.indexOf('"', begin)
+        fn.addFiletoDownloadFolder(extractedCode, compendiumId, fileName, stringStart +1);
+        begin = extractedCode.indexOf("read", begin +1)
+    }
+    begin = extractedCode.indexOf("source")
+    while (begin != -1)
+    {
+        let stringStart= extractedCode.indexOf('"', begin)
+        fn.addFiletoDownloadFolder(extractedCode, compendiumId, fileName, stringStart +1);
+        begin = extractedCode.indexOf("source", begin +1)
+    }
+    begin = extractedCode.indexOf("layer")
+    while (begin != -1)
+    {
+        let stringStart= extractedCode.indexOf('"', begin)
+        fn.addShapetoDownloadFolder(extractedCode, compendiumId, fileName, stringStart +1);
+        begin = extractedCode.indexOf("layer", begin +1)
+    }
+    debug('[%s] End building folder for Binding %s', compendiumId, fileName);
+}
+
+fn.addFiletoDownloadFolder= function(extractedCode, compendiumId, figureName, begin) {
+    let stringEnd = extractedCode.indexOf('"', begin+1);
+    let fileName= extractedCode.slice(begin, stringEnd);
+    try{
+        let dataFilePath = path.join(config.fs.compendium, compendiumId, fileName);
+        let resultPath = path.join(config.fs.compendium, compendiumId, figureName, fileName);
+        fs.copyFileSync(dataFilePath,resultPath);
+    }
+    catch(e){
+        debug(e)
+    }
+
+    debug('File %s added to the Download Folder fo Binding %s', fileName, figureName)
+}
+
+fn.addShapetoDownloadFolder = function(extractedCode, compendiumId, figureName, begin){
+    let stringEnd = extractedCode.indexOf('"', begin+1);
+    let fileName= extractedCode.slice(begin, stringEnd);
+    let shapeEndings= [".dbf", ".prj", ".sbn", ".sbx", ".shp", ".shx"]
+    for (var ending of shapeEndings){
+        console.log(ending)
+        try{
+            let dataFilePath = path.join(config.fs.compendium, compendiumId, fileName + ending);
+            let resultPath = path.join(config.fs.compendium, compendiumId, figureName, fileName + ending);
+            fs.copyFileSync(dataFilePath,resultPath);
+        }
+        catch(e){
+            debug(e)
+        }
+    }
+
 }
 
 fn.returnArchive = function(res, compendiumId, fileName, archive){
     const localPath= path.join(config.fs.compendium, compendiumId, fileName);
+    debug('[%s] Build zip folder', compendiumId, archive.pointer(), timer.time());
 
     fs.accessSync(localPath);
 
