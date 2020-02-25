@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Dialog, AppBar, Toolbar, Slide, Grid, CircularProgress} from "@material-ui/core";
+import { Button, Dialog, AppBar, Toolbar, Slide, Grid, CircularProgress, DialogActions, DialogContent, DialogTitle} from "@material-ui/core";
 
 import httpRequests from "../../../../helpers/httpRequests"
 import { withRouter } from 'react-router-dom';
@@ -19,6 +19,7 @@ class Substitute extends Component {
         this.state = {
             substitutedErc: null,
             open: false,
+            loading: false,
             substitutionFiles: [],
             baseErcFiles: [],
             substitutionErcFiles: [],
@@ -50,12 +51,15 @@ class Substitute extends Component {
 
     substitute = () => {
         const self = this;
-        this.setState({ open: true })
+        this.setState({ loading: true })
         httpRequests.createSubstitution(this.props.baseErcId, this.props.ercId, this.state.substitutionFiles)
             .then(function (response) {
                 self.setState({ substitutedErc: response.data.id, open: false })
             })
             .catch(function (response) {
+                if (response.response.status === 401) {
+                    self.setState({ open: true, title: "Request to Server Failed", errorMessage: "You have to be logged in to create a substituted ERC" })
+                }
                 console.log(response)
             })
     }
@@ -149,18 +153,30 @@ class Substitute extends Component {
                         Substitute
                     </Button>
                     {!this.state.configurationFile ?
-                     <> <br/> <span style={{"padding-left": "12%", color : "red"}}>
+                     <> <br/> <span style={{paddingLeft : "12%", color : "red"}}>
                          Configuration file is missing, so it cannot be included. <br/> Please ensure a successful analysis execution first. 
                          <Button color="primary" onClick={() => this.props.handleTabChange("e",1)}> Go there </Button>
                          </span> </>
                          : ""}
-                    {this.state.open ? <CircularProgress /> : ''}
+                    {this.state.loading ? <CircularProgress style={{position: "absolute", left: "25%", top: "96%"}}/> : ''}
                     <br />
                     <Button style={{ width: "10%", left: "12%" }} variant="contained" color="primary"
                         disabled={this.state.substitutedErc === null}
                         onClick={() => this.goToErc()}>
                         Go to new ERC
                     </Button>
+                    <Dialog open={this.state.open}>
+                    <DialogTitle> {this.state.title}</DialogTitle>
+                    <div>
+                        <DialogContent>
+                            {this.state.errorMessage}
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.handleClose.bind(this)} color="primary">
+                                OK
+                            </Button>
+                        </DialogActions> </div>
+                    </Dialog>
                 </Dialog>
             </div>
         )

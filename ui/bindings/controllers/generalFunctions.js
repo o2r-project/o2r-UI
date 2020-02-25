@@ -24,6 +24,7 @@ const path = require('path');
 const exec = require('child_process').exec;
 const Timer = require('timer-machine');
 
+
 let fn = {};
 
 fn.readRmarkdown = function(compendiumId, mainfile) {
@@ -207,6 +208,10 @@ fn.addFiletoDownloadFolder= function(extractedCode, compendiumId, figureName, be
     try{
         let dataFilePath = path.join(config.fs.compendium, compendiumId, fileName);
         let resultPath = path.join(config.fs.compendium, compendiumId, figureName, fileName);
+        let folderName =   path.dirname(resultPath)
+        if (!fs.existsSync(folderName)) {
+            fs.mkdirSync(folderName, { recursive: true });
+        }
         fs.copyFileSync(dataFilePath,resultPath);
     }
     catch(e){
@@ -221,7 +226,6 @@ fn.addShapetoDownloadFolder = function(extractedCode, compendiumId, figureName, 
     let fileName= extractedCode.slice(begin, stringEnd);
     let shapeEndings= [".dbf", ".prj", ".sbn", ".sbx", ".shp", ".shx"]
     for (var ending of shapeEndings){
-        console.log(ending)
         try{
             let dataFilePath = path.join(config.fs.compendium, compendiumId, fileName + ending);
             let resultPath = path.join(config.fs.compendium, compendiumId, figureName, fileName + ending);
@@ -236,7 +240,7 @@ fn.addShapetoDownloadFolder = function(extractedCode, compendiumId, figureName, 
 
 fn.returnArchive = function(res, compendiumId, fileName, archive){
     const localPath= path.join(config.fs.compendium, compendiumId, fileName);
-    debug('[%s] Build zip folder', compendiumId, archive.pointer(), timer.time());
+    debug('[%s] Build zip folder', compendiumId);
 
     fs.accessSync(localPath);
 
