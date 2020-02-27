@@ -43,7 +43,7 @@ ComputeDamage <- function(he, v, d, s, q, FA, IA, BA, EP, IH, BH, GL, NF, BT, BS
   he <- pmin(he, NF * IH * 1.05)
   nf <- rep(NF, length(he))
   h <- round((he - GL), 3)
-  h <- h > 0) * h
+  h <- (h > 0) * h
 
   # Calculate other exposure variables
   IP <- 2.5 * EP       # Internal perimeter (m)
@@ -382,11 +382,8 @@ uncert <- 0
 if (!uncert) {
   # Compute expected damage. Note that (only) one of the hazard variables can 
   # be passed to the function as a vector.
-  modelOutput <- ComputeDamage(he, velocity, duration, sediment, q, 
-                  FA, IA, BA, EP, IH, BH, GL, NF, BT, BS, PD, PT, FL, YY, LM, 
-                  repVal, up, uncert)
-} 
-else if (uncert) {
+  modelOutput <- ComputeDamage(he, velocity, duration, sediment, q, FA, IA, BA, EP, IH, BH, GL, NF, BT, BS, PD, PT, FL, YY, LM, repVal, up, uncert)
+} else if (uncert) {
   # Probabilistic computation. All the hazard variables must be passed to the
   # function as scalars.
   # This example assumes that the variable he is a vector. It is therefore
