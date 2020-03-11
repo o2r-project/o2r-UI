@@ -164,22 +164,30 @@ bindings.implementExtractR = function (binding,response) {
     debug('Start extracting codelines: %s', JSON.stringify(binding));
     let file = fn.readRmarkdown(binding.id, binding.file);
     let lines = file.split('\n');
-    let chunksLineNumbers = fn.extractChunks(lines);
-    let code = fn.extractCodeFromChunks(lines,chunksLineNumbers.start,chunksLineNumbers.end);
-    let codeAsJson = fn.codeAsJson(code);
-    let codeAsJsonWithTypes = rules.getCodeTypes(codeAsJson);
-    codeAsJson = fn.array2Json(codeAsJsonWithTypes);
-    console.log(codeAsJson)
-    //codeAsJson = processJson.addFileContentToJson(codeAsJson);
-    /*let varsInLines = processJson.getVarsAndValuesOfLines(codeAsJson);
-    let plotFunctionParameters = rules.getContentInBrackets(binding.plot);
-    let backtrackedCode = processJson.backtrackCodelines(varsInLines,plotFunctionParameters,[],[]);
+    let codeLines = fn.extractCodeLines(lines);
+    let code = fn.extractCode(lines,codeLines.start,codeLines.end);
+    let codeparts = fn.splitCodeIntoLines(code,codeLines.start[0]);
+    let type = rules.getTypeOfLine(codeparts);
+    let comments = fn.deleteComments(type);
+    let json = fn.array2Json(comments);
+    console.log(json)
+    let jsonObj = {'Lines': json};
+    //console.log("between")
+    let processedJson = processJson.addFileContentToJson(jsonObj);
+    console.log(JSON.stringify(processedJson));
+    let varsInLines = processJson.getVarsAndValuesOfLines(processedJson);
+    //Insert binding.plot
+    let valuesToSearchFor = processJson.valuesToSearchFor(binding.plot);
+    let codeLinesForValues = processJson.getAllCodeLines(varsInLines,valuesToSearchFor,[],[]);
 
     //debug('Codelines: ',backtrackedCode);
     
-    binding.codelines = processJson.getCodeLines(backtrackedCode);*/
-    //debug('Codelines2: %s', JSON.stringify(binding.codelines))
-    console.log("end extractR")
+    
+    debug('Codelines: ',codeLinesForValues);
+    
+    binding.codelines = processJson.getCodeLines(codeLinesForValues);
+    console.log(codeLinesForValues)
+    debug(binding.codelines)
     /*response.send({
         callback: 'ok',
         data: binding});*/

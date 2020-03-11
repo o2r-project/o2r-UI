@@ -29,8 +29,7 @@ context('Extract code lines from plot function', function() {
     let chunksLineNumbers = fn.extractChunks(lines);
     let code = fn.extractCodeFromChunks(lines,chunksLineNumbers.start,chunksLineNumbers.end);
     let codeAsJson = fn.codeAsJson(code);
-    let codeAsJsonWithTypes = rules.getCodeTypes(codeAsJson);
-    let codeAsJson2 = fn.array2Json(codeAsJsonWithTypes);
+    
 
     it('Rmarkdown must be of type string', function() {
         assert.isString(file, 'is array of numbers');

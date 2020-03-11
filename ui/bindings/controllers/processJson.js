@@ -393,23 +393,20 @@ pJ.backtrackCodelines = function ( allCodeAsJson, backtrackFromTerms, lines, sea
         } else {
             debug('PlotFunction not found.');
         }
-        let plotFunctionComponents = ['lines', 'plot', 'axis', 'mtext', 'legend', 'par'];
-        let libraryAndFunction = ['library', 'function'];
-        let data = new RegExp('\\b' + 'load' + '\\b');
-        codeSubset.forEach( line => {
-            if ( plotFunctionComponents.some(fun => line.name.includes(fun)) || 
-                                            libraryAndFunction.some(fun => line.type.includes(fun)) || 
-                                            line.vars.find(value => data.test(value)) != -1) {
-                lines.push({
-                    start: line.start,
-                    end: line.end,
-                    codeBlock: line.codeBlock
-                });
-                let start = line.start;
-                let end = line.end;
-                codeSubset = codeSubset.filter(entry => entry.end != end && entry.start != start);
-            }
-        });
+        filteredJson.forEach(line => {
+            console.log(line.vars.find(value => data.test(value)))
+                if (plotFunctions.some(fun => line.name.includes(fun)) || libAndFun.some(fun => line.type.includes(fun)) || line.vars.find(value => data.test(value)) != null) {
+                    console.log(line)
+                    lines.push({
+                        start: line.start,
+                        end: line.end,
+                        codeBlock: line.codeBlock
+                    });
+                    let start = line.start;
+                    let end = line.end;
+                    filteredJson = filteredJson.filter(entry => entry.end != end && entry.start != start);
+                }
+        })
     }
     let search = [];
     backtrackFromTerms.forEach(codeTerm => {
@@ -420,24 +417,25 @@ pJ.backtrackCodelines = function ( allCodeAsJson, backtrackFromTerms, lines, sea
                 search.push(expression);
             }
         }
-    });
-    if ( search.length > 0 ) {
-        codeSubset.forEach( line => {
-            let value = line.vars.some(rx => search.some(elem => elem.test(rx)));
-            if (value) {
-                lines.push({
-                    start: line.start,
-                    end: line.end,
-                    codeBlock: line.codeBlock
-                });
-                if (line.vars.length > 1) {
-                    const index = line.vars.findIndex(value => search.some(elem => elem.test(value)));
-                    if (index != -1) {
-                        line.vars.forEach(elem => {
-                            if (!backtrackFromTerms.includes(elem)) {
-                                backtrackFromTerms.push(elem);
-                            }
-                        });
+    })
+    if (search.length > 0 && filteredJson != null) {
+        filteredJson.forEach(line => {
+                let value = line.vars.some(rx => search.some(elem => elem.test(rx)));
+                if (value) {
+                    lines.push({
+                        start: line.start,
+                        end: line.end,
+                        codeBlock: line.codeBlock
+                    });
+                    if (line.vars.length > 1) {
+                        const index = line.vars.findIndex(value => search.some(elem => elem.test(value)));
+                        if (index != -1) {
+                            line.vars.forEach(elem => {
+                                if (!varToSearchFor.includes(elem)) {
+                                    varToSearchFor.push(elem);
+                                }
+                            })
+                        }
                     }
                 }
             }
