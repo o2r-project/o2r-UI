@@ -86,12 +86,12 @@ fn.handleCodeLines = function(lines) {
     });
 };
 
-fn.extractCode = function(fileContent, codelines) {
+fn.extractCodeLines = function(fileContent, codelines) {
     debug('Start extracting code');
+    console.log(fileContent)
     let newContent = '';
-    let splitFileContent = fileContent.split('\n');
     codelines.forEach(function(elem) {
-        newContent += splitFileContent[elem] + '\n';
+        newContent += fileContent[elem] + '\n';
     });
     debug('End extracting code');
     return newContent;

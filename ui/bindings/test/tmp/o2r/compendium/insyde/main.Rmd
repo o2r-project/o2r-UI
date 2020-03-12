@@ -53,7 +53,7 @@ ComputeDamage <- function(he, v, d, s, q, FA, IA, BA, EP, IH, BH, GL, NF, BT, BS
   he <- pmin(he, NF * IH * 1.05)
   nf <- rep(NF, length(he))
   h <- round((he - GL), 3)
-  h <- h > 0) * h
+  h <- (h > 0) * h
 
   # Calculate other exposure variables
   IP <- 2.5 * EP       # Internal perimeter (m)

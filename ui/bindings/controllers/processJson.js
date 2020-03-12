@@ -439,7 +439,7 @@ pJ.backtrackCodelines = function ( allCodeAsJson, backtrackFromTerms, lines, sea
                     }
                 }
             }
-        });
+        );
         varToSearchForNew = backtrackFromTerms.filter((elem) => searchForTermsArray.indexOf(elem) == -1);
         if (varToSearchForNew.length > 0) {
             pJ.backtrackCodelines(codeSubset, varToSearchForNew, lines, searchForTermsArray);

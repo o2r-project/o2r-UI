@@ -97,6 +97,8 @@ case 5: case 6: case 32: case 152: case 286:
  this.$ = $$[$0] 
 break;
 case 7: case 153:
+ console.log($$);
+ console.log("test")
  this.$ = $$[$0-1].concat( $$[$0] ) 
 break;
 case 8:

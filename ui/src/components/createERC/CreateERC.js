@@ -52,6 +52,7 @@ class CreateERC extends Component {
                 if( candidate !== true) candidate =false;
                 httpRequests.getFile("compendium/" + self.state.compendium_id + "/data/" + metadata.mainfile)
                     .then(function (res2) {
+                        console.log(res2)
                         self.setState({
                             metadata: metadata,
                             originalMetadata: JSON.parse(JSON.stringify(metadata)),
@@ -90,10 +91,10 @@ class CreateERC extends Component {
         httpRequests.updateMetadata(self.state.compendium_id, self.state.metadata)
             .then(function (res2) {
                 self.setChangedFalse("all");
-                self.setState({ showProgress: false, saved: true, open: true, message: "Metadata updated", backgroundColor: "green", candidate: false })
+                self.setState({ showProgress: false, saved: true, open: true, message: "Metadata updated", backgroundColor: "#008643", candidate: false })
             })
             .catch(function (res2) {
-                self.setState({ showProgress: false, saved: true, open: true, message: "Metadata update failed", backgroundColor: "red" })
+                self.setState({ showProgress: false, saved: true, open: true, message: "Metadata update failed", backgroundColor: "#860000" })
                 console.log(res2)
             })
     }
