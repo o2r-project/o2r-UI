@@ -14,12 +14,13 @@ const request = require('request');
 const exec = require('child_process').exec;
 var assert = require('chai').assert;
 var expect = require('chai').expect;
-const RParse = require('./R').parse;
-const fs = require('fs')
+const RParse = require('../controllers/R').parse;
+var slice = require('../controllers/r-program-analysis/dist/es6/slice').slice
+
 
 let binding = {
     "id":"insyde",
-    "plot":"plotFigure1(he,modelOutput)",
+    "plot":"plotFigure1",
     "file":"main.Rmd"
 };
 
@@ -30,17 +31,12 @@ context('Extract code lines from plot function', function() {
     let lines = file.split('\n');
     let chunksLineNumbers = fn.extractChunks(lines);
     let code = fn.extractCodeFromChunks(lines,chunksLineNumbers.start,chunksLineNumbers.end);
-    console.log(JSON.stringify(code))
-    fs.writeFile('code.json', code.toString(), 'utf-8', (err) => {
-        if (err) throw err;
-        console.log('The file has been saved!');
-
-    })
-    // let codeAsJson = RParse(code);
-    // console.log(codeAsJson)
-    
-
-
+    let codeAsJson = RParse(code);
+    let call = processJson.findPlotLines(binding.plot)
+    let codeLines= slice(codeAsJson, call);
+    codeLines = processJson.correctErrorsOfAlgorithm(codeLines);
+    codeLines = processJson.connectCodeLines(codeLines);
+    console.log(codeLines)
 })
 
 

@@ -12,6 +12,7 @@
   "dependencies": {
     "assertthat": "^1.0.0",
     "body-parser": "^1.18.2",
+    "chai": "^4.2.0",
     "debug": "^3.1.0",
     "eslint-config-angular": "^0.5.0",
     "eslint-plugin-angular": "^3.2.0",

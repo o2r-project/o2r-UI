@@ -318,9 +318,14 @@ pJ.getVarsOfLoops = function (LineWithTypeLoop, loopType) {
 }
 
 //TODO: Add lines to find all plot functions in script --> not needed for now
-pJ.findPlotLines = function (jsonObj, plotFunctions) {
-    let plotFunctionsToFind = fn.readFile(plotFunctions);
-    let lines = plotFunctionsToFind.split(/\r?\n/);
+pJ.findPlotLines = function (codeAsJson, plotFunction) {
+    for (var statement of codeAsJson.code){
+        if (statement.type === "call"){
+            if(statement.func.id.equals(plotFunction)){
+                return statement.location;
+            }
+        }
+    }
 };
 
 
@@ -501,5 +506,47 @@ pJ.getCodeLines = function (codelines) {
     */
     return codeLinesOfValues;
 }
+
+pJ.connectCodeLines = (lines) => {
+    for (var i = 0; i < lines.length - 1; i++) {
+      if (lines[i].last_line + 1 == lines[i + 1].first_line) {
+        var first_line = lines[i].first_line;
+        var last_line = lines[i + 1].last_line;
+        lines.splice(i, 2, { first_line, last_line })
+        i--;
+      }
+      else if (lines[i + 1].last_line < lines[i].last_line) {
+        lines.splice(i + 1, 1);
+        i--;
+      }
+      else if(lines[i].first_line === lines[i+1].first_line){
+        lines.splice(i, 1)
+        i--;
+      }
+    }
+    return (lines)
+  }
+pJ.correctErrorsOfAlgorithm = (codeJSON, extractedLines) => {
+    for (var statement of codeJSON.code) {
+      if (statement.type == 'import') {
+        extractedLines.push(statement.location)
+      }
+      else if (statement.type == 'call') {
+        if (statement.func.id == 'par') {
+          extractedLines.push(statement.location)
+        }
+      }
+      else if (statement.type == 'if') {
+        for (var i = 0; i < extractedLines.length; i++) {
+          if (extractedLines[i].first_line === statement.location.first_line) {
+            extractedLines.push(statement.location)
+            break;
+          }
+
+        }
+      }
+    }
+    return extractedLines;
+  }
 
 module.exports = pJ;
