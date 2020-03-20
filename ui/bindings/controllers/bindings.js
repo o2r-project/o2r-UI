@@ -28,6 +28,7 @@ const rules = require('./rules');
 const processJson = require('./processJson');
 const request = require('request');
 const exec = require('child_process').exec;
+const rParse = require('./R').parse;
 
 const baseUrl = "http://localhost:";
 let bindings = {};
@@ -185,6 +186,15 @@ bindings.implementExtractR = function (binding,response) {
         callback: 'ok',
         data: binding});*/
 };
+
+bindings.ExtractR = function (binding, response){
+    console.log("start extractR")
+    let file = fn.readRmarkdown(binding.id, binding.file);
+    let lines = file.split('\n');
+    let chunksLineNumbers = fn.extractChunks(lines);
+    let chunksOfCode = fn.extractCodeFromChunks(lines,chunksLineNumbers.start,chunksLineNumbers.end);
+    const codeAsJson = rParse(chunksOfCode)
+}
 
 bindings.searchBinding = function ( req, res) {
     var searchTerm= req.term

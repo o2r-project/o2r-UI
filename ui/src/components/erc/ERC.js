@@ -1,7 +1,7 @@
 import React from 'react';
 import 'react-reflex/styles.css';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
-import { Paper, Tabs, Tab, Button, IconButton, Grid } from "@material-ui/core";
+import { Paper, Tabs, Tab, Button, IconButton, Grid, Dialog, DialogActions, DialogTitle } from "@material-ui/core";
 import GetAppIcon from '@material-ui/icons/GetApp';
 
 import config from '../../helpers/config';
@@ -13,12 +13,14 @@ import Check from './Check/Check';
 import Manipulate from './Manipulate/Manipulate';
 import Substitution from './Substitution/Substitution';
 import DownloadPop from './Download/DownloadPop';
-import SubstitutionInfoPop from './Substitution/SubstitutionInfo'
+import SubstitutionInfoPop from './Substitution/SubstitutionInfo';
+import { withRouter } from 'react-router-dom';
 
 class ERC extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            failure: false,
             id: this.props.match.params.id,
             displayfile: null,
             pdfFile: null,
@@ -143,6 +145,7 @@ class ERC extends React.Component {
                     dataset = data.inputfiles;
                 }
                 self.setState({
+                    failure: false,
                     data: response.data,
                     metadata: data,
                     datafiles: data.inputfiles,
@@ -161,6 +164,7 @@ class ERC extends React.Component {
                 self.setPdfFile();
             })
             .catch(function (response) {
+                self.setState({failure: true})
                 console.log(response)
             })
     }
@@ -183,6 +187,13 @@ class ERC extends React.Component {
 
     handleClose() {
         this.setState({ downloadOpen: false, substitutionInfoOpen: false })
+    }
+
+    handleAlertClose() {
+        console.log(this)
+        this.props.history.push({
+            pathname: '/'
+        });
     }
 
     render() {
@@ -269,9 +280,19 @@ class ERC extends React.Component {
                         }
                     </ReflexElement>
                 </ReflexContainer>
+                <Dialog
+                    open={this.state.failure}
+                    onClose={this.handleAlertClose.bind(this)}>
+                    <DialogTitle>
+                        {"The ERC with the ID " + this.state.id + " does not exist or was deleted. \n Please select another ERC."}
+                    </DialogTitle>
+                    <DialogActions>
+                        <Button onClick={this.handleAlertClose.bind(this)}> Go To Home Page</Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         )
     }
 }
 
-export default ERC;
+export default withRouter(ERC);
