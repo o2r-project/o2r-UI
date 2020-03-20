@@ -41,7 +41,7 @@ services:
       - "1234:1234"
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.4
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.16
     environment:
       - cluster.name=o2rplatform-es-cluster
       - bootstrap.memory_lock=true
@@ -57,7 +57,7 @@ services:
     #ports:
     #  - "9200:9200"
   elasticsearch2:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.4
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.16
     environment:
       - cluster.name=o2rplatform-es-cluster
       - bootstrap.memory_lock=true
@@ -73,7 +73,7 @@ services:
     mem_limit: 1g
 
   #kibana:
-  #  image: docker.elastic.co/kibana/kibana:5.6.4
+  #  image: docker.elastic.co/kibana/kibana:5.6.16
   #  environment:
   #    - "ELASTICSEARCH_URL=http://elasticsearch:9200"
   #  ports:
@@ -82,7 +82,7 @@ services:
   #    - elasticsearch
 
   muncher:
-    image: o2rproject/o2r-muncher:0.21.0
+    image: o2rproject/o2r-muncher:0.25.0
     depends_on:
       - mongodb
       - configmongodb
@@ -102,7 +102,7 @@ services:
       - "MUNCHER_META_TOOL_CONTAINER=o2rproject/o2r-meta:1447d43"
       #- MUNCHER_META_TOOL_CONTAINER_RM=false
       - MUNCHER_SAVE_IMAGE_TARBALL=false # saves space and time during dev
-      - MUNCHER_CONTAINERIT_IMAGE=o2rproject/containerit:geospatial-0.6.0
+      - MUNCHER_CONTAINERIT_IMAGE=o2rproject/containerit:geospatial-0.6.0.9000
       - MUNCHER_CONTAINERIT_FILTER_BASE_IMAGE_PKGS=true
       - "MUNCHER_CONTAINERIT_BASE_IMAGE=rocker/geospatial:3.6.2"
       #- "MUNCHER_META_TOOL_CONTAINER=meta:dev"
@@ -137,7 +137,7 @@ services:
       - DEBUG=informer,informer:*
 
   bouncer:
-    image: o2rproject/o2r-bouncer:0.13.0
+    image: o2rproject/o2r-bouncer:0.15.0
     depends_on:
       - mongodb
       - configmongodb
@@ -168,19 +168,6 @@ services:
       - "MONGO_DATA_URL=mongodb://mongodb/muncher"
       - "MONGO_OPLOG_URL=mongodb://mongodb/muncher"
       - BATCH_COUNT=20
-
-  transporter:
-    image: o2rproject/o2r-transporter:0.6.0
-    depends_on:
-      - mongodb
-      - configmongodb
-    volumes:
-      - o2rstorage:/tmp/o2r
-      - "/var/run/docker.sock:/var/run/docker.sock"
-    environment:
-      - "TRANSPORTER_MONGODB=mongodb://mongodb:27017/"
-      - TRANSPORTER_PORT=8081
-      - DEBUG=transporter,transporter:*
 
   shipper:
     image: o2rproject/o2r-shipper:8f95fd6
@@ -261,7 +248,6 @@ services:
       - muncher
       - informer
       - loader
-      - transporter
       - shipper
       - substituter
       - bindings
