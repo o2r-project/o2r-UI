@@ -53,8 +53,8 @@ fn.modifyMainfile = function(fileContent, result, file, compendiumId) {
         fn.saveRmarkdown(newContent, binding.id, binding.mainfile); 
         debug('End modifying file');*/
     } else if (result.type == 'figure') {
-        fileContent = fileContent.replace(new RegExp(result.result, 'g'), '**_' + result.result + '_**');
-        fn.saveRFile(fileContent, compendiumId, file);
+        //fileContent = fileContent.replace(new RegExp(result.result, 'g'), '**_' + result.result + '_**');
+        //fn.saveRFile(fileContent, compendiumId, file);
         //exec('Rscript -e "rmarkdown::render(\'' + path.join(config.fs.compendium, compendiumId, file) + '\', output_file = ' + "'display.html'" + ')"', function(err) {
         //    if (err) throw err;
         //});

@@ -30,7 +30,7 @@ class Startpage extends Component {
             <Grid item>
             <Card id="uploadCard2">    
             <CardContent>
-                <InspectExamples></InspectExamples>
+                <InspectExamples />
             </CardContent>
             </Card>
             </Grid>

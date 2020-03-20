@@ -229,6 +229,10 @@ export const Form = props => {
                                     shrink: true,
                                   }}
                             >
+                                {(Array.from(props.textLicenses, x => x.id).includes(props.originalMetadata.textLicense) || props.originalMetadata.textLicense === "" )? "": 
+                                    <MenuItem key={props.originalMetadata.textLicense} value={props.originalMetadata.textLicense}>
+                                        {props.originalMetadata.textLicense}
+                                    </MenuItem>}
                                 <MenuItem id={"menuItem"} key={props.leastRestrictiveData[0]} value={props.leastRestrictiveData[0]}>
                                         Least Restrictive
                                     </MenuItem>
@@ -258,6 +262,10 @@ export const Form = props => {
                                     shrink: true,
                                   }}
                             >
+                                {(Array.from(props.codeLicenses, x => x.id).includes(props.originalMetadata.codeLicense) || props.originalMetadata.codeLicense === "") ? "": 
+                                    <MenuItem key={props.originalMetadata.codeLicense} value={props.originalMetadata.codeLicense}>
+                                        {props.originalMetadata.codeLicense}
+                                    </MenuItem>}
                                  <MenuItem id={"menuItem"} key={props.leastRestrictiveData[1]} value={props.leastRestrictiveData[1]}>
                                         Least Restrictive
                                     </MenuItem>
@@ -284,10 +292,16 @@ export const Form = props => {
                                 onBlur={blur.bind(null)}
                                 margin="normal"
                                 variant="outlined"
+                                native={true}
                                 InputLabelProps={{
                                     shrink: true,
                                   }}
                             >
+                                {(Array.from(props.dataLicenses, x => x.id).includes(props.originalMetadata.dataLicense) || props.originalMetadata.dataLicense === "")  ? "": 
+                                    <MenuItem key={props.originalMetadata.dataLicense} value={props.originalMetadata.dataLicense}>
+                                        {props.originalMetadata.dataLicense}
+                                    </MenuItem>
+                                    }
                                 <MenuItem id={"menuItem"} key={props.leastRestrictiveData[2]} value={props.leastRestrictiveData[2]}>
                                         Least Restrictive
                                     </MenuItem>

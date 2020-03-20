@@ -40,7 +40,7 @@ const ResultList= (props) =>
     return(
         <Paper style={{ "max-height": "80vh", "overflow": "auto" }}>
                                 {props.ercs.map((erc, index) => (
-                                    <div key={index}>
+                                    erc.metadata? <div key={index}>
                                         <Card style={{ "text-align": "justify", "margin": "10px" }}>
                                             {erc.substituted ? <CardHeader title={erc.metadata.o2r.title + " [SUBSTITUTED]"} style={{ "padding-bottom": "0px" }} /> :
                                                 <CardHeader title={erc.metadata.o2r.title} style={{ "padding-bottom": "0px" }} />}
@@ -69,7 +69,7 @@ const ResultList= (props) =>
                                                 </Grid>
                                             </CardContent>
                                         </Card>
-                                    </div>
+                                    </div> : ""
                                 ))} </Paper>
     )
 }
