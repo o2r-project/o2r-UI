@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Dialog, AppBar, Toolbar, Slide } from "@material-ui/core";
+import { Button, Dialog, AppBar, Toolbar, Slide, DialogContent } from "@material-ui/core";
 import uuid from 'uuid/v1';
 
 import httpRequests from '../../../../helpers/httpRequests';
@@ -41,6 +41,7 @@ function LogsView(props) {
                         <Button color="inherit" onClick={handleClose}>Close</Button>
                     </Toolbar>
                 </AppBar>
+                <DialogContent style={{marginTop: "64px", paddingTop: "20px"}}>
                 <div className="logs">
                     <b>Validate bag: </b>
                     <ul>
@@ -123,6 +124,7 @@ function LogsView(props) {
                         ))}
                     </ul>
                 </div>
+                </DialogContent>
             </Dialog> : '' }
         </div>
     );
