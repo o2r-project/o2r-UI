@@ -11,7 +11,20 @@
       "status": "active", 
       "title": "Attribution Assurance Licenses", 
       "url": "http://www.opensource.org/licenses/AAL"
-    }, 
+    },
+    "PDDL": {
+      "domain_content": false, 
+      "domain_data": true, 
+      "domain_software": false, 
+      "family": "", 
+      "id": "PDDL", 
+      "maintainer": "", 
+      "od_conformance": "not reviewed", 
+      "osd_conformance": "approved", 
+      "status": "active", 
+      "title": "Public Domain Dedication and License", 
+      "url": "https://opendatacommons.org/licenses/pddl/"
+    },  
     "AFL-3.0": {
       "domain_content": true, 
       "domain_data": false, 
