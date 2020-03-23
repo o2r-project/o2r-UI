@@ -11,7 +11,7 @@
       "status": "active", 
       "title": "Attribution Assurance Licenses", 
       "url": "http://www.opensource.org/licenses/AAL"
-    },
+    }, 
     "PDDL": {
       "domain_content": false, 
       "domain_data": true, 
@@ -24,7 +24,7 @@
       "status": "active", 
       "title": "Public Domain Dedication and License", 
       "url": "https://opendatacommons.org/licenses/pddl/"
-    },  
+    }, 
     "AFL-3.0": {
       "domain_content": true, 
       "domain_data": false, 
@@ -522,20 +522,7 @@
       "status": "active", 
       "title": "GNU General Public License 3.0", 
       "url": "http://www.opensource.org/licenses/GPL-3.0"
-    }, 
-    "GPL-3": {
-      "domain_content": false, 
-      "domain_data": false, 
-      "domain_software": true, 
-      "family": "", 
-      "id": "GPL-3", 
-      "maintainer": "Free Software Foundation", 
-      "od_conformance": "not reviewed", 
-      "osd_conformance": "approved", 
-      "status": "active", 
-      "title": "GNU General Public License 3.0", 
-      "url": "http://www.opensource.org/licenses/GPL-3.0"
-    }, 
+    },  
     "HPND": {
       "domain_content": false, 
       "domain_data": false, 
