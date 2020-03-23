@@ -274,7 +274,7 @@
       "od_conformance": "approved", 
       "osd_conformance": "not reviewed", 
       "status": "active", 
-      "title": "CC0 1.0", 
+      "title": "CC0 1.0 Universell Public Domain Dedication", 
       "url": "https://creativecommons.org/publicdomain/zero/1.0/"
     }, 
     "CDDL-1.0": {
@@ -678,7 +678,7 @@
     }, 
     "MIT": {
       "domain_content": false, 
-      "domain_data": false, 
+      "domain_data": true, 
       "domain_software": true, 
       "family": "", 
       "id": "MIT", 
