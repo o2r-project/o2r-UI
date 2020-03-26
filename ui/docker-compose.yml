@@ -82,7 +82,7 @@ services:
   #    - elasticsearch
 
   muncher:
-    image: o2rproject/o2r-muncher:0.25.0
+    image: o2rproject/o2r-muncher:0.25.1
     depends_on:
       - mongodb
       - configmongodb
