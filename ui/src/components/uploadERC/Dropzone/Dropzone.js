@@ -63,6 +63,7 @@ class Dropzone extends Component {
           maxFileSize={962144000}
           filesLimit={1}
         />
+        <br/>
         <Button
           className="uploadButton" variant="contained" color="primary" style={{marginTop:"3%"}}
           onClick={this.uploadFolder.bind(this)}>
@@ -79,7 +80,6 @@ class Dropzone extends Component {
                 <Button onClick={this.handleClose.bind(this)} color="primary">
                   OK
               </Button>
-
               </DialogActions> </div> :
             <DialogContent style={{"align-self": "center", "overflow-y": "unset"}}>
               <CircularProgress variant="static" value={this.state.progress}/>

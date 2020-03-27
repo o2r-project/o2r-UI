@@ -68,7 +68,18 @@ function ComparisonView(props) {
                         </Grid>}
                     {tabValue === 1 &&
                         <div className="overlay">
-                            <ReactCompareImage leftImage={props.settings[0]} rightImage={props.settings[1]} />
+                            <Grid container  justify="center" alignItems="center"spacing={3} >
+                                <Grid item xs={3} style={{"text-align":"center"}}>
+                                    {props.settingsText[0]}
+                                </Grid>
+                                <Grid item xs={6} style={{"text-align":"center"}}>
+                                    <ReactCompareImage leftImage={props.settings[0]} rightImage={props.settings[1]} />
+                                </Grid>
+                                <Grid item xs={3} style={{"text-align":"center"}}>
+                                    {props.settingsText[1]}
+                                </Grid>
+                            </Grid>
+
                         </div>
                     }
                     {tabValue === 2 &&
