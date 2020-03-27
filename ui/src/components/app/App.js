@@ -33,7 +33,7 @@ const Header = ( props ) => {
               Discover ERC
             </Button>
           </NavLink>*/}
-          <NavLink id="link" to="/author">
+          <NavLink id="link" to={"/author/" + props.userOrcid}>
             {props.loggedIn ? 
               <Button color="inherit">
                 {props.userName} | 
@@ -115,7 +115,7 @@ class App extends Component {
           <Route exact path="/" component={Startpage}/>
           <Route path="/impressum" component={Impressum}/>
           <Route path="/privacy" component={Privacy}/>
-          <Route path="/author" component={Author}/>
+          <Route path="/author/:id" component={Author}/>
           <Route path="/createERC/:id" component={CreateERC}/>
           <Route path="/discover" component={Discovery}/>
           <Route path="/erc/:id" component={ERC}/>
