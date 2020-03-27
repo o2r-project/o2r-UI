@@ -28,7 +28,6 @@ const rules = require('./rules');
 const processJson = require('./processJson');
 const request = require('request');
 const exec = require('child_process').exec;
-const rParse = require('./R').parse;
 
 const baseUrl = "http://localhost:";
 let bindings = {};
