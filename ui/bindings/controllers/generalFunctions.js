@@ -88,7 +88,6 @@ fn.handleCodeLines = function(lines) {
 
 fn.extractCodeLines = function(fileContent, codelines) {
     debug('Start extracting code');
-    console.log(fileContent)
     let newContent = '';
     codelines.forEach(function(elem) {
         newContent += fileContent[elem] + '\n';

@@ -14,8 +14,6 @@ const request = require('request');
 const exec = require('child_process').exec;
 var assert = require('chai').assert;
 var expect = require('chai').expect;
-const RParse = require('../controllers/R').parse;
-var slice = require('../controllers/r-program-analysis/dist/es6/slice').slice
 
 
 let binding = {
@@ -31,11 +29,13 @@ context('Extract code lines from plot function', function() {
     let lines = file.split('\n');
     let chunksLineNumbers = fn.extractChunks(lines);
     let code = fn.extractCodeFromChunks(lines,chunksLineNumbers.start,chunksLineNumbers.end);
-    let codeAsJson = RParse(code);
-    let call = processJson.findPlotLines(binding.plot)
-    let codeLines= slice(codeAsJson, call);
-    codeLines = processJson.correctErrorsOfAlgorithm(codeLines);
-    codeLines = processJson.connectCodeLines(codeLines);
+    //let codeAsJson = RParse(code);
+   // let call = processJson.findPlotLines(binding.plot)
+    //console.log(codeAsJson);
+    console.log(code)
+    // let codeLines= slice(codeAsJson, call);
+    // codeLines = processJson.correctErrorsOfAlgorithm(codeLines);
+    // codeLines = processJson.connectCodeLines(codeLines);
     console.log(codeLines)
 })
 

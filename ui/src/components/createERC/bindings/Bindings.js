@@ -12,6 +12,7 @@ import WidgetSelector from './WidgetSelector/WidgetSelector';
 import './bindings.css';
 import fakeBindings from '../../../helpers/bindingsExamples.json';
 import Sourcecode from '../../erc/Inspect/CodeView/Sourcecode/Sourcecode';
+import { parse as RParse } from '../../../helpers/programm-analysis/R';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -251,6 +252,18 @@ class Bindings extends Component {
 
   componentDidMount () {
     this.getFakeData();
+    this.extractR();
+  }
+
+  extractR () {
+    httpRequests.getCodelines({id: this.state.tmpCompId, file: this.state.tmpFile})
+      .then(function(res){
+        let code1 = res.data.data; 
+        const code = code1[0].join('\n') + '\n';
+        console.log(code)
+        const codeJSON = RParse(code)
+        console.log(codeJSON)
+      })
   }
 
   getFakeData () {
