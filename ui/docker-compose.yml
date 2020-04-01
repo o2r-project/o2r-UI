@@ -16,6 +16,8 @@
 ---
 version: '2' # version 3 is for stack deployments, see https://github.com/docker/compose/issues/4513
 
+# view storage:
+# docker volume inspect ui_o2rstorage
 volumes:
   o2rstorage: {}
 
@@ -40,37 +42,37 @@ services:
     ports:
       - "1234:1234"
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.16
-    environment:
-      - cluster.name=o2rplatform-es-cluster
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "xpack.security.enabled=false"
-      - "cluster.routing.allocation.disk.watermark.low=5gb"
-      - "cluster.routing.allocation.disk.watermark.high=5gb"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    mem_limit: 1g
-    #ports:
-    #  - "9200:9200"
-  elasticsearch2:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.16
-    environment:
-      - cluster.name=o2rplatform-es-cluster
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "discovery.zen.ping.unicast.hosts=elasticsearch"
-      - "xpack.security.enabled=false"
-      - "cluster.routing.allocation.disk.watermark.low=5gb"
-      - "cluster.routing.allocation.disk.watermark.high=5gb"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    mem_limit: 1g
+  #elasticsearch:
+  #  image: docker.elastic.co/elasticsearch/elasticsearch:5.6.16
+  #  environment:
+  #    - cluster.name=o2rplatform-es-cluster
+  #    - bootstrap.memory_lock=true
+  #    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #    - "xpack.security.enabled=false"
+  #    - "cluster.routing.allocation.disk.watermark.low=5gb"
+  #    - "cluster.routing.allocation.disk.watermark.high=5gb"
+  #  ulimits:
+  #    memlock:
+  #      soft: -1
+  #      hard: -1
+  #  mem_limit: 1g
+  #  #ports:
+  #  #  - "9200:9200"
+  #elasticsearch2:
+  #  image: docker.elastic.co/elasticsearch/elasticsearch:5.6.16
+  #  environment:
+  #    - cluster.name=o2rplatform-es-cluster
+  #    - bootstrap.memory_lock=true
+  #    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #    - "discovery.zen.ping.unicast.hosts=elasticsearch"
+  #    - "xpack.security.enabled=false"
+  #    - "cluster.routing.allocation.disk.watermark.low=5gb"
+  #    - "cluster.routing.allocation.disk.watermark.high=5gb"
+  #  ulimits:
+  #    memlock:
+  #      soft: -1
+  #      hard: -1
+  #  mem_limit: 1g
 
   #kibana:
   #  image: docker.elastic.co/kibana/kibana:5.6.16
@@ -82,7 +84,7 @@ services:
   #    - elasticsearch
 
   muncher:
-    image: o2rproject/o2r-muncher:0.25.1
+    image: muncher:dev # o2rproject/o2r-muncher:0.26.1
     depends_on:
       - mongodb
       - configmongodb
@@ -137,7 +139,7 @@ services:
       - DEBUG=informer,informer:*
 
   bouncer:
-    image: o2rproject/o2r-bouncer:0.15.0
+    image: o2rproject/o2r-bouncer:0.15.1
     depends_on:
       - mongodb
       - configmongodb
@@ -152,22 +154,22 @@ services:
       - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
       - OAUTH_STARTUP_FAIL_ON_ERROR=false
 
-  finder:
-    image: o2rproject/o2r-finder:0.6.2
-    depends_on:
-      - mongodb
-      - configmongodb
-      - elasticsearch
-    volumes:
-      - o2rstorage:/tmp/o2r
-    environment:
-      - "FINDER_MONGODB=mongodb://mongodb:27017/"
-      - FINDER_PORT=8084
-      - DEBUG=finder,finder:*
-      - ELASTIC_SEARCH_URL=elasticsearch:9200
-      - "MONGO_DATA_URL=mongodb://mongodb/muncher"
-      - "MONGO_OPLOG_URL=mongodb://mongodb/muncher"
-      - BATCH_COUNT=20
+  #finder:
+  #  image: o2rproject/o2r-finder:0.6.2
+  #  depends_on:
+  #    - mongodb
+  #    - configmongodb
+  #    - elasticsearch
+  #  volumes:
+  #    - o2rstorage:/tmp/o2r
+  #  environment:
+  #    - "FINDER_MONGODB=mongodb://mongodb:27017/"
+  #    - FINDER_PORT=8084
+  #    - DEBUG=finder,finder:*
+  #    - ELASTIC_SEARCH_URL=elasticsearch:9200
+  #    - "MONGO_DATA_URL=mongodb://mongodb/muncher"
+  #    - "MONGO_OPLOG_URL=mongodb://mongodb/muncher"
+  #    - BATCH_COUNT=20
 
   shipper:
     image: o2rproject/o2r-shipper:8f95fd6
@@ -228,6 +230,7 @@ services:
       - OAUTH_URL_TOKEN=${OAUTH_URL_TOKEN}
 
   ui:
+    #image: o2rproject/ui:0.2.0
     container_name: ui
     build:
       context: .
@@ -244,7 +247,7 @@ services:
     image: nginx:latest
     depends_on:
       - bouncer
-      - finder
+      #- finder
       - muncher
       - informer
       - loader
