@@ -84,16 +84,16 @@ class CreateERC extends Component {
         this.setState({
             open: true,
             message: "Updating Metadata",
-            backgroundColor: "blue",
+            backgroundColor: "#004286",
             originalMetadata: JSON.parse(JSON.stringify(this.state.metadata)),
         })
         httpRequests.updateMetadata(self.state.compendium_id, self.state.metadata)
             .then(function (res2) {
                 self.setChangedFalse("all");
-                self.setState({ showProgress: false, saved: true, open: true, message: "Metadata updated", backgroundColor: "green", candidate: false })
+                self.setState({ showProgress: false, saved: true, open: true, message: "Metadata updated", backgroundColor: "#008643", candidate: false })
             })
             .catch(function (res2) {
-                self.setState({ showProgress: false, saved: true, open: true, message: "Metadata update failed", backgroundColor: "red" })
+                self.setState({ showProgress: false, saved: true, open: true, message: "Metadata update failed", backgroundColor: "#860000" })
                 console.log(res2)
             })
     }

@@ -55,8 +55,6 @@ class Substitution extends React.Component {
                     console.log(res)
                 })
         }
-
-
     }
 
     setExpand = (index) => {

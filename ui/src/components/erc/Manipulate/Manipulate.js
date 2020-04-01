@@ -66,7 +66,7 @@ class Manipulate extends React.Component {
         let url = config.baseUrl + 'compendium/' + binding.id + "/binding/" + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?';
         let settingsText = ""
         for (let i = 0; i < this.state.params.length; i++) {
-            settingsText += " Parameter " + (i + 1) + ": " + this.state.params[i] + " = " + this.state[this.state.params[i]]
+            settingsText += " Parameter " + (i + 1) + ": " + this.state.params[i] + " = " + this.state[this.state.params[i]] +"; "
             url = url + 'newValue' + i + '=' + this.state[this.state.params[i]];
             if (i + 1 !== this.state.params.length) {
                 url = url + '&';

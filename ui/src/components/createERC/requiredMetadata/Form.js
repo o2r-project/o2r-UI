@@ -332,7 +332,7 @@ export const Form = props => {
                             color="primary"
                             disabled={!valid || props.showProgress}
                         >
-                            Save
+                            Publish
                          </Button>
                         <Button
                             type="button"

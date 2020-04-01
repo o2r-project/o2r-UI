@@ -185,6 +185,15 @@ bindings.implementExtractR = function (binding,response) {
         data: binding});*/
 };
 
+bindings.ExtractR = function (binding, response){
+    console.log("start extractR")
+    let file = fn.readRmarkdown(binding.id, binding.file);
+    let lines = file.split('\n');
+    let chunksLineNumbers = fn.extractChunks(lines);
+    let chunksOfCode = fn.extractCodeFromChunks(lines,chunksLineNumbers.start,chunksLineNumbers.end);
+    const codeAsJson = rParse(chunksOfCode)
+}
+
 bindings.searchBinding = function ( req, res) {
     var searchTerm= req.term
     var metadata= req.metadata
