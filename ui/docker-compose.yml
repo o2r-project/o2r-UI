@@ -84,7 +84,7 @@ services:
   #    - elasticsearch
 
   muncher:
-    image: muncher:dev # o2rproject/o2r-muncher:0.26.1
+    image: o2rproject/o2r-muncher:0.26.1
     depends_on:
       - mongodb
       - configmongodb
@@ -139,7 +139,7 @@ services:
       - DEBUG=informer,informer:*
 
   bouncer:
-    image: o2rproject/o2r-bouncer:0.15.1
+    image: o2rproject/o2r-bouncer:0.16.0
     depends_on:
       - mongodb
       - configmongodb
