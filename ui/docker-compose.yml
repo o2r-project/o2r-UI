@@ -16,6 +16,8 @@
 ---
 version: '2' # version 3 is for stack deployments, see https://github.com/docker/compose/issues/4513
 
+# view storage:
+# docker volume inspect ui_o2rstorage
 volumes:
   o2rstorage: {}
 
@@ -228,6 +230,7 @@ services:
       - OAUTH_URL_TOKEN=${OAUTH_URL_TOKEN}
 
   ui:
+    #image: o2rproject/ui:0.2.0
     container_name: ui
     build:
       context: .
