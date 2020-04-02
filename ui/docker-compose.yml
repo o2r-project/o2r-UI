@@ -229,8 +229,14 @@ services:
       - OAUTH_URL_AUTHORIZATION=${OAUTH_URL_AUTHORIZATION}
       - OAUTH_URL_TOKEN=${OAUTH_URL_TOKEN}
 
+  # test containerised versions:
+  #ui:
+  #  image: o2rproject/ui:0.2.1
+  #  image: ui:master
+  #  ports:
+  #    - '81:3000'
+  
   ui:
-    #image: o2rproject/ui:0.2.0
     container_name: ui
     build:
       context: .

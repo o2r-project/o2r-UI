@@ -18,7 +18,7 @@ If you see an error related to the MongoDB or HTTP request timeouts during the f
 **UI container**
 
 The container for the development of the UI is built locally based on `ui/Dockerfile.dev`.
-Only the directory `/ui` is mounted into the container, so if dependencies in `ui/package.json` change, you must update the container with `docker-compose build ui`.
+Only the directory `/ui` is mounted into the container, so if dependencies in `ui/package.json` change, you must update the container with `docker-compose build --no-cache ui`.
 
 **Running the platform**
 
