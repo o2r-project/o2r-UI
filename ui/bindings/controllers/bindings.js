@@ -162,16 +162,15 @@ bindings.createBinding = function(binding, response) {
 
 bindings.implementExtractR = function (binding,response) {
     debug('Start extracting codelines: %s', JSON.stringify(binding));
-    debug('Start extracting codelines2: %s', response);
-    console.log("start extractR")
     let file = fn.readRmarkdown(binding.id, binding.file);
     let lines = file.split('\n');
     let chunksLineNumbers = fn.extractChunks(lines);
-    let chunksOfCode = fn.extractCodeFromChunks(lines,chunksLineNumbers.start,chunksLineNumbers.end);
-    let codeAsJson = fn.codeAsJson(chunksOfCode);
+    let code = fn.extractCodeFromChunks(lines,chunksLineNumbers.start,chunksLineNumbers.end);
+    let codeAsJson = fn.codeAsJson(code);
     let codeAsJsonWithTypes = rules.getCodeTypes(codeAsJson);
     codeAsJson = fn.array2Json(codeAsJsonWithTypes);
-    codeAsJson = processJson.addFileContentToJson(codeAsJson);
+    console.log(codeAsJson)
+    //codeAsJson = processJson.addFileContentToJson(codeAsJson);
     /*let varsInLines = processJson.getVarsAndValuesOfLines(codeAsJson);
     let plotFunctionParameters = rules.getContentInBrackets(binding.plot);
     let backtrackedCode = processJson.backtrackCodelines(varsInLines,plotFunctionParameters,[],[]);

@@ -3,6 +3,7 @@
 # dependencies
 /node_modules
 /bindings/node_modules
+/bindings/test/node_modules
 .pnp.js
 
 # testing

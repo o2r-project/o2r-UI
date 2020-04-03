@@ -60,14 +60,14 @@ const Footer = () => {
     <div className="mui-container mui--text-center" id="footer">
       <HashRouter>
       <div id="links">
-          <NavLink id="link" to="/">Home</NavLink> |
-          <a id="link" href="http://www.dlib.org/dlib/january17/nuest/01nuest.html"> About ERC</a> |
-          <a id="link" href="https://o2r.info/erc-spec/"> ERC specification</a> |
-          <NavLink id="link" to="/impressum"> Impressum</NavLink> |
-          <NavLink id="link" to="/privacy"> Privacy Policy</NavLink> |
-          <a id="link" href="https://o2r.info/api/"> API</a> |
-          <a id="link" href="https://o2r.uni-muenster.de/api/v1/"> Endpoint</a> |
-          <a id="link" href="https://github.com/o2r-project/reference-implementation"> Implementation</a> | 
+          <NavLink id="link" to="/">Home</NavLink> |&nbsp;
+          <a id="link" href="http://www.dlib.org/dlib/january17/nuest/01nuest.html">About ERC</a> |&nbsp;
+          <a id="link" href="https://o2r.info/erc-spec/">ERC specification</a> |&nbsp;
+          <NavLink id="link" to="/impressum">Impressum</NavLink> |&nbsp;
+          <NavLink id="link" to="/privacy">Privacy Policy</NavLink> |&nbsp;
+          <a id="link" href="https://o2r.info/api/">API</a> |&nbsp;
+          <a id="link" href="https://o2r.uni-muenster.de/api/v1/">Endpoint</a> |&nbsp;
+          <a id="link" href="https://github.com/o2r-project/reference-implementation">Implementation</a> |&nbsp;
           Version&nbsp;<code>#dev#</code>
       </div>
       </HashRouter>

@@ -90,7 +90,7 @@ class InspectExamples extends Component {
                             ercs.push(res2.data);
                             if (res.data.results.length === ercs.length) {
                                 this.setState({
-                                    ercs: ercs.sort(function (a, b) { return new Date(a.created) - new Date(b.created) }),
+                                    ercs: ercs.sort(function (a, b) { return new Date(b.created) - new Date(a.created) }),
                                 })
                             }
                         })

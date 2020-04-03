@@ -12,6 +12,19 @@
       "title": "Attribution Assurance Licenses", 
       "url": "http://www.opensource.org/licenses/AAL"
     }, 
+    "PDDL": {
+      "domain_content": false, 
+      "domain_data": true, 
+      "domain_software": false, 
+      "family": "", 
+      "id": "PDDL", 
+      "maintainer": "", 
+      "od_conformance": "not reviewed", 
+      "osd_conformance": "approved", 
+      "status": "active", 
+      "title": "Public Domain Dedication and License", 
+      "url": "https://opendatacommons.org/licenses/pddl/"
+    }, 
     "AFL-3.0": {
       "domain_content": true, 
       "domain_data": false, 
@@ -261,7 +274,7 @@
       "od_conformance": "approved", 
       "osd_conformance": "not reviewed", 
       "status": "active", 
-      "title": "CC0 1.0", 
+      "title": "CC0 1.0 Universell Public Domain Dedication", 
       "url": "https://creativecommons.org/publicdomain/zero/1.0/"
     }, 
     "CDDL-1.0": {
@@ -509,20 +522,7 @@
       "status": "active", 
       "title": "GNU General Public License 3.0", 
       "url": "http://www.opensource.org/licenses/GPL-3.0"
-    }, 
-    "GPL-3": {
-      "domain_content": false, 
-      "domain_data": false, 
-      "domain_software": true, 
-      "family": "", 
-      "id": "GPL-3", 
-      "maintainer": "Free Software Foundation", 
-      "od_conformance": "not reviewed", 
-      "osd_conformance": "approved", 
-      "status": "active", 
-      "title": "GNU General Public License 3.0", 
-      "url": "http://www.opensource.org/licenses/GPL-3.0"
-    }, 
+    },  
     "HPND": {
       "domain_content": false, 
       "domain_data": false, 
@@ -678,7 +678,7 @@
     }, 
     "MIT": {
       "domain_content": false, 
-      "domain_data": false, 
+      "domain_data": true, 
       "domain_software": true, 
       "family": "", 
       "id": "MIT", 
