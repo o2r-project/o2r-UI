@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Button, Dialog, AppBar, Toolbar, Slide, Tabs, Tab,Grid } from "@material-ui/core";
+import { Button, Dialog, AppBar, Toolbar, Slide, Tabs, Tab, Grid, Typography } from "@material-ui/core";
+import logo from '../../../../assets/img/o2r-logo-only-white.svg';
 import ReactCompareImage from 'react-compare-image';
 import ImageDiff from "..//..//..//..//helpers/react-image-diff.js";
 //import VisualDiff from 'react-visual-diff'; Interesting for later when bindings are used for numbers in the text
@@ -41,6 +42,9 @@ function ComparisonView(props) {
             >
                 <AppBar>
                     <Toolbar>
+                        <Typography variant="h6" color="inherit" style={{ flex: 1 }}>
+                            <a href="/"><img src={logo} alt="o2r" id="headerLogo" /></a>
+                        </Typography>
                         <Button color="inherit" onClick={handleClose}>Close</Button>
                     </Toolbar>
                 </AppBar>
@@ -56,26 +60,26 @@ function ComparisonView(props) {
                     </Tabs>
                     {tabValue === 0 &&
                         <Grid container spacing={3} >
-                            {props.settings.map((setting,index) => (
-                            <Grid item xs={6} style={{"text-align":"center"}}>
-                                <figure className="img">
-                                   <figcaption>{props.settingsText[index]}</figcaption>
-                                    <img src={setting} alt="" />
-                                </figure>
-                            
-                            </Grid>
+                            {props.settings.map((setting, index) => (
+                                <Grid item xs={6} style={{ "text-align": "center" }}>
+                                    <figure className="img">
+                                        <figcaption>{props.settingsText[index]}</figcaption>
+                                        <img src={setting} alt="" />
+                                    </figure>
+
+                                </Grid>
                             ))}
                         </Grid>}
                     {tabValue === 1 &&
                         <div className="overlay">
-                            <Grid container  justify="center" alignItems="center"spacing={3} >
-                                <Grid item xs={3} style={{"text-align":"center"}}>
+                            <Grid container justify="center" alignItems="center" spacing={3} >
+                                <Grid item xs={3} style={{ "text-align": "center" }}>
                                     {props.settingsText[0]}
                                 </Grid>
-                                <Grid item xs={6} style={{"text-align":"center"}}>
+                                <Grid item xs={6} style={{ "text-align": "center" }}>
                                     <ReactCompareImage leftImage={props.settings[0]} rightImage={props.settings[1]} />
                                 </Grid>
-                                <Grid item xs={3} style={{"text-align":"center"}}>
+                                <Grid item xs={3} style={{ "text-align": "center" }}>
                                     {props.settingsText[1]}
                                 </Grid>
                             </Grid>

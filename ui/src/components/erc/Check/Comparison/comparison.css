@@ -23,8 +23,9 @@
 }
 .title_ {
     color: #3f51b5;
-    width: 32%;
+    width: 31%;
     float: left;
+    margin-left: 2%;
 }
 
 .title {
