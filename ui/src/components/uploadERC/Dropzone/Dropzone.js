@@ -62,6 +62,7 @@ class Dropzone extends Component {
           onChange={this.handleChange.bind(this)}
           maxFileSize={962144000}
           filesLimit={1}
+          dropzoneText={"Drag and drop a workspace archive here or click"}
         />
         <br/>
         <Button

@@ -18,21 +18,21 @@ class Startpage extends Component {
           <h1>Create your own Execuable Research Compendium (ERC)</h1>
             <div style={{width:"65%", marginLeft: "auto", marginRight: "auto"}}>
               <div className="instruction">
-                <b>Step 1: Create an RMarkdown file including your R analysis</b>
+                <b>Step 1: Create an R Markdown file including your R analysis</b>
               </div>
               <div className="instruction">
-                <b>Step 2: Add metadata to your RMarkdown in YML format like 
+                <b>Step 2: Add metadata to your R Markdown in YAML format like 
                   <a target="_blank" rel="noopener" href="https://github.com/o2r-project/erc-examples/blob/master/ERC/Finished/INSYDE/workspace/main.Rmd"> here</a>
                 </b><br/>
               </div>
               <div className="instruction">
-                <b>Step 3: Run your RMarkdown to generate the HTML file</b><br/>
+                <b>Step 3: Run your R Markdown to generate the HTML file</b><br/>
               </div>
               <div className="instruction">
                 <b>Step 4: Upload your workspace including the code files, data, and the HTML (.zip)</b><br/>
               </div>
               <div className="instruction">
-                <b>No workspace at hand? Just upload one of our <a target="_blank" rel="noopener" href="https://github.com/o2r-project/erc-examples/tree/master/ERC/Finished">example ERCs</a></b>
+                <b>No workspace at hand? Just upload one of our <a target="_blank" rel="noopener" href="https://github.com/o2r-project/erc-examples/tree/master/ERC/Finished">example workspaces</a></b>
               </div>
               <Dropzone />
             </div>

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { Button, Dialog, AppBar, Toolbar, Slide, DialogContent } from "@material-ui/core";
+import { Button, Dialog, AppBar, Toolbar, Slide, DialogContent, Typography } from "@material-ui/core";
 import uuid from 'uuid/v1';
+import logo from '../../../../assets/img/o2r-logo-only-white.svg';
 
 import httpRequests from '../../../../helpers/httpRequests';
 import './logs.css';
@@ -38,6 +39,9 @@ function LogsView(props) {
             >
                 <AppBar>
                     <Toolbar>
+                        <Typography variant="h6" color="inherit" style={{ flex: 1 }}>
+                            <a href="/"><img src={logo} alt="o2r" id="headerLogo" /></a>
+                        </Typography>
                         <Button color="inherit" onClick={handleClose}>Close</Button>
                     </Toolbar>
                 </AppBar>
