@@ -1533,5 +1533,12 @@
       "status": "active", 
       "title": "UK PSI Public Sector Information", 
       "url": "http://www.opendefinition.org/licenses/ukpsi"
+    },
+    "NA": {
+      "domain_content": true, 
+      "domain_data": true, 
+      "domain_software": true,
+      "id" : "NA",
+      "title" : "not applicable"
     }
   }
