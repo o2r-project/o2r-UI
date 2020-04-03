@@ -13,6 +13,7 @@ import './bindings.css';
 import fakeBindings from '../../../helpers/bindingsExamples.json';
 import Sourcecode from '../../erc/Inspect/CodeView/Sourcecode/Sourcecode';
 import { parse as RParse } from '../../../helpers/programm-analysis/R';
+import {slice} from '../../../helpers/programm-analysis/es6/slice'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -256,14 +257,37 @@ class Bindings extends Component {
   }
 
   extractR () {
+    const self=this;
     httpRequests.getCodelines({id: this.state.tmpCompId, file: this.state.tmpFile})
       .then(function(res){
         let code1 = res.data.data; 
+        const functions = self.searchFunction(code1)
+        console.log(functions)
         const code = code1[0].join('\n') + '\n';
-        console.log(code)
-        const codeJSON = RParse(code)
+        const codeJSON = RParse(code);
+        const bindingsCode = [];
         console.log(codeJSON)
+        for(var fun of functions){
+          console.log([{ first_line: (fun.line +1), first_column: 0, last_line: (fun.line +1) , last_column: 20 }])
+          const code = slice(codeJSON, { items: [{ first_line: parseInt(fun.line) +1, first_column: fun.firstIndex, last_line: parseInt(fun.line) +1, last_column: parseInt(fun.lastIndex) +1 }] })
+          bindingsCode.push(code)
+        }
+       console.log(bindingsCode)
       })
+  }
+
+  searchFunction (code1) {
+    const results = [];
+    const regex= /plotFigure\d*\(\)/g
+
+    for(var i in code1[0]){
+      const begin = code1[0][i].search(regex);
+      if(begin !=-1){
+        const end= code1[0][i].indexOf(')', begin)
+        results.push({line: i, firstIndex: begin, lastIndex: end})
+      }
+    }
+    return results;
   }
 
   getFakeData () {
