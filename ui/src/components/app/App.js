@@ -21,8 +21,9 @@ const Header = ( props ) => {
   return (        
     <AppBar id="header">
       <Toolbar>
-        <Typography variant="h6" color="inherit" style={{ flex: 1 }}>
-          <a href="/"><img src={logo} alt="o2r" id="headerLogo"/></a>
+      <a href="/"><img src={logo} alt="o2r" id="headerLogo"/></a>
+        <Typography variant="h4" color="inherit" style={{ flex: 1 }}>
+          <Button style={{marginLeft: "120px", fontWeight : "bold"}} color="inherit" href={"/"}>HOME</Button>
         </Typography>
         <Button target="_blank" rel="noopener" color="inherit" href="http://www.dlib.org/dlib/january17/nuest/01nuest.html">
           Learn more about ERCs
