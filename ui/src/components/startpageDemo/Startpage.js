@@ -31,7 +31,7 @@ class Startpage extends Component {
                 <b>Step 4: Upload your workspace including the code files, data, and the HTML (.zip)</b><br/>
               </div>
               <div className="instruction">
-                <b>No workspace at hand? Just upload one of our <a target="_blank" rel="noopener" href="https://github.com/o2r-project/erc-examples/tree/master/ERC/Finished">example ERCs</a></b>
+                <b>No workspace at hand? Just upload one of our <a target="_blank" rel="noopener" href="https://github.com/o2r-project/erc-examples/tree/master/ERC/Finished">example workspaces</a></b>
               </div>
               <Dropzone />
             </div>
