@@ -21,7 +21,7 @@ class Startpage extends Component {
                 <b>Step 1: Create an R Markdown file including your R analysis</b>
               </div>
               <div className="instruction">
-                <b>Step 2: Add metadata to your RMarkdown in YAML format like <a target="_blank" rel="noopener" href="https://github.com/o2r-project/erc-examples/blob/master/ERC/Finished/INSYDE/workspace/main.Rmd">here</a>
+                <b>Step 2: Add metadata to your R Markdown in YAML format like <a target="_blank" rel="noopener" href="https://github.com/o2r-project/erc-examples/blob/master/ERC/Finished/INSYDE/workspace/main.Rmd">here (optional)</a>
                 </b><br/>
               </div>
               <div className="instruction">
