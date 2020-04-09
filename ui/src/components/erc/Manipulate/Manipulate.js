@@ -227,7 +227,7 @@ class Manipulate extends React.Component {
                             <Button variant='contained' color='primary'
                                 onClick={this.setOriginalSettings.bind(this)}
                             >
-                                Original settings
+                                Set original values
                     </Button>
                             <br />
                             <br />

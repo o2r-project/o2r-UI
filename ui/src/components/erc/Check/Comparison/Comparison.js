@@ -74,15 +74,15 @@ function ComparisonView(props) {
                 </AppBar>
                 {job.status === 'success' ?
                     <div className="compare_">
-                        <h4 className="title" style={{ marginLeft: "1%" }}> original HTML file which was uploaded to the o2r platfrom </h4>
-                        <h4 className="title"> reproduced HTML file generated from ERC on the o2r platform </h4>
+                        <h4 className="title" style={{ marginLeft: "1%" }}> Original results </h4>
+                        <h4 className="title"> Reproduced results </h4>
                         <Iframe className="display" id={'frame1'} url={config.baseUrl + "job/" + job.id + "/data/display.html"}></Iframe>
                         <Iframe className="check" id={'frame2'} url={config.baseUrl + "job/" + job.id + "/data/check.html"}></Iframe>
                     </div> :
                     <div className="compare_">
-                        <h4 className="title_" > original HTML file which was uploaded to the o2r platfrom </h4>
-                        <h4 className="title_"> reproduced HTML file generated from ERC on the o2r platform</h4>
-                        <h4 className="title_"> HTML file showing the differences between the original and reproduced file </h4>
+                        <h4 className="title_" > Original results </h4>
+                        <h4 className="title_"> Reproduced results </h4>
+                        <h4 className="title_"> Differences between original and reproduced results </h4>
                         <Iframe className="display_" id={'frame1'} url={config.baseUrl + "compendium/" + job.compendium_id + "/data/display.html"}></Iframe>
                         <Iframe className="check_" id={'frame2'} url={config.baseUrl + "job/" + job.id + "/data/display.html"}></Iframe>
                         <Iframe className="diff" id={'frame3'} url={config.baseUrl + "job/" + job.id + "/data/check.html"}></Iframe>
