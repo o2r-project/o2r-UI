@@ -222,8 +222,8 @@ class ERC extends React.Component {
                                 </Button>
                             </Grid>
                             <Grid xs={4}>
-                                <IconButton size='large' style={{ float: "right" }} onClick={() => this.openPop("downloadOpen")}>
-                                    <GetAppIcon />
+                                <IconButton size='large' label='Download' style={{ float: "right" }} onClick={() => this.openPop("downloadOpen")}>
+                                    Download<GetAppIcon />
                                 </IconButton>
                             </Grid>
                         </Grid>
