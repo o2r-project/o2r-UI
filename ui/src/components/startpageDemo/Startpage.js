@@ -15,14 +15,13 @@ class Startpage extends Component {
     return (
       <div>
         <div style={{width:"50%", marginTop:"5%", marginLeft: "auto", marginRight: "auto"}}>
-          <h1>Create your own Execuable Research Compendium (ERC)</h1>
+          <h1>Create your own Executable Research Compendium (ERC)</h1>
             <div style={{width:"65%", marginLeft: "auto", marginRight: "auto"}}>
               <div className="instruction">
                 <b>Step 1: Create an R Markdown file including your R analysis</b>
               </div>
               <div className="instruction">
-                <b>Step 2: Add metadata to your R Markdown in YAML format like 
-                  <a target="_blank" rel="noopener" href="https://github.com/o2r-project/erc-examples/blob/master/ERC/Finished/INSYDE/workspace/main.Rmd"> here</a>
+                <b>Step 2: Add metadata to your RMarkdown in YAML format like <a target="_blank" rel="noopener" href="https://github.com/o2r-project/erc-examples/blob/master/ERC/Finished/INSYDE/workspace/main.Rmd">here</a>
                 </b><br/>
               </div>
               <div className="instruction">
