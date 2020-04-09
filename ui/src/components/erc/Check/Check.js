@@ -18,7 +18,7 @@ function Status(status) {
                 return <span className="failure">Process Failed (check logs)</span>
             }
             else {
-                return <span className="failure">Reproducibility Failed (check result)</span>
+                return <span className="failure">Reproducibility Failed (click on "Show Result")</span>
             }
         case 'running':
             return <span className="running">Running <CircularProgress size={15} /></span>
@@ -68,16 +68,12 @@ class ListJobs extends Component {
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails>
                             <Typography className="steps">
-                                <span><b>Validate bag: </b><Status status={job.steps.validate_bag.status}></Status></span><br />
-                                <span><b>Generate configuration: </b><Status status={job.steps.generate_configuration.status}></Status></span><br />
-                                <span><b>Validate compendium: </b><Status status={job.steps.validate_compendium.status}></Status></span><br />
-                                <span><b>Generate manifest: </b><Status status={job.steps.generate_manifest.status}></Status></span><br />
-                                <span><b>Image prepare: </b><Status status={job.steps.image_prepare.status}></Status></span><br />
-                                <span><b>Image build: </b><Status status={job.steps.image_build.status}></Status></span><br />
-                                <span><b>Image execute: </b><Status status={job.steps.image_execute.status}></Status></span><br />
-                                <span><b>Image save: </b><Status status={job.steps.image_save.status}></Status></span><br />
-                                <span><b>Check: </b><Status checkStatus={job.steps.check.status} status={job.steps.check.status}></Status></span><br />
-                                <span><b>Cleanup: </b><Status status={job.steps.cleanup.status}></Status></span><br />
+                                <span><b>Create configuration file: </b><Status status={job.steps.generate_configuration.status}></Status></span><br />
+                                <span><b>Validate configuration file: </b><Status status={job.steps.validate_compendium.status}></Status></span><br />
+                                <span><b>Create docker manifest: </b><Status status={job.steps.generate_manifest.status}></Status></span><br />
+                                <span><b>Build docker image: </b><Status status={job.steps.image_build.status}></Status></span><br />
+                                <span><b>Execute analysis: </b><Status status={job.steps.image_execute.status}></Status></span><br />
+                                <span><b>Compare original and reproduced results: </b><Status checkStatus={job.steps.check.status} status={job.steps.check.status}></Status></span><br />
                                 <Comparison job={job} className="compare"></Comparison>
                                 <Logs job={job} ></Logs>
                             </Typography>
