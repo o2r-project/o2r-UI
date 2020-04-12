@@ -30,6 +30,7 @@ class ERC extends React.Component {
             codefiles: null,
             tabValue: 0,
             html: true,
+            pdf: true
         };
         this.handleClose = this.handleClose.bind(this);
     }
@@ -99,6 +100,7 @@ class ERC extends React.Component {
 
     setPdfFile() {
         const self = this;
+        let set = false;
         httpRequests.getFile("compendium/" + self.state.id + "/data/")
             .then(function (res) {
                 const dataset = res.data.children
@@ -108,20 +110,28 @@ class ERC extends React.Component {
                         pdfs.push(element)
                     }
                 }
-                console.log(pdfs)
                 if (pdfs.length === 1) {
                     self.setState({ pdfFile: pdfs[0] })
+                    set  = true;
                 } else {
                     for (var element of pdfs) {
                         if (element.name === "paper.pdf") {
                             self.setState({ pdfFile: element })
+                            set = true;
                         }
                     }
+                }
+                if(!set && !this.state.metadata.identifier.doiurl){
+                    self.setState({pdf : false})
                 }
             })
             .catch((res) => {
                 console.log(res)
+                if(!this.state.metadata.identifier.doiurl){
+                    self.setState({pdf : false})
+                }
             })
+
     }
 
     handleDataChange = (evt) => this.setDataFile(evt.target.value);
@@ -212,6 +222,7 @@ class ERC extends React.Component {
                             </Grid>
                             {this.state.substitutionInfoOpen ? <SubstitutionInfoPop substitution={this.state.substituted} open={this.state.substitutionInfoOpen} handleClose={this.handleClose} /> : ""}
                             <Grid item xs={4}>
+                                {this.state.pdf ? 
                                 <Button
                                     onClick={this.handleDisplayFile.bind(this)}
                                     variant='contained'
@@ -219,7 +230,7 @@ class ERC extends React.Component {
                                     style={{ float: "center" }}
                                 >
                                     {this.state.html ? 'Show PDf' : 'Show HTML'}
-                                </Button>
+                                </Button> : ""}
                             </Grid>
                             <Grid xs={4}>
                                 <IconButton size='large' label='Download' style={{ float: "right" }} onClick={() => this.openPop("downloadOpen")}>
