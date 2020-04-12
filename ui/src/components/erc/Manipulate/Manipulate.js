@@ -24,7 +24,8 @@ class Manipulate extends React.Component {
             text: "",
             index: 0,
             loading: false,
-            processURL: false
+            processURL: false,
+            changed: false,
         }
 
     }
@@ -46,7 +47,7 @@ class Manipulate extends React.Component {
     }
 
     setParameter() {
-        this.setState({ loading: true, processURL: true });
+        this.setState({ loading: true, processURL: true, changed: false });
         let parameter = this.state.binding.sourcecode.parameter;
         let params = this.getParams(parameter)
         for (let i = 0; i < parameter.length; i++) {
@@ -109,12 +110,21 @@ class Manipulate extends React.Component {
     componentWillUnmount = () => removeHighlight();
 
     handleChange = name => (evt, newVal) => {
+        let parameter = this.state.binding.sourcecode.parameter;
+
         if (this.state[name] !== newVal) {
             this.setState({
                 [name]: newVal,
-                loading: true
+                loading: true,
             }, () => {
                 this.buildFullUrl(this.state.binding);
+                let changed = false;
+                for (let i = 0; i < parameter.length; i++) {
+                    if(this.state[parameter[i].name] != parameter[i].val){
+                        changed = true;
+                    }
+                }
+                this.setState({changed})
             });
         }
     }
@@ -147,15 +157,6 @@ class Manipulate extends React.Component {
 
     setOriginalSettings(name) {
         this.setParameter()
-        /**this.setState({
-            value: 5
-        })
-        this.setState({
-            [name]: 24,
-        }, () => {
-            alert("Sorry, this function isn't working, yet :(.")
-            this.buildFullUrl(this.state.binding);
-        });*/
     }
 
     changeFigure(e, newVal) {
@@ -224,7 +225,7 @@ class Manipulate extends React.Component {
                             ))}
                         </Grid>
                         <Grid item xs={4} style={{ "min-height": "100px" }}>
-                            <Button variant='contained' color='primary'
+                            <Button variant='contained' color='primary' disabled={!this.state.changed}
                                 onClick={this.setOriginalSettings.bind(this)}
                             >
                                 Set original values
