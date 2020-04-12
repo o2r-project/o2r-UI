@@ -60,10 +60,11 @@ class Upload extends Component {
                             value={this.state.folder}/>
                     </div>
                     <div className="uploadButton">
-                        <Button variant="contained" color="primary"
+                        <Button variant="contained" color="primary" disabled={!this.props.loggedIn}
                             onClick={this.upload}>
                             Load workspace
                         </Button>
+                        
                         <Examples onClick={this.enterURL} />
                     </div>
                 </div>

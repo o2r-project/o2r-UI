@@ -33,7 +33,7 @@ class Startpage extends Component {
               <div className="instruction">
                 <b>No workspace at hand? Just upload one of our <a target="_blank" rel="noopener" href="https://github.com/o2r-project/erc-examples/tree/master/ERC/Finished">example workspaces</a></b>
               </div>
-              <Dropzone />
+              <Dropzone loggedIn={this.props.loggedIn}/>
             </div>
         </div>
         <InspectExamples />

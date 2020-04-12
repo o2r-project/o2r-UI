@@ -66,10 +66,11 @@ class Dropzone extends Component {
         />
         <br/>
         <Button
-          className="uploadButton" variant="contained" color="primary" style={{marginTop:"3%"}}
+          className="uploadButton" variant="contained" color="primary" style={{marginTop:"3%"}} disabled={!this.props.loggedIn}
           onClick={this.uploadFolder.bind(this)}>
           Load workspace
         </Button>
+        {!this.props.loggedIn ? <p style={{color : "red"}}>You have to be logged in to upload a Workspace</p> : ""}
         <Dialog open={this.state.open}>
           <DialogTitle> {this.state.title}</DialogTitle>
           {this.state.errorMessage ?
