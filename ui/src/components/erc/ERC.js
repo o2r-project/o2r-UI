@@ -35,7 +35,8 @@ class ERC extends React.Component {
         this.handleClose = this.handleClose.bind(this);
     }
 
-    componentDidMount = () => this.getMetadata();
+    componentDidMount = () => {this.getMetadata(); this.props.history.replace(this.props.location.pathname)};
+
 
     setDataFile(datafile) {
         const self = this;

@@ -6,6 +6,7 @@ import Substitute from './Substitute/Subsititute'
 
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import {withRouter} from 'react-router-dom';
 
 import './substitution.css'
 import { file } from '@babel/types';
@@ -64,7 +65,8 @@ class Substitution extends React.Component {
     }
 
     setErc = (erc) => {
-        this.setState({ erc })
+        this.setState({ erc });
+        this.props.history.push(this.props.location.pathname + '?substitute')
     }
 
     proofIfErcIsSubstitudeable= (erc) =>{
@@ -136,4 +138,4 @@ class Substitution extends React.Component {
     }
 }
 
-export default Substitution;
+export default withRouter(Substitution);
