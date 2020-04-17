@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, TextField, Button, MenuItem, CardContent, Grid } from "@material-ui/core";
+import { Card, TextField, Button, MenuItem, CardContent, Grid, Paper } from "@material-ui/core";
 import Authors from './Authors/Authors';
 import './form.css'
 export let valid2;
@@ -25,8 +25,8 @@ export const Form = props => {
         return true;
     }
 
-    const valid = (props.authorsChanged && props.authorsValid && isEmpty(errors)) || (props.changed && isEmpty(errors) && props.authorsValid) 
-    || (props.spatioTemporalChanged && props.authorsValid && isEmpty(errors)) || (isEmpty(errors) && props.candidate)
+    const valid = (props.authorsChanged && props.authorsValid && isEmpty(errors)) || (props.changed && isEmpty(errors) && props.authorsValid)
+        || (props.spatioTemporalChanged && props.authorsValid && isEmpty(errors)) || (isEmpty(errors) && props.candidate)
 
     valid2 = isEmpty(errors) && props.authorsValid
 
@@ -36,7 +36,7 @@ export const Form = props => {
 
         console.log(props.originalMetadata)
         resetForm(props.originalMetadata)
-        for(var i in props.resetAuthors){
+        for (var i in props.resetAuthors) {
             props.resetAuthors[i].getFormikActions().resetForm(props.originalAuthors[i])
         }
         props.onUpdate(JSON.parse(JSON.stringify(props.originalAuthors)));
@@ -52,7 +52,7 @@ export const Form = props => {
         e.persist();
         e.target.name = name;
         handleChange(e);
-        var values= props.values
+        var values = props.values
         values[name] = e.target.value
         setFieldTouched(name, true, false);
         props.setFormValues(values)
@@ -139,7 +139,7 @@ export const Form = props => {
                                 id="publicationDate"
                                 label="Publication date"
                                 type="date"
-                                style={{ margin: 8, width: '20%' }}
+                                style={{ margin: 8, width: '20%', minWidth: "200px" }}
                                 required
                                 helperText={touched.publicationDate ? errors.publicationDate : ""}
                                 error={touched.publicationDate && Boolean(errors.publicationDate)}
@@ -156,7 +156,7 @@ export const Form = props => {
                             <TextField
                                 id="displayFile"
                                 label="displayFile"
-                                style={{ margin: 8, width: '20%' }}
+                                style={{ margin: 8, width: '20%', minWidth: "200px" }}
                                 placeholder="display.html"
                                 required
                                 select
@@ -182,7 +182,7 @@ export const Form = props => {
                                 id="mainFile"
                                 label="mainFile"
                                 select
-                                style={{ margin: 8, width: '20%' }}
+                                style={{ margin: 8, width: '20%', minWidth: "200px" }}
                                 placeholder="main.Rmd"
                                 required
                                 helperText={touched.mainFile ? errors.mainFile : ""}
@@ -227,17 +227,17 @@ export const Form = props => {
                                 variant="outlined"
                                 InputLabelProps={{
                                     shrink: true,
-                                  }}
+                                }}
                             >
-                                {(Array.from(props.textLicenses, x => x.id).includes(props.originalMetadata.textLicense) || props.originalMetadata.textLicense === "" )? "": 
+                                {(Array.from(props.textLicenses, x => x.id).includes(props.originalMetadata.textLicense) || props.originalMetadata.textLicense === "") ? "" :
                                     <MenuItem key={props.originalMetadata.textLicense} value={props.originalMetadata.textLicense}>
                                         {props.originalMetadata.textLicense}
                                     </MenuItem>}
                                 <MenuItem id={"menuItem"} key={props.leastRestrictiveData[0]} value={props.leastRestrictiveData[0]}>
-                                        Least Restrictive
+                                    Least Restrictive
                                     </MenuItem>
                                 <MenuItem id={"menuItem"} key={props.mostRestrictiveData[0]} value={props.mostRestrictiveData[0]}>
-                                        Most Restrictive
+                                    Most Restrictive
                                     </MenuItem>
                                 {props.textLicenses.map(option => (
                                     <MenuItem key={option.id} value={option.id}>
@@ -260,17 +260,17 @@ export const Form = props => {
                                 variant="outlined"
                                 InputLabelProps={{
                                     shrink: true,
-                                  }}
+                                }}
                             >
-                                {(Array.from(props.codeLicenses, x => x.id).includes(props.originalMetadata.codeLicense) || props.originalMetadata.codeLicense === "") ? "": 
+                                {(Array.from(props.codeLicenses, x => x.id).includes(props.originalMetadata.codeLicense) || props.originalMetadata.codeLicense === "") ? "" :
                                     <MenuItem key={props.originalMetadata.codeLicense} value={props.originalMetadata.codeLicense}>
                                         {props.originalMetadata.codeLicense}
                                     </MenuItem>}
-                                 <MenuItem id={"menuItem"} key={props.leastRestrictiveData[1]} value={props.leastRestrictiveData[1]}>
-                                        Least Restrictive
+                                <MenuItem id={"menuItem"} key={props.leastRestrictiveData[1]} value={props.leastRestrictiveData[1]}>
+                                    Least Restrictive
                                     </MenuItem>
                                 <MenuItem id={"menuItem"} key={props.mostRestrictiveData[1]} value={props.mostRestrictiveData[1]}>
-                                        Most Restrictive
+                                    Most Restrictive
                                     </MenuItem>
                                 {props.codeLicenses.map(option => (
                                     <MenuItem key={option.id} value={option.id}>
@@ -295,20 +295,20 @@ export const Form = props => {
                                 native={true}
                                 InputLabelProps={{
                                     shrink: true,
-                                  }}
+                                }}
                             >
-                                {(Array.from(props.dataLicenses, x => x.id).includes(props.originalMetadata.dataLicense) || props.originalMetadata.dataLicense === "")  ? "": 
+                                {(Array.from(props.dataLicenses, x => x.id).includes(props.originalMetadata.dataLicense) || props.originalMetadata.dataLicense === "") ? "" :
                                     <MenuItem key={props.originalMetadata.dataLicense} value={props.originalMetadata.dataLicense}>
                                         {props.originalMetadata.dataLicense}
                                     </MenuItem>
-                                    }
+                                }
                                 <MenuItem id={"menuItem"} key={props.leastRestrictiveData[2]} value={props.leastRestrictiveData[2]}>
-                                        Least Restrictive
+                                    Least Restrictive
                                     </MenuItem>
                                 <MenuItem id={"menuItem"} key={props.mostRestrictiveData[2]} value={props.mostRestrictiveData[2]}>
-                                        Most Restrictive
+                                    Most Restrictive
                                     </MenuItem>
-                                {    props.dataLicenses.map(option => (
+                                {props.dataLicenses.map(option => (
                                     <MenuItem key={option.id} value={option.id}>
                                         {option.title}
                                     </MenuItem>
@@ -318,7 +318,7 @@ export const Form = props => {
                     </Card>
                 </Grid>
                 <Grid item xs={2} >
-                    <Card style={{ "margin-top": "10%", position: "fixed" }}>
+                    <Paper style={{ marginTop: "10%", marginRight: "3%", position: "fixed" }}>
                         <Button
                             onClick={handleReset.bind(null)}
                             type="button"
@@ -340,27 +340,27 @@ export const Form = props => {
                             disabled={props.candidate}>>
                             Go To ERC
                             </Button>
-                    </Card>
+                    </Paper>
                     <div id={"errorMessage"}>
-                       { errors.title ? errors.title : "" } 
-                        { errors.title ? <br/> : "" } 
-                        { errors.abstract ? errors.abstract: "" }
-                        { errors.abstract ? <br/> : "" } 
-                        { errors.publicationDate ? errors.publicationDate: "" }
-                        { errors.publicationDate ? <br/> : "" } 
-                        { errors.displayFile ? errors.displayFile : "" }
-                        { errors.displayFile ? <br/> : "" } 
-                        { errors.mainFile ? errors.mainFile : "" }
-                        { errors.mainFile ? <br/> : "" } 
-                        { errors.textLicense ? errors.textLicense : "" } 
-                        { errors.textLicense ? <br/> : "" } 
-                        { errors.dataLicense ? errors.dataLicense : "" } 
-                        { errors.dataLicense ? <br/> : "" } 
-                        { errors.codeLicense ? errors.codeLicense : "" }
-                        { errors.codeLicense ? <br/> : "" } 
-                        { !props.authorsValid ? "Authors are not valid" : ""}
-                     </div> 
-                                     
+                        {errors.title ? errors.title : ""}
+                        {errors.title ? <br /> : ""}
+                        {errors.abstract ? errors.abstract : ""}
+                        {errors.abstract ? <br /> : ""}
+                        {errors.publicationDate ? errors.publicationDate : ""}
+                        {errors.publicationDate ? <br /> : ""}
+                        {errors.displayFile ? errors.displayFile : ""}
+                        {errors.displayFile ? <br /> : ""}
+                        {errors.mainFile ? errors.mainFile : ""}
+                        {errors.mainFile ? <br /> : ""}
+                        {errors.textLicense ? errors.textLicense : ""}
+                        {errors.textLicense ? <br /> : ""}
+                        {errors.dataLicense ? errors.dataLicense : ""}
+                        {errors.dataLicense ? <br /> : ""}
+                        {errors.codeLicense ? errors.codeLicense : ""}
+                        {errors.codeLicense ? <br /> : ""}
+                        {!props.authorsValid ? "Authors are not valid" : ""}
+                    </div>
+
 
                 </Grid>
             </Grid>
