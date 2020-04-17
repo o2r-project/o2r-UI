@@ -232,7 +232,7 @@ class SpatioTemporalMetadata extends React.Component {
                   variant="contained"
                   color="primary"> Search </Button>
                 <br />*/}
-              <Button onClick={this.startEdit.bind(null)}
+                <Button onClick={this.startEdit.bind(null)}
                   style={{ "margin": "10px" }}
                   disabled={this.state.editing || this.state.drawing}
                   type="button"
@@ -250,14 +250,14 @@ class SpatioTemporalMetadata extends React.Component {
                   type="button"
                   variant="contained"
                   color="primary"> Cancel Editing </Button>
-              <Button onClick={this.drawPolygon.bind(null)}
+                <Button onClick={this.drawPolygon.bind(null)}
                   style={{ "margin": "10px" }}
                   disabled={this.state.editing}
                   type="button"
                   variant="contained"
                   color="primary"> Draw a new bbox </Button>
                 <br />
-              <Button onClick={this.handleGeoJsonWorld.bind(null)}
+                <Button onClick={this.handleGeoJsonWorld.bind(null)}
                   style={{ "margin": "10px" }}
                   type="button"
                   variant="contained"
@@ -272,7 +272,7 @@ class SpatioTemporalMetadata extends React.Component {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  style={{marginLeft: "5px", marginRight: "100px"}}
+                  style={{ marginLeft: "5px", marginRight: "100px" }}
                   value={this.state.from}
                   onChange={(e) => this.handleChange(e, "from")}
                 />
@@ -292,7 +292,7 @@ class SpatioTemporalMetadata extends React.Component {
             </Card>
           </Grid>
           <Grid item xs={2} >
-            <Card style={{ "margin-top": "10%", position: "fixed" }}>
+            <Card style={{ marginTop: "10%", position: "fixed", marginRight: "3%" }}>
               <Button
                 onClick={this.handleReset.bind(null)}
                 type="button"

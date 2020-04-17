@@ -67,7 +67,7 @@ class Manipulate extends React.Component {
         let url = config.baseUrl + 'compendium/' + binding.id + "/binding/" + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?';
         let settingsText = ""
         for (let i = 0; i < this.state.params.length; i++) {
-            settingsText += " Parameter " + (i + 1) + ": " + this.state.params[i] + " = " + this.state[this.state.params[i]] +"; "
+            settingsText += " Parameter " + (i + 1) + ": " + this.state.params[i] + " = " + this.state[this.state.params[i]] + "; "
             url = url + 'newValue' + i + '=' + this.state[this.state.params[i]];
             if (i + 1 !== this.state.params.length) {
                 url = url + '&';
@@ -120,11 +120,11 @@ class Manipulate extends React.Component {
                 this.buildFullUrl(this.state.binding);
                 let changed = false;
                 for (let i = 0; i < parameter.length; i++) {
-                    if(this.state[parameter[i].name] != parameter[i].val){
+                    if (this.state[parameter[i].name] != parameter[i].val) {
                         changed = true;
                     }
                 }
-                this.setState({changed})
+                this.setState({ changed })
             });
         }
     }
@@ -195,7 +195,7 @@ class Manipulate extends React.Component {
                     </Tabs>
                     : ''}
                 <div className="view">
-                    <Grid container>
+                    <Grid container spacing={5}>
                         <Grid item xs={8}>
                             {this.state.binding.sourcecode.parameter.map((parameter, index) => (
                                 <div className="slider" key={index}>
@@ -249,7 +249,7 @@ class Manipulate extends React.Component {
                             : ''}
                         <FigureComparison settings={this.state.settings} settingsText={this.state.settingsText} />
                         <br />
-                        {this.state.processURL ? "" : <img src={this.state.fullUrl} alt="Image Loading Failed" onLoad={this.imageLoaded} onError={this.imageLoaded} />}
+                        {this.state.processURL ? "" : <img src={this.state.fullUrl} alt="Image Loading Failed" onLoad={this.imageLoaded} onError={this.imageLoaded} style={{ maxWidth: "100%" }} />}
                     </div>
                 </div>
             </div>
