@@ -47,7 +47,7 @@
   }
 
   #mainView {
-    overflow-y: hidden;
+    overflow-y: auto;
     overflow-x: hidden;
     max-height: calc(100vh - (2.5rem + 64px));
     min-height: calc(100vh - (2.5rem + 64px));

@@ -14,6 +14,7 @@ import Manipulate from './Manipulate/Manipulate';
 import Substitution from './Substitution/Substitution';
 import DownloadPop from './Download/DownloadPop';
 import SubstitutionInfoPop from './Substitution/SubstitutionInfo';
+import Metadata from './Metadata/Metadata';
 import { withRouter } from 'react-router-dom';
 
 class ERC extends React.Component {
@@ -263,6 +264,7 @@ class ERC extends React.Component {
                                 <Tab label="Check" />
                                 <Tab label="Manipulate" />
                                 <Tab label="Substitution" />
+                                <Tab label="Metadata" />
                             </Tabs>
                         </Paper>
                         {this.state.tabValue === 0 &&
@@ -290,6 +292,12 @@ class ERC extends React.Component {
                             this.state.tabValue === 3 &&
                             <div>
                                 <Substitution baseErcData={this.state.data} baseErcId={this.state.id} handleTabChange={this.handleTabChange} />
+                            </div>
+                        }
+                         {
+                            this.state.tabValue === 4 &&
+                            <div>
+                                <Metadata erc={this.state.data} substitution={this.state.substituted}/>
                             </div>
                         }
                     </ReflexElement>
