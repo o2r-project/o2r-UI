@@ -84,7 +84,7 @@ services:
   #    - elasticsearch
 
   muncher:
-    image: o2rproject/o2r-muncher:0.26.1
+    image: o2rproject/o2r-muncher:0.26.2
     depends_on:
       - mongodb
       - configmongodb
@@ -231,7 +231,7 @@ services:
 
   # test containerised versions:
   #ui:
-  #  image: o2rproject/ui:0.2.1
+  #  image: o2rproject/ui:0.2.2
   #  image: ui:master
   #  ports:
   #    - '81:3000'
@@ -246,8 +246,6 @@ services:
       - '/usr/src/app/node_modules'
     ports:
       - '81:3000'
-    #environment:
-     # - NODE_ENV=development
 
   webserver:
     image: nginx:latest
