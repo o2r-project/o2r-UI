@@ -27,22 +27,23 @@ function SpacingGrid(props) {
     const classes = useStyles();
 
     return (
-            <Grid container className={classes.root} spacing={2}>
-                <Grid item xs={12}>
-                    <Grid container justify="center" spacing={spacing}>
-                        {props.ercs.map((erc, index) =>
-                            <div key={index} style={{ width: '20%', marginRight: '2%', marginTop: '1%', marginBottom: '3%' }}>
-                                <Card className="example">
-                                    <CardActionArea onClick={() => props.forward(erc)}>
-                                        <CardHeader
-                                            title={erc.metadata.o2r.title} />
-                                        <CardContent>
-                                            <Typography component="p">
-                                                {erc.metadata.o2r.description.substr(0, 150)}...
+        <Grid container className={classes.root} spacing={2}>
+            <Grid item xs={12}>
+                <Grid container justify="center" spacing={spacing}>
+                    {props.ercs.map((erc, index) =>
+                        <div key={index} style={{ width: '20%', marginRight: '2%', marginTop: '1%', marginBottom: '3%' }}>
+                            <Card className="example">
+                                <CardActionArea onClick={() => props.forward(erc)}>
+                                    <CardHeader
+                                        title={erc.metadata.o2r.title} />
+                                    <CardContent>
+                                        <Typography component="p">
+                                            {erc.metadata.o2r.description.substr(0, 150)}...
                                              </Typography>
-                                        </CardContent>
-                                    </CardActionArea>
-                                    <CardActions>
+                                    </CardContent>
+                                </CardActionArea>
+                                <CardActions>
+                                    <Grid container>
                                         <TwitterShareButton url={config.ercUrl + erc.id} >
                                             <TwitterIcon
                                                 size={32}
@@ -55,13 +56,15 @@ function SpacingGrid(props) {
                                             Go to ERC
                                         </Button>
                                         <a class="link" href={config.ercUrl + erc.id}>{config.ercUrl + erc.id}</a>
-                                    </CardActions>
-                                </Card>
-                            </div>
-                        )}
-                    </Grid>
+                                    </Grid>
+                                </CardActions>
+
+                            </Card>
+                        </div>
+                    )}
                 </Grid>
             </Grid>
+        </Grid>
     );
 }
 
@@ -90,7 +93,7 @@ class InspectExamples extends Component {
                             ercs.push(res2.data);
                             if (res.data.results.length === ercs.length) {
                                 this.setState({
-                                    ercs: ercs.sort(function (a, b) { return new Date(a.created) - new Date(b.created) }),
+                                    ercs: ercs.sort(function (a, b) { return new Date(b.created) - new Date(a.created) }),
                                 })
                             }
                         })

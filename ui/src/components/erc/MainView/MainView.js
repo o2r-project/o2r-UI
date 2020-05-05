@@ -78,7 +78,7 @@ class MainView extends React.Component {
         const url = this.props.filePath;
         return (
 
-            <div onMouseUp={this.handleSelectedText.bind(this)} style={{ top: "50px", left: 0, "margin-bottom": "50px", width: "100%", height: "90%", position: "absolute" }}>
+            <div onMouseUp={this.handleSelectedText.bind(this)} style={{ top: "50px", left: 0, marginBottom: "50px", width: "100%", height: "90%", position: "absolute" }}>
                 <Iframe id={'iframe_id'} url={url} className="iframe"/>
                 <Popup
                     selectedText={this.state.selectedText}

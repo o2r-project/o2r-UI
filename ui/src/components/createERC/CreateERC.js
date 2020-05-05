@@ -85,7 +85,7 @@ class CreateERC extends Component {
         this.setState({
             open: true,
             message: "Updating Metadata",
-            backgroundColor: "blue",
+            backgroundColor: "#004286",
             originalMetadata: JSON.parse(JSON.stringify(this.state.metadata)),
         })
         httpRequests.updateMetadata(self.state.compendium_id, self.state.metadata)

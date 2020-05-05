@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Button, Dialog, AppBar, Toolbar, Slide, Grid, CircularProgress} from "@material-ui/core";
+import { Button, Dialog, AppBar, Toolbar, Slide, Grid, CircularProgress, Typography} from "@material-ui/core";
+import logo from '../../../../assets/img/o2r-logo-only-white.svg';
 
 import httpRequests from "../../../../helpers/httpRequests"
 import { withRouter } from 'react-router-dom';
@@ -43,8 +44,10 @@ class Substitute extends Component {
             baseErcFiles  = this.props.baseErc.inputfiles;
         }
         this.setState({baseErcFiles, substitutionErcFiles})
+
     }
     handleClose = () => {
+        window.history.back();
         this.props.setErc(0);
     }
 
@@ -120,10 +123,13 @@ class Substitute extends Component {
         return (
             <div>
                 <Dialog className="main_block" fullScreen TransitionComponent={Transition}
-                    open={this.props.erc !== 0}
+                    open={this.props.erc !== 0 && this.props.location.search== '?substitute'}
                 >
                     <AppBar>
                         <Toolbar>
+                            <Typography variant="h6" color="inherit" style={{ flex: 1 }}>
+                                <a href="/"><img src={logo} alt="o2r" id="headerLogo" /></a>
+                            </Typography>
                             <Button color="inherit" onClick={() => this.handleClose()}>Close</Button>
                         </Toolbar>
                     </AppBar>

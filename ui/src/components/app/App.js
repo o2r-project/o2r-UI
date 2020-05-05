@@ -21,8 +21,9 @@ const Header = ( props ) => {
   return (        
     <AppBar id="header">
       <Toolbar>
-        <Typography variant="h6" color="inherit" style={{ flex: 1 }}>
-          <a href="/"><img src={logo} alt="o2r" id="headerLogo"/></a>
+      <a href="/"><img src={logo} alt="o2r" id="headerLogo"/></a>
+        <Typography variant="h4" color="inherit" style={{ flex: 1 }}>
+          <Button style={{marginLeft: "120px", fontWeight : "bold"}} color="inherit" href={"/"}>HOME</Button>
         </Typography>
         <Button target="_blank" rel="noopener" color="inherit" href="http://www.dlib.org/dlib/january17/nuest/01nuest.html">
           Learn more about ERCs
@@ -33,7 +34,7 @@ const Header = ( props ) => {
               Discover ERC
             </Button>
           </NavLink>*/}
-          <NavLink id="link" to="/author">
+          <NavLink id="link" to={"/author/" + props.userOrcid}>
             {props.loggedIn ? 
               <Button color="inherit">
                 {props.userName} | 
@@ -112,10 +113,10 @@ class App extends Component {
       <HashRouter>
       <div>
         <div className="content" id="mainView">
-          <Route exact path="/" component={Startpage}/>
+          <Route exact path="/" component={(props) => <Startpage {...props} loggedIn={this.state.loggedIn}></Startpage>} />
           <Route path="/impressum" component={Impressum}/>
           <Route path="/privacy" component={Privacy}/>
-          <Route path="/author" component={Author}/>
+          <Route path="/author/:id" component={Author}/>
           <Route path="/createERC/:id" component={CreateERC}/>
           <Route path="/discover" component={Discovery}/>
           <Route path="/erc/:id" component={ERC}/>

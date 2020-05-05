@@ -62,12 +62,15 @@ class Dropzone extends Component {
           onChange={this.handleChange.bind(this)}
           maxFileSize={962144000}
           filesLimit={1}
+          dropzoneText={"Drag and drop a workspace archive here or click"}
         />
+        <br/>
         <Button
-          className="uploadButton" variant="contained" color="primary" style={{marginTop:"3%"}}
+          className="uploadButton" variant="contained" color="primary" style={{marginTop:"3%"}} disabled={!this.props.loggedIn}
           onClick={this.uploadFolder.bind(this)}>
           Load workspace
         </Button>
+        {!this.props.loggedIn ? <p style={{color : "red"}}>You have to be logged in to upload a Workspace</p> : ""}
         <Dialog open={this.state.open}>
           <DialogTitle> {this.state.title}</DialogTitle>
           {this.state.errorMessage ?
@@ -79,7 +82,6 @@ class Dropzone extends Component {
                 <Button onClick={this.handleClose.bind(this)} color="primary">
                   OK
               </Button>
-
               </DialogActions> </div> :
             <DialogContent style={{"align-self": "center", "overflow-y": "unset"}}>
               <CircularProgress variant="static" value={this.state.progress}/>

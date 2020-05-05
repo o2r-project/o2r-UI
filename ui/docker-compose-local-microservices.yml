@@ -1,0 +1,54 @@
+# (C) Copyright 2016 The o2r project. https://o2r.info
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#
+---
+version: '2' # version 3 is for stack deployments, see https://github.com/docker/compose/issues/4513
+
+volumes:
+  o2rstorage: {}
+
+services:
+
+  bindings:
+    #image: o2rproject/o2r-bindings:latest
+    build: ./bindings
+    #restart: always
+    volumes:
+     - o2rstorage:/tmp/o2r
+    environment: 
+     - DEBUG=bindings
+     - BINDINGS_PORT=8092
+     
+  ui:
+    container_name: ui
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - '.:/usr/src/app'
+      - '/usr/src/app/node_modules'
+    ports:
+      - '81:3000'
+    #environment:
+     # - NODE_ENV=development
+
+  webserver:
+    image: nginx:latest
+    depends_on:
+      - ui
+    volumes:
+      - "./dev/nginx-local-microservices.conf:/etc/nginx/nginx.conf:ro"
+    ports:
+      - "80:80"

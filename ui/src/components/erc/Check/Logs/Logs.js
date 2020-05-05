@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-import { Button, Dialog, AppBar, Toolbar, Slide } from "@material-ui/core";
+import { Button, Dialog, AppBar, Toolbar, Slide, DialogContent, Typography } from "@material-ui/core";
 import uuid from 'uuid/v1';
+import logo from '../../../../assets/img/o2r-logo-only-white.svg';
+import { withRouter } from 'react-router-dom';
 
 import httpRequests from '../../../../helpers/httpRequests';
 import './logs.css';
@@ -9,42 +11,58 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function LogsView(props) {
-    const logs = props.logs;
-    const job = props.job
-    const [open, setOpen] = React.useState(false);
+class LogsView extends Component{
 
-    function handleClickOpen() {
-        setOpen(true);
+
+    constructor(props) {
+        super(props);
+        this.state = { open: false, job: props.job }
+    };
+
+    componentDidMount() {
+        const self = this;
+        console.log(this.props.location.search)
+        if (this.props.location.search === '?logs') {
+            self.setState({ open: true })
+        }
+    }
+
+    handleClickOpen = () => {
+        this.props.history.push(this.props.location.pathname + '?logs')
     }
   
-    function handleClose() {
-        setOpen(false);
+    handleClose = () => {
+        window.history.back();
     }
   
-    return (
+    render() {
+        return (
         <div>
             <Button variant="contained" color="primary" 
-                disabled={job.status !== 'failure' && job.status !== 'success'}
-                onClick={handleClickOpen}
+                disabled={this.state.job.status !== 'failure' && this.state.job.status !== 'success' && this.props.logs !== null}
+                onClick={this.handleClickOpen}
                 style={{marginTop: "5%", width: "150px",}}
             >
                 Show logs
             </Button>
-            {logs !== null ?
+            {this.props.logs !== null ?
             <Dialog className="main_block" fullScreen TransitionComponent={Transition}
-                open={open} 
-                onClose={handleClose}
+                open={this.state.open} 
+                onClose={this.handleClose}
             >
                 <AppBar>
                     <Toolbar>
-                        <Button color="inherit" onClick={handleClose}>Close</Button>
+                        <Typography variant="h6" color="inherit" style={{ flex: 1 }}>
+                            <a href="/"><img src={logo} alt="o2r" id="headerLogo" /></a>
+                        </Typography>
+                        <Button color="inherit" onClick={this.handleClose}>Close</Button>
                     </Toolbar>
                 </AppBar>
+                <DialogContent style={{marginTop: "64px", paddingTop: "20px"}}>
                 <div className="logs">
                     <b>Validate bag: </b>
                     <ul>
-                        {logs.validate_bag.text.map(log => (
+                        {this.props.logs.validate_bag.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
@@ -52,7 +70,7 @@ function LogsView(props) {
                     </ul>
                     <b>Generate configuration: </b>
                     <ul>
-                        {logs.generate_configuration.text.map(log => (
+                        {this.props.logs.generate_configuration.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
@@ -60,7 +78,7 @@ function LogsView(props) {
                     </ul>
                     <b>Image prepare: </b>
                     <ul>
-                        {logs.image_prepare.text.map(log => (
+                        {this.props.logs.image_prepare.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
@@ -68,7 +86,7 @@ function LogsView(props) {
                     </ul>
                     <b>Validate compendium: </b>
                     <ul>
-                        {logs.validate_compendium.text.map(log => (
+                        {this.props.logs.validate_compendium.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
@@ -76,7 +94,7 @@ function LogsView(props) {
                     </ul>
                     <b>Generate manifest: </b>
                     <ul>
-                        {logs.generate_manifest.text.map(log => (
+                        {this.props.logs.generate_manifest.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
@@ -84,7 +102,7 @@ function LogsView(props) {
                     </ul>
                     <b>Image build: </b>
                     <ul>
-                        {logs.image_build.text.map(log => (
+                        {this.props.logs.image_build.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
@@ -92,7 +110,7 @@ function LogsView(props) {
                     </ul>
                     <b>Image execute: </b>
                     <ul>
-                        {logs.image_execute.text.map(log => (
+                        {this.props.logs.image_execute.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
@@ -100,7 +118,7 @@ function LogsView(props) {
                     </ul>
                     <b>Image save: </b>
                     <ul>
-                        {logs.image_save.text.map(log => (
+                        {this.props.logs.image_save.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
@@ -108,7 +126,7 @@ function LogsView(props) {
                     </ul>
                     <b>Check: </b>
                     <ul>
-                        {logs.check.text.map(log => (
+                        {this.props.logs.check.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
@@ -116,17 +134,19 @@ function LogsView(props) {
                     </ul>
                     <b>Cleanup: </b>
                     <ul>
-                        {logs.cleanup.text.map(log => (
+                        {this.props.logs.cleanup.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
                         ))}
                     </ul>
                 </div>
+                </DialogContent>
             </Dialog> : '' }
         </div>
     );
   }
+}
 
 class Logs extends Component {
 
@@ -157,10 +177,10 @@ class Logs extends Component {
     render() {
         return (
             <div>
-                <LogsView logs={this.state.logs} job={this.props.job}></LogsView>
+                <LogsView logs={this.state.logs} job={this.props.job} location={this.props.location} history={this.props.history}></LogsView>
             </div>
         );
     }
 }
 
-export default Logs;
+export default withRouter(Logs);
