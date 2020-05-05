@@ -16,16 +16,10 @@ class LogsView extends Component{
 
     constructor(props) {
         super(props);
-        this.state = { open: false, job: props.job }
+        this.state = { open: this.props.location.search === '?logs' ?  true:  false, 
+                        job: props.job }
     };
 
-    componentDidMount() {
-        const self = this;
-        console.log(this.props.location.search)
-        if (this.props.location.search === '?logs') {
-            self.setState({ open: true })
-        }
-    }
 
     handleClickOpen = () => {
         this.props.history.push(this.props.location.pathname + '?logs')
@@ -39,7 +33,6 @@ class LogsView extends Component{
         return (
         <div>
             <Button variant="contained" color="primary" 
-                disabled={this.state.job.status !== 'failure' && this.state.job.status !== 'success' && this.props.logs !== null}
                 onClick={this.handleClickOpen}
                 style={{marginTop: "5%", width: "150px",}}
             >
@@ -148,6 +141,7 @@ class LogsView extends Component{
   }
 }
 
+var i=0
 class Logs extends Component {
 
     constructor(props) {
@@ -157,10 +151,14 @@ class Logs extends Component {
         }
     }
 
+
     getLogs(job_id) {
         const self = this;
         httpRequests.getLogs(job_id)
             .then(function(res) {
+                console.log(res)
+                console.log(i)
+                i++;
                 self.setState({
                     logs: res.data.steps
                 });
@@ -171,8 +169,22 @@ class Logs extends Component {
     }
 
     componentDidMount() {
-        this.getLogs(this.props.job.id)
+        if(!this.props.runningjob){
+            this.getLogs(this.props.job.id)
+        }
+        else{
+            this.setState({logs : this.props.logs})
+        }
     }
+
+/*    componentDidUpdate(prevProps) {
+        console.log(this.props.logs)
+        console.log(prevProps.logs)
+        if (this.props.logs !== null && JSON.stringify(this.props.logs) !== JSON.stringify(prevProps.logs) && this.props.runningjob) {
+            console.log(1)
+            this.setState({ logs : this.props.logs });
+        }
+    }*/
 
     render() {
         return (

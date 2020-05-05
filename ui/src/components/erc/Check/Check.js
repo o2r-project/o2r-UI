@@ -36,7 +36,7 @@ class ListJobs extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            expanded: props.runningJob ? props.jobs[0].id : 'panel1'
+            expanded: props.runningJob ? props.jobs[0].id : 'panel1',
         }
     }
 
@@ -75,7 +75,7 @@ class ListJobs extends Component {
                                 <span><b>Execute analysis: </b><Status status={job.steps.image_execute.status}></Status></span><br />
                                 <span><b>Compare original and reproduced results: </b><Status checkStatus={job.steps.check.status} status={job.steps.check.status}></Status></span><br />
                                 <Comparison job={job} className="compare"></Comparison>
-                                <Logs job={job} ></Logs>
+                                <Logs job={job} logs={this.props.logs}></Logs>
                             </Typography>
                         </ExpansionPanelDetails>
                     </ExpansionPanel>
