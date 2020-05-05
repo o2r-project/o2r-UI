@@ -52,6 +52,7 @@ class CreateERC extends Component {
                 if( candidate !== true) candidate =false;
                 httpRequests.getFile("compendium/" + self.state.compendium_id + "/data/" + metadata.mainfile)
                     .then(function (res2) {
+                        console.log(res2)
                         self.setState({
                             metadata: metadata,
                             originalMetadata: JSON.parse(JSON.stringify(metadata)),

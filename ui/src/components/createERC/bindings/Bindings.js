@@ -12,6 +12,8 @@ import WidgetSelector from './WidgetSelector/WidgetSelector';
 import './bindings.css';
 import fakeBindings from '../../../helpers/bindingsExamples.json';
 import Sourcecode from '../../erc/Inspect/CodeView/Sourcecode/Sourcecode';
+import { parse as RParse } from '../../../helpers/programm-analysis/R';
+import {slice} from '../../../helpers/programm-analysis/es6/slice'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -251,6 +253,96 @@ class Bindings extends Component {
 
   componentDidMount () {
     this.getFakeData();
+    this.extractR();
+  }
+
+  extractR () {
+    const self=this;
+    httpRequests.getCodelines({id: this.state.tmpCompId, file: this.state.tmpFile})
+      .then(function(res){
+        console.log(res)
+        let codeBlocks = res.data.data; 
+        const codeJSON = [];
+        let functions = []
+        for( var codeBlock of codeBlocks){
+          try{
+            functions= functions.concat(self.searchFunction(codeBlock));
+            const code = codeBlock.join('\n') + '\n';
+            codeJSON.push(RParse(code));
+          }
+          catch(e){
+            console.log(e)
+          }
+
+        }
+        const bindingsCode = [];
+        console.log(codeJSON)
+        console.log(functions)
+        for(var fun of functions){
+          const code = slice(codeJSON[0], { items: [{ first_line: parseInt(fun.line) +1, first_column: fun.firstIndex, last_line: parseInt(fun.line) +1, last_column: parseInt(fun.lastIndex) +1 }] })
+          const codelines= self.handleAlogrithmusErrors(codeJSON[0].code, code.items);
+          self.optimizeCodelines(codelines);
+          console.log(codelines)
+          bindingsCode.push(code)
+        }
+       console.log(bindingsCode)
+      })
+  }
+
+  handleAlogrithmusErrors = (code, codelines) => {
+    for(var codeItem  of code){
+      switch (codeItem.type){
+        case "call" : {
+            if(codeItem.func.id == "par"){
+              codelines.push(codeItem.location)
+            }
+            break;
+        }
+        case "if" : {
+          for(var line of codelines){
+            if(line.first_line > codeItem.location.first_line && line.last_line < codeItem.location.last_line){
+              codelines.push(codeItem.location);
+              break;
+            }
+          }
+        }
+        case "import": {
+            codelines.push(codeItem.location)
+        }
+        }
+      }
+      return codelines;
+    }
+
+    optimizeCodelines = (codelines)=> {
+      codelines.sort(function(a,b){
+        return a.first_line - b.first_line;
+      })
+      for(var i=0; i<codelines.length-1; i++){
+        if(codelines[i].first_line <= codelines[i+1].first_line && codelines[i].last_line >= codelines[i+1].last_line){
+          codelines.splice(i+1, 1)
+          i--;
+        }
+        else if(codelines[i].last_line === codelines[i+1].first_line || codelines[i].last_line+1 === codelines[i+1].first_line){
+          codelines.splice(i,2, {first_line: codelines[i].first_line, last_line: codelines[i+1].last_line});
+          i--;
+        }
+      }
+    }
+
+  searchFunction (code) {
+    const results = [];
+    const regex= /plotFigure\d*\(\)/g
+
+    for(var i in code){
+      const begin = code[i].search(regex);
+      if(begin !=-1){
+        const end= code[i].indexOf(')', begin)
+        results.push({line: i, firstIndex: begin, lastIndex: end})
+      }
+    }
+    console.log(results)
+    return results;
   }
 
   getFakeData () {

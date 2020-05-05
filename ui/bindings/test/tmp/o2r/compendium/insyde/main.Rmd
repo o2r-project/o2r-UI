@@ -31,7 +31,17 @@ Figure 3. Example of INSYDE damage functions considering the following event var
 library(truncnorm)
 
 
+test <- function(x, y){
+        return(x+y)
+        }
 
+xxxxxxxxxxxxxxxxxxxxxxxx = 8
+x= 4
+y= 3
+
+
+
+x = test(x,y)
 # setwd(".")
 
 # Load INSYDE main function
