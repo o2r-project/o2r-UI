@@ -27,16 +27,16 @@ let binding = {
 context('Extract code lines from plot function', function() {
     let file = fn.readRmarkdown(binding.id, binding.file);
     let lines = file.split('\n');
-    let chunksLineNumbers = fn.extractChunks(lines);
-    let code = fn.extractCodeFromChunks(lines,chunksLineNumbers.start,chunksLineNumbers.end);
+    let chunksLineNumbers = fn.extractChunks( lines );
+    let code = fn.extractCodeFromChunks( lines, chunksLineNumbers.start, chunksLineNumbers.end );
     //let codeAsJson = RParse(code);
    // let call = processJson.findPlotLines(binding.plot)
     //console.log(codeAsJson);
-    console.log(code)
+    console.log(code.length)
     // let codeLines= slice(codeAsJson, call);
     // codeLines = processJson.correctErrorsOfAlgorithm(codeLines);
     // codeLines = processJson.connectCodeLines(codeLines);
-    console.log(codeLines)
+    //console.log(codeLines)
 })
 
 

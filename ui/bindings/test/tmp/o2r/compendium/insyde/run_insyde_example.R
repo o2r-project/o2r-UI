@@ -25,7 +25,7 @@ uncert <- 0
 if (!uncert) {
   # Compute expected damage. Note that (only) one of the hazard variables can 
   # be passed to the function as a vector.
-  modelOutput <- ComputeDamage(he, v, d, s, q, 
+  modelOutput <- ComputeDamage(he, velocity, duration, sediment_concentration, water_quality, 
                   FA, IA, BA, EP, IH, BH, GL, NF, BT, BS, PD, PT, FL, YY, LM, 
                   repVal, up, uncert)
 } else if (uncert) {
@@ -37,7 +37,7 @@ if (!uncert) {
   nrSim <- 2000
   statMat <- matrix(NA, nrow = length(he), ncol = 4)
   for (i in 1:length(he)) {
-    modelOutput <- ComputeDamage(he[i], v, d, s, q, 
+    modelOutput <- ComputeDamage(he[i], velocity, duration, sediment_concentration, water_quality, 
                     FA, IA, BA, EP, IH, BH, GL, NF, BT, BS, PD, PT, FL, YY, LM,
                     repVal, up, uncert, nrSim)
     # For each element of he, calculate some summary statistics and save them

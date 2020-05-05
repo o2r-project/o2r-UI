@@ -253,29 +253,34 @@ class Bindings extends Component {
 
   componentDidMount () {
     this.getFakeData();
-    this.extractR();
+    this.extractR(this.props.compendium_id, this.props.metadata.mainfile);
   }
 
-  extractR () {
+  extractR ( compendium_id, mainfile ) {
     const self=this;
-    httpRequests.getCodelines({id: this.state.tmpCompId, file: this.state.tmpFile})
-      .then(function(res){
-        console.log(res)
-        let codeBlocks = res.data.data; 
-        const codeJSON = [];
-        let functions = []
-        for( var codeBlock of codeBlocks){
-          try{
-            functions= functions.concat(self.searchFunction(codeBlock));
-            const code = codeBlock.join('\n') + '\n';
-            codeJSON.push(RParse(code));
+    httpRequests.getCode( compendium_id, mainfile )
+      .then ( function ( res ) {
+        console.log( res )
+        let codelines = res.data.data; 
+        let codeJSON = [];
+        let plotFunctions = []
+        for ( let i in codelines ) {
+          console.log(codelines[i])
+            let plotFunction = self.isPlotFunction( codelines[i] ) 
+            if ( plotFunction ) {
+              plotFunction.line = i;
+              plotFunctions.push(plotFunction); 
+            }
           }
-          catch(e){
-            console.log(e)
-          }
-
+        //let code = codelines.join('\n') + '\n';  
+        try {
+          codeJSON.push( RParse( codelines ) );
+        } 
+        catch ( e ) {
+          console.log(e)
         }
-        const bindingsCode = [];
+        console.log(codeJSON)
+        /*const bindingsCode = [];
         console.log(codeJSON)
         console.log(functions)
         for(var fun of functions){
@@ -285,7 +290,7 @@ class Bindings extends Component {
           console.log(codelines)
           bindingsCode.push(code)
         }
-       console.log(bindingsCode)
+       console.log(bindingsCode)*/
       })
   }
 
@@ -330,19 +335,20 @@ class Bindings extends Component {
       }
     }
 
-  searchFunction (code) {
-    const results = [];
-    const regex= /plotFigure\d*\(\)/g
-
-    for(var i in code){
-      const begin = code[i].search(regex);
-      if(begin !=-1){
-        const end= code[i].indexOf(')', begin)
-        results.push({line: i, firstIndex: begin, lastIndex: end})
-      }
+  isPlotFunction ( codeline ) {
+    const regex= /plotFigure\d*\(\)/g;
+    let begin = codeline.search(regex);
+    let found;
+    if ( begin != -1 ) {
+      let end = codeline.indexOf(')', begin)
+      found = {
+        firstIndex: begin,
+        lastIndex: end
+      };
+    } else {
+      found=false
     }
-    console.log(results)
-    return results;
+    return found;
   }
 
   getFakeData () {

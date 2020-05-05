@@ -229,24 +229,26 @@ fn.extractChunks = function (lines) {
     };
 };
 
-fn.extractCodeFromChunks = function(lines,start,end){
-    debug('Start creating code parts')
+fn.extractCodeFromChunks = function ( lines, start, end ) {
+    debug('Start extracting code from chunks')
     let chunksOfCode = [];
-    for ( let chunk = 0; chunk < start.length; chunk++) {
-        let codeInChunk = lines.slice(start[chunk], end[chunk]);
-        if ( end[chunk] != start[chunk+1] + 1 ) {
+    for ( let chunk = 0; chunk < start.length; chunk++ ) {
+        let codeInChunk = lines.slice( start[chunk], end[chunk] );
+        /*if ( end[chunk] != start[chunk+1] + 1 ) {
             for (let j = end[chunk]; j < start[chunk+1]; j++){
                 codeInChunk.splice(j,0,'');
-            }   
-        }
-        chunksOfCode.push(codeInChunk);
-     }
-    // Replace \r through ''
-    for( let i = 0; i < chunksOfCode.length; i++) {
-        chunksOfCode[i] = chunksOfCode[i].map((x) => x.replace('\r', ''));
+            }  
+        }*/
+        chunksOfCode.push( codeInChunk );
     }
-    debug('End creating code parts')
-    return chunksOfCode;
+    // Replace \r through ''
+    let code = [];
+    for ( let i = 0; i < chunksOfCode.length; i++ ) {
+        chunksOfCode[i] = chunksOfCode[i].map((x) => x.replace('\r', ''));
+        code = code.concat(chunksOfCode[i]);
+    }
+    debug('End extracting code from chunks')
+    return code;
  };
 
 fn.codeAsJson = function (chunks) {

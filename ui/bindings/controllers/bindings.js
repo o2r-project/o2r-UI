@@ -41,8 +41,8 @@ bindings.start = (conf) => {
               app.use(bodyParser.json());
               app.use(bodyParser.urlencoded({extended: true}));
 
-        app.post('/api/v1/bindings/extractR', function(req, res) {
-            bindings.implementExtractR(req.body, res);
+        app.post('/api/v1/bindings/extractRcode', function(req, res) {
+            bindings.extractRcode(req.body, res);
         });
    
         app.post('/api/v1/bindings/searchBinding', function ( req, res ) {
@@ -160,48 +160,18 @@ bindings.createBinding = function(binding, response) {
         data: binding});
 };
 
-bindings.implementExtractR = function (binding,response) {
-    debug('Start extracting codelines: %s', JSON.stringify(binding));
-    let file = fn.readRmarkdown(binding.id, binding.file);
+bindings.extractRcode = function ( compendium, response ) {
+    debug('Start extracting codelines: %s', JSON.stringify(compendium));
+    let file = fn.readRmarkdown(compendium.id, compendium.file);
     let lines = file.split('\n');
     let chunksLineNumbers = fn.extractChunks(lines);
-    let code = fn.extractCodeFromChunks(lines,chunksLineNumbers.start,chunksLineNumbers.end);
-    response.send({data: code})
-    // let codeparts = fn.splitCodeIntoLines(code,codeLines.start[0]);
-    // let type = rules.getTypeOfLine(codeparts);
-    // let comments = fn.deleteComments(type);
-    // let json = fn.array2Json(comments);
-    // console.log(json)
-    // let jsonObj = {'Lines': json};
-    // //console.log("between")
-    // let processedJson = processJson.addFileContentToJson(jsonObj);
-    // console.log(JSON.stringify(processedJson));
-    // let varsInLines = processJson.getVarsAndValuesOfLines(processedJson);
-    // //Insert binding.plot
-    // let valuesToSearchFor = processJson.valuesToSearchFor(binding.plot);
-    // let codeLinesForValues = processJson.getAllCodeLines(varsInLines,valuesToSearchFor,[],[]);
-
-    // //debug('Codelines: ',backtrackedCode);
-    
-    
-    // debug('Codelines: ',codeLinesForValues);
-    
-    // binding.codelines = processJson.getCodeLines(codeLinesForValues);
-    // console.log(codeLinesForValues)
-    debug(binding.codelines)
-    /*response.send({
+    let code = fn.extractCodeFromChunks( lines, chunksLineNumbers.start, chunksLineNumbers.end );
+    debug('End extracting codelines: %s', JSON.stringify(compendium));
+    response.send({
         callback: 'ok',
-        data: binding});*/
+        data: code
+    })
 };
-
-bindings.ExtractR = function (binding, response){
-    console.log("start extractR")
-    let file = fn.readRmarkdown(binding.id, binding.file);
-    let lines = file.split('\n');
-    let chunksLineNumbers = fn.extractChunks(lines);
-    let chunksOfCode = fn.extractCodeFromChunks(lines,chunksLineNumbers.start,chunksLineNumbers.end);
-    const codeAsJson = rParse(chunksOfCode)
-}
 
 bindings.searchBinding = function ( req, res) {
     var searchTerm= req.term

@@ -64,8 +64,8 @@ function runManipulationService(binding){
     return axios.post(_env.api + 'compendium/'+binding.id+'/binding/' + binding.computationalResult.result.replace(/\s/g, '').toLowerCase(), binding);
 }
 
-function getCodelines(binding){
-    return axios.post(_env.api + 'bindings/extractR', binding);
+function getCode(id, file){
+    return axios.post(_env.api + 'bindings/extractRcode', {id: id, file:file});
 }
 
 function searchBinding(term, metadata){
@@ -108,7 +108,7 @@ module.exports = {
     getLogs: getLogs,
     sendBinding: sendBinding,
     runManipulationService: runManipulationService,
-    getCodelines: getCodelines,
+    getCode: getCode,
     searchBinding: searchBinding,
     geocodingRequest: geocodingRequest,
     downloadERC: downloadERC,
