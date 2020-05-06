@@ -88,12 +88,13 @@ Such a usage is consistent with an expert-based approach because observed data w
 Figure<!--s 2 and--> 1 provides an example of damage functions developed for a default building in the case of a flood with a duration = 24 h, flow velocity = 0.5 m/s, sediment concentration = 0.05, and presence of pollutants (water quality = 1).
 
 ```{r, out.width = 650, echo = FALSE}
-knitr::include_graphics("figs/table1.png")
+library(knitr)
+include_graphics("figs/table1.png")
 ```
 
 
 ```{r, out.width = 550, echo = FALSE}
-knitr::include_graphics("figs/table2.png")
+include_graphics("figs/table2.png")
 ```
   
 ```{r clam_setup, echo=FALSE,  results="hide", message=FALSE , comment=FALSE, warning=FALSE, fig.cap="<b>Figure 1:</b> Example of INSYDE damage functions considering the following event variables: flow velocity = 0.5 m/s , flood duration = 24 h, sediment concentration = 0.05, and water quality = presence of pollutants (1=yes, 0=no). Damage functions for entire building and different building components.", out.width=600}

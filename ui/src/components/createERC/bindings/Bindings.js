@@ -261,27 +261,22 @@ class Bindings extends Component {
     httpRequests.getCode( compendium_id, mainfile )
       .then ( function ( res ) {
         let codelines = res.data.data; 
-        let codeJSON = [];
+        let codeJSON = []; //why is that needed?
         let plotFunctions = [];
         let code = codelines.join('\n') + '\n';
         for ( let i in codelines ) {
-          //console.log(codelines[i])
           let plotFunction = self.isPlotFunction( codelines[i] ) 
           if ( plotFunction ) {
             plotFunction.line = i;
-            plotFunctions.push(plotFunction); 
+            plotFunctions.push( plotFunction ); 
           }
         }
-        //  
         try {
-          console.log(RParse( code ))
           codeJSON.push( RParse( code ) );
-          console.log(codeJSON)
         } 
-        catch ( e ) {
-          console.log(e)
+        catch ( err ) {
+          console.log( err )
         }
-        console.log(codeJSON)
         /*const bindingsCode = [];
         console.log(codeJSON)
         console.log(functions)
