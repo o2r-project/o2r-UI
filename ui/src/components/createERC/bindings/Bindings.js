@@ -261,9 +261,7 @@ class Bindings extends Component {
     httpRequests.getCode( compendium_id, mainfile )
       .then ( function ( res ) {
         let codelines = res.data.data; 
-        let codeJSON = []; //why is that needed?
         let plotFunctions = [];
-        let code = codelines.join('\n') + '\n';
         for ( let i in codelines ) {
           let plotFunction = self.isPlotFunction( codelines[i] ) 
           if ( plotFunction ) {
@@ -271,23 +269,30 @@ class Bindings extends Component {
             plotFunctions.push( plotFunction ); 
           }
         }
+        codelines = codelines.join('\n') + '\n';
         try {
-          codeJSON.push( RParse( code ) );
+          codelines = RParse( codelines );
         } 
         catch ( err ) {
           console.log( err )
         }
-        /*const bindingsCode = [];
-        console.log(codeJSON)
-        console.log(functions)
-        for(var fun of functions){
-          const code = slice(codeJSON[0], { items: [{ first_line: parseInt(fun.line) +1, first_column: fun.firstIndex, last_line: parseInt(fun.line) +1, last_column: parseInt(fun.lastIndex) +1 }] })
-          const codelines= self.handleAlogrithmusErrors(codeJSON[0].code, code.items);
-          self.optimizeCodelines(codelines);
-          console.log(codelines)
+        let bindingsCode = [];
+        for( let plotFunction of plotFunctions ) {
+          let code = slice(codelines,
+            { 
+              items: [{ 
+                first_line: parseInt(plotFunction.line) +1, 
+                first_column: plotFunction.firstIndex, 
+                last_line: parseInt(plotFunction.line) +1, 
+                last_column: parseInt(plotFunction.lastIndex) +1 
+              }] 
+            });
+          //let codes= self.handleAlogrithmusErrors(codelines, code.items);
+          //self.optimizeCodelines(codes);
+          console.log(code)
           bindingsCode.push(code)
         }
-       console.log(bindingsCode)*/
+       //console.log(bindingsCode)
       })
   }
 
@@ -316,7 +321,7 @@ class Bindings extends Component {
       return codelines;
     }
 
-    optimizeCodelines = (codelines)=> {
+    optimizeCodelines = (codelines)=> { //What exactly does optimizeCodelines do? Name accordingly
       codelines.sort(function(a,b){
         return a.first_line - b.first_line;
       })
