@@ -288,15 +288,15 @@ class Bindings extends Component {
               }] 
             });
           //let codes= self.handleAlogrithmusErrors(codelines, code.items);
-          //self.optimizeCodelines(codes);
-          console.log(code)
+          //console.log(code)
+          code = self.optimizeCodelines(code.items);
+          //console.log(code)
           bindingsCode.push(code)
         }
-       //console.log(bindingsCode)
       })
   }
 
-  handleAlogrithmusErrors = (code, codelines) => {
+  handleAlogrithmusErrors = (code, codelines) => { //It's unlcear what is happening here
     for(var codeItem  of code){
       switch (codeItem.type){
         case "call" : {
@@ -321,10 +321,11 @@ class Bindings extends Component {
       return codelines;
     }
 
-    optimizeCodelines = (codelines)=> { //What exactly does optimizeCodelines do? Name accordingly
+    optimizeCodelines = (codelines) => { //What exactly does optimizeCodelines do? Name accordingly
       codelines.sort(function(a,b){
         return a.first_line - b.first_line;
       })
+      console.log(codelines)
       for(var i=0; i<codelines.length-1; i++){
         if(codelines[i].first_line <= codelines[i+1].first_line && codelines[i].last_line >= codelines[i+1].last_line){
           codelines.splice(i+1, 1)
