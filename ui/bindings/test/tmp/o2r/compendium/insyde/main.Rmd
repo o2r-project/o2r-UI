@@ -92,7 +92,6 @@ library(knitr)
 include_graphics("figs/table1.png")
 ```
 
-
 ```{r, out.width = 550, echo = FALSE}
 include_graphics("figs/table2.png")
 ```
