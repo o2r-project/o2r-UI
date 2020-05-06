@@ -260,21 +260,23 @@ class Bindings extends Component {
     const self=this;
     httpRequests.getCode( compendium_id, mainfile )
       .then ( function ( res ) {
-        console.log( res )
         let codelines = res.data.data; 
         let codeJSON = [];
-        let plotFunctions = []
+        let plotFunctions = [];
+        let code = codelines.join('\n') + '\n';
         for ( let i in codelines ) {
-          console.log(codelines[i])
-            let plotFunction = self.isPlotFunction( codelines[i] ) 
-            if ( plotFunction ) {
-              plotFunction.line = i;
-              plotFunctions.push(plotFunction); 
-            }
+          //console.log(codelines[i])
+          let plotFunction = self.isPlotFunction( codelines[i] ) 
+          if ( plotFunction ) {
+            plotFunction.line = i;
+            plotFunctions.push(plotFunction); 
           }
-        //let code = codelines.join('\n') + '\n';  
+        }
+        //  
         try {
-          codeJSON.push( RParse( codelines ) );
+          console.log(RParse( code ))
+          codeJSON.push( RParse( code ) );
+          console.log(codeJSON)
         } 
         catch ( e ) {
           console.log(e)
