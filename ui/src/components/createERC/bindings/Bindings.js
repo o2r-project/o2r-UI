@@ -257,7 +257,7 @@ class Bindings extends Component {
   }
 
   extractR ( compendium_id, mainfile ) {
-    const self=this;
+    const self = this;
     httpRequests.getCode( compendium_id, mainfile )
       .then ( function ( res ) {
         let codelines = res.data.data; 
@@ -276,24 +276,29 @@ class Bindings extends Component {
         catch ( err ) {
           console.log( err )
         }
-        let bindingsCode = [];
-        for( let plotFunction of plotFunctions ) {
-          let code = slice(codelines,
-            { 
-              items: [{ 
-                first_line: parseInt(plotFunction.line) +1, 
-                first_column: plotFunction.firstIndex, 
-                last_line: parseInt(plotFunction.line) +1, 
-                last_column: parseInt(plotFunction.lastIndex) +1 
-              }] 
-            });
-          //let codes= self.handleAlogrithmusErrors(codelines, code.items);
-          //console.log(code)
-          code = self.optimizeCodelines(code.items);
-          //console.log(code)
-          bindingsCode.push(code)
-        }
+        let slicedCode = self.sliceCode( codelines, plotFunctions);
+        console.log(slicedCode)
       })
+  }
+
+  sliceCode = ( codelines, plotFunctions ) => {
+    const self = this;
+    let code;
+    for( let plotFunction of plotFunctions ) {
+      code = slice(codelines,
+        { 
+          items: [{ 
+            first_line: parseInt(plotFunction.line) +1, 
+            first_column: plotFunction.firstIndex, 
+            last_line: parseInt(plotFunction.line) +1, 
+            last_column: parseInt(plotFunction.lastIndex) +1 
+          }] 
+        });
+      //let codes= self.handleAlogrithmusErrors(codelines, code.items);
+      code = self.sortCode(code.items);
+      //code = self.groupCode(code);
+    }
+    return code;
   }
 
   handleAlogrithmusErrors = (code, codelines) => { //It's unlcear what is happening here
@@ -321,24 +326,7 @@ class Bindings extends Component {
       return codelines;
     }
 
-    optimizeCodelines = (codelines) => { //What exactly does optimizeCodelines do? Name accordingly
-      codelines.sort(function(a,b){
-        return a.first_line - b.first_line;
-      })
-      console.log(codelines)
-      for(var i=0; i<codelines.length-1; i++){
-        if(codelines[i].first_line <= codelines[i+1].first_line && codelines[i].last_line >= codelines[i+1].last_line){
-          codelines.splice(i+1, 1)
-          i--;
-        }
-        else if(codelines[i].last_line === codelines[i+1].first_line || codelines[i].last_line+1 === codelines[i+1].first_line){
-          codelines.splice(i,2, {first_line: codelines[i].first_line, last_line: codelines[i+1].last_line});
-          i--;
-        }
-      }
-    }
-
-  isPlotFunction ( codeline ) {
+  isPlotFunction = ( codeline ) => {
     const regex= /plotFigure\d*\(\)/g;
     let begin = codeline.search(regex);
     let found;
@@ -352,6 +340,28 @@ class Bindings extends Component {
       found=false
     }
     return found;
+  }
+
+  sortCode = (codelines) => {
+    let sortedCodelines = codelines.sort(function(a,b){
+      return a.first_line - b.first_line;
+    })
+    return sortedCodelines;
+  }
+
+  groupCode = (codelines) => {
+    let groupedCode = codelines;
+    for ( let i = 0; i < groupedCode.length-1 ; i++ ) {
+      if ( groupedCode[i].first_line <= groupedCode[i+1].first_line && groupedCode[i].last_line >= groupedCode[i+1].last_line ) {
+        groupedCode.splice(i+1, 1)
+        i--;
+      }
+      else if(groupedCode[i].last_line === groupedCode[i+1].first_line || groupedCode[i].last_line+1 === groupedCode[i+1].first_line){
+        groupedCode.splice(i,2, {first_line: groupedCode[i].first_line, last_line: groupedCode[i+1].last_line});
+        i--;
+      }
+    }
+    return groupedCode;
   }
 
   getFakeData () {
