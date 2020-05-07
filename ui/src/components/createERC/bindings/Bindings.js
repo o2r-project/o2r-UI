@@ -235,6 +235,8 @@ class Bindings extends Component {
       super ( props );
       this.state = {
         metadata:props.metadata,
+        figures:'',
+        codelines:'',
         creationStep:0,
         bindings: [],
         codeview:true,
@@ -245,18 +247,16 @@ class Bindings extends Component {
         tmpCodelines: '',
         tmpPlotFunction: '',
         tmpFile: props.metadata.mainfile,
-        tmpBinding: '',
-        figures:'',
+        tmpBinding: ''
       }
       this.getFakeData = this.getFakeData.bind(this);
     }
 
   componentDidMount () {
-    //this.getFakeData();
-    this.extractR(this.props.compendium_id, this.props.metadata.mainfile);
+    this.extractPlotFunctions(this.props.compendium_id, this.props.metadata.mainfile);
   }
 
-  extractR ( compendium_id, mainfile ) {
+  extractPlotFunctions ( compendium_id, mainfile ) {
     const self = this;
     httpRequests.getCode( compendium_id, mainfile )
       .then ( function ( res ) {
@@ -270,9 +270,6 @@ class Bindings extends Component {
             plotFunctions.push( plotFunction ); 
           }
         }
-        self.setState({
-          figures:plotFunctions,
-        });
         codelines = codelines.join('\n') + '\n';
         try {
           codelines = RParse( codelines );
@@ -280,10 +277,10 @@ class Bindings extends Component {
         catch ( err ) {
           console.log( err )
         }
-        for ( let i in plotFunctions ) {
-          let slicedCode = self.sliceCode( codelines, plotFunctions[i] );
-          console.log(slicedCode)
-        }
+        self.setState({
+          figures: plotFunctions,
+          codelines: codelines
+        });
       });
   }
 
@@ -304,6 +301,7 @@ class Bindings extends Component {
   }
 
   sliceCode = ( codelines, plotFunction ) => {
+    //console.log(codelines, plotFunction)
     const self = this;
     let code = slice(codelines,
       { 
@@ -380,25 +378,22 @@ class Bindings extends Component {
     });
   }
 
-  setResult ( result ) {
-    if (result.indexOf("Figure") >= 0) {
+  setResult ( figure ) {
+    if (figure.indexOf("Figure") >= 0) {
       let state = this.state;
+      let selectedFigure = this.state.figures.find(element => element.plotFunction == figure);
       state.tmpComputResult = {
         type: 'figure',
-        result: result,
+        result: selectedFigure,
       }
-      let codelines = '';
-      let figures = this.state.figures;
-      for(let i=0;i<figures.length;i++){
-        if (figures[i].figure === result){
-          //state.tmpCodelines=figures[i].lines
-        }
-      }
-      this.setState(state);
+      this.setState(state, () => {
+        let slicedCode = this.sliceCode( state.codelines, selectedFigure );
+        console.log(slicedCode)
+      });
     }
   }
 
-  handleMouseUp ( e ) {
+  /*handleMouseUp ( e ) {
     if (this.state.creationStep === 1) {
       try {
         this.setCode(window.getSelection().getRangeAt(0).toString()); 
@@ -409,7 +404,7 @@ class Bindings extends Component {
         tmpParam: window.getSelection().getRangeAt(0).toString(),
       });
     }
-  }
+  }*/
 
   setStep ( step ) {
     this.setState({
@@ -435,7 +430,7 @@ class Bindings extends Component {
     this.setState(state);
   }
 
-  setCode ( code ) {
+  /*setCode ( code ) {
     let self = this;
     let state = this.state;
     state.tmpPlotFunction = code;
@@ -450,7 +445,7 @@ class Bindings extends Component {
         console.log(res)
       })
     });
-  }
+  }*/
 
   setWidget ( key, val, type ) {
     let state = this.state;
