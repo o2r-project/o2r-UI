@@ -149,14 +149,18 @@ cron.schedule('* * * * *', () => {
 
 bindings.createBinding = function(binding, response) {
     debug( 'Start creating binding for result: %s, compendium: %s', binding.computationalResult.result, binding.id );
-    let fileContent = fn.readRmarkdown( binding.id, binding.sourcecode.file );
-    let figureSize = fn.extractFigureSize(binding, fileContent);
+    let mainfileContent = fn.readRmarkdown( binding.id, binding.sourcecode.file );
+    let figureSize = fn.extractFigureSize( binding, mainfileContent );
     //Implementation not finished: fn.modifyMainfile( fileContent, binding.computationalResult, binding.sourcecode.file, binding.id );
-    let codelines = fn.handleCodeLines( binding.sourcecode.codelines );
-    let extractedCode = fn.extractCode( fileContent, codelines );
-        extractedCode = fn.replaceVariable( extractedCode, binding.sourcecode.parameter );
-    let wrappedCode = fn.wrapCode( extractedCode, binding.computationalResult.result, binding.sourcecode.parameter, figureSize );
-    fn.saveResult( wrappedCode, binding.id, binding.computationalResult.result.replace(/\s/g, '').toLowerCase() );
+    let mainfilelines = mainfileContent.split('\n');
+    let chunksLineNumbers = fn.extractChunks(mainfilelines);
+    let code = fn.extractCodeFromChunks( mainfilelines, chunksLineNumbers.start, chunksLineNumbers.end );
+    let bindingCodelines = fn.handleCodeLines( binding.sourcecode.codelines );
+    let bindingCode = fn.extractCode( code, bindingCodelines );
+        bindingCode = fn.replaceVariable( bindingCode, binding.sourcecode.parameter );
+        console.log(bindingCode)
+    let wrappedBindingCode = fn.wrapCode( bindingCode, binding.computationalResult.result, binding.sourcecode.parameter, figureSize );
+    fn.saveResult( wrappedBindingCode, binding.id, binding.computationalResult.result.replace(/\s/g, '').toLowerCase() );
     binding.codesnippet = binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '.R';
     response.send({
         callback: 'ok',

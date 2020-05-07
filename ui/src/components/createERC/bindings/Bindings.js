@@ -327,7 +327,7 @@ class Bindings extends Component {
       });
     //let codes= self.handleAlogrithmusErrors(codelines, code.items);
     //code = self.groupCode(code);
-    return this.sortCode(code.items);
+    return this.sortCode(code.items); //There is already a sorting implementation in the bindings servce. Let's see which one we actually need.
   }
 
   sortCode = (codelines) => {
@@ -363,7 +363,7 @@ class Bindings extends Component {
       .then(function (res) {
         httpRequests.runManipulationService(binding)
           .then(function (res2) {
-            self.setState({preview:true})
+            //self.setState({preview:true})
             //props.switchCodePreview();
             //disable(false);
           })
@@ -540,7 +540,7 @@ class Bindings extends Component {
             Please, contact us since we are strongly interested in creating them for you: 
               <a href="mailto:o2r.team@uni-muenster.de"> o2r.team [ at ] uni-muenster [.de]</a>
         </h3>
-        {this.state.preview ?
+        {/*this.state.preview ?
          /* <div>
             <div className='codeView'
               onMouseUp={this.handleMouseUp.bind(this)}
@@ -548,7 +548,7 @@ class Bindings extends Component {
               <Sourcecode code={this.props.codefile.data} />
             </div>
           </div>
-          :*/ 
+          :
           <div>
             <h4>Preview of the interactive figure</h4>
             <div className='codeView'>
@@ -557,11 +557,11 @@ class Bindings extends Component {
                 onClick={this.switchCodePreview.bind(this)}
                 >
                 Back to code
-                </Button>*/
+                </Button>
               }
             </div>
           </div> : ''
-        }
+            */}
         <div className="steps">
           <VerticalLinearStepper
             setResult={this.setResult.bind(this)}

@@ -32,6 +32,14 @@ class Manipulate extends React.Component {
 
     componentWillReceiveProps = () => this.setParameter.bind(this)
 
+    componentDidMount = () => {
+        this.runManipulateService();
+        this.highlight();
+        if (this.state.bindings.length > 5) {
+            this.setState({ variant: "scrollable" })
+        }
+    }
+    
     runManipulateService() {
         const self = this;
         self.state.bindings.forEach((binding) => {
@@ -97,14 +105,6 @@ class Manipulate extends React.Component {
             search(this.state.params[i])
         }
 
-    }
-
-    componentDidMount = () => {
-        this.runManipulateService();
-        this.highlight();
-        if (this.state.bindings.length > 5) {
-            this.setState({ variant: "scrollable" })
-        }
     }
 
     componentWillUnmount = () => removeHighlight();

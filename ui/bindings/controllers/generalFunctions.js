@@ -77,7 +77,7 @@ fn.handleCodeLines = function(lines) {
     let codelines = [];
     lines.forEach(function(elem) {
         for (let i = elem.first_line; i <= elem.last_line; i++) {
-            codelines.push(Number(i)-1); // -1 is required as the code lines from the front end start counting at 1.
+            codelines.push(Number(i)-1); // -1 is needed since the code lines from the front end start counting at 1
         };
     });
     debug('End handling code lines');
@@ -133,7 +133,6 @@ fn.wrapCode = function(sourcecode, result, parameter, figureSize) {
                 'startAnalysis <- Sys.time() \n' + 
                 transform;
     let code = sourcecode.split('\n');
-        //code[code.length-2] = 'print(' + code[code.length-2] + ')';
     let newCode = '';
         code.forEach(function(elem) {
             newCode += elem + '\n';
@@ -183,7 +182,7 @@ fn.saveRFile = function(data, compendiumId, fileName) {
 fn.extractCode = function(fileContent, codelines) {
     debug('Start extracting code');
     let newContent = '';
-    let splitFileContent = fileContent.split('\n');
+    let splitFileContent = fileContent;
     codelines.forEach(function(elem) {
         newContent += splitFileContent[elem] + '\n';
     });
@@ -207,7 +206,7 @@ fn.extractFigureSize = function (binding, fileContent){
 }
 
 fn.extractChunks = function (lines) {
-    debug('Start extracting code lines')
+    debug('Start extracting chunks')
     let linesExp = new RegExp('```');
     let start = [], end = [];
     let found = 0;
@@ -222,7 +221,7 @@ fn.extractChunks = function (lines) {
             }
         }
     }
-    debug('End extracting code lines')
+    debug('End extracting chunks')
     return {
         start: start,
         end: end
