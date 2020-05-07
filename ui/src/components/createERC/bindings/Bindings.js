@@ -59,7 +59,7 @@ const useStyles = makeStyles(theme => ({
 function VerticalLinearStepper ( props ) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
-  const steps = ['Select result from the list below', 'Mark the plot()-Function in the code', 
+  const steps = ['Which figure should be made interactive?', 'Mark the plot()-Function in the code', 
                   'Select the parameter by marking it in the code on the left', 
                   'Configure a UI widget'];
   const [result, setResult] = React.useState();
@@ -144,8 +144,8 @@ function VerticalLinearStepper ( props ) {
   return (
     <div className={classes.root}>
       <Stepper activeStep={activeStep} orientation="vertical">
-        {steps.map((label, index) => (
-          <Step key={label}>
+        { steps.map ( ( label, index ) => (
+          <Step key = { label } >
             <StepLabel><h3>{label}</h3></StepLabel>
             <StepContent>
               {activeStep === 0 && props.figures != '' ?
@@ -252,7 +252,7 @@ class Bindings extends Component {
     }
 
   componentDidMount () {
-    this.getFakeData();
+    //this.getFakeData();
     this.extractR(this.props.compendium_id, this.props.metadata.mainfile);
   }
 
@@ -266,9 +266,13 @@ class Bindings extends Component {
           let plotFunction = self.isPlotFunction( codelines[i] ) 
           if ( plotFunction ) {
             plotFunction.line = i;
+            plotFunction.plotFunction = codelines[i]; //To Do: format plotFigure1 to Figure 1, also consider e.g. plotFigure1a
             plotFunctions.push( plotFunction ); 
           }
         }
+        self.setState({
+          figures:plotFunctions,
+        });
         codelines = codelines.join('\n') + '\n';
         try {
           codelines = RParse( codelines );
@@ -278,6 +282,7 @@ class Bindings extends Component {
         }
         for ( let i in plotFunctions ) {
           let slicedCode = self.sliceCode( codelines, plotFunctions[i] );
+          console.log(slicedCode)
         }
       });
   }
@@ -517,7 +522,7 @@ class Bindings extends Component {
             Please, contact us since we are strongly interested in creating them for you: 
               <a href="mailto:o2r.team@uni-muenster.de"> o2r.team [ at ] uni-muenster [.de]</a>
         </h3>
-        {this.state.codeview ?
+        {/*this.state.codeview ?
           <div>
             <div className='codeView'
               onMouseUp={this.handleMouseUp.bind(this)}
@@ -537,7 +542,7 @@ class Bindings extends Component {
               </Button>
             </div>
           </div>
-        }
+        */}
         <div className="steps">
           <VerticalLinearStepper
             setResult={this.setResult.bind(this)}
