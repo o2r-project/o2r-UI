@@ -149,16 +149,18 @@ cron.schedule('* * * * *', () => {
 
 bindings.createBinding = function(binding, response) {
     debug( 'Start creating binding for result: %s, compendium: %s', binding.computationalResult.result, binding.id );
-    let mainfileContent = fn.readRmarkdown( binding.id, binding.sourcecode.file );
-    let figureSize = fn.extractFigureSize( binding, mainfileContent );
+    let mainfile = fn.readRmarkdown( binding.id, binding.sourcecode.file );
+    let figureSize = fn.extractFigureSize( binding, mainfile );
     //Implementation not finished: fn.modifyMainfile( fileContent, binding.computationalResult, binding.sourcecode.file, binding.id );
-    let mainfilelines = mainfileContent.split('\n');
-    let chunksLineNumbers = fn.extractChunks(mainfilelines);
-    let code = fn.extractCodeFromChunks( mainfilelines, chunksLineNumbers.start, chunksLineNumbers.end );
-    let bindingCodelines = fn.handleCodeLines( binding.sourcecode.codelines );
+    mainfile = mainfile.split('\n');
+    let chunksLineNumbers = fn.extractChunks(mainfile);
+    let code = fn.extractCodeFromChunks( mainfile, chunksLineNumbers.start, chunksLineNumbers.end );
+    let libraries = fn.findLibraries ( code, binding.computationalResult.line );
+    let bindingCodelines = binding.sourcecode.codelines.concat(libraries)
+        bindingCodelines = fn.handleCodeLines( bindingCodelines );
+        console.log(JSON.stringify(bindingCodelines))
     let bindingCode = fn.extractCode( code, bindingCodelines );
         bindingCode = fn.replaceVariable( bindingCode, binding.sourcecode.parameter );
-        console.log(bindingCode)
     let wrappedBindingCode = fn.wrapCode( bindingCode, binding.computationalResult.result, binding.sourcecode.parameter, figureSize );
     fn.saveResult( wrappedBindingCode, binding.id, binding.computationalResult.result.replace(/\s/g, '').toLowerCase() );
     binding.codesnippet = binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '.R';

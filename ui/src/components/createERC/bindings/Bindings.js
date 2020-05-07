@@ -308,6 +308,7 @@ class Bindings extends Component {
       let state = this.state;
       let selectedFigure = this.state.figures.find(element => element.plotFunction == figure);
       state.bindingResult = selectedFigure;
+      console.log(selectedFigure)
       state.bindingCode = this.sliceCode( state.codelines, selectedFigure );
       this.setState(state, () => {
         this.createBinding();
