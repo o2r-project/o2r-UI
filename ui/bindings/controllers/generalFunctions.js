@@ -76,7 +76,7 @@ fn.handleCodeLines = function(lines) {
     debug('Start handling code lines');
     let codelines = [];
     lines.forEach(function(elem) {
-        for (let i = elem.start; i <= elem.end; i++) {
+        for (let i = elem.first_line; i <= elem.last_line; i++) {
             codelines.push(Number(i)-1); // -1 is required as the code lines from the front end start counting at 1.
         };
     });
@@ -96,7 +96,7 @@ fn.extractCodeLines = function(fileContent, codelines) {
     return newContent;
 };
 
-fn.extractFigureSize = function (binding, fileContent){
+fn.extractFigureSize = function (binding, fileContent){ //To do: Take width from chunk which includes the plot function 
     debug('Start extracting figure width');
     let figureSize = '';
     let splitFileContent = fileContent.split('\n');

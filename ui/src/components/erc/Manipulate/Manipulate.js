@@ -17,7 +17,7 @@ class Manipulate extends React.Component {
             bindings: props.bindings,
             binding: props.bindings[0],
             variant: "standart",
-            params: this.getParams(props.bindings[0].sourcecode.parameter),
+            params: this.getParams(props.bindings[0].sourcecode.parameter), //To do: Catch if no parameters are available
             fullUrl: '',
             settings: [],
             settingsText: [],

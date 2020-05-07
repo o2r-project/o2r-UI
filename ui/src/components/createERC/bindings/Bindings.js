@@ -66,15 +66,15 @@ function VerticalLinearStepper ( props ) {
   const [widget, setWidget] = React.useState('slider');
   const [disabled, disable] = React.useState(true);
   const params = props.tmpParam;
-  const plot = props.tmpPlotFunction;
-  if (plot !== '' && disabled && activeStep === 1) {
+  //const plot = props.tmpPlotFunction;
+  /*if (plot !== '' && disabled && activeStep === 1) {
     disable(false);
-  }
+  }*/
   if ( params !== '' && disabled && activeStep === 2) {
     disable(false);
   } 
 
-  const handlePlotChange = () => disable(false);
+  //const handlePlotChange = () => disable(false);
   const handleParameterChange = () => disable(false);
   const handleSlider =  ( val, field ) => props.setWidget(field, val, widget);
   const handleWidgetChange = ( e ) => setWidget(e.target.value);
@@ -115,7 +115,7 @@ function VerticalLinearStepper ( props ) {
     }
   }
 
-  const showPreview = () => {
+  /*const showPreview = () => {
     let binding = props.createBinding();
     httpRequests.sendBinding(binding)
       .then(function (res) {
@@ -131,7 +131,7 @@ function VerticalLinearStepper ( props ) {
       .catch(function (res) {
         console.log(res);
       })
-  }
+  }*/
 
   const addParameter = () => {
     props.clearParam();
@@ -151,9 +151,9 @@ function VerticalLinearStepper ( props ) {
               {activeStep === 0 && props.figures != '' ?
                 <ComputationalResult value={result} figures={props.figures} handleResultChange={handleResultChange} />
               : ''}
-              {activeStep === 1 ?
+              {/*activeStep === 1 ?
                 <SelectedCode id="plotfunction" label="plot() function" handleChange={handlePlotChange} value={plot} />
-              : ''}
+              : ''*/}
               {activeStep === 2 ?
                 <SelectedCode id="parameter" label="Parameter" handleChange={handleParameterChange} value={props.tmpParam} />
               : ''}
@@ -191,7 +191,7 @@ function VerticalLinearStepper ( props ) {
                         Add paramater
                       </Button>
                       <Button variant="contained" color="primary" style={{marginLeft:'5%'}}
-                        onClick={showPreview}
+                        //onClick={showPreview}
                       >
                         Preview
                       </Button>
@@ -235,21 +235,22 @@ class Bindings extends Component {
       super ( props );
       this.state = {
         metadata:props.metadata,
+        erc: props.compendium_id,
+        mainfile: props.metadata.mainfile,
         figures:'',
         codelines:'',
-        creationStep:0,
         bindings: [],
-        codeview:true,
-        tmpCompId: props.compendium_id,
-        tmpComputResult: {},
-        tmpParam: '',
-        tmpParams: [],
-        tmpCodelines: '',
-        tmpPlotFunction: '',
-        tmpFile: props.metadata.mainfile,
-        tmpBinding: ''
+        binding: '',
+        bindingResult: {},
+        bindingCode: '',
+        //codeview:true,
+        parameters: [],
+        parameter: '',
+        //tmpPlotFunction: '',
+        creationStep:0,
+        preview: false,
       }
-      this.getFakeData = this.getFakeData.bind(this);
+      //this.getFakeData = this.getFakeData.bind(this);
     }
 
   componentDidMount () {
@@ -266,7 +267,9 @@ class Bindings extends Component {
           let plotFunction = self.isPlotFunction( codelines[i] ) 
           if ( plotFunction ) {
             plotFunction.line = i;
-            plotFunction.plotFunction = codelines[i]; //To Do: format plotFigure1 to Figure 1, also consider e.g. plotFigure1a
+            plotFunction.plotFunction = codelines[i]; 
+            plotFunction.result = "Figure 3"; //To Do: format plotFigure1 to Figure 1, also consider e.g. plotFigure1a 
+            plotFunction.type = "figure";     //To do: check if function creates figure, table, or number
             plotFunctions.push( plotFunction ); 
           }
         }
@@ -300,9 +303,19 @@ class Bindings extends Component {
     return found;
   }
 
+  setResult ( figure ) {
+    if (figure.indexOf("Figure") >= 0) {
+      let state = this.state;
+      let selectedFigure = this.state.figures.find(element => element.plotFunction == figure);
+      state.bindingResult = selectedFigure;
+      state.bindingCode = this.sliceCode( state.codelines, selectedFigure );
+      this.setState(state, () => {
+        this.createBinding();
+      });
+    }
+  }
+
   sliceCode = ( codelines, plotFunction ) => {
-    //console.log(codelines, plotFunction)
-    const self = this;
     let code = slice(codelines,
       { 
         items: [{ 
@@ -313,9 +326,8 @@ class Bindings extends Component {
         }] 
       });
     //let codes= self.handleAlogrithmusErrors(codelines, code.items);
-    code = self.sortCode(code.items);
     //code = self.groupCode(code);
-    return code;
+    return this.sortCode(code.items);
   }
 
   sortCode = (codelines) => {
@@ -325,7 +337,46 @@ class Bindings extends Component {
     return sortedCodelines;
   }
 
-  groupCode = (codelines) => {
+  createBinding = () => {
+    const self = this;
+    console.log(self.state.bindingCode)
+    let binding = {
+      "id": self.state.erc,
+      "computationalResult": self.state.bindingResult,
+      "sourcecode": {
+        "file": self.state.mainfile,
+        "codelines": self.state.bindingCode,
+        //"parameter": self.state.tmpParams,
+        "parameter": "",
+      }
+    };
+    self.setState({binding:binding}, () => {
+      self.showPreview(binding);
+    });
+    return binding;
+  }
+
+  showPreview = (binding) => {
+    console.log("show preview")
+    const self = this;
+    httpRequests.sendBinding(binding)
+      .then(function (res) {
+        httpRequests.runManipulationService(binding)
+          .then(function (res2) {
+            self.setState({preview:true})
+            //props.switchCodePreview();
+            //disable(false);
+          })
+          .catch(function (res2) {
+            console.log(res2);
+          })
+      })
+      .catch(function (res) {
+        console.log(res);
+      })
+  }
+
+  /*groupCode = (codelines) => {
     let groupedCode = codelines;
     for ( let i = 0; i < groupedCode.length-1 ; i++ ) {
       if ( groupedCode[i].first_line <= groupedCode[i+1].first_line && groupedCode[i].last_line >= groupedCode[i+1].last_line ) {
@@ -338,7 +389,7 @@ class Bindings extends Component {
       }
     }
     return groupedCode;
-  }
+  }*/
 
   handleAlogrithmusErrors = (code, codelines) => { //It's unlcear what is happening here
     for(var codeItem  of code){
@@ -365,7 +416,7 @@ class Bindings extends Component {
       return codelines;
     }
 
-  getFakeData () {
+  /*getFakeData () {
     let title = this.state.metadata.title;
     let figures = [];
     fakeBindings.forEach(element => {
@@ -376,22 +427,7 @@ class Bindings extends Component {
     this.setState({
       figures:figures,
     });
-  }
-
-  setResult ( figure ) {
-    if (figure.indexOf("Figure") >= 0) {
-      let state = this.state;
-      let selectedFigure = this.state.figures.find(element => element.plotFunction == figure);
-      state.tmpComputResult = {
-        type: 'figure',
-        result: selectedFigure,
-      }
-      this.setState(state, () => {
-        let slicedCode = this.sliceCode( state.codelines, selectedFigure );
-        console.log(slicedCode)
-      });
-    }
-  }
+  }*/
 
   /*handleMouseUp ( e ) {
     if (this.state.creationStep === 1) {
@@ -470,20 +506,7 @@ class Bindings extends Component {
     this.setState(state);
   }
 
-  createBinding () {
-    let binding = {
-      "id": this.state.tmpCompId,
-      "computationalResult": this.state.tmpComputResult,
-      "sourcecode": {
-        "file": this.state.tmpFile,
-        "codelines": this.state.tmpCodelines,
-        "parameter": this.state.tmpParams,
-      }
-    };
-    this.setState({tmpBinding:binding});
-    console.log(binding)
-    return binding;
-  }
+
 
   saveBinding () {
     let state = this.state;
@@ -493,7 +516,7 @@ class Bindings extends Component {
     this.setState(state);
   }
 
-  switchCodePreview = () => this.setState({codeview:!this.state.codeview,});
+  //switchCodePreview = () => this.setState({codeview:!this.state.codeview,});
 
   clearParam = () => this.setState({tmpParam:'',});
 
@@ -501,11 +524,11 @@ class Bindings extends Component {
 
   clearBinding () {
     let state = this.state;
-    state.codeview=true;
-    state.tmpComputResult={};
+    //state.codeview=true;
+    state.bindingResult={};
     state.tmpParam='';
     state.tmpParams=[];
-    state.tmpPlotFunction='';
+    //state.tmpPlotFunction='';
     state.tmpBinding='';
     this.setState(state);
   }
@@ -517,37 +540,38 @@ class Bindings extends Component {
             Please, contact us since we are strongly interested in creating them for you: 
               <a href="mailto:o2r.team@uni-muenster.de"> o2r.team [ at ] uni-muenster [.de]</a>
         </h3>
-        {/*this.state.codeview ?
-          <div>
+        {this.state.preview ?
+         /* <div>
             <div className='codeView'
               onMouseUp={this.handleMouseUp.bind(this)}
             >
               <Sourcecode code={this.props.codefile.data} />
             </div>
           </div>
-          : 
+          :*/ 
           <div>
             <h4>Preview of the interactive figure</h4>
             <div className='codeView'>
               <Manipulate bindings={[this.state.tmpBinding]} />
-              <Button variant="contained" color="primary"
+              {/*<Button variant="contained" color="primary"
                 onClick={this.switchCodePreview.bind(this)}
                 >
                 Back to code
-              </Button>
+                </Button>*/
+              }
             </div>
-          </div>
-        */}
+          </div> : ''
+        }
         <div className="steps">
           <VerticalLinearStepper
             setResult={this.setResult.bind(this)}
             setStep={this.setStep.bind(this)}
             setWidget={this.setWidget.bind(this)}
-            switchCodePreview={this.switchCodePreview.bind(this)}
+            //switchCodePreview={this.switchCodePreview.bind(this)}
             setParameter={this.setParameter.bind(this)}
             tmpParam={this.state.tmpParam}
             tmpParams={this.state.tmpParams}
-            tmpPlotFunction={this.state.tmpPlotFunction}
+            //tmpPlotFunction={this.state.tmpPlotFunction}
             createBinding={this.createBinding.bind(this)}
             clearParam={this.clearParam.bind(this)}
             saveBinding={this.saveBinding.bind(this)}

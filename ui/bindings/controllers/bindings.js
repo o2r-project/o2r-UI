@@ -58,12 +58,15 @@ bindings.start = (conf) => {
             let binding = req.params.binding;
             debug('Start getting image for %s from compendium: %s', binding, compendium);
             debug('Extracted query parameters: %s', Object.keys(req.query).length);
-            let queryParameters = '?';
-            for ( let i = 0; i < Object.keys(req.query).length; i++ ) {
-                queryParameters = queryParameters + "newValue" + i + "=" + req.query["newValue"+i];
-                if ( i +1 < Object.keys(req.query).length ) {
-                    queryParameters = queryParameters + "&";
-                } 
+            let queryParameters = '';
+            if ( Object.keys(req.query).length > 0 ) {
+                queryParameters = '?';
+                for ( let i = 0; i < Object.keys(req.query).length; i++ ) {
+                    queryParameters = queryParameters + "newValue" + i + "=" + req.query["newValue"+i];
+                    if ( i +1 < Object.keys(req.query).length ) {
+                        queryParameters = queryParameters + "&";
+                    } 
+                }
             }
             debug('Created url: %s', queryParameters);
             debug('Number of saved ports: %s', runningPorts.length)
@@ -148,7 +151,7 @@ bindings.createBinding = function(binding, response) {
     debug( 'Start creating binding for result: %s, compendium: %s', binding.computationalResult.result, binding.id );
     let fileContent = fn.readRmarkdown( binding.id, binding.sourcecode.file );
     let figureSize = fn.extractFigureSize(binding, fileContent);
-    fn.modifyMainfile( fileContent, binding.computationalResult, binding.sourcecode.file, binding.id );
+    //Implementation not finished: fn.modifyMainfile( fileContent, binding.computationalResult, binding.sourcecode.file, binding.id );
     let codelines = fn.handleCodeLines( binding.sourcecode.codelines );
     let extractedCode = fn.extractCode( fileContent, codelines );
         extractedCode = fn.replaceVariable( extractedCode, binding.sourcecode.parameter );
