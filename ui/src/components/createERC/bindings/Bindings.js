@@ -276,29 +276,65 @@ class Bindings extends Component {
         catch ( err ) {
           console.log( err )
         }
-        let slicedCode = self.sliceCode( codelines, plotFunctions);
-        console.log(slicedCode)
-      })
+        for ( let i in plotFunctions ) {
+          let slicedCode = self.sliceCode( codelines, plotFunctions[i] );
+        }
+      });
   }
 
-  sliceCode = ( codelines, plotFunctions ) => {
-    const self = this;
-    let code;
-    for( let plotFunction of plotFunctions ) {
-      code = slice(codelines,
-        { 
-          items: [{ 
-            first_line: parseInt(plotFunction.line) +1, 
-            first_column: plotFunction.firstIndex, 
-            last_line: parseInt(plotFunction.line) +1, 
-            last_column: parseInt(plotFunction.lastIndex) +1 
-          }] 
-        });
-      //let codes= self.handleAlogrithmusErrors(codelines, code.items);
-      code = self.sortCode(code.items);
-      //code = self.groupCode(code);
+  isPlotFunction = ( codeline ) => {
+    const regex= /plotFigure\d*\(\)/g;
+    let begin = codeline.search(regex);
+    let found;
+    if ( begin != -1 ) {
+      let end = codeline.indexOf(')', begin)
+      found = {
+        firstIndex: begin,
+        lastIndex: end
+      };
+    } else {
+      found=false
     }
+    return found;
+  }
+
+  sliceCode = ( codelines, plotFunction ) => {
+    const self = this;
+    let code = slice(codelines,
+      { 
+        items: [{ 
+          first_line: parseInt(plotFunction.line) +1, 
+          first_column: plotFunction.firstIndex, 
+          last_line: parseInt(plotFunction.line) +1, 
+          last_column: parseInt(plotFunction.lastIndex) +1 
+        }] 
+      });
+    //let codes= self.handleAlogrithmusErrors(codelines, code.items);
+    code = self.sortCode(code.items);
+    //code = self.groupCode(code);
     return code;
+  }
+
+  sortCode = (codelines) => {
+    let sortedCodelines = codelines.sort(function(a,b){
+      return a.first_line - b.first_line;
+    })
+    return sortedCodelines;
+  }
+
+  groupCode = (codelines) => {
+    let groupedCode = codelines;
+    for ( let i = 0; i < groupedCode.length-1 ; i++ ) {
+      if ( groupedCode[i].first_line <= groupedCode[i+1].first_line && groupedCode[i].last_line >= groupedCode[i+1].last_line ) {
+        groupedCode.splice(i+1, 1)
+        i--;
+      }
+      else if(groupedCode[i].last_line === groupedCode[i+1].first_line || groupedCode[i].last_line+1 === groupedCode[i+1].first_line){
+        groupedCode.splice(i,2, {first_line: groupedCode[i].first_line, last_line: groupedCode[i+1].last_line});
+        i--;
+      }
+    }
+    return groupedCode;
   }
 
   handleAlogrithmusErrors = (code, codelines) => { //It's unlcear what is happening here
@@ -325,44 +361,6 @@ class Bindings extends Component {
       }
       return codelines;
     }
-
-  isPlotFunction = ( codeline ) => {
-    const regex= /plotFigure\d*\(\)/g;
-    let begin = codeline.search(regex);
-    let found;
-    if ( begin != -1 ) {
-      let end = codeline.indexOf(')', begin)
-      found = {
-        firstIndex: begin,
-        lastIndex: end
-      };
-    } else {
-      found=false
-    }
-    return found;
-  }
-
-  sortCode = (codelines) => {
-    let sortedCodelines = codelines.sort(function(a,b){
-      return a.first_line - b.first_line;
-    })
-    return sortedCodelines;
-  }
-
-  groupCode = (codelines) => {
-    let groupedCode = codelines;
-    for ( let i = 0; i < groupedCode.length-1 ; i++ ) {
-      if ( groupedCode[i].first_line <= groupedCode[i+1].first_line && groupedCode[i].last_line >= groupedCode[i+1].last_line ) {
-        groupedCode.splice(i+1, 1)
-        i--;
-      }
-      else if(groupedCode[i].last_line === groupedCode[i+1].first_line || groupedCode[i].last_line+1 === groupedCode[i+1].first_line){
-        groupedCode.splice(i,2, {first_line: groupedCode[i].first_line, last_line: groupedCode[i+1].last_line});
-        i--;
-      }
-    }
-    return groupedCode;
-  }
 
   getFakeData () {
     let title = this.state.metadata.title;
