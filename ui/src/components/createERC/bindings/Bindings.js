@@ -6,6 +6,7 @@ import ChipInput from 'material-ui-chip-input';
 import httpRequests from '../../../helpers/httpRequests';
 import Manipulate from '../../erc/Manipulate/Manipulate';
 import ComputationalResult from './ComputationalResult/ComputationalResult';
+import ParamResult from './ParamResult/ParamResult';
 import SelectedCode from './SelectedCode/SelectedCode';
 import SliderSetting from './SliderSetting/SliderSetting';
 import WidgetSelector from './WidgetSelector/WidgetSelector';
@@ -59,23 +60,22 @@ const useStyles = makeStyles(theme => ({
 function VerticalLinearStepper ( props ) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
-  const steps = ['Which figure should be made interactive?', 'Mark the plot()-Function in the code', 
+  const steps = ['Which figure should be made interactive?',  
                   'Select the parameter by marking it in the code on the left', 
                   'Configure a UI widget'];
   const [result, setResult] = React.useState();
   const [widget, setWidget] = React.useState('slider');
   const [disabled, disable] = React.useState(true);
-  const params = props.tmpParam;
+  const [parameter, setParameter] = React.useState(null);
   //const plot = props.tmpPlotFunction;
   /*if (plot !== '' && disabled && activeStep === 1) {
     disable(false);
   }*/
-  if ( params !== '' && disabled && activeStep === 2) {
+  if ( parameter !== '' && disabled && activeStep === 2) {
     disable(false);
   } 
 
   //const handlePlotChange = () => disable(false);
-  const handleParameterChange = () => disable(false);
   const handleSlider =  ( val, field ) => props.setWidget(field, val, widget);
   const handleWidgetChange = ( e ) => setWidget(e.target.value);
 
@@ -111,6 +111,19 @@ function VerticalLinearStepper ( props ) {
     } else {
       setResult(e.target.value);
       props.setResult(e.target.value);
+      disable(false);
+    }
+  }
+
+  const handleParameterChange = ( e ,val ) =>{
+    e.persist()
+    console.log(e, val)
+    if (e.target.value === '') {
+      disable(true);
+      setParameter(e.target.value);
+    } else {
+      setParameter(e.target.value);
+      props.setParameter(e.target.value)
       disable(false);
     }
   }
@@ -154,10 +167,10 @@ function VerticalLinearStepper ( props ) {
               {/*activeStep === 1 ?
                 <SelectedCode id="plotfunction" label="plot() function" handleChange={handlePlotChange} value={plot} />
               : ''*/}
-              {activeStep === 2 ?
-                <SelectedCode id="parameter" label="Parameter" handleChange={handleParameterChange} value={props.tmpParam} />
+              {activeStep === 1 ?
+                <ParamResult value={parameter} params={props.possibleParameters} handleParamChange={handleParameterChange} />
               : ''}
-              {activeStep === 3 ?
+              {activeStep === 2 ?
                 <div>
                   <FormControl component="fieldset">
                     <RadioGroup aria-label="position" name="position" value={widget} onChange={handleWidgetChange} row>
@@ -238,14 +251,15 @@ class Bindings extends Component {
         erc: props.compendium_id,
         mainfile: props.metadata.mainfile,
         figures:'',
-        codelines:'',
+        analyzedCode:'',
         bindings: [],
         binding: '',
         bindingResult: {},
         bindingCode: '',
         //codeview:true,
-        parameters: [],
-        parameter: '',
+        possibleParameters: [],
+        tmpParam: [],
+        parameter: [],
         //tmpPlotFunction: '',
         creationStep:0,
         preview: false,
@@ -282,13 +296,13 @@ class Bindings extends Component {
         }
         self.setState({
           figures: plotFunctions,
-          codelines: codelines
+          analyzedCode: codelines
         });
       });
   }
 
   isPlotFunction = ( codeline ) => {
-    const regex= /plotFigure\d*\(\)/g;
+    const regex= /plotFigure\d*\(/g;
     let begin = codeline.search(regex);
     let found;
     if ( begin != -1 ) {
@@ -309,7 +323,7 @@ class Bindings extends Component {
       let selectedFigure = this.state.figures.find(element => element.plotFunction == figure);
       state.bindingResult = selectedFigure;
       console.log(selectedFigure)
-      state.bindingCode = this.sliceCode( state.codelines, selectedFigure );
+      state.bindingCode = this.sliceCode( state.analyzedCode, selectedFigure );
       this.setState(state, () => {
         this.createBinding();
       });
@@ -328,7 +342,9 @@ class Bindings extends Component {
       });
     code = this.analyzeIfConditions(analyzedCode.code, code.items);
     code = this.sortCode(code); //There is already a sorting implementation in the bindings servce. Let's see which one we actually need.
-    return this.groupCode(code); 
+    code = this.groupCode(code);
+    this.extractPossibleParameters(analyzedCode.code, code)
+    return code; 
   }
 
   sortCode = (codelines) => {
@@ -347,7 +363,7 @@ class Bindings extends Component {
       "sourcecode": {
         "file": self.state.mainfile,
         "codelines": self.state.bindingCode,
-        "parameter": self.state.parameters,
+        "parameter": self.state.parameter,
         //"parameter": "",
       }
     };
@@ -406,6 +422,21 @@ class Bindings extends Component {
     return codelines;
   }
 
+  extractPossibleParameters = (analyzedCode, codelines) => {
+    console.log(analyzedCode)
+    let possibleParameters = this.state.possibleParameters;
+    for(var codeItem  of analyzedCode){
+      if(codeItem.type === "assign" && codeItem.sources[0].type === "literal"){
+          for(var line of codelines){
+            if(line.first_line <= codeItem.location.first_line && line.last_line >= codeItem.location.last_line){
+              possibleParameters.push(codeItem);
+            }
+          }
+        }
+    }
+    this.setState({possibleParameters: possibleParameters}, ()=> console.log(this));
+  }
+
   /*getFakeData () {
     let title = this.state.metadata.title;
     let figures = [];
@@ -439,20 +470,14 @@ class Bindings extends Component {
   }
 
   setParameter ( param ) {
-    let splittedParam = '';
-    if (param.indexOf("<-") >= 0) {
-      splittedParam = param.split("<-");
-    }
-    if (param.indexOf("=") >= 0) {
-      splittedParam = param.split("=");
-    }
+    console.log(param)
     let state = this.state;
     let parameter = {
       text: param,
-      name: splittedParam[0].trim(),
-      val: Number(splittedParam[1].trim()),      
+      name: param.targets[0].id,
+      val: param.sources[0].value,      
     }
-    state.tmpParams.push(parameter);
+    state.tmpParam.push(parameter);
     this.setState(state);
   }
 
@@ -476,7 +501,7 @@ class Bindings extends Component {
   setWidget ( key, val, type ) {
     let state = this.state;
     let newVal = val;
-    let params = state.tmpParams;
+    let params = state.tmpParam;
     if (!isNaN(newVal)) {
       newVal = Number(newVal)
     }
@@ -560,7 +585,8 @@ class Bindings extends Component {
             //switchCodePreview={this.switchCodePreview.bind(this)}
             setParameter={this.setParameter.bind(this)}
             tmpParam={this.state.tmpParam}
-            tmpParams={this.state.tmpParams}
+            possibleParameters={this.state.possibleParameters}
+            extractPossibleParameters={this.extractPossibleParameters.bind(this)}
             //tmpPlotFunction={this.state.tmpPlotFunction}
             createBinding={this.createBinding.bind(this)}
             clearParam={this.clearParam.bind(this)}
