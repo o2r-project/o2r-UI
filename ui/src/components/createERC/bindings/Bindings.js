@@ -326,10 +326,7 @@ class Bindings extends Component {
           last_column: parseInt(plotFunction.lastIndex) +1 
         }] 
       });
-      console.log(analyzedCode);
-      console.log(code.items)
     code = this.analyzeIfConditions(analyzedCode.code, code.items);
-    console.log(code)
     code = this.sortCode(code); //There is already a sorting implementation in the bindings servce. Let's see which one we actually need.
     return this.groupCode(code); 
   }
@@ -350,8 +347,8 @@ class Bindings extends Component {
       "sourcecode": {
         "file": self.state.mainfile,
         "codelines": self.state.bindingCode,
-        //"parameter": self.state.tmpParams,
-        "parameter": "",
+        "parameter": self.state.parameters,
+        //"parameter": "",
       }
     };
     self.setState({binding:binding}, () => {
@@ -367,7 +364,7 @@ class Bindings extends Component {
       .then(function (res) {
         httpRequests.runManipulationService(binding)
           .then(function (res2) {
-            //self.setState({preview:true})
+            self.setState({preview:true})
             //props.switchCodePreview();
             //disable(false);
           })
@@ -397,9 +394,7 @@ class Bindings extends Component {
 
   analyzeIfConditions = (analyzedCode, codelines) => {
     for(var codeItem  of analyzedCode){
-      console.log(codeItem.type)
       if(codeItem.type === "if"){
-        console.log(0)
           for(var line of codelines){
             if(line.first_line > codeItem.location.first_line && line.last_line < codeItem.location.last_line){
               codelines.push(codeItem.location);
@@ -535,28 +530,28 @@ class Bindings extends Component {
             Please, contact us since we are strongly interested in creating them for you: 
               <a href="mailto:o2r.team@uni-muenster.de"> o2r.team [ at ] uni-muenster [.de]</a>
         </h3>
-        {/*this.state.preview ?
-         /* <div>
+        {this.state.preview ?
+          /*<div>
             <div className='codeView'
               onMouseUp={this.handleMouseUp.bind(this)}
             >
               <Sourcecode code={this.props.codefile.data} />
             </div>
           </div>
-          :
+          :*/
           <div>
             <h4>Preview of the interactive figure</h4>
             <div className='codeView'>
-              <Manipulate bindings={[this.state.tmpBinding]} />
+              <Manipulate bindings={[this.state.binding]} />
               {/*<Button variant="contained" color="primary"
                 onClick={this.switchCodePreview.bind(this)}
                 >
                 Back to code
                 </Button>
-              }
+              */}
             </div>
           </div> : ''
-            */}
+            }
         <div className="steps">
           <VerticalLinearStepper
             setResult={this.setResult.bind(this)}

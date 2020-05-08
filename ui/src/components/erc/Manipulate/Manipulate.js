@@ -68,12 +68,21 @@ class Manipulate extends React.Component {
                 }, 2000);
             })
         }
+        if(parameter.length == 0){
+            setTimeout(() => {
+                this.buildFullUrl(this.state.binding);
+            }, 2000);
+        }
     }
 
     buildFullUrl(binding) {
+        console.log("run")
         this.setState({ loading: true, processURL: true });
         let url = config.baseUrl + 'compendium/' + binding.id + "/binding/" + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?';
         let settingsText = ""
+        if(this.state.params.length == 0){
+            settingsText = "information about paramers will be displayed here"
+        }
         for (let i = 0; i < this.state.params.length; i++) {
             settingsText += " Parameter " + (i + 1) + ": " + this.state.params[i] + " = " + this.state[this.state.params[i]] + "; "
             url = url + 'newValue' + i + '=' + this.state[this.state.params[i]];
