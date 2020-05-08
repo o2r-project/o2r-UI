@@ -316,8 +316,8 @@ class Bindings extends Component {
     }
   }
 
-  sliceCode = ( codelines, plotFunction ) => {
-    let code = slice(codelines,
+  sliceCode = ( analyzedCode, plotFunction ) => {
+    let code = slice(analyzedCode,
       { 
         items: [{ 
           first_line: parseInt(plotFunction.line) +1, 
@@ -326,9 +326,12 @@ class Bindings extends Component {
           last_column: parseInt(plotFunction.lastIndex) +1 
         }] 
       });
-    //let codes= self.handleAlogrithmusErrors(codelines, code.items);
-    //code = self.groupCode(code);
-    return this.sortCode(code.items); //There is already a sorting implementation in the bindings servce. Let's see which one we actually need.
+      console.log(analyzedCode);
+      console.log(code.items)
+    code = this.analyzeIfConditions(analyzedCode.code, code.items);
+    console.log(code)
+    code = this.sortCode(code); //There is already a sorting implementation in the bindings servce. Let's see which one we actually need.
+    return this.groupCode(code); 
   }
 
   sortCode = (codelines) => {
@@ -377,7 +380,7 @@ class Bindings extends Component {
       })
   }
 
-  /*groupCode = (codelines) => {
+  groupCode = (codelines) => {
     let groupedCode = codelines;
     for ( let i = 0; i < groupedCode.length-1 ; i++ ) {
       if ( groupedCode[i].first_line <= groupedCode[i+1].first_line && groupedCode[i].last_line >= groupedCode[i+1].last_line ) {
@@ -390,18 +393,13 @@ class Bindings extends Component {
       }
     }
     return groupedCode;
-  }*/
+  }
 
-  handleAlogrithmusErrors = (code, codelines) => { //It's unlcear what is happening here
-    for(var codeItem  of code){
-      switch (codeItem.type){
-        case "call" : {
-            if(codeItem.func.id == "par"){
-              codelines.push(codeItem.location)
-            }
-            break;
-        }
-        case "if" : {
+  analyzeIfConditions = (analyzedCode, codelines) => {
+    for(var codeItem  of analyzedCode){
+      console.log(codeItem.type)
+      if(codeItem.type === "if"){
+        console.log(0)
           for(var line of codelines){
             if(line.first_line > codeItem.location.first_line && line.last_line < codeItem.location.last_line){
               codelines.push(codeItem.location);
@@ -409,13 +407,9 @@ class Bindings extends Component {
             }
           }
         }
-        case "import": {
-            codelines.push(codeItem.location)
-        }
-        }
-      }
-      return codelines;
     }
+    return codelines;
+  }
 
   /*getFakeData () {
     let title = this.state.metadata.title;
