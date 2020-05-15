@@ -83,10 +83,10 @@ function VerticalLinearStepper ( props ) {
     setActiveStep(prevActiveStep => prevActiveStep + 1);
     props.setStep(activeStep + 1);
     disable(true);
-    if (activeStep === 2) {
-      props.setParameter(props.tmpParam);
+    if (activeStep === 1) {
+      props.setParameter(parameter);
     }
-    if (activeStep === 3) {
+    if (activeStep === 2) {
       props.saveBinding();
     }
   }
@@ -117,13 +117,11 @@ function VerticalLinearStepper ( props ) {
 
   const handleParameterChange = ( e ,val ) =>{
     e.persist()
-    console.log(e, val)
     if (e.target.value === '') {
       disable(true);
       setParameter(e.target.value);
     } else {
       setParameter(e.target.value);
-      props.setParameter(e.target.value)
       disable(false);
     }
   }
@@ -148,8 +146,8 @@ function VerticalLinearStepper ( props ) {
 
   const addParameter = () => {
     props.clearParam();
-    setActiveStep(2);
-    props.setStep(2);
+    setActiveStep(1);
+    props.setStep(1);
   }
 
   const saveErc = () => props.saveErc();
@@ -287,16 +285,18 @@ class Bindings extends Component {
             plotFunctions.push( plotFunction ); 
           }
         }
-        codelines = codelines.join('\n') + '\n';
+        let codestring = codelines.join('\n') + '\n';
+        let analyzedCode;
         try {
-          codelines = RParse( codelines );
+          analyzedCode = RParse( codestring );
         } 
         catch ( err ) {
           console.log( err )
         }
         self.setState({
           figures: plotFunctions,
-          analyzedCode: codelines
+          analyzedCode: analyzedCode,
+          codelines: codelines
         });
       });
   }
@@ -356,7 +356,6 @@ class Bindings extends Component {
 
   createBinding = () => {
     const self = this;
-    console.log(self.state.bindingCode)
     let binding = {
       "id": self.state.erc,
       "computationalResult": self.state.bindingResult,
@@ -374,6 +373,7 @@ class Bindings extends Component {
   }
 
   showPreview = (binding) => {
+    console.log(binding)
     console.log("show preview")
     const self = this;
     httpRequests.sendBinding(binding)
@@ -423,12 +423,12 @@ class Bindings extends Component {
   }
 
   extractPossibleParameters = (analyzedCode, codelines) => {
-    console.log(analyzedCode)
     let possibleParameters = this.state.possibleParameters;
     for(var codeItem  of analyzedCode){
       if(codeItem.type === "assign" && codeItem.sources[0].type === "literal"){
           for(var line of codelines){
             if(line.first_line <= codeItem.location.first_line && line.last_line >= codeItem.location.last_line){
+              codeItem.text= this.state.codelines[codeItem.location.first_line - 1 ].substring(codeItem.location.first_column, codeItem.location.last_column)
               possibleParameters.push(codeItem);
             }
           }
@@ -470,10 +470,9 @@ class Bindings extends Component {
   }
 
   setParameter ( param ) {
-    console.log(param)
     let state = this.state;
     let parameter = {
-      text: param,
+      text: param.text,
       name: param.targets[0].id,
       val: param.sources[0].value,      
     }
@@ -533,7 +532,7 @@ class Bindings extends Component {
 
   //switchCodePreview = () => this.setState({codeview:!this.state.codeview,});
 
-  clearParam = () => this.setState({tmpParam:'',});
+  clearParam = () => {this.setState({tmpParam: [], parameter: this.state.parameter.concat(this.state.tmpParam)}, () => this.createBinding())};
 
   saveErc = () => this.props.updateMetadata(this.state.metadata, true);
 
@@ -541,7 +540,6 @@ class Bindings extends Component {
     let state = this.state;
     //state.codeview=true;
     state.bindingResult={};
-    state.tmpParam='';
     state.tmpParams=[];
     //state.tmpPlotFunction='';
     state.tmpBinding='';

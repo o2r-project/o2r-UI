@@ -39,6 +39,13 @@ class Manipulate extends React.Component {
             this.setState({ variant: "scrollable" })
         }
     }
+
+    componentDidUpdate = (prevProps) => {
+        if(JSON.stringify(this.props.bindings) !== JSON.stringify(prevProps.bindings)){
+            this.setState({bindings : this.props.bindings, binding: this.props.bindings[0], params: this.getParams(this.props.bindings[0].sourcecode.parameter)}, () => this.setParameter.bind(this))
+            
+        }
+    }
     
     runManipulateService() {
         const self = this;

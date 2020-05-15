@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Select } from "@material-ui/core";
+import { Select, MenuItem } from "@material-ui/core";
 
 class ParamResult extends Component {
 
@@ -9,10 +9,11 @@ class ParamResult extends Component {
                 <Select
                   value={this.props.value}
                   onChange={this.props.handleParamChange}
+                  style={{minWidth : "30%"}}
                 >
-                  <option value=''></option>
+                  <MenuItem value=''></MenuItem>
                   {this.props.params.map((param,index) => (
-                    <option value={param} key={index}>{param.targets[0].id}</option>
+                    <MenuItem value={param}>{param.targets[0].id}</MenuItem>
                   ))}
                 </Select>
             </div>
