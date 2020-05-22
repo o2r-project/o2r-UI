@@ -32,6 +32,7 @@ COPY package.json package.json
 
 RUN npm install --production
 
+
 COPY config config
 COPY index.js index.js
 COPY controllers controllers

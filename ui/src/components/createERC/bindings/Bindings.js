@@ -325,7 +325,7 @@ class Bindings extends Component {
       console.log(selectedFigure)
       state.bindingCode = this.sliceCode( state.analyzedCode, selectedFigure );
       this.setState(state, () => {
-        this.createBinding();
+        this.createBinding(true);
       });
     }
   }
@@ -354,7 +354,7 @@ class Bindings extends Component {
     return sortedCodelines;
   }
 
-  createBinding = () => {
+  createBinding = (preview) => {
     const self = this;
     let binding = {
       "id": self.state.erc,
@@ -364,7 +364,9 @@ class Bindings extends Component {
         "codelines": self.state.bindingCode,
         "parameter": self.state.parameter,
         //"parameter": "",
-      }
+      },
+      "preview": preview,
+
     };
     self.setState({binding:binding}, () => {
       self.showPreview(binding);
@@ -524,7 +526,7 @@ class Bindings extends Component {
 
   saveBinding () {
     let state = this.state;
-    let binding = this.createBinding();
+    let binding = this.createBinding(false);
     state.bindings.push(binding);
     state.metadata.interaction.push(binding);
     this.setState(state);
@@ -532,7 +534,7 @@ class Bindings extends Component {
 
   //switchCodePreview = () => this.setState({codeview:!this.state.codeview,});
 
-  clearParam = () => {this.setState({tmpParam: [], parameter: this.state.parameter.concat(this.state.tmpParam)}, () => this.createBinding())};
+  clearParam = () => {this.setState({tmpParam: [], parameter: this.state.parameter.concat(this.state.tmpParam)}, () => this.createBinding(true))};
 
   saveErc = () => this.props.updateMetadata(this.state.metadata, true);
 
