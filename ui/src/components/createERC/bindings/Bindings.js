@@ -126,6 +126,10 @@ function VerticalLinearStepper ( props ) {
     }
   }
 
+  const showPreview = () =>{
+    props.clearParam()
+  }
+
   /*const showPreview = () => {
     let binding = props.createBinding();
     httpRequests.sendBinding(binding)
@@ -202,7 +206,7 @@ function VerticalLinearStepper ( props ) {
                         Add paramater
                       </Button>
                       <Button variant="contained" color="primary" style={{marginLeft:'5%'}}
-                        //onClick={showPreview}
+                        onClick={showPreview}
                       >
                         Preview
                       </Button>
@@ -355,6 +359,7 @@ class Bindings extends Component {
   }
 
   createBinding = (preview) => {
+    console.log(2)
     const self = this;
     let binding = {
       "id": self.state.erc,
