@@ -116,6 +116,11 @@ bindings.start = (conf) => {
                         if(req.body.preview && elem.pid){
                             debug('Recrate Port' + elem.port); 
 
+                           exec('kill '+ (elem.pid)
+                            ,function(err) {
+                                debug(err)
+                            })
+
                             var kill= exec('kill '+ (elem.pid+1)
                             ,function(err) {
                                 debug(err)
@@ -262,6 +267,7 @@ bindings.runR = function ( binding, port ) {
                     debug(err)
                     //if (err) throw err;
                 });
+            debug(r.pid)
             for(var elem of runningPorts){
                 if (elem.result === binding.id + binding.computationalResult.result.replace(/\s/g, '').toLowerCase()){
                     elem.pid = r.pid

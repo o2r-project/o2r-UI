@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { makeStyles, Stepper, Step, StepLabel, StepContent, Button, 
-        Typography, Paper, RadioGroup, FormControl} from "@material-ui/core";
+import {
+  makeStyles, Stepper, Step, StepLabel, StepContent, Button,
+  Typography, Paper, RadioGroup, FormControl, Grid
+} from "@material-ui/core";
 import ChipInput from 'material-ui-chip-input';
 
 import httpRequests from '../../../helpers/httpRequests';
@@ -14,7 +16,7 @@ import './bindings.css';
 import fakeBindings from '../../../helpers/bindingsExamples.json';
 import Sourcecode from '../../erc/Inspect/CodeView/Sourcecode/Sourcecode';
 import { parse as RParse } from '../../../helpers/programm-analysis/R';
-import {slice} from '../../../helpers/programm-analysis/es6/slice'
+import { slice } from '../../../helpers/programm-analysis/es6/slice'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -57,12 +59,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function VerticalLinearStepper ( props ) {
+function VerticalLinearStepper(props) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
-  const steps = ['Which figure should be made interactive?',  
-                  'Select the parameter by marking it in the code on the left', 
-                  'Configure a UI widget'];
+  const steps = ['Which figure should be made interactive?',
+    'Select the parameter which schould be manipualteable',
+    'Configure a UI widget'];
   const [result, setResult] = React.useState();
   const [widget, setWidget] = React.useState('slider');
   const [disabled, disable] = React.useState(true);
@@ -71,13 +73,13 @@ function VerticalLinearStepper ( props ) {
   /*if (plot !== '' && disabled && activeStep === 1) {
     disable(false);
   }*/
-  if ( parameter !== '' && disabled && activeStep === 2) {
+  if (parameter !== '' && disabled && activeStep === 2) {
     disable(false);
-  } 
+  }
 
   //const handlePlotChange = () => disable(false);
-  const handleSlider =  ( val, field ) => props.setWidget(field, val, widget);
-  const handleWidgetChange = ( e ) => setWidget(e.target.value);
+  const handleSlider = (val, field) => props.setWidget(field, val, widget);
+  const handleWidgetChange = (e) => setWidget(e.target.value);
 
   const handleNext = () => {
     setActiveStep(prevActiveStep => prevActiveStep + 1);
@@ -102,9 +104,10 @@ function VerticalLinearStepper ( props ) {
     props.setStep(0);
     props.clearBinding();
     setResult('');
+    setParameter('')
   }
 
-  const handleResultChange = ( e ) => {
+  const handleResultChange = (e) => {
     if (e.target.value === '') {
       disable(true);
       setResult(e.target.value);
@@ -115,7 +118,7 @@ function VerticalLinearStepper ( props ) {
     }
   }
 
-  const handleParameterChange = ( e ,val ) =>{
+  const handleParameterChange = (e, val) => {
     e.persist()
     if (e.target.value === '') {
       disable(true);
@@ -126,7 +129,7 @@ function VerticalLinearStepper ( props ) {
     }
   }
 
-  const showPreview = () =>{
+  const showPreview = () => {
     props.clearParam()
   }
 
@@ -159,70 +162,75 @@ function VerticalLinearStepper ( props ) {
   return (
     <div className={classes.root}>
       <Stepper activeStep={activeStep} orientation="vertical">
-        { steps.map ( ( label, index ) => (
-          <Step key = { label } >
+        {steps.map((label, index) => (
+          <Step key={label} >
             <StepLabel><h3>{label}</h3></StepLabel>
             <StepContent>
               {activeStep === 0 && props.figures != '' ?
                 <ComputationalResult value={result} figures={props.figures} handleResultChange={handleResultChange} />
-              : ''}
+                : ''}
               {/*activeStep === 1 ?
                 <SelectedCode id="plotfunction" label="plot() function" handleChange={handlePlotChange} value={plot} />
               : ''*/}
               {activeStep === 1 ?
                 <ParamResult value={parameter} params={props.possibleParameters} handleParamChange={handleParameterChange} />
-              : ''}
+                : ''}
               {activeStep === 2 ?
                 <div>
                   <FormControl component="fieldset">
                     <RadioGroup aria-label="position" name="position" value={widget} onChange={handleWidgetChange} row>
-                      <WidgetSelector value="slider" label="Slider"/>
-                      <WidgetSelector value="radio" label="Radio"/>
+                      <WidgetSelector value="slider" label="Slider" />
+                      <WidgetSelector value="radio" label="Radio" />
                     </RadioGroup>
                   </FormControl>
-                  {widget === 'slider' 
-                  ? <div>
-                      <SliderSetting id="min" label="Minimum value" type="number" handleSlider={(e) => 
-                          handleSlider(e.target.value, 'minValue')} styles={classes.numField} />
-                      <SliderSetting id="max" label="Maximum value" type="number" handleSlider={(e) => 
-                          handleSlider(e.target.value, 'maxValue')} styles={classes.numField} />
-                      <SliderSetting id="step" label="Step size" type="number" handleSlider={(e) => 
-                          handleSlider(e.target.value, 'stepSize')} styles={classes.numField} />
-                      <SliderSetting id="captionSlider" label="Description" type="text" handleSlider={(e) => 
-                          handleSlider(e.target.value, 'caption')} styles={classes.textField} />
+                  {widget === 'slider'
+                    ? <div>
+                      <SliderSetting id="min" label="Minimum value" type="number" handleSlider={(e) =>
+                        handleSlider(e.target.value, 'minValue')} styles={classes.numField} />
+                      <SliderSetting id="max" label="Maximum value" type="number" handleSlider={(e) =>
+                        handleSlider(e.target.value, 'maxValue')} styles={classes.numField} />
+                      <SliderSetting id="step" label="Step size" type="number" handleSlider={(e) =>
+                        handleSlider(e.target.value, 'stepSize')} styles={classes.numField} />
+                      <SliderSetting id="captionSlider" label="Description" type="text" handleSlider={(e) =>
+                        handleSlider(e.target.value, 'caption')} styles={classes.textField} />
                     </div>
-                  : <div>
-                        <ChipInput style={{marginBottom:'3%'}}
-                          onChange={(chips) => handleSlider(chips, 'options')}
-                          placeholder="Type and enter at least two options"
-                        />
-                        <SliderSetting id="captionRadio" label="Description" type="text" handleSlider={(e) => 
-                            handleSlider(e.target.value, 'caption')} styles={classes.textField} />
+                    : <div>
+                      <ChipInput style={{ marginBottom: '3%' }}
+                        onChange={(chips) => handleSlider(chips, 'options')}
+                        placeholder="Type and enter at least two options"
+                      />
+                      <SliderSetting id="captionRadio" label="Description" type="text" handleSlider={(e) =>
+                        handleSlider(e.target.value, 'caption')} styles={classes.textField} />
                     </div>
                   }
-                      <Button variant="contained" color="primary"
-                        onClick={addParameter}
-                      >
-                        Add paramater
+                  <Button variant="contained" color="primary"
+                    onClick={addParameter}
+                  >
+                    Add paramater
                       </Button>
-                      <Button variant="contained" color="primary" style={{marginLeft:'5%'}}
-                        onClick={showPreview}
-                      >
-                        Preview
+                  <Button variant="contained" color="primary" style={{ marginLeft: '5%' }}
+                    onClick={showPreview} 
+                  >
+                    Save parameter
+                  </Button>
+                  <Button variant="contained" color="primary" style={{ marginLeft: '5%' }}
+                    onClick={handleReset} 
+                  >
+                    Reset
                       </Button>
                 </div>
-              : ''}
+                : ''}
               <div className={classes.actionsContainer} style={{ marginTop: '5%' }}>
                 <Button className={classes.button}
                   disabled={activeStep === 0}
                   onClick={handleBack}
-                  >
+                >
                   Back
                 </Button>
                 <Button variant="contained" color="primary" className={classes.button}
                   onClick={handleNext}
                   disabled={disabled}
-                  >
+                >
                   {activeStep === steps.length - 1 ? 'Save binding' : 'Next'}
                 </Button>
               </div>
@@ -246,56 +254,56 @@ function VerticalLinearStepper ( props ) {
 }
 
 class Bindings extends Component {
-  constructor ( props ) {
-      super ( props );
-      this.state = {
-        metadata:props.metadata,
-        erc: props.compendium_id,
-        mainfile: props.metadata.mainfile,
-        figures:'',
-        analyzedCode:'',
-        bindings: [],
-        binding: '',
-        bindingResult: {},
-        bindingCode: '',
-        //codeview:true,
-        possibleParameters: [],
-        tmpParam: [],
-        parameter: [],
-        //tmpPlotFunction: '',
-        creationStep:0,
-        preview: false,
-      }
-      //this.getFakeData = this.getFakeData.bind(this);
+  constructor(props) {
+    super(props);
+    this.state = {
+      metadata: props.metadata,
+      erc: props.compendium_id,
+      mainfile: props.metadata.mainfile,
+      figures: '',
+      analyzedCode: '',
+      bindings: [],
+      binding: '',
+      bindingResult: {},
+      bindingCode: '',
+      //codeview:true,
+      possibleParameters: [],
+      tmpParam: [],
+      parameter: [],
+      //tmpPlotFunction: '',
+      creationStep: 0,
+      preview: false,
     }
+    //this.getFakeData = this.getFakeData.bind(this);
+  }
 
-  componentDidMount () {
+  componentDidMount() {
     this.extractPlotFunctions(this.props.compendium_id, this.props.metadata.mainfile);
   }
 
-  extractPlotFunctions ( compendium_id, mainfile ) {
+  extractPlotFunctions(compendium_id, mainfile) {
     const self = this;
-    httpRequests.getCode( compendium_id, mainfile )
-      .then ( function ( res ) {
-        let codelines = res.data.data; 
+    httpRequests.getCode(compendium_id, mainfile)
+      .then(function (res) {
+        let codelines = res.data.data;
         let plotFunctions = [];
-        for ( let i in codelines ) {
-          let plotFunction = self.isPlotFunction( codelines[i] ) 
-          if ( plotFunction ) {
+        for (let i in codelines) {
+          let plotFunction = self.isPlotFunction(codelines[i])
+          if (plotFunction) {
             plotFunction.line = i;
-            plotFunction.plotFunction = codelines[i]; 
+            plotFunction.plotFunction = codelines[i];
             plotFunction.result = "Figure 3"; //To Do: format plotFigure1 to Figure 1, also consider e.g. plotFigure1a 
             plotFunction.type = "figure";     //To do: check if function creates figure, table, or number
-            plotFunctions.push( plotFunction ); 
+            plotFunctions.push(plotFunction);
           }
         }
         let codestring = codelines.join('\n') + '\n';
         let analyzedCode;
         try {
-          analyzedCode = RParse( codestring );
-        } 
-        catch ( err ) {
-          console.log( err )
+          analyzedCode = RParse(codestring);
+        }
+        catch (err) {
+          console.log(err)
         }
         self.setState({
           figures: plotFunctions,
@@ -305,61 +313,59 @@ class Bindings extends Component {
       });
   }
 
-  isPlotFunction = ( codeline ) => {
-    const regex= /plotFigure\d*\(/g;
+  isPlotFunction = (codeline) => {
+    const regex = /plotFigure\d*\(/g;
     let begin = codeline.search(regex);
     let found;
-    if ( begin != -1 ) {
+    if (begin != -1) {
       let end = codeline.indexOf(')', begin)
       found = {
         firstIndex: begin,
         lastIndex: end
       };
     } else {
-      found=false
+      found = false
     }
     return found;
   }
 
-  setResult ( figure ) {
+  setResult(figure) {
     if (figure.indexOf("Figure") >= 0) {
       let state = this.state;
       let selectedFigure = this.state.figures.find(element => element.plotFunction == figure);
       state.bindingResult = selectedFigure;
-      console.log(selectedFigure)
-      state.bindingCode = this.sliceCode( state.analyzedCode, selectedFigure );
+      state.bindingCode = this.sliceCode(state.analyzedCode, selectedFigure);
       this.setState(state, () => {
-        this.createBinding(true);
+        this.createBinding(true, true);
       });
     }
   }
 
-  sliceCode = ( analyzedCode, plotFunction ) => {
+  sliceCode = (analyzedCode, plotFunction) => {
     let code = slice(analyzedCode,
-      { 
-        items: [{ 
-          first_line: parseInt(plotFunction.line) +1, 
-          first_column: plotFunction.firstIndex, 
-          last_line: parseInt(plotFunction.line) +1, 
-          last_column: parseInt(plotFunction.lastIndex) +1 
-        }] 
+      {
+        items: [{
+          first_line: parseInt(plotFunction.line) + 1,
+          first_column: plotFunction.firstIndex,
+          last_line: parseInt(plotFunction.line) + 1,
+          last_column: parseInt(plotFunction.lastIndex) + 1
+        }]
       });
     code = this.analyzeIfConditions(analyzedCode.code, code.items);
     code = this.sortCode(code); //There is already a sorting implementation in the bindings servce. Let's see which one we actually need.
     code = this.groupCode(code);
     this.extractPossibleParameters(analyzedCode.code, code)
-    return code; 
+    return code;
   }
 
   sortCode = (codelines) => {
-    let sortedCodelines = codelines.sort(function(a,b){
+    let sortedCodelines = codelines.sort(function (a, b) {
       return a.first_line - b.first_line;
     })
     return sortedCodelines;
   }
 
-  createBinding = (preview) => {
-    console.log(2)
+  createBinding = (preview, first) => {
     const self = this;
     let binding = {
       "id": self.state.erc,
@@ -368,32 +374,35 @@ class Bindings extends Component {
         "file": self.state.mainfile,
         "codelines": self.state.bindingCode,
         "parameter": self.state.parameter,
-        //"parameter": "",
       },
       "preview": preview,
 
     };
-    self.setState({binding:binding}, () => {
-      self.showPreview(binding);
+    self.setState({ binding: binding }, () => {
+      self.showPreview(binding, !first);
     });
     return binding;
   }
 
-  showPreview = (binding) => {
-    console.log(binding)
+  showPreview = (binding, restartManipulation) => {
     console.log("show preview")
     const self = this;
     httpRequests.sendBinding(binding)
       .then(function (res) {
-        httpRequests.runManipulationService(binding)
-          .then(function (res2) {
-            self.setState({preview:true})
-            //props.switchCodePreview();
-            //disable(false);
-          })
-          .catch(function (res2) {
-            console.log(res2);
-          })
+        if (restartManipulation) {
+          httpRequests.runManipulationService(binding)
+            .then(function (res2) {
+              self.setState({ preview: true })
+              //props.switchCodePreview();
+              //disable(false);
+            })
+            .catch(function (res2) {
+              console.log(res2);
+            })
+        }
+        else {
+          self.setState({ preview: true })
+        }
       })
       .catch(function (res) {
         console.log(res);
@@ -402,13 +411,13 @@ class Bindings extends Component {
 
   groupCode = (codelines) => {
     let groupedCode = codelines;
-    for ( let i = 0; i < groupedCode.length-1 ; i++ ) {
-      if ( groupedCode[i].first_line <= groupedCode[i+1].first_line && groupedCode[i].last_line >= groupedCode[i+1].last_line ) {
-        groupedCode.splice(i+1, 1)
+    for (let i = 0; i < groupedCode.length - 1; i++) {
+      if (groupedCode[i].first_line <= groupedCode[i + 1].first_line && groupedCode[i].last_line >= groupedCode[i + 1].last_line) {
+        groupedCode.splice(i + 1, 1)
         i--;
       }
-      else if(groupedCode[i].last_line === groupedCode[i+1].first_line || groupedCode[i].last_line+1 === groupedCode[i+1].first_line){
-        groupedCode.splice(i,2, {first_line: groupedCode[i].first_line, last_line: groupedCode[i+1].last_line});
+      else if (groupedCode[i].last_line === groupedCode[i + 1].first_line || groupedCode[i].last_line + 1 === groupedCode[i + 1].first_line) {
+        groupedCode.splice(i, 2, { first_line: groupedCode[i].first_line, last_line: groupedCode[i + 1].last_line });
         i--;
       }
     }
@@ -416,32 +425,32 @@ class Bindings extends Component {
   }
 
   analyzeIfConditions = (analyzedCode, codelines) => {
-    for(var codeItem  of analyzedCode){
-      if(codeItem.type === "if"){
-          for(var line of codelines){
-            if(line.first_line > codeItem.location.first_line && line.last_line < codeItem.location.last_line){
-              codelines.push(codeItem.location);
-              break;
-            }
+    for (var codeItem of analyzedCode) {
+      if (codeItem.type === "if") {
+        for (var line of codelines) {
+          if (line.first_line > codeItem.location.first_line && line.last_line < codeItem.location.last_line) {
+            codelines.push(codeItem.location);
+            break;
           }
         }
+      }
     }
     return codelines;
   }
 
   extractPossibleParameters = (analyzedCode, codelines) => {
     let possibleParameters = this.state.possibleParameters;
-    for(var codeItem  of analyzedCode){
-      if(codeItem.type === "assign" && codeItem.sources[0].type === "literal"){
-          for(var line of codelines){
-            if(line.first_line <= codeItem.location.first_line && line.last_line >= codeItem.location.last_line){
-              codeItem.text= this.state.codelines[codeItem.location.first_line - 1 ].substring(codeItem.location.first_column, codeItem.location.last_column)
-              possibleParameters.push(codeItem);
-            }
+    for (var codeItem of analyzedCode) {
+      if (codeItem.type === "assign" && codeItem.sources[0].type === "literal") {
+        for (var line of codelines) {
+          if (line.first_line <= codeItem.location.first_line && line.last_line >= codeItem.location.last_line) {
+            codeItem.text = this.state.codelines[codeItem.location.first_line - 1].substring(codeItem.location.first_column, codeItem.location.last_column)
+            possibleParameters.push(codeItem);
           }
         }
+      }
     }
-    this.setState({possibleParameters: possibleParameters}, ()=> console.log(this));
+    this.setState({ possibleParameters: possibleParameters }, () => console.log(this));
   }
 
   /*getFakeData () {
@@ -470,18 +479,18 @@ class Bindings extends Component {
     }
   }*/
 
-  setStep ( step ) {
+  setStep(step) {
     this.setState({
       creationStep: step
     });
   }
 
-  setParameter ( param ) {
+  setParameter(param) {
     let state = this.state;
     let parameter = {
       text: param.text,
       name: param.targets[0].id,
-      val: param.sources[0].value,      
+      val: param.sources[0].value,
     }
     state.tmpParam.push(parameter);
     this.setState(state);
@@ -504,34 +513,34 @@ class Bindings extends Component {
     });
   }*/
 
-  setWidget ( key, val, type ) {
+  setWidget(key, val, type) {
     let state = this.state;
     let newVal = val;
     let params = state.tmpParam;
     if (!isNaN(newVal)) {
       newVal = Number(newVal)
     }
-    if (params.length>0) {
-      if ( params[params.length-1].uiWidget === undefined ){
-        params[params.length-1].uiWidget = {};
+    if (params.length > 0) {
+      if (params[params.length - 1].uiWidget === undefined) {
+        params[params.length - 1].uiWidget = {};
       }
-      params[params.length-1].uiWidget[key] = newVal;
-      params[params.length-1].uiWidget.type = type;
+      params[params.length - 1].uiWidget[key] = newVal;
+      params[params.length - 1].uiWidget.type = type;
     } else {
-      if ( params[0].uiWidget === undefined ){
+      if (params[0].uiWidget === undefined) {
         params[0].uiWidget = {};
       }
       params[0].uiWidget[key] = newVal;
-      params[params.length-1].uiWidget.type = type;
-    }   
+      params[params.length - 1].uiWidget.type = type;
+    }
     this.setState(state);
   }
 
 
 
-  saveBinding () {
+  saveBinding() {
     let state = this.state;
-    let binding = this.createBinding(false);
+    let binding = this.createBinding(false, true);
     state.bindings.push(binding);
     state.metadata.interaction.push(binding);
     this.setState(state);
@@ -539,27 +548,56 @@ class Bindings extends Component {
 
   //switchCodePreview = () => this.setState({codeview:!this.state.codeview,});
 
-  clearParam = () => {this.setState({tmpParam: [], parameter: this.state.parameter.concat(this.state.tmpParam)}, () => this.createBinding(true))};
+  clearParam = () => { this.setState({ tmpParam: [], parameter: this.state.parameter.concat(this.state.tmpParam) }, () => this.createBinding(true, false)) };
 
   saveErc = () => this.props.updateMetadata(this.state.metadata, true);
 
-  clearBinding () {
+  clearBinding() {
     let state = this.state;
     //state.codeview=true;
-    state.bindingResult={};
-    state.tmpParams=[];
+    state.bindingResult = {};
+    state.tmpParams = [];
+    state.tmpParam = [];
+    state.preview = false;
+    state.binding =  [];
+    state.parameter = [];
+    state.possibleParameters =  [];
+
     //state.tmpPlotFunction='';
-    state.tmpBinding='';
+    state.tmpBinding = '';
     this.setState(state);
   }
 
   render() {
     return (
-      <div className="bindingsView" style = {{marginTop:"5%"}}>
-        <h3>The feature for creating interactive figures by yourself is still in its infancy. 
-            Please, contact us since we are strongly interested in creating them for you: 
+      <div className="bindingsView" style={{ marginTop: "5%" }}>
+        <h3>The feature for creating interactive figures by yourself is still in its infancy.
+        Please, contact us since we are strongly interested in creating them for you:
               <a href="mailto:o2r.team@uni-muenster.de"> o2r.team [ at ] uni-muenster [.de]</a>
         </h3>
+        <Grid container>
+          <Grid item xs={4}>
+        <div className="steps">
+          <VerticalLinearStepper
+            setResult={this.setResult.bind(this)}
+            setStep={this.setStep.bind(this)}
+            setWidget={this.setWidget.bind(this)}
+            //switchCodePreview={this.switchCodePreview.bind(this)}
+            setParameter={this.setParameter.bind(this)}
+            tmpParam={this.state.tmpParam}
+            possibleParameters={this.state.possibleParameters}
+            extractPossibleParameters={this.extractPossibleParameters.bind(this)}
+            //tmpPlotFunction={this.state.tmpPlotFunction}
+            createBinding={this.createBinding.bind(this)}
+            clearParam={this.clearParam.bind(this)}
+            saveBinding={this.saveBinding.bind(this)}
+            saveErc={this.saveErc.bind(this)}
+            clearBinding={this.clearBinding.bind(this)}
+            figures={this.state.figures}
+          />
+        </div>
+        </Grid>
+        <Grid item xs={8}>
         {this.state.preview ?
           /*<div>
             <div className='codeView'
@@ -581,26 +619,9 @@ class Bindings extends Component {
               */}
             </div>
           </div> : ''
-            }
-        <div className="steps">
-          <VerticalLinearStepper
-            setResult={this.setResult.bind(this)}
-            setStep={this.setStep.bind(this)}
-            setWidget={this.setWidget.bind(this)}
-            //switchCodePreview={this.switchCodePreview.bind(this)}
-            setParameter={this.setParameter.bind(this)}
-            tmpParam={this.state.tmpParam}
-            possibleParameters={this.state.possibleParameters}
-            extractPossibleParameters={this.extractPossibleParameters.bind(this)}
-            //tmpPlotFunction={this.state.tmpPlotFunction}
-            createBinding={this.createBinding.bind(this)}
-            clearParam={this.clearParam.bind(this)}
-            saveBinding={this.saveBinding.bind(this)}
-            saveErc={this.saveErc.bind(this)}
-            clearBinding={this.clearBinding.bind(this)}
-            figures={this.state.figures}
-          />
-        </div>
+        }
+        </Grid>
+        </Grid>
       </div>
     );
   }
