@@ -104,7 +104,7 @@ function VerticalLinearStepper(props) {
     props.setStep(0);
     props.clearBinding();
     setResult('');
-    setParameter('')
+    setParameter('');
   }
 
   const handleResultChange = (e) => {
@@ -130,7 +130,8 @@ function VerticalLinearStepper(props) {
   }
 
   const showPreview = () => {
-    props.clearParam()
+    props.clearParam();
+    setParameter('');
   }
 
   /*const showPreview = () => {
@@ -155,6 +156,7 @@ function VerticalLinearStepper(props) {
     props.clearParam();
     setActiveStep(1);
     props.setStep(1);
+    setParameter('');
   }
 
   const saveErc = () => props.saveErc();
@@ -548,7 +550,20 @@ class Bindings extends Component {
 
   //switchCodePreview = () => this.setState({codeview:!this.state.codeview,});
 
-  clearParam = () => { this.setState({ tmpParam: [], parameter: this.state.parameter.concat(this.state.tmpParam) }, () => this.createBinding(true, false)) };
+  clearParam = () => { 
+    let value = this.state.tmpParam;
+    let arr = this.state.possibleParameters;
+    var index = -1
+    for(var i in arr){
+      if(arr[i].targets[0].id == value[0].name){
+        index=i;
+      }
+    }
+    if (index > -1) {
+        arr.splice(index, 1);
+    }
+    this.setState({ tmpParam: [], parameter: this.state.parameter.concat(this.state.tmpParam), possibleParameters:arr }, () => this.createBinding(true, false)) 
+  };
 
   saveErc = () => this.props.updateMetadata(this.state.metadata, true);
 
