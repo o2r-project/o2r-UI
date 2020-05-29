@@ -68,14 +68,41 @@ function VerticalLinearStepper(props) {
   const [result, setResult] = React.useState();
   const [widget, setWidget] = React.useState('slider');
   const [disabled, disable] = React.useState(true);
+  const [disabled2, disable2] = React.useState(true);
   const [parameter, setParameter] = React.useState(null);
   //const plot = props.tmpPlotFunction;
   /*if (plot !== '' && disabled && activeStep === 1) {
     disable(false);
   }*/
-  if (parameter !== '' && disabled && activeStep === 2) {
+
+ 
+  if (parameter !== '' && disabled && activeStep === 2 && props.parameter.length != 0) {
     disable(false);
   }
+
+  
+  if(activeStep === 2 && props.tmpParam[0].uiWidget && props.tmpParam[0].uiWidget.type == "slider"){
+
+    if((props.tmpParam[0].uiWidget.minValue || props.tmpParam[0].uiWidget.minValue==0) && props.tmpParam[0].uiWidget.caption && (props.tmpParam[0].uiWidget.maxValue || props.tmpParam[0].uiWidget.minValue==0)  && props.tmpParam[0].uiWidget.stepSize ){
+      if(disabled2){
+        disable2(false)
+      }
+    }
+    else if(!disabled2){
+      disable2(true)
+    }
+  }
+  else if( activeStep===2 && props.tmpParam[0].uiWidget && props.tmpParam[0].uiWidget.type == "radio"){
+    if(props.tmpParam[0].uiWidget.options.length > 1  && props.tmpParam[0].uiWidget.caption){
+      if(disabled2){
+        disable2(false)
+      }
+    }
+    else if(!disabled2){
+      disable2(true)
+    }
+  }
+
 
   //const handlePlotChange = () => disable(false);
   const handleSlider = (val, field) => props.setWidget(field, val, widget);
@@ -130,6 +157,7 @@ function VerticalLinearStepper(props) {
   }
 
   const showPreview = () => {
+    disable(false)
     props.clearParam();
     setParameter('');
   }
@@ -206,11 +234,13 @@ function VerticalLinearStepper(props) {
                     </div>
                   }
                   <Button variant="contained" color="primary"
+                    disabled={disabled2}
                     onClick={addParameter}
                   >
                     Add paramater
                       </Button>
                   <Button variant="contained" color="primary" style={{ marginLeft: '5%' }}
+                    disabled={disabled2}
                     onClick={showPreview} 
                   >
                     Save parameter
@@ -555,7 +585,7 @@ class Bindings extends Component {
     let arr = this.state.possibleParameters;
     var index = -1
     for(var i in arr){
-      if(arr[i].targets[0].id == value[0].name){
+      if(value[0] && arr[i].targets[0].id == value[0].name){
         index=i;
       }
     }
@@ -601,6 +631,7 @@ class Bindings extends Component {
             setParameter={this.setParameter.bind(this)}
             tmpParam={this.state.tmpParam}
             possibleParameters={this.state.possibleParameters}
+            parameter={this.state.parameter}
             extractPossibleParameters={this.extractPossibleParameters.bind(this)}
             //tmpPlotFunction={this.state.tmpPlotFunction}
             createBinding={this.createBinding.bind(this)}
