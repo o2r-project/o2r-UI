@@ -75,30 +75,30 @@ function VerticalLinearStepper(props) {
     disable(false);
   }*/
 
- 
+
   if (parameter !== '' && disabled && activeStep === 2 && props.parameter.length != 0) {
     disable(false);
   }
 
-  
-  if(activeStep === 2 && props.tmpParam[0].uiWidget && props.tmpParam[0].uiWidget.type == "slider"){
 
-    if((props.tmpParam[0].uiWidget.minValue || props.tmpParam[0].uiWidget.minValue==0) && props.tmpParam[0].uiWidget.caption && (props.tmpParam[0].uiWidget.maxValue || props.tmpParam[0].uiWidget.minValue==0)  && props.tmpParam[0].uiWidget.stepSize ){
-      if(disabled2){
+  if (activeStep === 2 && props.tmpParam[0].uiWidget && props.tmpParam[0].uiWidget.type == "slider") {
+
+    if ((props.tmpParam[0].uiWidget.minValue || props.tmpParam[0].uiWidget.minValue == 0) && props.tmpParam[0].uiWidget.caption && (props.tmpParam[0].uiWidget.maxValue || props.tmpParam[0].uiWidget.minValue == 0) && props.tmpParam[0].uiWidget.stepSize) {
+      if (disabled2) {
         disable2(false)
       }
     }
-    else if(!disabled2){
+    else if (!disabled2) {
       disable2(true)
     }
   }
-  else if( activeStep===2 && props.tmpParam[0].uiWidget && props.tmpParam[0].uiWidget.type == "radio"){
-    if(props.tmpParam[0].uiWidget.options.length > 1  && props.tmpParam[0].uiWidget.caption){
-      if(disabled2){
+  else if (activeStep === 2 && props.tmpParam[0].uiWidget && props.tmpParam[0].uiWidget.type == "radio") {
+    if (props.tmpParam[0].uiWidget.options.length > 1 && props.tmpParam[0].uiWidget.caption) {
+      if (disabled2) {
         disable2(false)
       }
     }
-    else if(!disabled2){
+    else if (!disabled2) {
       disable2(true)
     }
   }
@@ -241,12 +241,12 @@ function VerticalLinearStepper(props) {
                       </Button>
                   <Button variant="contained" color="primary" style={{ marginLeft: '5%' }}
                     disabled={disabled2}
-                    onClick={showPreview} 
+                    onClick={showPreview}
                   >
                     Save parameter
                   </Button>
                   <Button variant="contained" color="primary" style={{ marginLeft: '5%' }}
-                    onClick={handleReset} 
+                    onClick={handleReset}
                   >
                     Reset
                       </Button>
@@ -322,10 +322,16 @@ class Bindings extends Component {
         for (let i in codelines) {
           let plotFunction = self.isPlotFunction(codelines[i])
           if (plotFunction) {
-            plotFunction.line = i;
             plotFunction.plotFunction = codelines[i];
-            plotFunction.result = "Figure 3"; //To Do: format plotFigure1 to Figure 1, also consider e.g. plotFigure1a 
-            plotFunction.type = "figure";     //To do: check if function creates figure, table, or number
+            plotFunction.line = i;
+            if (codelines[i].search("Figure") == -1) {
+              plotFunction.type = "table";
+              plotFunction.result = "Table " + codelines[i].substring(10, codelines[i].indexOf("()"));
+            }
+            else {
+              plotFunction.type = "figure";
+              plotFunction.result = "Figure " + codelines[i].substring(10, codelines[i].indexOf("()"));
+            }
             plotFunctions.push(plotFunction);
           }
         }
@@ -580,19 +586,19 @@ class Bindings extends Component {
 
   //switchCodePreview = () => this.setState({codeview:!this.state.codeview,});
 
-  clearParam = () => { 
+  clearParam = () => {
     let value = this.state.tmpParam;
     let arr = this.state.possibleParameters;
     var index = -1
-    for(var i in arr){
-      if(value[0] && arr[i].targets[0].id == value[0].name){
-        index=i;
+    for (var i in arr) {
+      if (value[0] && arr[i].targets[0].id == value[0].name) {
+        index = i;
       }
     }
     if (index > -1) {
-        arr.splice(index, 1);
+      arr.splice(index, 1);
     }
-    this.setState({ tmpParam: [], parameter: this.state.parameter.concat(this.state.tmpParam), possibleParameters:arr }, () => this.createBinding(true, false)) 
+    this.setState({ tmpParam: [], parameter: this.state.parameter.concat(this.state.tmpParam), possibleParameters: arr }, () => this.createBinding(true, false))
   };
 
   saveErc = () => this.props.updateMetadata(this.state.metadata, true);
@@ -604,9 +610,9 @@ class Bindings extends Component {
     state.tmpParams = [];
     state.tmpParam = [];
     state.preview = false;
-    state.binding =  [];
+    state.binding = [];
     state.parameter = [];
-    state.possibleParameters =  [];
+    state.possibleParameters = [];
 
     //state.tmpPlotFunction='';
     state.tmpBinding = '';
@@ -622,51 +628,51 @@ class Bindings extends Component {
         </h3>
         <Grid container>
           <Grid item xs={4}>
-        <div className="steps">
-          <VerticalLinearStepper
-            setResult={this.setResult.bind(this)}
-            setStep={this.setStep.bind(this)}
-            setWidget={this.setWidget.bind(this)}
-            //switchCodePreview={this.switchCodePreview.bind(this)}
-            setParameter={this.setParameter.bind(this)}
-            tmpParam={this.state.tmpParam}
-            possibleParameters={this.state.possibleParameters}
-            parameter={this.state.parameter}
-            extractPossibleParameters={this.extractPossibleParameters.bind(this)}
-            //tmpPlotFunction={this.state.tmpPlotFunction}
-            createBinding={this.createBinding.bind(this)}
-            clearParam={this.clearParam.bind(this)}
-            saveBinding={this.saveBinding.bind(this)}
-            saveErc={this.saveErc.bind(this)}
-            clearBinding={this.clearBinding.bind(this)}
-            figures={this.state.figures}
-          />
-        </div>
-        </Grid>
-        <Grid item xs={8}>
-        {this.state.preview ?
-          /*<div>
-            <div className='codeView'
-              onMouseUp={this.handleMouseUp.bind(this)}
-            >
-              <Sourcecode code={this.props.codefile.data} />
+            <div className="steps">
+              <VerticalLinearStepper
+                setResult={this.setResult.bind(this)}
+                setStep={this.setStep.bind(this)}
+                setWidget={this.setWidget.bind(this)}
+                //switchCodePreview={this.switchCodePreview.bind(this)}
+                setParameter={this.setParameter.bind(this)}
+                tmpParam={this.state.tmpParam}
+                possibleParameters={this.state.possibleParameters}
+                parameter={this.state.parameter}
+                extractPossibleParameters={this.extractPossibleParameters.bind(this)}
+                //tmpPlotFunction={this.state.tmpPlotFunction}
+                createBinding={this.createBinding.bind(this)}
+                clearParam={this.clearParam.bind(this)}
+                saveBinding={this.saveBinding.bind(this)}
+                saveErc={this.saveErc.bind(this)}
+                clearBinding={this.clearBinding.bind(this)}
+                figures={this.state.figures}
+              />
             </div>
-          </div>
-          :*/
-          <div>
-            <h4>Preview of the interactive figure</h4>
-            <div className='codeView'>
-              <Manipulate bindings={[this.state.binding]} />
-              {/*<Button variant="contained" color="primary"
+          </Grid>
+          <Grid item xs={8}>
+            {this.state.preview ?
+              /*<div>
+                <div className='codeView'
+                  onMouseUp={this.handleMouseUp.bind(this)}
+                >
+                  <Sourcecode code={this.props.codefile.data} />
+                </div>
+              </div>
+              :*/
+              <div>
+                <h4>Preview of the interactive figure</h4>
+                <div className='codeView'>
+                  <Manipulate bindings={[this.state.binding]} />
+                  {/*<Button variant="contained" color="primary"
                 onClick={this.switchCodePreview.bind(this)}
                 >
                 Back to code
                 </Button>
               */}
-            </div>
-          </div> : ''
-        }
-        </Grid>
+                </div>
+              </div> : ''
+            }
+          </Grid>
         </Grid>
       </div>
     );
