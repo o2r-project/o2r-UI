@@ -106,13 +106,30 @@ bindings.start = (conf) => {
                     port: newPort
                 });
                 debug('Saved %s of compendium %s under port %s', binding, compendium, newPort);
-                bindings.runR(req.body, newPort);
+                bindings.runR(req.body, runningPorts[runningPorts.length-1]);
             } else {
                 let included = false;
                 runningPorts.forEach( function (elem) {
                     if ( elem.result === compendium + binding ) {
                         included = true;
                         debug('Service for binding already running');
+                        if(req.body.preview && elem.pid){
+                            debug('Recrate Port' + elem.port); 
+
+                           exec('kill '+ (elem.pid)
+                            ,function(err) {
+                                debug(err)
+                            })
+
+                            var kill= exec('kill '+ (elem.pid+1)
+                            ,function(err) {
+                                debug(err)
+                            })
+
+                            kill.on('close', () => setTimeout(() => {
+                                debug("try"); bindings.runR(req.body, elem)}
+                            , 1000));
+                        }
                     }
                 })
                 if ( !included ) {
@@ -123,7 +140,7 @@ bindings.start = (conf) => {
                         port: newPort
                     });
                     debug('Saved %s of compendium %s under port %s', binding, compendium, newPort);
-                    bindings.runR(req.body, newPort);
+                    bindings.runR(req.body, runningPorts[runningPorts.length-1]);
                 }
             }
 
@@ -231,24 +248,31 @@ bindings.runR = function ( binding, port ) {
         socket.pipe(socket);
     });
     
-        server.listen(port, 'localhost');
+        server.listen(port.port, 'localhost');
         server.on('error', function (e) {
-            debug("port %s is not free", port);
+            debug(e)
+            debug("port %s is not free", port.port);
         });
         server.on('listening', function ( e ) {
             server.close();
-            debug("port %s is free", port);
-            
-            exec('R -e '+ 
+            debug("port %s is free", port.port);
+            var r = exec('R -e '+ 
                 '"library("plumber"); '
                 + "setwd('" + path.join('tmp', 'o2r', 'compendium', binding.id) + "'); "
                 + "path = paste('" + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + ".R', sep = ''); "
                 + "r <- plumb(path); " 
-                + "r\\$run(host = '0.0.0.0', port=" + port + ");"
+                + "r\\$run(host = '0.0.0.0', port=" + port.port + ");"
                 + '"', 
                 function(err) {
-                    if (err) throw err;
+                    debug(err)
+                    //if (err) throw err;
                 });
+            debug(r.pid)
+            for(var elem of runningPorts){
+                if (elem.result === binding.id + binding.computationalResult.result.replace(/\s/g, '').toLowerCase()){
+                    elem.pid = r.pid
+                }
+            }
         });
         server.close(function () {
             console.log('server stopped');
