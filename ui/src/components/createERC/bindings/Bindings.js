@@ -352,7 +352,7 @@ class Bindings extends Component {
   }
 
   isPlotFunction = (codeline) => {
-    const regex = /plotFigure\d*\(/g;
+    const regex = /plotFigure\d*[a-z]?\(/g;
     let begin = codeline.search(regex);
     let found;
     if (begin != -1) {
@@ -380,6 +380,7 @@ class Bindings extends Component {
   }
 
   sliceCode = (analyzedCode, plotFunction) => {
+    console.log(analyzedCode)
     let code = slice(analyzedCode,
       {
         items: [{
@@ -389,10 +390,12 @@ class Bindings extends Component {
           last_column: parseInt(plotFunction.lastIndex) + 1
         }]
       });
+    console.log(code)
     code = this.analyzeIfConditions(analyzedCode.code, code.items);
     code = this.sortCode(code); //There is already a sorting implementation in the bindings servce. Let's see which one we actually need.
     code = this.groupCode(code);
     this.extractPossibleParameters(analyzedCode.code, code)
+
     return code;
   }
 
@@ -463,16 +466,30 @@ class Bindings extends Component {
   }
 
   analyzeIfConditions = (analyzedCode, codelines) => {
+  
     for (var codeItem of analyzedCode) {
-      if (codeItem.type === "if") {
+      if (codeItem.type === "if"  || codeItem.type === "while" ) {
+        if(codeItem.code[0].func && codeItem.code[0].func.id ==="install.packages"){
+          codelines.push(codeItem.location);
+        }
+        else{
         for (var line of codelines) {
           if (line.first_line > codeItem.location.first_line && line.last_line < codeItem.location.last_line) {
             codelines.push(codeItem.location);
             break;
+            }
           }
         }
       }
-    }
+      else if(codeItem.type === "call") {
+        if(codeItem.func.id == "load"){
+          codelines.push(codeItem.location)
+        }
+      }
+      else if(codeItem.type == "import"){
+        codelines.push(codeItem.location)
+      }
+  }
     return codelines;
   }
 

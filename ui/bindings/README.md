@@ -17,3 +17,13 @@ docker-compose build bindings
 ## License
 
 o2r-bindings is published under Apache Software License, Version 2.0 - see file `LICENSE`.
+
+## Requirements and Constraints for automatic Bindings Execution
+* The codepart responsible for the plot must be wrapped into a function called *PlotFunctionX()*. This function must include the necessary plot function, e.g. *plot*. For Examples see [here](https://github.com/MarkusKonk/erc-examples/tree/master/ERC/Finished/insyde_extractR)
+* Decimal numbers must contain a zero before the point (0.1 instead of .1)
+* Special syntax (like in the following example) is not working:
+```R
+a = c %>%
+  mutate(.data) %>%
+  filter(c > 5)
+```
