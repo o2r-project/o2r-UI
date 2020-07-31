@@ -63,7 +63,7 @@ function VerticalLinearStepper(props) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const steps = ['Which figure should be made interactive?',
-    'Select the parameter which schould be manipualteable',
+    'Select the parameter which should be made possible to change',
     'Configure a UI widget'];
   const [result, setResult] = React.useState();
   const [widget, setWidget] = React.useState('slider');
@@ -81,7 +81,7 @@ function VerticalLinearStepper(props) {
   }
 
 
-  if (activeStep === 2 && props.tmpParam[0].uiWidget && props.tmpParam[0].uiWidget.type == "slider") {
+  if (activeStep === 2 && props.tmpParam[0]&& props.tmpParam[0].uiWidget && props.tmpParam[0].uiWidget.type == "slider") {
 
     if ((props.tmpParam[0].uiWidget.minValue || props.tmpParam[0].uiWidget.minValue == 0) && props.tmpParam[0].uiWidget.caption && (props.tmpParam[0].uiWidget.maxValue || props.tmpParam[0].uiWidget.minValue == 0) && props.tmpParam[0].uiWidget.stepSize) {
       if (disabled2) {
@@ -92,7 +92,7 @@ function VerticalLinearStepper(props) {
       disable2(true)
     }
   }
-  else if (activeStep === 2 && props.tmpParam[0].uiWidget && props.tmpParam[0].uiWidget.type == "radio") {
+  else if (activeStep === 2 && props.tmpParam[0] && props.tmpParam[0].uiWidget && props.tmpParam[0].uiWidget.type == "radio") {
     if (props.tmpParam[0].uiWidget.options.length > 1 && props.tmpParam[0].uiWidget.caption) {
       if (disabled2) {
         disable2(false)

@@ -21,6 +21,15 @@ o2r-bindings is published under Apache Software License, Version 2.0 - see file 
 ## Requirements and Constraints for automatic Bindings Execution
 * The codepart responsible for the plot must be wrapped into a function called *PlotFunctionX()*. This function must include the necessary plot function, e.g. *plot*. For Examples see [here](https://github.com/MarkusKonk/erc-examples/tree/master/ERC/Finished/insyde_extractR)
 * Decimal numbers must contain a zero before the point (0.1 instead of .1)
+* If a function gets a function as parameter, for Example apply(), the Function can not be defined directly in the parameter area. The function must be defined as parameter before.
+```R
+data = apply(m, FUN= function(x) x^2)
+```
+change to 
+```R
+square= function(x) x^2
+data = apply(m, FUN= sqaure)
+```
 * Special syntax (like in the following example) is not working:
 ```R
 a = c %>%
