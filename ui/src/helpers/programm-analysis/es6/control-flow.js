@@ -80,7 +80,7 @@ var ControlFlowGraph = /** @class */ (function () {
         else if (node.type == ast.DEF) {
             statements = Array.isArray(node.code) ? node.code : [node.code];
         }
-        _a = this.makeCFG('entry', statements, new Context(null, null, this.makeBlock('exceptional exit'))), this.entry = _a[0], this.exit = _a[1]; 
+        _a = this.makeCFG('entry', statements, new Context(null, null, this.makeBlock('exceptional exit'))), this.entry = _a[0], this.exit = _a[1];
     }
     ControlFlowGraph.prototype.makeBlock = function (hint, statements) {
         if (statements === void 0) { statements = []; }
@@ -117,24 +117,24 @@ var ControlFlowGraph = /** @class */ (function () {
     ControlFlowGraph.prototype.getSuccessors = function (block) {
         return this.successors.items
             .filter(function (_a) {
-            var p = _a[0], _ = _a[1];
-            return p == block;
-        })
+                var p = _a[0], _ = _a[1];
+                return p == block;
+            })
             .map(function (_a) {
-            var _ = _a[0], s = _a[1];
-            return s;
-        });
+                var _ = _a[0], s = _a[1];
+                return s;
+            });
     };
     ControlFlowGraph.prototype.getPredecessors = function (block) {
         return this.successors.items
             .filter(function (_a) {
-            var _ = _a[0], s = _a[1];
-            return s == block;
-        })
+                var _ = _a[0], s = _a[1];
+                return s == block;
+            })
             .map(function (_a) {
-            var p = _a[0], _ = _a[1];
-            return p;
-        });
+                var p = _a[0], _ = _a[1];
+                return p;
+            });
     };
     ControlFlowGraph.prototype.print = function () {
         var _this = this;
@@ -172,12 +172,28 @@ var ControlFlowGraph = /** @class */ (function () {
         var lastCondBlock = ifCondBlock;
         if (statement.elif) {
             statement.elif.forEach(function (elif) {
+                if (elif.type === "else") {
+                    var elseStmt = elif
+                    if (elseStmt.code && elseStmt.code.length) {
+                        // XXX: 'Else' isn't *really* a condition, though we're treating it like it is
+                        // so we can mark a dependence between the body of the else and its header.
+                        var elseCondBlock = _this.makeBlock('else cond', [elseStmt]);
+                        _this.link(lastCondBlock, elseCondBlock);
+                        var _b = _this.makeCFG('else body', elseStmt.code, context), elseEntry = _b[0], elseExit = _b[1];
+                        _this.link(elseCondBlock, elseEntry);
+                        _this.link(elseExit, joinBlock);
+                        lastCondBlock = elseCondBlock;
+                    }
+                }
+                else{
+                console.log(elif)
                 var elifCondBlock = _this.makeBlock('elif cond', [elif.cond]);
                 _this.link(lastCondBlock, elifCondBlock);
                 var _a = _this.makeCFG('elif body', elif.code, context), elifEntry = _a[0], elifExit = _a[1];
                 _this.link(elifCondBlock, elifEntry);
                 _this.link(elifExit, joinBlock);
                 lastCondBlock = elifCondBlock;
+                }
             });
         }
         if (statement.else) {
@@ -209,17 +225,17 @@ var ControlFlowGraph = /** @class */ (function () {
         return afterLoop;
     };
     ControlFlowGraph.prototype.handleFor = function (statement, last, context) {
-        var loopHeadBlock = this.makeBlock('for loop head', 
-        // synthesize a statement to simulate using the iterator
-        [
-            {
-                type: ast.ASSIGN,
-                op: undefined,
-                sources: statement.iter,
-                targets: statement.target,
-                location: statement.decl_location,
-            },
-        ]);
+        var loopHeadBlock = this.makeBlock('for loop head',
+            // synthesize a statement to simulate using the iterator
+            [
+                {
+                    type: ast.ASSIGN,
+                    op: undefined,
+                    sources: statement.iter,
+                    targets: statement.target,
+                    location: statement.decl_location,
+                },
+            ]);
         this.link(last, loopHeadBlock);
         var afterLoop = this.makeBlock('for loop join');
         this.loopVariables.push(statement.target);
@@ -400,30 +416,30 @@ var ControlFlowGraph = /** @class */ (function () {
                 // Merge postdominators that appear in all of a block's successors.
                 var newPostdominators = new (PostdominatorSet.bind.apply(PostdominatorSet, [void 0].concat([]
                     .concat.apply([], successors.map(function (s) { return postdominators[s.id].items; })).reduce(function (pCounts, p) {
-                    var countIndex = pCounts.findIndex(function (record) {
-                        return record.p.postdominator == p.postdominator;
-                    });
-                    var countRecord;
-                    if (countIndex == -1) {
-                        countRecord = {
-                            p: new Postdominator(p.distance + 1, block, p.postdominator),
-                            count: 0,
-                        };
-                        pCounts.push(countRecord);
-                    }
-                    else {
-                        countRecord = pCounts[countIndex];
-                        pCounts[countIndex].p.distance = Math.min(pCounts[countIndex].p.distance, p.distance + 1);
-                    }
-                    countRecord.count++;
-                    return pCounts;
-                }, [])
+                        var countIndex = pCounts.findIndex(function (record) {
+                            return record.p.postdominator == p.postdominator;
+                        });
+                        var countRecord;
+                        if (countIndex == -1) {
+                            countRecord = {
+                                p: new Postdominator(p.distance + 1, block, p.postdominator),
+                                count: 0,
+                            };
+                            pCounts.push(countRecord);
+                        }
+                        else {
+                            countRecord = pCounts[countIndex];
+                            pCounts[countIndex].p.distance = Math.min(pCounts[countIndex].p.distance, p.distance + 1);
+                        }
+                        countRecord.count++;
+                        return pCounts;
+                    }, [])
                     .filter(function (p) {
-                    return p.count == successors.length;
-                })
+                        return p.count == successors.length;
+                    })
                     .map(function (p) {
-                    return p.p;
-                }))))();
+                        return p.p;
+                    }))))();
                 // A block always postdominates itself.
                 newPostdominators.add(new Postdominator(0, block, block));
                 if (!oldPostdominators.equals(newPostdominators)) {
@@ -447,12 +463,12 @@ var ControlFlowGraph = /** @class */ (function () {
         var postdominatorsByBlock = postdominators
             .filter(function (p) { return p.block != p.postdominator; })
             .reduce(function (dict, postdominator) {
-            if (!dict.hasOwnProperty(postdominator.block.id)) {
-                dict[postdominator.block.id] = [];
-            }
-            dict[postdominator.block.id].push(postdominator);
-            return dict;
-        }, {});
+                if (!dict.hasOwnProperty(postdominator.block.id)) {
+                    dict[postdominator.block.id] = [];
+                }
+                dict[postdominator.block.id].push(postdominator);
+                return dict;
+            }, {});
         var immediatePostdominators = [];
         Object.keys(postdominatorsByBlock).forEach(function (blockId) {
             immediatePostdominators.push(postdominatorsByBlock[blockId].sort(function (a, b) {
