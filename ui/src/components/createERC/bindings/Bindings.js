@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   makeStyles, Stepper, Step, StepLabel, StepContent, Button,
-  Typography, Paper, RadioGroup, FormControl, Grid
+  Typography, Paper, RadioGroup, FormControl, Grid, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
 } from "@material-ui/core";
 import ChipInput from 'material-ui-chip-input';
 
@@ -306,6 +306,7 @@ class Bindings extends Component {
       creationStep: 0,
       preview: false,
     }
+    this.handleClose = this.handleClose.bind(this);
     //this.getFakeData = this.getFakeData.bind(this);
   }
 
@@ -341,6 +342,7 @@ class Bindings extends Component {
           analyzedCode = RParse(codestring);
         }
         catch (err) {
+          self.setState({open:true})
           console.log(err)
         }
         self.setState({
@@ -636,11 +638,15 @@ class Bindings extends Component {
     this.setState(state);
   }
 
+  handleClose(){
+    this.setState({open: false});
+  }
+
   render() {
     return (
       <div className="bindingsView" style={{ marginTop: "5%" }}>
-        <h3>The feature for creating interactive figures by yourself is still in its infancy.
-        Please, contact us since we are strongly interested in creating them for you:
+        <h3>The feature for creating interactive figures automatic is still in its infancy.
+        If the creation does not work please contact us since we are strongly interested in creating them for you:
               <a href="mailto:o2r.team@uni-muenster.de"> o2r.team [ at ] uni-muenster [.de]</a>
         </h3>
         <Grid container>
@@ -691,6 +697,28 @@ class Bindings extends Component {
             }
           </Grid>
         </Grid>
+        <Dialog
+        open={this.state.open}
+        onClose={this.handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Automatic Binding Creation Failed"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+          The feature for creating interactive figures automatic is still in its infancy. For your Figure the creation did not worked.
+          Please, contact us since we are strongly interested in creating them for you: <a href="mailto:o2r.team@uni-muenster.de" target="_blank"> o2r.team [ at ] uni-muenster [.de]</a>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleClose} color="primary">
+            Go Back
+          </Button>
+          <Button onClick={window.location.href="mailto:o2r.team@uni-muenster.de?subject=CreateBinding"} color="primary" autoFocus>
+            Contact
+          </Button>
+        </DialogActions>
+      </Dialog>
       </div>
     );
   }
