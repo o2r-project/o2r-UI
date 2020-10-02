@@ -214,8 +214,10 @@ class CreateERC extends Component {
                             codefile={this.state.codefile}
                             compendium_id={this.state.compendium_id}
                             updateMetadata={this.updateMetadata}
+                            setChangedFalse={this.setChangedFalse}
                             originalMetadata={this.state.originalMetadata}
-                            goToERC={this.goToErc}
+                            goToErc={this.goToErc}
+                            candidate={this.state.candidate}
                         />
                     </TabContainer>
                 }

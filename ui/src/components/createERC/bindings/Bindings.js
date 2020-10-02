@@ -13,10 +13,9 @@ import SelectedCode from './SelectedCode/SelectedCode';
 import SliderSetting from './SliderSetting/SliderSetting';
 import WidgetSelector from './WidgetSelector/WidgetSelector';
 import './bindings.css';
-import fakeBindings from '../../../helpers/bindingsExamples.json';
-import Sourcecode from '../../erc/Inspect/CodeView/Sourcecode/Sourcecode';
 import { parse as RParse } from '../../../helpers/programm-analysis/R';
 import { slice } from '../../../helpers/programm-analysis/es6/slice'
+import { valid2 } from '../requiredMetadata/Form.js'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -187,7 +186,10 @@ function VerticalLinearStepper(props) {
     setParameter('');
   }
 
+
   const saveErc = () => props.saveErc();
+
+  const goToErc = () => props.goToErc();
 
   return (
     <div className={classes.root}>
@@ -276,8 +278,11 @@ function VerticalLinearStepper(props) {
           <Button onClick={handleReset} className={classes.button} variant="contained" color="primary">
             Create another binding
           </Button>
-          <Button onClick={saveErc} className={classes.button} variant="contained" color="primary">
-            Save and go to ERC
+          <Button onClick={saveErc} disabled = {!valid2} className={classes.button} variant="contained" color="primary">
+            Publish
+          </Button>
+          <Button onClick={goToErc} disabled = {props.candidate} className={classes.button} variant="contained" color="primary">
+            Go to ERC
           </Button>
         </Paper>
       )}
@@ -620,8 +625,16 @@ class Bindings extends Component {
     this.setState({ tmpParam: [], parameter: this.state.parameter.concat(this.state.tmpParam), possibleParameters: arr }, () => this.createBinding(true, false))
   };
 
-  saveErc = () => this.props.updateMetadata(this.state.metadata, true);
+  saveErc = () =>  {
+    this.props.setChangedFalse("all")
+    this.props.updateMetadata(this.props.metadata, true)
+    
+  }
 
+  goToErc= () => {
+    this.props.goToErc();
+  }
+  
   clearBinding() {
     let state = this.state;
     //state.codeview=true;
@@ -667,6 +680,8 @@ class Bindings extends Component {
                 clearParam={this.clearParam.bind(this)}
                 saveBinding={this.saveBinding.bind(this)}
                 saveErc={this.saveErc.bind(this)}
+                goToErc={this.goToErc.bind(this)}
+                candidate={this.props.candidate}
                 clearBinding={this.clearBinding.bind(this)}
                 figures={this.state.figures}
               />
