@@ -31,7 +31,8 @@ class ERC extends React.Component {
             codefiles: null,
             tabValue: 0,
             html: true,
-            pdf: true
+            pdf: true,
+            doiurl: false,
         };
         this.handleClose = this.handleClose.bind(this);
     }
@@ -164,7 +165,8 @@ class ERC extends React.Component {
                     dataset: dataset,
                     codefiles: data.codefiles,
                     binding: data.interaction[0],
-                    substituted: substituted
+                    substituted: substituted,
+                    doiurl: data.identifier.doiurl
                 });
                 self.setDisplayFile(data.displayfile);
                 if (Array.isArray(data.inputfiles)) {
@@ -215,12 +217,15 @@ class ERC extends React.Component {
                     <ReflexElement style={{ overflow: "hidden" }}>
                         <Grid container>
                             <Grid item xs={4}>
-                                {this.state.substituted ?
-                                    <span style={{ float: "left" }}>
-                                        <span style={{ top: "1px", position: "relative" }}> This is a substituted ERC</span>
-                                        <Button onClick={() => this.openPop("substitutionInfoOpen")}>More Info</Button>
-                                    </span>
-                                    : ""}
+                                {this.state.doiurl ?
+                                    <Button
+                                        onClick={() => window.location.href= this.state.doiurl}
+                                        variant='contained'
+                                        color='inherit'
+                                        style={{ float: "center" }}
+                                    >
+                                        Article
+                                    </Button> : ""}
                             </Grid>
                             {this.state.substitutionInfoOpen ? <SubstitutionInfoPop substitution={this.state.substituted} open={this.state.substitutionInfoOpen} handleClose={this.handleClose} /> : ""}
                             <Grid item xs={4}>
@@ -239,6 +244,15 @@ class ERC extends React.Component {
                                     Download<GetAppIcon />
                                 </IconButton>
                             </Grid>
+                            <Grid item xs={4}>
+                                {this.state.substituted ?
+                                    <span style={{ float: "left" }}>
+                                        <span style={{ top: "1px", position: "relative" }}> This is a substituted ERC</span>
+                                        <Button onClick={() => this.openPop("substitutionInfoOpen")}>More Info</Button>
+                                    </span>
+                                    : ""}
+                            </Grid>
+                            {this.state.substitutionInfoOpen ? <SubstitutionInfoPop substitution={this.state.substituted} open={this.state.substitutionInfoOpen} handleClose={this.handleClose} /> : ""}
                         </Grid>
                         {this.state.downloadOpen ? <DownloadPop id={this.state.id} open={this.state.downloadOpen} handleClose={this.handleClose} /> : ""}
                         {this.state.displayfile != null
