@@ -191,11 +191,16 @@ class ERC extends React.Component {
         httpRequests.getPublicLinks()
             .then( response => {
                 for (let result of response.data.results){
-                    if (result.compendium_id){
+                    if (result.compendium_id == this.state.id){
                         self.setState({publicLink : result.id})
                     }
                 }
             })
+    }
+
+    ship = () =>{
+        httpRequests.createShipment(this.state.id, "zenodo")
+          .then(response => console.log(response))
     }
 
 
@@ -266,7 +271,12 @@ class ERC extends React.Component {
                                         {this.state.html ? 'Show PDf' : 'Show HTML'}
                                     </Button> : ""}
                             </Grid>
-                            <Grid xs={4}>
+                            <Grid xs={2}>
+                                <Button onClick={() => this.ship()}>
+                                    Ship to Zenodo
+                                </Button>
+                            </Grid>
+                            <Grid xs={2}>
                                 <IconButton size='large' label='Download' style={{ float: "right" }} onClick={() => this.openPop("downloadOpen")}>
                                     Download<GetAppIcon />
                                 </IconButton>

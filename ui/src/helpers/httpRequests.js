@@ -110,6 +110,11 @@ function complexSearch(query){
     return axios.post(_url, query);
 }
 
+function createShipment(id, recipient){
+    const body={compendium_id: id, recipient}
+    return axios.post(_env.api + 'shipment', body);
+}
+
 module.exports = {
     getUser: getUser,
     listAllCompendia: listAllCompendia,
@@ -135,4 +140,5 @@ module.exports = {
     createPublicLink: createPublicLink,
     deletePublicLink: deletePublicLink,
     getPublicLinks: getPublicLinks,
+    createShipment: createShipment
 };
