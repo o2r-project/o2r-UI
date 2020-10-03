@@ -17,7 +17,7 @@ class Manipulate extends React.Component {
             bindings: props.bindings,
             binding: props.bindings[0],
             variant: "standart",
-            params: this.getParams(props.bindings[0].sourcecode.parameter),
+            params: this.getParams(props.bindings[0].sourcecode.parameter), //To do: Catch if no parameters are available
             fullUrl: '',
             settings: [],
             settingsText: [],
@@ -32,6 +32,21 @@ class Manipulate extends React.Component {
 
     componentWillReceiveProps = () => this.setParameter.bind(this)
 
+    componentDidMount = () => {
+        this.runManipulateService();
+        this.highlight();
+        if (this.state.bindings.length > 5) {
+            this.setState({ variant: "scrollable" })
+        }
+    }
+
+    componentDidUpdate = (prevProps) => {
+        if(JSON.stringify(this.props.bindings) !== JSON.stringify(prevProps.bindings)){
+            this.setState({bindings : this.props.bindings, binding: this.props.bindings[0], params: this.getParams(this.props.bindings[0].sourcecode.parameter)}, () => this.setParameter.bind(this))
+            
+        }
+    }
+    
     runManipulateService() {
         const self = this;
         self.state.bindings.forEach((binding) => {
@@ -60,12 +75,21 @@ class Manipulate extends React.Component {
                 }, 2000);
             })
         }
+        if(parameter.length == 0){
+            setTimeout(() => {
+                this.buildFullUrl(this.state.binding);
+            }, 2000);
+        }
     }
 
     buildFullUrl(binding) {
+        console.log("run")
         this.setState({ loading: true, processURL: true });
         let url = config.baseUrl + 'compendium/' + binding.id + "/binding/" + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?';
         let settingsText = ""
+        if(this.state.params.length == 0){
+            settingsText = "information about paramers will be displayed here"
+        }
         for (let i = 0; i < this.state.params.length; i++) {
             settingsText += " Parameter " + (i + 1) + ": " + this.state.params[i] + " = " + this.state[this.state.params[i]] + "; "
             url = url + 'newValue' + i + '=' + this.state[this.state.params[i]];
@@ -97,14 +121,6 @@ class Manipulate extends React.Component {
             search(this.state.params[i])
         }
 
-    }
-
-    componentDidMount = () => {
-        this.runManipulateService();
-        this.highlight();
-        if (this.state.bindings.length > 5) {
-            this.setState({ variant: "scrollable" })
-        }
     }
 
     componentWillUnmount = () => removeHighlight();

@@ -41,8 +41,8 @@ bindings.start = (conf) => {
               app.use(bodyParser.json());
               app.use(bodyParser.urlencoded({extended: true}));
 
-        app.post('/api/v1/bindings/extractR', function(req, res) {
-            bindings.implementExtractR(req.body, res);
+        app.post('/api/v1/bindings/extractRcode', function(req, res) {
+            bindings.extractRcode(req.body, res);
         });
    
         app.post('/api/v1/bindings/searchBinding', function ( req, res ) {
@@ -58,12 +58,15 @@ bindings.start = (conf) => {
             let binding = req.params.binding;
             debug('Start getting image for %s from compendium: %s', binding, compendium);
             debug('Extracted query parameters: %s', Object.keys(req.query).length);
-            let queryParameters = '?';
-            for ( let i = 0; i < Object.keys(req.query).length; i++ ) {
-                queryParameters = queryParameters + "newValue" + i + "=" + req.query["newValue"+i];
-                if ( i +1 < Object.keys(req.query).length ) {
-                    queryParameters = queryParameters + "&";
-                } 
+            let queryParameters = '';
+            if ( Object.keys(req.query).length > 0 ) {
+                queryParameters = '?';
+                for ( let i = 0; i < Object.keys(req.query).length; i++ ) {
+                    queryParameters = queryParameters + "newValue" + i + "=" + req.query["newValue"+i];
+                    if ( i +1 < Object.keys(req.query).length ) {
+                        queryParameters = queryParameters + "&";
+                    } 
+                }
             }
             debug('Created url: %s', queryParameters);
             debug('Number of saved ports: %s', runningPorts.length)
@@ -103,13 +106,30 @@ bindings.start = (conf) => {
                     port: newPort
                 });
                 debug('Saved %s of compendium %s under port %s', binding, compendium, newPort);
-                bindings.runR(req.body, newPort);
+                bindings.runR(req.body, runningPorts[runningPorts.length-1]);
             } else {
                 let included = false;
                 runningPorts.forEach( function (elem) {
                     if ( elem.result === compendium + binding ) {
                         included = true;
                         debug('Service for binding already running');
+                        if(req.body.preview && elem.pid){
+                            debug('Recrate Port' + elem.port); 
+
+                           exec('kill '+ (elem.pid)
+                            ,function(err) {
+                                debug(err)
+                            })
+
+                            var kill= exec('kill '+ (elem.pid+1)
+                            ,function(err) {
+                                debug(err)
+                            })
+
+                            kill.on('close', () => setTimeout(() => {
+                                debug("try"); bindings.runR(req.body, elem)}
+                            , 1000));
+                        }
                     }
                 })
                 if ( !included ) {
@@ -120,7 +140,7 @@ bindings.start = (conf) => {
                         port: newPort
                     });
                     debug('Saved %s of compendium %s under port %s', binding, compendium, newPort);
-                    bindings.runR(req.body, newPort);
+                    bindings.runR(req.body, runningPorts[runningPorts.length-1]);
                 }
             }
 
@@ -146,53 +166,36 @@ cron.schedule('* * * * *', () => {
 
 bindings.createBinding = function(binding, response) {
     debug( 'Start creating binding for result: %s, compendium: %s', binding.computationalResult.result, binding.id );
-    let fileContent = fn.readRmarkdown( binding.id, binding.sourcecode.file );
-    let figureSize = fn.extractFigureSize(binding, fileContent);
-    fn.modifyMainfile( fileContent, binding.computationalResult, binding.sourcecode.file, binding.id );
-    let codelines = fn.handleCodeLines( binding.sourcecode.codelines );
-    let extractedCode = fn.extractCode( fileContent, codelines );
-        extractedCode = fn.replaceVariable( extractedCode, binding.sourcecode.parameter );
-    let wrappedCode = fn.wrapCode( extractedCode, binding.computationalResult.result, binding.sourcecode.parameter, figureSize );
-    fn.saveResult( wrappedCode, binding.id, binding.computationalResult.result.replace(/\s/g, '').toLowerCase() );
+    let mainfile = fn.readRmarkdown( binding.id, binding.sourcecode.file );
+    let figureSize = fn.extractFigureSize( binding, mainfile );
+    //Implementation not finished: fn.modifyMainfile( fileContent, binding.computationalResult, binding.sourcecode.file, binding.id );
+    mainfile = mainfile.split('\n');
+    let chunksLineNumbers = fn.extractChunks(mainfile);
+    let code = fn.extractCodeFromChunks( mainfile, chunksLineNumbers.start, chunksLineNumbers.end );
+    let bindingCodelines = fn.handleCodeLines( binding.sourcecode.codelines );
+        console.log(JSON.stringify(bindingCodelines))
+    let bindingCode = fn.extractCode( code, bindingCodelines );
+        bindingCode = fn.replaceVariable( bindingCode, binding.sourcecode.parameter );
+    let wrappedBindingCode = fn.wrapCode( bindingCode, binding.computationalResult.result, binding.sourcecode.parameter, figureSize );
+    fn.saveResult( wrappedBindingCode, binding.id, binding.computationalResult.result.replace(/\s/g, '').toLowerCase() );
     binding.codesnippet = binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '.R';
     response.send({
         callback: 'ok',
         data: binding});
 };
 
-bindings.implementExtractR = function (binding,response) {
-    debug('Start extracting codelines: %s', JSON.stringify(binding));
-    let file = fn.readRmarkdown(binding.id, binding.file);
+bindings.extractRcode = function ( compendium, response ) {
+    debug('Start extracting codelines: %s', JSON.stringify(compendium));
+    let file = fn.readRmarkdown(compendium.id, compendium.file);
     let lines = file.split('\n');
     let chunksLineNumbers = fn.extractChunks(lines);
-    let code = fn.extractCodeFromChunks(lines,chunksLineNumbers.start,chunksLineNumbers.end);
-    let codeAsJson = fn.codeAsJson(code);
-    let codeAsJsonWithTypes = rules.getCodeTypes(codeAsJson);
-    codeAsJson = fn.array2Json(codeAsJsonWithTypes);
-    console.log(codeAsJson)
-    //codeAsJson = processJson.addFileContentToJson(codeAsJson);
-    /*let varsInLines = processJson.getVarsAndValuesOfLines(codeAsJson);
-    let plotFunctionParameters = rules.getContentInBrackets(binding.plot);
-    let backtrackedCode = processJson.backtrackCodelines(varsInLines,plotFunctionParameters,[],[]);
-
-    //debug('Codelines: ',backtrackedCode);
-    
-    binding.codelines = processJson.getCodeLines(backtrackedCode);*/
-    //debug('Codelines2: %s', JSON.stringify(binding.codelines))
-    console.log("end extractR")
-    /*response.send({
+    let code = fn.extractCodeFromChunks( lines, chunksLineNumbers.start, chunksLineNumbers.end );
+    debug('End extracting codelines: %s', JSON.stringify(compendium));
+    response.send({
         callback: 'ok',
-        data: binding});*/
+        data: code
+    })
 };
-
-bindings.ExtractR = function (binding, response){
-    console.log("start extractR")
-    let file = fn.readRmarkdown(binding.id, binding.file);
-    let lines = file.split('\n');
-    let chunksLineNumbers = fn.extractChunks(lines);
-    let chunksOfCode = fn.extractCodeFromChunks(lines,chunksLineNumbers.start,chunksLineNumbers.end);
-    const codeAsJson = rParse(chunksOfCode)
-}
 
 bindings.searchBinding = function ( req, res) {
     var searchTerm= req.term
@@ -243,24 +246,31 @@ bindings.runR = function ( binding, port ) {
         socket.pipe(socket);
     });
     
-        server.listen(port, 'localhost');
+        server.listen(port.port, 'localhost');
         server.on('error', function (e) {
-            debug("port %s is not free", port);
+            debug(e)
+            debug("port %s is not free", port.port);
         });
         server.on('listening', function ( e ) {
             server.close();
-            debug("port %s is free", port);
-            
-            exec('R -e '+ 
+            debug("port %s is free", port.port);
+            var r = exec('R -e '+ 
                 '"library("plumber"); '
                 + "setwd('" + path.join('tmp', 'o2r', 'compendium', binding.id) + "'); "
                 + "path = paste('" + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + ".R', sep = ''); "
                 + "r <- plumb(path); " 
-                + "r\\$run(host = '0.0.0.0', port=" + port + ");"
+                + "r\\$run(host = '0.0.0.0', port=" + port.port + ");"
                 + '"', 
                 function(err) {
-                    if (err) throw err;
+                    debug(err)
+                    //if (err) throw err;
                 });
+            debug(r.pid)
+            for(var elem of runningPorts){
+                if (elem.result === binding.id + binding.computationalResult.result.replace(/\s/g, '').toLowerCase()){
+                    elem.pid = r.pid
+                }
+            }
         });
         server.close(function () {
             console.log('server stopped');

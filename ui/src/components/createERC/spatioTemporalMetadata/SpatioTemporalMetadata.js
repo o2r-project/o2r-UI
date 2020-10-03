@@ -307,7 +307,7 @@ class SpatioTemporalMetadata extends React.Component {
                 color="primary"
                 disabled={!(this.props.spatioTemporalChanged || this.props.authorsChanged || this.props.changed) || !valid2 || this.state.editing || this.state.drawing}
               >
-                Save
+                Publish
             </Button>
               <Button
                 type="button"

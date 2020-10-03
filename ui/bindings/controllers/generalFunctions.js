@@ -76,8 +76,8 @@ fn.handleCodeLines = function(lines) {
     debug('Start handling code lines');
     let codelines = [];
     lines.forEach(function(elem) {
-        for (let i = elem.start; i <= elem.end; i++) {
-            codelines.push(Number(i)-1); // -1 is required as the code lines from the front end start counting at 1.
+        for (let i = elem.first_line; i <= elem.last_line; i++) {
+            codelines.push(Number(i)-1); // -1 is needed since the code lines from the front end start counting at 1
         };
     });
     debug('End handling code lines');
@@ -86,18 +86,17 @@ fn.handleCodeLines = function(lines) {
     });
 };
 
-fn.extractCode = function(fileContent, codelines) {
+fn.extractCodeLines = function(fileContent, codelines) {
     debug('Start extracting code');
     let newContent = '';
-    let splitFileContent = fileContent.split('\n');
     codelines.forEach(function(elem) {
-        newContent += splitFileContent[elem] + '\n';
+        newContent += fileContent[elem] + '\n';
     });
     debug('End extracting code');
     return newContent;
 };
 
-fn.extractFigureSize = function (binding, fileContent){
+fn.extractFigureSize = function (binding, fileContent){ //To do: Take width from chunk which includes the plot function 
     debug('Start extracting figure width');
     let figureSize = '';
     let splitFileContent = fileContent.split('\n');
@@ -134,7 +133,6 @@ fn.wrapCode = function(sourcecode, result, parameter, figureSize) {
                 'startAnalysis <- Sys.time() \n' + 
                 transform;
     let code = sourcecode.split('\n');
-        //code[code.length-2] = 'print(' + code[code.length-2] + ')';
     let newCode = '';
         code.forEach(function(elem) {
             newCode += elem + '\n';
@@ -184,7 +182,7 @@ fn.saveRFile = function(data, compendiumId, fileName) {
 fn.extractCode = function(fileContent, codelines) {
     debug('Start extracting code');
     let newContent = '';
-    let splitFileContent = fileContent.split('\n');
+    let splitFileContent = fileContent;
     codelines.forEach(function(elem) {
         newContent += splitFileContent[elem] + '\n';
     });
@@ -208,7 +206,7 @@ fn.extractFigureSize = function (binding, fileContent){
 }
 
 fn.extractChunks = function (lines) {
-    debug('Start extracting code lines')
+    debug('Start extracting chunks')
     let linesExp = new RegExp('```');
     let start = [], end = [];
     let found = 0;
@@ -223,31 +221,33 @@ fn.extractChunks = function (lines) {
             }
         }
     }
-    debug('End extracting code lines')
+    debug('End extracting chunks')
     return {
         start: start,
         end: end
     };
 };
 
-fn.extractCodeFromChunks = function(lines,start,end){
-    debug('Start creating code parts')
+fn.extractCodeFromChunks = function ( lines, start, end ) {
+    debug('Start extracting code from chunks')
     let chunksOfCode = [];
-    for ( let chunk = 0; chunk < start.length; chunk++) {
-        let codeInChunk = lines.slice(start[chunk], end[chunk]);
-        if ( end[chunk] != start[chunk+1] + 1 ) {
+    for ( let chunk = 0; chunk < start.length; chunk++ ) {
+        let codeInChunk = lines.slice( start[chunk], end[chunk] );
+        /*if ( end[chunk] != start[chunk+1] + 1 ) {
             for (let j = end[chunk]; j < start[chunk+1]; j++){
                 codeInChunk.splice(j,0,'');
-            }   
-        }
-        chunksOfCode.push(codeInChunk);
-     }
-    // Replace \r through ''
-    for( let i = 0; i < chunksOfCode.length; i++) {
-        chunksOfCode[i] = chunksOfCode[i].map((x) => x.replace('\r', ''));
+            }  
+        }*/
+        chunksOfCode.push( codeInChunk );
     }
-    debug('End creating code parts')
-    return chunksOfCode;
+    // Replace \r through ''
+    let code = [];
+    for ( let i = 0; i < chunksOfCode.length; i++ ) {
+        chunksOfCode[i] = chunksOfCode[i].map((x) => x.replace('\r', ''));
+        code = code.concat(chunksOfCode[i]);
+    }
+    debug('End extracting code from chunks')
+    return code;
  };
 
 fn.codeAsJson = function (chunks) {
@@ -279,5 +279,7 @@ fn.array2Json = function (array) {
     debug('End to json')
     return jsonObject;
 };
+
+
 
 module.exports = fn;

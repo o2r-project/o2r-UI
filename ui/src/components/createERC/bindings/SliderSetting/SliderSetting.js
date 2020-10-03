@@ -6,6 +6,7 @@ class SliderSetting extends Component {
     render() {
         return (
             <TextField margin="normal" variant="outlined" className={this.props.styles}
+                required
                 id={this.props.id}
                 type={this.props.type}
                 label={this.props.label}
