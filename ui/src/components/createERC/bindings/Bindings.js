@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   makeStyles, Stepper, Step, StepLabel, StepContent, Button,
-  Typography, Paper, RadioGroup, FormControl, Grid
+  Typography, Paper, RadioGroup, FormControl, Grid, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
 } from "@material-ui/core";
 import ChipInput from 'material-ui-chip-input';
 
@@ -13,10 +13,9 @@ import SelectedCode from './SelectedCode/SelectedCode';
 import SliderSetting from './SliderSetting/SliderSetting';
 import WidgetSelector from './WidgetSelector/WidgetSelector';
 import './bindings.css';
-import fakeBindings from '../../../helpers/bindingsExamples.json';
-import Sourcecode from '../../erc/Inspect/CodeView/Sourcecode/Sourcecode';
 import { parse as RParse } from '../../../helpers/programm-analysis/R';
 import { slice } from '../../../helpers/programm-analysis/es6/slice'
+import { valid2 } from '../requiredMetadata/Form.js'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -187,7 +186,10 @@ function VerticalLinearStepper(props) {
     setParameter('');
   }
 
+
   const saveErc = () => props.saveErc();
+
+  const goToErc = () => props.goToErc();
 
   return (
     <div className={classes.root}>
@@ -276,8 +278,11 @@ function VerticalLinearStepper(props) {
           <Button onClick={handleReset} className={classes.button} variant="contained" color="primary">
             Create another binding
           </Button>
-          <Button onClick={saveErc} className={classes.button} variant="contained" color="primary">
-            Save and go to ERC
+          <Button onClick={saveErc} disabled = {!valid2} className={classes.button} variant="contained" color="primary">
+            Publish
+          </Button>
+          <Button onClick={goToErc} disabled = {props.candidate} className={classes.button} variant="contained" color="primary">
+            Go to ERC
           </Button>
         </Paper>
       )}
@@ -306,6 +311,7 @@ class Bindings extends Component {
       creationStep: 0,
       preview: false,
     }
+    this.handleClose = this.handleClose.bind(this);
     //this.getFakeData = this.getFakeData.bind(this);
   }
 
@@ -341,6 +347,7 @@ class Bindings extends Component {
           analyzedCode = RParse(codestring);
         }
         catch (err) {
+          self.setState({open:true})
           console.log(err)
         }
         self.setState({
@@ -618,8 +625,16 @@ class Bindings extends Component {
     this.setState({ tmpParam: [], parameter: this.state.parameter.concat(this.state.tmpParam), possibleParameters: arr }, () => this.createBinding(true, false))
   };
 
-  saveErc = () => this.props.updateMetadata(this.state.metadata, true);
+  saveErc = () =>  {
+    this.props.setChangedFalse("all")
+    this.props.updateMetadata(this.props.metadata, true)
+    
+  }
 
+  goToErc= () => {
+    this.props.goToErc();
+  }
+  
   clearBinding() {
     let state = this.state;
     //state.codeview=true;
@@ -636,11 +651,15 @@ class Bindings extends Component {
     this.setState(state);
   }
 
+  handleClose(){
+    this.setState({open: false});
+  }
+
   render() {
     return (
       <div className="bindingsView" style={{ marginTop: "5%" }}>
-        <h3>The feature for creating interactive figures by yourself is still in its infancy.
-        Please, contact us since we are strongly interested in creating them for you:
+        <h3>The feature for creating interactive figures automatic is still in its infancy.
+        If the creation does not work please contact us since we are strongly interested in creating them for you:
               <a href="mailto:o2r.team@uni-muenster.de"> o2r.team [ at ] uni-muenster [.de]</a>
         </h3>
         <Grid container>
@@ -661,6 +680,8 @@ class Bindings extends Component {
                 clearParam={this.clearParam.bind(this)}
                 saveBinding={this.saveBinding.bind(this)}
                 saveErc={this.saveErc.bind(this)}
+                goToErc={this.goToErc.bind(this)}
+                candidate={this.props.candidate}
                 clearBinding={this.clearBinding.bind(this)}
                 figures={this.state.figures}
               />
@@ -691,6 +712,28 @@ class Bindings extends Component {
             }
           </Grid>
         </Grid>
+        <Dialog
+        open={this.state.open}
+        onClose={this.handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Automatic Binding Creation Failed"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+          The feature for creating interactive figures automatic is still in its infancy. For your Figure the creation did not worked.
+          Please, contact us since we are strongly interested in creating them for you: <a href="mailto:o2r.team@uni-muenster.de" target="_blank"> o2r.team [ at ] uni-muenster [.de]</a>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleClose} color="primary">
+            Go Back
+          </Button>
+          <Button onClick={window.location.href="mailto:o2r.team@uni-muenster.de?subject=CreateBinding"} color="primary" autoFocus>
+            Contact
+          </Button>
+        </DialogActions>
+      </Dialog>
       </div>
     );
   }

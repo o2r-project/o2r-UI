@@ -280,21 +280,6 @@ fn.array2Json = function (array) {
     return jsonObject;
 };
 
-fn.findLibraries = function ( code, lineOfPlotfunction ) { //consider require also?
-    const regex = /library\d*\(/g;
-    let libraries = [];
-    for ( let i = 0; i < lineOfPlotfunction; i++) {
-        let found = code[i].search(regex);
-        if ( found != -1 ) {
-            libraries.push({
-                first_line: i +1, //needed because of weird issue in function handleCodelines
-                last_line: i +1,
-                first_column: i,
-                last_column: i,
-            });
-        } 
-    }
-    return libraries;
-}
+
 
 module.exports = fn;

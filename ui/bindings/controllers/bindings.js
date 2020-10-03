@@ -172,9 +172,7 @@ bindings.createBinding = function(binding, response) {
     mainfile = mainfile.split('\n');
     let chunksLineNumbers = fn.extractChunks(mainfile);
     let code = fn.extractCodeFromChunks( mainfile, chunksLineNumbers.start, chunksLineNumbers.end );
-    let libraries = fn.findLibraries ( code, binding.computationalResult.line );
-    let bindingCodelines = binding.sourcecode.codelines.concat(libraries)
-        bindingCodelines = fn.handleCodeLines( bindingCodelines );
+    let bindingCodelines = fn.handleCodeLines( binding.sourcecode.codelines );
         console.log(JSON.stringify(bindingCodelines))
     let bindingCode = fn.extractCode( code, bindingCodelines );
         bindingCode = fn.replaceVariable( bindingCode, binding.sourcecode.parameter );
