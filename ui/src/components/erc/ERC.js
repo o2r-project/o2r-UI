@@ -33,6 +33,7 @@ class ERC extends React.Component {
             html: true,
             pdf: true,
             doiurl: false,
+            publicLink: false,
         };
         this.handleClose = this.handleClose.bind(this);
     }
@@ -149,7 +150,7 @@ class ERC extends React.Component {
                 if (response.data.substituted) {
                     substituted = response.data.metadata.substitution
                 }
-
+                let candidate = response.data.candidate
                 const data = response.data.metadata.o2r;
                 let dataset = '';
                 if (Array.isArray(data.inputfiles)) {
@@ -166,6 +167,7 @@ class ERC extends React.Component {
                     codefiles: data.codefiles,
                     binding: data.interaction[0],
                     substituted: substituted,
+                    candidate: candidate,
                     doiurl: data.identifier.doiurl
                 });
                 self.setDisplayFile(data.displayfile);
@@ -176,12 +178,26 @@ class ERC extends React.Component {
                 }
                 self.setCodeFile(data.mainfile);
                 self.setPdfFile();
+                self.proofPublicLink();
             })
             .catch(function (response) {
                 self.setState({ failure: true })
                 console.log(response)
             })
     }
+
+    proofPublicLink = () =>{
+        const self = this;
+        httpRequests.getPublicLinks()
+            .then( response => {
+                for (let result of response.data.results){
+                    if (result.compendium_id){
+                        self.setState({publicLink : result.id})
+                    }
+                }
+            })
+    }
+
 
     handleTabChange = (e, newValue) => {
         this.setState({
@@ -193,6 +209,17 @@ class ERC extends React.Component {
         this.setState({
             html: !this.state.html
         })
+    }
+
+    handlePublicLink(){
+        if(this.state.publicLink){
+            this.setState({publicLink: false})
+            httpRequests.deletePublicLink(this.state.id)
+        }
+        else{
+            httpRequests.createPublicLink(this.state.id)
+                .then( response => this.setState({publicLink: response.data.id}))
+        }
     }
 
     openPop = (name) => {
@@ -253,6 +280,21 @@ class ERC extends React.Component {
                                     : ""}
                             </Grid>
                             {this.state.substitutionInfoOpen ? <SubstitutionInfoPop substitution={this.state.substituted} open={this.state.substitutionInfoOpen} handleClose={this.handleClose} /> : ""}
+                            <Grid item xs={4}>
+                                {this.state.publicLink && this.props.userLevel > 0 ?
+                                    <span >
+                                        <span style={{ top: "1px", position: "relative" }}> This ERC has an public Link: </span>
+                                        <a href={config.ercUrl + this.state.publicLink}> {config.ercUrl + this.state.publicLink} </a>
+                                    </span>
+                                    : ""}
+                            </Grid>
+                            <Grid item xs={4}>
+                                {this.state.candidate && this.props.userLevel > 100 ?
+                                    <span style={{ float: "right" }}>
+                                        <Button onClick={() => this.handlePublicLink()}>{this.state.publicLink ? "Delete public Link" : "Create public Link" } </Button>
+                                    </span>
+                                    : ""}
+                            </Grid>
                         </Grid>
                         {this.state.downloadOpen ? <DownloadPop id={this.state.id} open={this.state.downloadOpen} handleClose={this.handleClose} /> : ""}
                         {this.state.displayfile != null

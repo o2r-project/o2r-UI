@@ -88,11 +88,21 @@ class App extends Component {
   user () {
     httpRequests.getUser()
       .then(
-        response => this.setState({
+        response => {this.setState({
           loggedIn: true,
           userName: response.data.name,
-          userOrcid:response.data.orcid
-        }),
+          userOrcid:response.data.orcid,
+        });  
+        httpRequests.getOneUser(response.data.orcid)
+          .then(
+            response=>
+            this.setState({
+              level: response.data.level
+            })
+          )
+      }
+
+
       )
       .catch(response => {
         console.log(response);
@@ -119,7 +129,7 @@ class App extends Component {
           <Route path="/author/:id" component={Author}/>
           <Route path="/createERC/:id" component={CreateERC}/>
           <Route path="/discover" component={Discovery}/>
-          <Route path="/erc/:id" component={ERC}/>
+          <Route path="/erc/:id" component={(props) => <ERC {...props} userLevel={this.state.level} />}></Route>
         </div>
       </div>
       </HashRouter>

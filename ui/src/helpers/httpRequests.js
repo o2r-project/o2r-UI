@@ -1,4 +1,5 @@
 const axios = require('axios');
+const { func } = require('prop-types');
 const config = require('./config');
 const _env = {
     api: config.baseUrl
@@ -6,6 +7,22 @@ const _env = {
 
 function getUser() {
     return axios.get(_env.api + 'auth/whoami');
+}
+
+function getOneUser(id) {
+    return axios.get(_env.api + 'user/' + id);
+}
+
+function createPublicLink(id){
+    return axios.put(_env.api + 'compendium/' + id + '/link')
+}
+
+function deletePublicLink(id){
+    return axios.delete(_env.api + 'compendium/' + id + '/link')
+}
+
+function getPublicLinks(){
+    return axios.get(_env.api + 'link')
 }
 
 function listAllCompendia() {
@@ -114,4 +131,8 @@ module.exports = {
     downloadERC: downloadERC,
     createSubstitution: createSubstitution,
     complexSearch: complexSearch,
+    getOneUser: getOneUser,
+    createPublicLink: createPublicLink,
+    deletePublicLink: deletePublicLink,
+    getPublicLinks: getPublicLinks,
 };
