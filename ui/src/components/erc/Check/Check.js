@@ -74,7 +74,7 @@ class ListJobs extends Component {
                                 <div className="stepmargin"><span><b>4) Build docker image: </b><Status status={job.steps.image_build.status}></Status></span></div>
                                 <div className="stepmargin"><span><b>5) Execute analysis: </b><Status status={job.steps.image_execute.status}></Status></span></div>
                                 <div className="stepmargin"><span><b>6) Compare original and reproduced results: </b><Status checkStatus={job.steps.check.status} status={job.steps.check.status}></Status></span></div>
-                                <Comparison job={job} className="compare"></Comparison>
+                                <Comparison job={job} displayfile={this.props.displayfile} className="compare"></Comparison>
                                 <Logs job={job} logs={this.props.logs}></Logs>
                             </Typography>
                         </ExpansionPanelDetails>
@@ -210,12 +210,14 @@ class Check extends Component {
                         <ListJobs
                             jobs={this.state.runningJob}
                             runningJob={true}
+                            displayfile={this.props.displayfile}
                         >
                         </ListJobs> : ''}
                     {this.state.jobs.length > 0 ?
                         <ListJobs
                             jobs={this.state.jobs}
                             runningJob={false}
+                            displayfile={this.props.displayfile}
                         >
                         </ListJobs> : ''}
                 </div>
