@@ -1,6 +1,6 @@
 {
   "name": "ui",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "author": "o2r-project (https://o2r.info)",
   "license": "Apache-2.0",
   "repository": {
@@ -16,7 +16,7 @@
     "csv-string": "^3.1.6",
     "formik": "^1.5.8",
     "formik-persist": "^1.1.0",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.1",
     "jquery-highlight": "^3.5.0",
     "leaflet": "^1.5.1",
     "leaflet-draw": "^1.0.4",
@@ -34,7 +34,7 @@
     "react-modal-video": "^1.2.3",
     "react-reflex": "^3.0.16",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "3.0.1",
+    "react-scripts": "^3.4.3",
     "react-share": "^3.0.0",
     "react-visual-diff": "^0.4.3",
     "socket.io-client": "^2.2.0",
