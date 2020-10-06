@@ -113,7 +113,7 @@ class App extends Component {
       <HashRouter>
       <div>
         <div className="content" id="mainView">
-          <Route exact path="/" component={Startpage}/>
+          <Route exact path="/" component={(props) => <Startpage {...props} loggedIn={this.state.loggedIn}></Startpage>} />
           <Route path="/impressum" component={Impressum}/>
           <Route path="/privacy" component={Privacy}/>
           <Route path="/author/:id" component={Author}/>

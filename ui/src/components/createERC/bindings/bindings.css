@@ -8,9 +8,9 @@
 }
 
 .codeView {
-    width: 60%;
+    width: 100%;
     float: left;
-    height: 70vh;
+    height: 65vh;
     overflow: auto;
     margin-right: 1%;
 }

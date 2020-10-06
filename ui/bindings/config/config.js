@@ -25,7 +25,7 @@ c.net={};
 c.net.port = env.BINDINGS_PORT || 8092;
 
 c.fs = {};
-c.fs.base = env.BINDINGS_BASEPATH || '/tmp/o2r';
+c.fs.base = env.BINDINGS_BASEPATH || 'tmp/o2r';
 c.fs.compendium = path.join(c.fs.base, 'compendium');
 
 debug(c);

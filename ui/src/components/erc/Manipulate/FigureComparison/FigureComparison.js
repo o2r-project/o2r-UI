@@ -3,6 +3,7 @@ import { Button, Dialog, AppBar, Toolbar, Slide, Tabs, Tab, Grid, Typography } f
 import logo from '../../../../assets/img/o2r-logo-only-white.svg';
 import ReactCompareImage from 'react-compare-image';
 import ImageDiff from "..//..//..//..//helpers/react-image-diff.js";
+import { withRouter } from 'react-router-dom';
 //import VisualDiff from 'react-visual-diff'; Interesting for later when bindings are used for numbers in the text
 
 import './figureComparison.css'
@@ -15,12 +16,22 @@ function ComparisonView(props) {
     const [open, setOpen] = React.useState(false);
     const [tabValue, setTab] = React.useState(0);
 
+    React.useEffect(() => {
+    if (props.location.search === '?compare') {
+        setOpen(true)
+    }
+    else{
+        setOpen(false)
+    }
+
+});
+
     const handleClickOpen = () => {
-        setOpen(true);
+        props.history.push(props.location.pathname + '?compare')
     }
 
     const handleClose = () => {
-        setOpen(false);
+        window.history.back();
     }
 
     const handleTabChange = (evt, newValue) => {
@@ -103,9 +114,9 @@ class FigureComparison extends Component {
 
     render() {
         return (
-            <ComparisonView settings={this.props.settings} settingsText={this.props.settingsText} />
+            <ComparisonView settings={this.props.settings} settingsText={this.props.settingsText}  location={this.props.location} history={this.props.history} />
         );
     }
 }
 
-export default FigureComparison;
+export default withRouter(FigureComparison);

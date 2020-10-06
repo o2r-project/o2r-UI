@@ -318,9 +318,14 @@ pJ.getVarsOfLoops = function (LineWithTypeLoop, loopType) {
 }
 
 //TODO: Add lines to find all plot functions in script --> not needed for now
-pJ.findPlotLines = function (jsonObj, plotFunctions) {
-    let plotFunctionsToFind = fn.readFile(plotFunctions);
-    let lines = plotFunctionsToFind.split(/\r?\n/);
+pJ.findPlotLines = function (codeAsJson, plotFunction) {
+    for (var statement of codeAsJson.code){
+        if (statement.type === "call"){
+            if(statement.func.id.equals(plotFunction)){
+                return statement.location;
+            }
+        }
+    }
 };
 
 
@@ -393,23 +398,20 @@ pJ.backtrackCodelines = function ( allCodeAsJson, backtrackFromTerms, lines, sea
         } else {
             debug('PlotFunction not found.');
         }
-        let plotFunctionComponents = ['lines', 'plot', 'axis', 'mtext', 'legend', 'par'];
-        let libraryAndFunction = ['library', 'function'];
-        let data = new RegExp('\\b' + 'load' + '\\b');
-        codeSubset.forEach( line => {
-            if ( plotFunctionComponents.some(fun => line.name.includes(fun)) || 
-                                            libraryAndFunction.some(fun => line.type.includes(fun)) || 
-                                            line.vars.find(value => data.test(value)) != -1) {
-                lines.push({
-                    start: line.start,
-                    end: line.end,
-                    codeBlock: line.codeBlock
-                });
-                let start = line.start;
-                let end = line.end;
-                codeSubset = codeSubset.filter(entry => entry.end != end && entry.start != start);
-            }
-        });
+        filteredJson.forEach(line => {
+            console.log(line.vars.find(value => data.test(value)))
+                if (plotFunctions.some(fun => line.name.includes(fun)) || libAndFun.some(fun => line.type.includes(fun)) || line.vars.find(value => data.test(value)) != null) {
+                    console.log(line)
+                    lines.push({
+                        start: line.start,
+                        end: line.end,
+                        codeBlock: line.codeBlock
+                    });
+                    let start = line.start;
+                    let end = line.end;
+                    filteredJson = filteredJson.filter(entry => entry.end != end && entry.start != start);
+                }
+        })
     }
     let search = [];
     backtrackFromTerms.forEach(codeTerm => {
@@ -420,28 +422,29 @@ pJ.backtrackCodelines = function ( allCodeAsJson, backtrackFromTerms, lines, sea
                 search.push(expression);
             }
         }
-    });
-    if ( search.length > 0 ) {
-        codeSubset.forEach( line => {
-            let value = line.vars.some(rx => search.some(elem => elem.test(rx)));
-            if (value) {
-                lines.push({
-                    start: line.start,
-                    end: line.end,
-                    codeBlock: line.codeBlock
-                });
-                if (line.vars.length > 1) {
-                    const index = line.vars.findIndex(value => search.some(elem => elem.test(value)));
-                    if (index != -1) {
-                        line.vars.forEach(elem => {
-                            if (!backtrackFromTerms.includes(elem)) {
-                                backtrackFromTerms.push(elem);
-                            }
-                        });
+    })
+    if (search.length > 0 && filteredJson != null) {
+        filteredJson.forEach(line => {
+                let value = line.vars.some(rx => search.some(elem => elem.test(rx)));
+                if (value) {
+                    lines.push({
+                        start: line.start,
+                        end: line.end,
+                        codeBlock: line.codeBlock
+                    });
+                    if (line.vars.length > 1) {
+                        const index = line.vars.findIndex(value => search.some(elem => elem.test(value)));
+                        if (index != -1) {
+                            line.vars.forEach(elem => {
+                                if (!varToSearchFor.includes(elem)) {
+                                    varToSearchFor.push(elem);
+                                }
+                            })
+                        }
                     }
                 }
             }
-        });
+        );
         varToSearchForNew = backtrackFromTerms.filter((elem) => searchForTermsArray.indexOf(elem) == -1);
         if (varToSearchForNew.length > 0) {
             pJ.backtrackCodelines(codeSubset, varToSearchForNew, lines, searchForTermsArray);
@@ -503,5 +506,47 @@ pJ.getCodeLines = function (codelines) {
     */
     return codeLinesOfValues;
 }
+
+pJ.connectCodeLines = (lines) => {
+    for (var i = 0; i < lines.length - 1; i++) {
+      if (lines[i].last_line + 1 == lines[i + 1].first_line) {
+        var first_line = lines[i].first_line;
+        var last_line = lines[i + 1].last_line;
+        lines.splice(i, 2, { first_line, last_line })
+        i--;
+      }
+      else if (lines[i + 1].last_line < lines[i].last_line) {
+        lines.splice(i + 1, 1);
+        i--;
+      }
+      else if(lines[i].first_line === lines[i+1].first_line){
+        lines.splice(i, 1)
+        i--;
+      }
+    }
+    return (lines)
+  }
+pJ.correctErrorsOfAlgorithm = (codeJSON, extractedLines) => {
+    for (var statement of codeJSON.code) {
+      if (statement.type == 'import') {
+        extractedLines.push(statement.location)
+      }
+      else if (statement.type == 'call') {
+        if (statement.func.id == 'par') {
+          extractedLines.push(statement.location)
+        }
+      }
+      else if (statement.type == 'if') {
+        for (var i = 0; i < extractedLines.length; i++) {
+          if (extractedLines[i].first_line === statement.location.first_line) {
+            extractedLines.push(statement.location)
+            break;
+          }
+
+        }
+      }
+    }
+    return extractedLines;
+  }
 
 module.exports = pJ;

@@ -68,12 +68,12 @@ class ListJobs extends Component {
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails>
                             <Typography className="steps">
-                                <span><b>Create configuration file: </b><Status status={job.steps.generate_configuration.status}></Status></span><br />
-                                <span><b>Validate configuration file: </b><Status status={job.steps.validate_compendium.status}></Status></span><br />
-                                <span><b>Create docker manifest: </b><Status status={job.steps.generate_manifest.status}></Status></span><br />
-                                <span><b>Build docker image: </b><Status status={job.steps.image_build.status}></Status></span><br />
-                                <span><b>Execute analysis: </b><Status status={job.steps.image_execute.status}></Status></span><br />
-                                <span><b>Compare original and reproduced results: </b><Status checkStatus={job.steps.check.status} status={job.steps.check.status}></Status></span><br />
+                                <div className="stepmargin"><span><b>1) Create configuration file: </b><Status status={job.steps.generate_configuration.status} /></span></div>
+                                <div className="stepmargin"><span><b>2) Validate configuration file: </b><Status status={job.steps.validate_compendium.status} /></span></div>
+                                <div className="stepmargin"><span><b>3) Create docker manifest: </b><Status status={job.steps.generate_manifest.status}></Status></span></div>
+                                <div className="stepmargin"><span><b>4) Build docker image: </b><Status status={job.steps.image_build.status}></Status></span></div>
+                                <div className="stepmargin"><span><b>5) Execute analysis: </b><Status status={job.steps.image_execute.status}></Status></span></div>
+                                <div className="stepmargin"><span><b>6) Compare original and reproduced results: </b><Status checkStatus={job.steps.check.status} status={job.steps.check.status}></Status></span></div>
                                 <Comparison job={job} className="compare"></Comparison>
                                 <Logs job={job} ></Logs>
                             </Typography>

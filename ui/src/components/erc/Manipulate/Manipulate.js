@@ -17,20 +17,36 @@ class Manipulate extends React.Component {
             bindings: props.bindings,
             binding: props.bindings[0],
             variant: "standart",
-            params: this.getParams(props.bindings[0].sourcecode.parameter),
+            params: this.getParams(props.bindings[0].sourcecode.parameter), //To do: Catch if no parameters are available
             fullUrl: '',
             settings: [],
             settingsText: [],
             text: "",
             index: 0,
             loading: false,
-            processURL: false
+            processURL: false,
+            changed: false,
         }
 
     }
 
     componentWillReceiveProps = () => this.setParameter.bind(this)
 
+    componentDidMount = () => {
+        this.runManipulateService();
+        this.highlight();
+        if (this.state.bindings.length > 5) {
+            this.setState({ variant: "scrollable" })
+        }
+    }
+
+    componentDidUpdate = (prevProps) => {
+        if(JSON.stringify(this.props.bindings) !== JSON.stringify(prevProps.bindings)){
+            this.setState({bindings : this.props.bindings, binding: this.props.bindings[0], params: this.getParams(this.props.bindings[0].sourcecode.parameter)}, () => this.setParameter.bind(this))
+            
+        }
+    }
+    
     runManipulateService() {
         const self = this;
         self.state.bindings.forEach((binding) => {
@@ -46,7 +62,7 @@ class Manipulate extends React.Component {
     }
 
     setParameter() {
-        this.setState({ loading: true, processURL: true });
+        this.setState({ loading: true, processURL: true, changed: false });
         let parameter = this.state.binding.sourcecode.parameter;
         let params = this.getParams(parameter)
         for (let i = 0; i < parameter.length; i++) {
@@ -59,14 +75,23 @@ class Manipulate extends React.Component {
                 }, 2000);
             })
         }
+        if(parameter.length == 0){
+            setTimeout(() => {
+                this.buildFullUrl(this.state.binding);
+            }, 2000);
+        }
     }
 
     buildFullUrl(binding) {
+        console.log("run")
         this.setState({ loading: true, processURL: true });
         let url = config.baseUrl + 'compendium/' + binding.id + "/binding/" + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?';
         let settingsText = ""
+        if(this.state.params.length == 0){
+            settingsText = "information about paramers will be displayed here"
+        }
         for (let i = 0; i < this.state.params.length; i++) {
-            settingsText += " Parameter " + (i + 1) + ": " + this.state.params[i] + " = " + this.state[this.state.params[i]] +"; "
+            settingsText += " Parameter " + (i + 1) + ": " + this.state.params[i] + " = " + this.state[this.state.params[i]] + "; "
             url = url + 'newValue' + i + '=' + this.state[this.state.params[i]];
             if (i + 1 !== this.state.params.length) {
                 url = url + '&';
@@ -98,23 +123,24 @@ class Manipulate extends React.Component {
 
     }
 
-    componentDidMount = () => {
-        this.runManipulateService();
-        this.highlight();
-        if (this.state.bindings.length > 5) {
-            this.setState({ variant: "scrollable" })
-        }
-    }
-
     componentWillUnmount = () => removeHighlight();
 
     handleChange = name => (evt, newVal) => {
+        let parameter = this.state.binding.sourcecode.parameter;
+
         if (this.state[name] !== newVal) {
             this.setState({
                 [name]: newVal,
-                loading: true
+                loading: true,
             }, () => {
                 this.buildFullUrl(this.state.binding);
+                let changed = false;
+                for (let i = 0; i < parameter.length; i++) {
+                    if (this.state[parameter[i].name] != parameter[i].val) {
+                        changed = true;
+                    }
+                }
+                this.setState({ changed })
             });
         }
     }
@@ -147,15 +173,6 @@ class Manipulate extends React.Component {
 
     setOriginalSettings(name) {
         this.setParameter()
-        /**this.setState({
-            value: 5
-        })
-        this.setState({
-            [name]: 24,
-        }, () => {
-            alert("Sorry, this function isn't working, yet :(.")
-            this.buildFullUrl(this.state.binding);
-        });*/
     }
 
     changeFigure(e, newVal) {
@@ -194,7 +211,7 @@ class Manipulate extends React.Component {
                     </Tabs>
                     : ''}
                 <div className="view">
-                    <Grid container>
+                    <Grid container spacing={5}>
                         <Grid item xs={8}>
                             {this.state.binding.sourcecode.parameter.map((parameter, index) => (
                                 <div className="slider" key={index}>
@@ -224,7 +241,7 @@ class Manipulate extends React.Component {
                             ))}
                         </Grid>
                         <Grid item xs={4} style={{ "min-height": "100px" }}>
-                            <Button variant='contained' color='primary'
+                            <Button variant='contained' color='primary' disabled={!this.state.changed}
                                 onClick={this.setOriginalSettings.bind(this)}
                             >
                                 Set original values
@@ -248,7 +265,7 @@ class Manipulate extends React.Component {
                             : ''}
                         <FigureComparison settings={this.state.settings} settingsText={this.state.settingsText} />
                         <br />
-                        {this.state.processURL ? "" : <img src={this.state.fullUrl} alt="Image Loading Failed" onLoad={this.imageLoaded} onError={this.imageLoaded} />}
+                        {this.state.processURL ? "" : <img src={this.state.fullUrl} alt="Image Loading Failed" onLoad={this.imageLoaded} onError={this.imageLoaded} style={{ maxWidth: "100%" }} />}
                     </div>
                 </div>
             </div>

@@ -14,6 +14,7 @@ import Manipulate from './Manipulate/Manipulate';
 import Substitution from './Substitution/Substitution';
 import DownloadPop from './Download/DownloadPop';
 import SubstitutionInfoPop from './Substitution/SubstitutionInfo';
+import Metadata from './Metadata/Metadata';
 import { withRouter } from 'react-router-dom';
 
 class ERC extends React.Component {
@@ -30,11 +31,13 @@ class ERC extends React.Component {
             codefiles: null,
             tabValue: 0,
             html: true,
+            pdf: true
         };
         this.handleClose = this.handleClose.bind(this);
     }
 
-    componentDidMount = () => this.getMetadata();
+    componentDidMount = () => { this.getMetadata(); this.props.history.replace(this.props.location.pathname) };
+
 
     setDataFile(datafile) {
         const self = this;
@@ -99,6 +102,7 @@ class ERC extends React.Component {
 
     setPdfFile() {
         const self = this;
+        let set = false;
         httpRequests.getFile("compendium/" + self.state.id + "/data/")
             .then(function (res) {
                 const dataset = res.data.children
@@ -108,20 +112,28 @@ class ERC extends React.Component {
                         pdfs.push(element)
                     }
                 }
-                console.log(pdfs)
                 if (pdfs.length === 1) {
                     self.setState({ pdfFile: pdfs[0] })
+                    set = true;
                 } else {
                     for (var element of pdfs) {
                         if (element.name === "paper.pdf") {
                             self.setState({ pdfFile: element })
+                            set = true;
                         }
                     }
+                }
+                if (!set && !this.state.metadata.identifier.doiurl) {
+                    self.setState({ pdf: false })
                 }
             })
             .catch((res) => {
                 console.log(res)
+                if (!this.state.metadata.identifier.doiurl) {
+                    self.setState({ pdf: false })
+                }
             })
+
     }
 
     handleDataChange = (evt) => this.setDataFile(evt.target.value);
@@ -136,7 +148,7 @@ class ERC extends React.Component {
                 if (response.data.substituted) {
                     substituted = response.data.metadata.substitution
                 }
-                
+
                 const data = response.data.metadata.o2r;
                 let dataset = '';
                 if (Array.isArray(data.inputfiles)) {
@@ -164,7 +176,7 @@ class ERC extends React.Component {
                 self.setPdfFile();
             })
             .catch(function (response) {
-                self.setState({failure: true})
+                self.setState({ failure: true })
                 console.log(response)
             })
     }
@@ -200,7 +212,7 @@ class ERC extends React.Component {
         return (
             <div className="Erc" >
                 <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
-                    <ReflexElement style={{ overflow: "hidden"}}>
+                    <ReflexElement style={{ overflow: "hidden" }}>
                         <Grid container>
                             <Grid item xs={4}>
                                 {this.state.substituted ?
@@ -212,14 +224,15 @@ class ERC extends React.Component {
                             </Grid>
                             {this.state.substitutionInfoOpen ? <SubstitutionInfoPop substitution={this.state.substituted} open={this.state.substitutionInfoOpen} handleClose={this.handleClose} /> : ""}
                             <Grid item xs={4}>
-                                <Button
-                                    onClick={this.handleDisplayFile.bind(this)}
-                                    variant='contained'
-                                    color='inherit'
-                                    style={{ float: "center" }}
-                                >
-                                    {this.state.html ? 'Show PDf' : 'Show HTML'}
-                                </Button>
+                                {this.state.pdf ?
+                                    <Button
+                                        onClick={this.handleDisplayFile.bind(this)}
+                                        variant='contained'
+                                        color='inherit'
+                                        style={{ float: "center" }}
+                                    >
+                                        {this.state.html ? 'Show PDf' : 'Show HTML'}
+                                    </Button> : ""}
                             </Grid>
                             <Grid xs={4}>
                                 <IconButton size='large' label='Download' style={{ float: "right" }} onClick={() => this.openPop("downloadOpen")}>
@@ -239,16 +252,19 @@ class ERC extends React.Component {
                             : <div>There is no file to display</div>}
                     </ReflexElement>
                     <ReflexSplitter propagate={true} style={{ width: "10px" }} />
-                    <ReflexElement>
+                    <ReflexElement >
                         <Paper square>
                             <Tabs indicatorColor="primary" textColor="primary"
                                 onChange={this.handleTabChange.bind(this)}
                                 value={this.state.tabValue}
+                                variant="scrollable"
+                                scrollButtons="auto"
                             >
                                 <Tab label="Inspect" />
                                 <Tab label="Check" />
                                 <Tab label="Manipulate" />
                                 <Tab label="Substitution" />
+                                <Tab label="Metadata" />
                             </Tabs>
                         </Paper>
                         {this.state.tabValue === 0 &&
@@ -276,6 +292,12 @@ class ERC extends React.Component {
                             this.state.tabValue === 3 &&
                             <div>
                                 <Substitution baseErcData={this.state.data} baseErcId={this.state.id} handleTabChange={this.handleTabChange} />
+                            </div>
+                        }
+                         {
+                            this.state.tabValue === 4 &&
+                            <div>
+                                <Metadata erc={this.state.data} substitution={this.state.substituted}/>
                             </div>
                         }
                     </ReflexElement>

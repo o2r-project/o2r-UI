@@ -44,8 +44,10 @@ class Substitute extends Component {
             baseErcFiles  = this.props.baseErc.inputfiles;
         }
         this.setState({baseErcFiles, substitutionErcFiles})
+
     }
     handleClose = () => {
+        window.history.back();
         this.props.setErc(0);
     }
 
@@ -121,7 +123,7 @@ class Substitute extends Component {
         return (
             <div>
                 <Dialog className="main_block" fullScreen TransitionComponent={Transition}
-                    open={this.props.erc !== 0}
+                    open={this.props.erc !== 0 && this.props.location.search== '?substitute'}
                 >
                     <AppBar>
                         <Toolbar>
