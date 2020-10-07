@@ -37,6 +37,7 @@ class Comparison extends Component {
     }
 
     dialogEntered = () => {
+        // TODO allow to disable synched scrolling
         if (this.state.job.status === 'success') {
             $("#frame1").contents().scroll(function () {
                 $("#frame2").contents().scrollTop($("#frame1").contents().scrollTop());
@@ -99,6 +100,7 @@ class Comparison extends Component {
                             <Iframe className="display_" id={'frame1'} url={config.baseUrl + "compendium/" + this.state.job.compendium_id + "/data/display.html"}></Iframe>
                             <Iframe className="check_" id={'frame2'} url={config.baseUrl + "job/" + this.state.job.id + "/data/display.html"}></Iframe>
                             <Iframe className="diff" id={'frame3'} url={config.baseUrl + "job/" + this.state.job.id + "/data/check.html"}></Iframe>
+                            <h4 className="title_" > To use synchronised scrolling in Firefox, move the cursor to the leftmost document. </h4>
                         </div>
                     }
                 </Dialog>
