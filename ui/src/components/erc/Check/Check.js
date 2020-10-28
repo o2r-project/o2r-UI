@@ -18,7 +18,7 @@ function Status(status) {
                 return <span className="failure">Process Failed (check logs)</span>
             }
             else {
-                return <span className="failure">Reproducibility Failed (click on "Show Result")</span>
+                return <span className="failure">Reproduction Failed (click on "Show Result" for details)</span>
             }
         case 'running':
             return <span className="running">Running <CircularProgress size={15} /></span>
