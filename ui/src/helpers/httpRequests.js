@@ -111,8 +111,11 @@ function complexSearch(query){
 }
 
 function createShipment(id, recipient){
-    const body={compendium_id: id, recipient}
-    return axios.post(_env.api + 'shipment', body);
+    var config = {
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    };
+    const body={compendium_id: id, recipient,update_packaging: true, _id: id}
+    return axios.post(_env.api + 'shipment', body, config);
 }
 
 module.exports = {

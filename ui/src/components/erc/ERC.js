@@ -1,7 +1,7 @@
 import React from 'react';
 import 'react-reflex/styles.css';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
-import { Paper, Tabs, Tab, Button, IconButton, Grid, Dialog, DialogActions, DialogTitle } from "@material-ui/core";
+import { Paper, Tabs, Tab, Button, IconButton, Grid, Dialog, DialogActions, DialogTitle, Icon } from "@material-ui/core";
 import GetAppIcon from '@material-ui/icons/GetApp';
 
 import config from '../../helpers/config';
@@ -16,6 +16,7 @@ import DownloadPop from './Download/DownloadPop';
 import SubstitutionInfoPop from './Substitution/SubstitutionInfo';
 import Metadata from './Metadata/Metadata';
 import { withRouter } from 'react-router-dom';
+import logo from '../../assets/img/DOI_logo.svg.png';
 
 class ERC extends React.Component {
     constructor(props) {
@@ -199,7 +200,7 @@ class ERC extends React.Component {
     }
 
     ship = () =>{
-        httpRequests.createShipment(this.state.id, "zenodo")
+        httpRequests.createShipment(this.state.id, "download")
           .then(response => console.log(response))
     }
 
@@ -255,6 +256,9 @@ class ERC extends React.Component {
                                         variant='contained'
                                         color='inherit'
                                         style={{ float: "center" }}
+                                        startIcon={<Icon>
+                                            <img src={logo} height={20} width={20}/>
+                                        </Icon>}
                                     >
                                         Article
                                     </Button> : ""}
@@ -271,17 +275,17 @@ class ERC extends React.Component {
                                         {this.state.html ? 'Show PDf' : 'Show HTML'}
                                     </Button> : ""}
                             </Grid>
-                            <Grid xs={2}>
+                            {<Grid xs={2}>
                                 <Button onClick={() => this.ship()}>
                                     Ship to Zenodo
                                 </Button>
-                            </Grid>
+                                </Grid>}
                             <Grid xs={2}>
                                 <IconButton size='large' label='Download' style={{ float: "right" }} onClick={() => this.openPop("downloadOpen")}>
                                     Download<GetAppIcon />
                                 </IconButton>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={3}>
                                 {this.state.substituted ?
                                     <span style={{ float: "left" }}>
                                         <span style={{ top: "1px", position: "relative" }}> This is a substituted ERC</span>
@@ -290,7 +294,7 @@ class ERC extends React.Component {
                                     : ""}
                             </Grid>
                             {this.state.substitutionInfoOpen ? <SubstitutionInfoPop substitution={this.state.substituted} open={this.state.substitutionInfoOpen} handleClose={this.handleClose} /> : ""}
-                            <Grid item xs={4}>
+                            <Grid item xs={6}>
                                 {this.state.publicLink && this.props.userLevel > 0 ?
                                     <span >
                                         <span style={{ top: "1px", position: "relative" }}> This ERC has an public Link: </span>
@@ -298,10 +302,10 @@ class ERC extends React.Component {
                                     </span>
                                     : ""}
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={3}>
                                 {this.state.candidate && this.props.userLevel > 100 ?
                                     <span style={{ float: "right" }}>
-                                        <Button onClick={() => this.handlePublicLink()}>{this.state.publicLink ? "Delete public Link" : "Create public Link" } </Button>
+                                        <Button variant='contained' onClick={() => this.handlePublicLink()}>{this.state.publicLink ? "Delete public Link" : "Create public Link" } </Button>
                                     </span>
                                     : ""}
                             </Grid>
