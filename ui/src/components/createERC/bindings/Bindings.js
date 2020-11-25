@@ -729,7 +729,7 @@ class Bindings extends Component {
           <Button onClick={this.handleClose} color="primary">
             Go Back
           </Button>
-          <Button onClick={window.location.href="mailto:o2r.team@uni-muenster.de?subject=CreateBinding"} color="primary" autoFocus>
+          <Button onClick={() => window.location.href="mailto:o2r.team@uni-muenster.de?subject=CreateBinding"} color="primary" autoFocus>
             Contact
           </Button>
         </DialogActions>

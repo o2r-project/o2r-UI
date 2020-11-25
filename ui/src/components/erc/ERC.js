@@ -15,6 +15,7 @@ import Substitution from './Substitution/Substitution';
 import DownloadPop from './Download/DownloadPop';
 import SubstitutionInfoPop from './Substitution/SubstitutionInfo';
 import Metadata from './Metadata/Metadata';
+import Shipment from './Shipment/Shipment';
 import { withRouter } from 'react-router-dom';
 import logo from '../../assets/img/DOI_logo.svg.png';
 
@@ -126,7 +127,7 @@ class ERC extends React.Component {
                         }
                     }
                 }
-                if (!set && !this.state.metadata.identifier.doiurl) {
+                if (!set && !self.state.metadata.identifier.doiurl) {
                     self.setState({ pdf: false })
                 }
             })
@@ -170,7 +171,7 @@ class ERC extends React.Component {
                     substituted: substituted,
                     candidate: candidate,
                     doiurl: data.identifier.doiurl
-                });
+                }, () => { 
                 self.setDisplayFile(data.displayfile);
                 if (Array.isArray(data.inputfiles)) {
                     self.setDataFile(data.inputfiles[0]);
@@ -180,6 +181,7 @@ class ERC extends React.Component {
                 self.setCodeFile(data.mainfile);
                 self.setPdfFile();
                 self.proofPublicLink();
+                })
             })
             .catch(function (response) {
                 self.setState({ failure: true })
@@ -197,11 +199,6 @@ class ERC extends React.Component {
                     }
                 }
             })
-    }
-
-    ship = () =>{
-        httpRequests.createShipment(this.state.id, "download")
-          .then(response => console.log(response))
     }
 
 
@@ -275,12 +272,7 @@ class ERC extends React.Component {
                                         {this.state.html ? 'Show PDf' : 'Show HTML'}
                                     </Button> : ""}
                             </Grid>
-                            {<Grid xs={2}>
-                                <Button onClick={() => this.ship()}>
-                                    Ship to Zenodo
-                                </Button>
-                                </Grid>}
-                            <Grid xs={2}>
+                            <Grid xs={4}>
                                 <IconButton size='large' label='Download' style={{ float: "right" }} onClick={() => this.openPop("downloadOpen")}>
                                     Download<GetAppIcon />
                                 </IconButton>
@@ -335,6 +327,7 @@ class ERC extends React.Component {
                                 <Tab label="Manipulate" />
                                 <Tab label="Substitution" />
                                 <Tab label="Metadata" />
+                                <Tab label="Shipment" />
                             </Tabs>
                         </Paper>
                         {this.state.tabValue === 0 &&
@@ -368,6 +361,12 @@ class ERC extends React.Component {
                             this.state.tabValue === 4 &&
                             <div>
                                 <Metadata erc={this.state.data} substitution={this.state.substituted}/>
+                            </div>
+                        }
+                       {
+                            this.state.tabValue === 5 &&
+                            <div>
+                                <Shipment erc={this.state.data} getMetadata={() => this.getMetadata()}/>
                             </div>
                         }
                     </ReflexElement>

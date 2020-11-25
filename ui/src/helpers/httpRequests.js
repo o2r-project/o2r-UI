@@ -111,11 +111,26 @@ function complexSearch(query){
 }
 
 function createShipment(id, recipient){
-    var config = {
+   /** var config = {
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
     };
-    const body={compendium_id: id, recipient,update_packaging: true, _id: id}
-    return axios.post(_env.api + 'shipment', body, config);
+    const body={compendium_id: id, recipient,update_packaging: true, _id: id}*/
+    var params = new URLSearchParams();
+    params.append('compendium_id', id);
+    params.append('recipient', recipient);
+    return axios.post(_env.api + 'shipment', params);
+}
+
+function getShipmentsByERCID(id){
+    return axios.get(_env.api + 'shipment?compendium_id=' + id)
+}
+
+function getShipment(id){
+    return axios.get(_env.api + 'shipment/' + id)
+}
+
+function publishShipment(id){
+    return axios.put(_env.api + 'shipment/' + id + '/publishment')
 }
 
 module.exports = {
@@ -143,5 +158,8 @@ module.exports = {
     createPublicLink: createPublicLink,
     deletePublicLink: deletePublicLink,
     getPublicLinks: getPublicLinks,
-    createShipment: createShipment
+    createShipment: createShipment,
+    getShipmentsByERCID: getShipmentsByERCID,
+    getShipment: getShipment,
+    publishShipment: publishShipment,
 };
