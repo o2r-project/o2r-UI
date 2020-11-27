@@ -172,7 +172,7 @@ services:
   #    - BATCH_COUNT=20
 
   shipper:
-    image: o2rproject/o2r-shipper:8f95fd6
+    image: o2rproject/o2r-shipper:e1ce0e6
     depends_on:
       - mongodb
       - configmongodb

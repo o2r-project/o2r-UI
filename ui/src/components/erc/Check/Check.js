@@ -100,12 +100,13 @@ class Check extends Component {
         const self = this;
         const socket = socketIOClient(this.state.socketPath + "logs/job");
         socket.on("connect", function (evt) {
-            console.log("Connected");
+            console.log("Job socket connected");
         });
         socket.on("document", (evt) => {
             console.log("document event");
         });
         socket.on("set", (evt) => {
+            console.log("Job socket set");
             httpRequests.getSingleJob(evt.id)
                 .then(function (res) {
                     let tmp = [];

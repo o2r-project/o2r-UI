@@ -156,8 +156,6 @@ class Logs extends Component {
         const self = this;
         httpRequests.getLogs(job_id)
             .then(function(res) {
-                console.log(res)
-                console.log(i)
                 i++;
                 self.setState({
                     logs: res.data.steps
