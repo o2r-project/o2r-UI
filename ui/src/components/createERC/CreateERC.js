@@ -106,6 +106,11 @@ class CreateERC extends Component {
         });
     }
 
+    goToPreview = () => {
+      let win = window.open('/#/erc/' +  this.state.compendium_id);
+      win.focus();
+    }
+
     updateAuthors = async (value) => {
 
         var changed = true;
@@ -177,6 +182,7 @@ class CreateERC extends Component {
                                 metadata={this.state.metadata}
                                 setMetadata={this.setMetadata}
                                 goToErc={this.goToErc}
+                                goToPreview={this.goToPreview}
                                 originalMetadata={this.state.originalMetadata}
                                 authors={this.state.authors}
                                 authorsChanged={this.state.authorsChanged}
@@ -196,6 +202,7 @@ class CreateERC extends Component {
                     <TabContainer>
                         { <SpatioTemporalMetadata
                             goToErc={this.goToErc}
+                            goToPreview={this.goToPreview}
                             metadata={this.state.metadata}
                             setMetadata={this.setMetadata}
                             originalMetadata={JSON.parse(JSON.stringify(this.state.originalMetadata))}
@@ -217,6 +224,7 @@ class CreateERC extends Component {
                             setChangedFalse={this.setChangedFalse}
                             originalMetadata={this.state.originalMetadata}
                             goToErc={this.goToErc}
+                            goToPreview={this.goToPreview}
                             candidate={this.state.candidate}
                         />
                     </TabContainer>

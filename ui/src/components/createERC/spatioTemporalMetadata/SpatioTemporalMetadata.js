@@ -49,6 +49,10 @@ class SpatioTemporalMetadata extends React.Component {
     this.props.goToErc()
   }
 
+  handlePreview = (e) => {
+    this.props.goToPreview()
+  }
+
   handleSave = () => {
     this.props.setChangedFalse("all")
     this.props.setMetadata(this.props.metadata, true)
@@ -309,12 +313,19 @@ class SpatioTemporalMetadata extends React.Component {
               >
                 Publish
             </Button>
-              <Button
-                type="button"
-                onClick={this.handleClick.bind(null)}
-                disabled={this.props.candidate}>
-                Go To ERC
-             </Button>
+              {this.props.candidate
+                ?<Button
+                    type="button"
+                    onClick={this.handlePreview.bind(null)}>
+                    Preview
+                  </Button>
+                : <Button
+                    type="button"
+                    onClick={this.handleClick.bind(null)}
+                    disabled={this.props.candidate}
+                    color="primary">
+                    Go To ERC
+                  </Button>}
             </Card>
             <div id={"errorMessage"}>
               {!valid2 ? "Required Metadata is not valid" : ""} <br />

@@ -64,6 +64,7 @@ export const Form = props => {
 
 
     const goToErc = () => props.goToERC();
+    const goToPreview = () => props.goToPreview();
 
 
     const setMostRestrictive = () => {
@@ -334,12 +335,20 @@ export const Form = props => {
                         >
                             Publish
                          </Button>
-                        <Button
-                            type="button"
-                            onClick={goToErc}
-                            disabled={props.candidate}>
-                            Go To ERC
+                        {props.candidate
+                          ? <Button
+                              type="button"
+                              onClick={goToPreview}>
+                              Preview
                             </Button>
+                          : <Button
+                              type="button"
+                              color="primary"
+                              onClick={goToErc}
+                              disabled={props.candidate}>
+                              Go To ERC
+                            </Button>
+                       }
                     </Paper>
                     <div id={"errorMessage"}>
                         {errors.title ? errors.title : ""}

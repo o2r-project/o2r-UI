@@ -102,7 +102,7 @@ class RequiredMetadata extends Component {
         codeLicense: this.props.originalMetadata.license.code,
 
     }
-    
+
     componentDidMount() {
         prepareLicense();
         refs2 = refs.splice(refs.length - this.props.authors.length, refs.length)
@@ -179,6 +179,7 @@ class RequiredMetadata extends Component {
                             setFormValues={this.setFormValues}
                             resetAuthors={refs2}
                             goToERC={this.props.goToErc}
+                            goToPreview={this.props.goToPreview}
                             spatioTemporalChanged={this.props.spatioTemporalChanged}
                             authorsChanged={this.props.authorsChanged}
                             changed={this.props.changed}
@@ -190,7 +191,7 @@ class RequiredMetadata extends Component {
                             dataLicenses={dataLicenses}
                             mostRestrictiveData={mostRestrictiveData}
                             leastRestrictiveData={leastRestrictiveData}
-                            candidate={this.props.candidate} 
+                            candidate={this.props.candidate}
                             showProgress={this.props.showProgress} />}
                         initialValues={this.formValues}
                         validationSchema={validationSchema}
