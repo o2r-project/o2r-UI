@@ -1,3 +1,8 @@
 .Erc {
   text-align: center;
 }
+
+#PreviewNotice{
+  color: white;
+  background-color: orange;
+}

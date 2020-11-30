@@ -27,6 +27,7 @@ class Substitution extends React.Component {
         if (this.props.baseErcData.metadata.o2r.inputfiles.length !== 0) {
             this.getCompendia()
         }
+        document.title = "Substitution | ERC " + this.props.id + " | o2r Demoserver"
     }
 
     getCompendia = () => {

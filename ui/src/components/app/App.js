@@ -18,7 +18,7 @@ import Discovery from '../discovery/Discovery';
 import ERC from '../erc/ERC';
 
 const Header = ( props ) => {
-  return (        
+  return (
     <AppBar id="header">
       <Toolbar>
       <a href="/"><img src={logo} alt="o2r" id="headerLogo"/></a>
@@ -35,22 +35,22 @@ const Header = ( props ) => {
             </Button>
           </NavLink>*/}
           <NavLink id="link" to={"/author/" + props.userOrcid}>
-            {props.loggedIn ? 
+            {props.loggedIn ?
               <Button color="inherit">
-                {props.userName} | 
+                {props.userName} |
                   <img src={orcidLogo} className="orcidImage" alt="orcid"></img>
                   {props.userOrcid}
               </Button> : ''}
           </NavLink>
         </HashRouter>
         <Button color="inherit"
-          href={props.loggedIn ? "api/v1/auth/logout" : "api/v1/auth/login"} 
+          href={props.loggedIn ? "api/v1/auth/logout" : "api/v1/auth/login"}
           onClick={() => props.login()}>{props.loggedIn ? 'Logout' : 'Login'}
         </Button>
         {/*<Button color="inherit">
           Help
             </Button>*/}
-      </Toolbar> 
+      </Toolbar>
     </AppBar>
   );
 };
@@ -96,20 +96,20 @@ class App extends Component {
       )
       .catch(response => {
         console.log(response);
-      });  
+      });
   }
 
   render() {
     return (
       <ThemeProvider theme={theme}>
       <div id="pageContainer">
-      <Header 
-        loggedIn={this.state.loggedIn} 
+      <Header
+        loggedIn={this.state.loggedIn}
         login={() => this.user()}
         userName={this.state.userName}
-        userOrcid={this.state.userOrcid}>  
+        userOrcid={this.state.userOrcid}>
       </Header>
-      
+
       <HashRouter>
       <div>
         <div className="content" id="mainView">
@@ -131,4 +131,3 @@ class App extends Component {
 }
 
 export default App
-

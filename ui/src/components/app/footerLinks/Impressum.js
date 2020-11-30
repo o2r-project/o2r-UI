@@ -1,13 +1,19 @@
 import React, { Component } from "react";
 
 class Impressum extends Component {
+
+    componentDidMount(){
+      document.title = "Impressum | o2r Demoserver"
+
+    }
+
     render() {
         return (
             <div>
                 <h1>Impressum</h1>
                 <h2>Contact</h2>
                 <div>
-                    Westfälische Wilhelms-Universität Münster<br/> 
+                    Westfälische Wilhelms-Universität Münster<br/>
                     Institut für Geoinformatik - o2r Project Team<br/>
                     Heisenbergstraße 2<br/>
                     D-48149 Münster<br/><br/>
@@ -16,7 +22,7 @@ class Impressum extends Component {
                 </div>
                 <h2>Notice of Liability</h2>
                 <div flex="50">
-                    Although we check the content carefully, we cannot accept responsibility for the content of external links. 
+                    Although we check the content carefully, we cannot accept responsibility for the content of external links.
                     The linked sites’ carriers are responsible for their sites’ content.
                 </div>
             </div>

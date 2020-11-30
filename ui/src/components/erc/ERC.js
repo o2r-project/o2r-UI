@@ -31,12 +31,17 @@ class ERC extends React.Component {
             codefiles: null,
             tabValue: 0,
             html: true,
-            pdf: true
+            pdf: true,
+            isPreview: false
         };
         this.handleClose = this.handleClose.bind(this);
     }
 
-    componentDidMount = () => { this.getMetadata(); this.props.history.replace(this.props.location.pathname) };
+    componentDidMount = () => {
+      this.getMetadata();
+      this.props.history.replace(this.props.location.pathname);
+      document.title = "ERC " + this.state.id+ " | o2r Demoserver";
+     };
 
 
     setDataFile(datafile) {
@@ -164,7 +169,8 @@ class ERC extends React.Component {
                     dataset: dataset,
                     codefiles: data.codefiles,
                     binding: data.interaction[0],
-                    substituted: substituted
+                    substituted: substituted,
+                    isPreview: response.data.candidate
                 });
                 self.setDisplayFile(data.displayfile);
                 if (Array.isArray(data.inputfiles)) {
@@ -211,6 +217,7 @@ class ERC extends React.Component {
     render() {
         return (
             <div className="Erc" >
+              {this.state.isPreview ? <p id="PreviewNotice"><b>This is a preview! Changes from the create window will not be displayed.</b></p>: ""}
                 <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
                     <ReflexElement style={{ overflow: "hidden" }}>
                         <Grid container>

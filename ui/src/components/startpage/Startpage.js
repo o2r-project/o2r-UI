@@ -10,6 +10,10 @@ class Startpage extends Component {
     spacing: "10"
   };
 
+  componentDidMount(){
+    document.title = "Home | o2r Deno Server"
+  }
+
   render() {
     const { spacing } = this.state;
 
@@ -28,7 +32,7 @@ class Startpage extends Component {
             </Card>
             </Grid>
             <Grid item>
-            <Card id="uploadCard2">    
+            <Card id="uploadCard2">
             <CardContent>
                 <InspectExamples />
             </CardContent>

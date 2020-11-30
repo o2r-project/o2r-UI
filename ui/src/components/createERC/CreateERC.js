@@ -35,7 +35,7 @@ class CreateERC extends Component {
             spatioTemporalChanged: false,
             authorsValid: false,
             candidate: true,
-            showProgress: false,
+            showProgress: false
         }
     }
 
@@ -151,17 +151,21 @@ class CreateERC extends Component {
         this.setState({ authorsValid: valid });
     };
 
-
-    componentDidMount = () => this.getMetadata();
+    componentDidMount = () => {
+      this.getMetadata();
+      document.title = "Create ERC | o2r Demoserver";
+    }
 
     handleClose = () => {
         this.setState({ open: false })
+
+
     }
 
     render() {
         const { value } = this.state;
         return (
-            <div>
+              <div>
                 <AppBar position="fixed" color="default" id="appBar">
                     <Tabs scrollButtons="on" variant="standard" indicatorColor="primary" centered textColor="primary"
                         value={value}

@@ -16,6 +16,7 @@ class Author extends Component {
     }
     componentDidMount() {
         this.getCompendia();
+        document.title = "Author View | o2r Demoserver"
     }
 
     goToErc = (erc) => {

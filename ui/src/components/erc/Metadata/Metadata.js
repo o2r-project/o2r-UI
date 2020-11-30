@@ -16,6 +16,7 @@ class Metadata extends React.Component {
     componentDidMount() {
         ref2 = this.refs.map.leafletElement;
         ref2.fitBounds([this.metadata.spatial.union.bbox[0], this.metadata.spatial.union.bbox[2]])
+        document.title = "Metadata | ERC " + this.props.id + " | o2r Demoserver"
     }
 
     goToErc = (id) => {

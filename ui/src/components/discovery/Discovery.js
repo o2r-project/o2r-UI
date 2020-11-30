@@ -27,7 +27,11 @@ class Discovery extends Component {
         }
     }
 
-    componentDidMount() { this.searchCompendia(); this.calculateDateRange() }
+    componentDidMount() {
+      this.searchCompendia();
+      this.calculateDateRange();
+      document.title = "Discover | o2r Demo Server"
+     }
 
     calculateDateRange = () => {
         const result = []

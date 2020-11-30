@@ -1,8 +1,14 @@
 import React, { Component } from "react";
 
 class Privacy extends Component {
+
+    componentDidMount(){
+      document.title = "Privacy | o2r Demoserver"
+
+    }
+
     render() {
-        return ( 
+        return (
         <div>
             <h3>Privacy Policy</h3>
             <h4 id="userdata">User Data</h4>

@@ -9,6 +9,11 @@ class Startpage extends Component {
     spacing: "10"
   };
 
+  componentDidMount(){
+    document.title = "Home | o2r Demo Server"
+  }
+
+
   render() {
     const { spacing } = this.state;
 
