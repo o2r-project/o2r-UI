@@ -134,7 +134,7 @@ function publishShipment(id){
 }
 
 function uploadViaZenodo(idOrUrl, path){
-    var _url = _env.api + '/compendium/';
+    var _url = _env.api + 'compendium/';
     var _path = path;
     if(_path) {
         if (_path.substr(0, 1) !== '/') {
@@ -145,7 +145,7 @@ function uploadViaZenodo(idOrUrl, path){
     }
 
     var _data = {
-        content_type:"compendium",
+        content_type:"workspace",
         path: _path
     }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import httpRequests, { getShipmentsByERCID } from '../../../helpers/httpRequests';
+import httpRequests from '../../../helpers/httpRequests';
 import { Paper, Button, FormControl, FormLabel, FormControlLabel, RadioGroup, Radio, Card, CardContent, CardHeader, Grid, Snackbar, CircularProgress } from '@material-ui/core';
 
 //import { withRouter } from 'react-router-dom';
