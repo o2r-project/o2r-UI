@@ -26,6 +26,7 @@ class Comparison extends Component {
         if (this.props.location.search === '?result') {
             self.setState({ open: true })
         }
+        document.title = "Comparison | ERC " + this.state.job.compendium_id + " | o2r Demoserver "
     }
 
     handleClickOpen = () => {
@@ -36,29 +37,46 @@ class Comparison extends Component {
         window.history.back();
     }
 
-    dialogEntered = () => {
-        // TODO allow to disable synched scrolling
-        if (this.state.job.status === 'success') {
-            $("#frame1").contents().scroll(function () {
-                $("#frame2").contents().scrollTop($("#frame1").contents().scrollTop());
-            });
-            $("#frame2").contents().scroll(function () {
-                $("#frame1").contents().scrollTop($("#frame2").contents().scrollTop());
-            });
-        }
-        else {
-            $("#frame1").contents().scroll(function () {
-                $("#frame2").contents().scrollTop($("#frame1").contents().scrollTop());
-                $("#frame3").contents().scrollTop($("#frame1").contents().scrollTop());
-            });
-            $("#frame2").contents().scroll(function () {
-                $("#frame1").contents().scrollTop($("#frame2").contents().scrollTop());
-                $("#frame3").contents().scrollTop($("#frame2").contents().scrollTop());
-            });
-            $("#frame3").contents().scroll(function () {
-                $("#frame1").contents().scrollTop($("#frame3").contents().scrollTop());
-                $("#frame2").contents().scrollTop($("#frame3").contents().scrollTop());
-            });
+    activateScroll = () => {
+
+          if (this.state.job.status === 'success') {
+              $("#frame1").contents().scroll(function () {
+                  $("#frame2").contents().scrollTop($("#frame1").contents().scrollTop());
+              });
+              $("#frame2").contents().scroll(function () {
+                  $("#frame1").contents().scrollTop($("#frame2").contents().scrollTop());
+              });
+          }
+          else {
+              $("#frame1").contents().scroll(function () {
+                  $("#frame2").contents().scrollTop($("#frame1").contents().scrollTop());
+                  $("#frame3").contents().scrollTop($("#frame1").contents().scrollTop());
+              });
+              $("#frame2").contents().scroll(function () {
+                  $("#frame1").contents().scrollTop($("#frame2").contents().scrollTop());
+                  $("#frame3").contents().scrollTop($("#frame2").contents().scrollTop());
+              });
+              $("#frame3").contents().scroll(function () {
+                  $("#frame1").contents().scrollTop($("#frame3").contents().scrollTop());
+                  $("#frame2").contents().scrollTop($("#frame3").contents().scrollTop());
+              });
+          }
+    }
+
+    deactivateScroll = () => {
+        $("#frame1").contents().off( "scroll" );
+        $("#frame2").contents().off( "scroll" );
+        $("#frame3").contents().off( "scroll" );
+    }
+
+    handleCheck = () => {
+      let checked = $('.checkScroll').prop("checked");
+      console.log(checked);
+      if(checked){
+         this.deactivateScroll();
+       }
+       else{
+         this.activateScroll();
         }
     }
 
@@ -76,7 +94,7 @@ class Comparison extends Component {
                 <Dialog className="main_block" fullScreen TransitionComponent={Transition}
                     open={this.state.open}
                     onClose={this.handleClose}
-                    onEntered={this.dialogEntered}
+                    onEntered={this.activateScroll}
                 >
                     <AppBar>
                         <Toolbar>
@@ -101,6 +119,12 @@ class Comparison extends Component {
                             <Iframe className="check_" id={'frame2'} url={config.baseUrl + "job/" + this.state.job.id + "/data/display.html"}></Iframe>
                             <Iframe className="diff" id={'frame3'} url={config.baseUrl + "job/" + this.state.job.id + "/data/check.html"}></Iframe>
                             <h4 className="title_" > To use synchronised scrolling in Firefox, move the cursor to the leftmost document. </h4>
+                            <form>
+                              <label>
+                                Disable synchronised scrolling
+                                <input className="checkScroll" type="checkbox" name="scroll" onChange={this.handleCheck}/>
+                              </label>
+                            </form>
                         </div>
                     }
                 </Dialog>
