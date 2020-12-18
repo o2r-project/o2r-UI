@@ -12,7 +12,7 @@ class Impressum extends Component {
                     Heisenbergstraße 2<br/>
                     D-48149 Münster<br/><br/>
                     Phone: +49 (251) 83-33 962<br/><br/>
-                    Email: daniel.nuest@uni-muenster.de
+                    Email: o2r.team@uni-muenster.de
                 </div>
                 <h2>Notice of Liability</h2>
                 <div flex="50">
