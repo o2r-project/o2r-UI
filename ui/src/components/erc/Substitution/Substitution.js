@@ -1,7 +1,7 @@
 import React from 'react';
 
 import httpRequests from '../../../helpers/httpRequests';
-import { Card, CardHeader, CardContent, CardActions, Button, IconButton, Collapse, Grid } from '@material-ui/core';
+import { Card, CardHeader, CardContent, Button, IconButton, Collapse, Grid } from '@material-ui/core';
 import Substitute from './Substitute/Subsititute'
 
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
@@ -9,7 +9,6 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import { withRouter } from 'react-router-dom';
 
 import './substitution.css'
-import { file } from '@babel/types';
 
 class Substitution extends React.Component {
 
@@ -76,16 +75,16 @@ class Substitution extends React.Component {
             return false
         }
         for (var file of this.props.baseErcData.files.children) {
-            if (file.name == this.props.baseErcData.metadata.o2r.inputfiles || this.props.baseErcData.metadata.o2r.inputfiles.includes(file.name)) {
+            if (file.name === this.props.baseErcData.metadata.o2r.inputfiles || this.props.baseErcData.metadata.o2r.inputfiles.includes(file.name)) {
                 baseFiles.push(file)
             }
         }
-        for (var file of erc.files.children) {
-            if (file.name == erc.metadata.o2r.inputfiles || erc.metadata.o2r.inputfiles.includes(file.name)) {
+        for (file of erc.files.children) {
+            if (file.name === erc.metadata.o2r.inputfiles || erc.metadata.o2r.inputfiles.includes(file.name)) {
                 substitutionFiles.push(file)
             }
         }
-        for (var file of baseFiles) {
+        for (file of baseFiles) {
             for (var file2 of substitutionFiles) {
                 if (file.extension === file2.extension) {
                     return true;

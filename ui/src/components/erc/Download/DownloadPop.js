@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, FormControl, RadioGroup, Slide, Radio, FormControlLabel, Grid } from "@material-ui/core";
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, FormControl, RadioGroup, Radio, FormControlLabel, Grid } from "@material-ui/core";
 
 import httpRequests from '../../../helpers/httpRequests';
 
@@ -25,7 +25,7 @@ class DownloadPop extends Component {
         const self = this;
         httpRequests.listJobs(this.props.id)
             .then(function (res) {
-                if(res.data.results.length == 0){
+                if(res.data.results.length === 0){
                     self.setState({ text:  "Image tarball is missing, so it is not available for download. Please run the analysis first."})
                 }
                 for (let i = 0; i < res.data.results.length; i++) {

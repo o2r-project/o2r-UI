@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { DropzoneArea } from 'material-ui-dropzone';
-import { Button, Dialog, DialogContent, DialogTitle, DialogActions, CircularProgress } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 
 import './Dropzone.css';
@@ -30,7 +30,6 @@ class Dropzone extends Component {
 
   uploadFolder() {
     const self = this.props;
-    const state = this
     const data = new FormData();
     data.append('compendium', this.state.files[0]);
     data.append('content_type', 'workspace');

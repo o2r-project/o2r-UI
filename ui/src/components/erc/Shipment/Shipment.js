@@ -14,7 +14,6 @@ class Shipment extends React.Component {
             value: "zenodo",
             shipped: false,
             id: props.erc.id,
-            shipped: false,
             shipments: [],
             message: "",
             backgroundColor: "",
@@ -55,13 +54,13 @@ class Shipment extends React.Component {
         let image_url = null
         let doi = null
         let urls= {url, image_url, doi}
-        if (shipment.recipient == "zenodo") {
+        if (shipment.recipient === "zenodo") {
             url = "https://www.zenodo.org/"
             
-            if (shipment.status == "shipped") {
+            if (shipment.status === "shipped") {
                 url += "deposit/"
             }
-            else if (shipment.status == "published") {
+            else if (shipment.status === "published") {
                 url += "record/"
                 doi = "https://doi.org/10.5281/zenodo."
                 image_url= "https://zenodo.org/badge/DOI/10.5281/zenodo."
@@ -70,12 +69,12 @@ class Shipment extends React.Component {
                 return ""
             }
         }
-        else if (shipment.recipient == "zenodo_sandbox") {
+        else if (shipment.recipient === "zenodo_sandbox") {
             url = "https://sandbox.zenodo.org/"
-            if (shipment.status == "shipped") {
+            if (shipment.status === "shipped") {
                 url += "deposit/"
             }
-            else if (shipment.status == "published") {
+            else if (shipment.status === "published") {
                 url += "record/"
                 doi = "https://doi.org/10.5072/zenodo."
                 image_url = "https://sandbox.zenodo.org/badge/DOI/10.5072/zenodo."
@@ -131,7 +130,7 @@ class Shipment extends React.Component {
         console.log(ship)
         let shipments = this.state.shipments
         for (let i in shipments) {
-            if (shipments[i].id == ship.id) {
+            if (shipments[i].id === ship.id) {
                 let shipment = shipments[i]
                 shipment.status = ship.status
                 let urls = this.createURL(shipment)
@@ -208,7 +207,7 @@ class Shipment extends React.Component {
                     <br />
                     Shipments:
                     <br />
-                    {this.state.shipments.length == 0 ?
+                    {this.state.shipments.length === 0 ?
                         "No Shipments for this ERC" :
                         this.state.shipments.map((shipment, index) =>
                             <div key={index}>
@@ -221,17 +220,17 @@ class Shipment extends React.Component {
                                                     <span style={{ "font-weight": "bold" }}> Created by: </span> {shipment.user} <br />
                                                     <span style={{ "font-weight": "bold" }}> Recipient: </span> {shipment.recipient} <br />
                                                     <span style={{ "font-weight": "bold" }}> Status: </span> {shipment.status} <br />
-                                                    {shipment.status == "published" ? 
+                                                    {shipment.status === "published" ? 
                                                     <a href={shipment.deposition_url}><img src={shipment.image_url} alt="DOI"></img></a> : "" } </p>
                                             </Grid>
                                                 <Grid item xs={3}>
-                                                    {shipment.status == "shipped" ? <Button variant="contained" size="small" color="primary" onClick={() => this.publishShipment(shipment)}>
+                                                    {shipment.status === "shipped" ? <Button variant="contained" size="small" color="primary" onClick={() => this.publishShipment(shipment)}>
                                                         Publish
                                                          </Button> : ""}
                                                     <br />
                                                     <br />
                                                     {shipment.deposition_url ? <Button variant="contained" size="small" color="primary" onClick={() => this.hrefToLink(shipment.deposition_url)}>
-                                                        {shipment.status == "shipped" ? "Inspect on" : "View on"} {shipment.recipient}
+                                                        {shipment.status === "shipped" ? "Inspect on" : "View on"} {shipment.recipient}
                                                     </Button> : ""}
 
                                                 </Grid>

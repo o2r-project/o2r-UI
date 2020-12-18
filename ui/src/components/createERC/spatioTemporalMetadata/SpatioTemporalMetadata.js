@@ -145,7 +145,7 @@ class SpatioTemporalMetadata extends React.Component {
       httpRequests.geocodingRequest(query)
         .then(function (res) {
           console.log(res)
-          if (res.data.features.length == 0) { alert("No result found"); return; }
+          if (res.data.features.length === 0) { alert("No result found"); return; }
           const resultBBox = res.data.features[0].bbox
           if (!resultBBox) { alert("No result found"); return; }
           const bbox = []

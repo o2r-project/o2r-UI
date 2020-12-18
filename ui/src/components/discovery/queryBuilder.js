@@ -53,7 +53,7 @@ export default function prepareQuery(term, coordinates_selected, from, to, start
             }
         });
     }
-    if((start == 0) || start){
+    if((start === 0) || start){
         query.from = start;
     }
     if(size){

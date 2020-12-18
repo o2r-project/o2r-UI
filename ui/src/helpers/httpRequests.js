@@ -1,5 +1,4 @@
 const axios = require('axios');
-const { func } = require('prop-types');
 const config = require('./config');
 const _env = {
     api: config.baseUrl

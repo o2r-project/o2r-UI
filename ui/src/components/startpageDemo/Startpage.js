@@ -15,6 +15,10 @@ class Startpage extends Component {
     progress: 0,
     open: false,
   };
+  
+  componentMounted() {
+    console.log("mounted")
+}
 
   submit = () => {
     let self= this;
@@ -69,7 +73,7 @@ render() {
                 <b>Step 1: Create an R Markdown file including your R analysis</b>
               </div>
               <div className="instruction">
-                <b>Step 2: Add metadata to your R Markdown in YAML format like <a target="_blank" rel="noopener" href="https://github.com/o2r-project/erc-examples/blob/master/ERC/Finished/INSYDE/workspace/main.Rmd">here (optional)</a>
+                <b>Step 2: Add metadata to your R Markdown in YAML format like <a target="_blank"  rel="noopener noreferrer" href="https://github.com/o2r-project/erc-examples/blob/master/ERC/Finished/INSYDE/workspace/main.Rmd">here (optional)</a>
                 </b><br />
               </div>
               <div className="instruction">
@@ -79,7 +83,7 @@ render() {
                 <b>Step 4: Upload your workspace including the code files, data, and the HTML (.zip)</b><br />
               </div>
               <div className="instruction">
-                <b>No workspace at hand? Just upload one of our <a target="_blank" rel="noopener" href="https://github.com/o2r-project/erc-examples/tree/master/ERC/Finished">example workspaces</a></b>
+                <b>No workspace at hand? Just upload one of our <a target="_blank"  rel="noopener noreferrer" href="https://github.com/o2r-project/erc-examples/tree/master/ERC/Finished">example workspaces</a></b>
               </div>
               <Dropzone loggedIn={this.props.loggedIn} setUpperState={this.setUpperState} handleClose={this.handleClose}/>
             </div>

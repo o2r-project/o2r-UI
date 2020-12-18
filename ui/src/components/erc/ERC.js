@@ -120,9 +120,9 @@ class ERC extends React.Component {
                     self.setState({ pdfFile: pdfs[0] })
                     set = true;
                 } else {
-                    for (var element of pdfs) {
-                        if (element.name === "paper.pdf") {
-                            self.setState({ pdfFile: element })
+                    for (var element1 of pdfs) {
+                        if (element1.name === "paper.pdf") {
+                            self.setState({ pdfFile: element1 })
                             set = true;
                         }
                     }
@@ -194,7 +194,7 @@ class ERC extends React.Component {
         httpRequests.getPublicLinks()
             .then( response => {
                 for (let result of response.data.results){
-                    if (result.compendium_id == this.state.id){
+                    if (result.compendium_id === this.state.id){
                         self.setState({publicLink : result.id})
                     }
                 }
@@ -254,7 +254,7 @@ class ERC extends React.Component {
                                         color='inherit'
                                         style={{ float: "center" }}
                                         startIcon={<Icon>
-                                            <img src={logo} height={20} width={20}/>
+                                            <img src={logo} height={20} width={20} alt="DOI"/>
                                         </Icon>}
                                     >
                                         Article
@@ -272,8 +272,8 @@ class ERC extends React.Component {
                                         {this.state.html ? 'Show PDf' : 'Show HTML'}
                                     </Button> : ""}
                             </Grid>
-                            <Grid xs={4}>
-                                <IconButton size='large' label='Download' style={{ float: "right" }} onClick={() => this.openPop("downloadOpen")}>
+                            <Grid item xs={4}>
+                                <IconButton size='medium' label='Download' style={{ float: "right" }} onClick={() => this.openPop("downloadOpen")}>
                                     Download<GetAppIcon />
                                 </IconButton>
                             </Grid>
