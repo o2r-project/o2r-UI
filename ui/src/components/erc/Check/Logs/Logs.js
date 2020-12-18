@@ -141,7 +141,6 @@ class LogsView extends Component{
   }
 }
 
-var i=0
 class Logs extends Component {
 
     constructor(props) {
@@ -156,7 +155,6 @@ class Logs extends Component {
         const self = this;
         httpRequests.getLogs(job_id)
             .then(function(res) {
-                i++;
                 self.setState({
                     logs: res.data.steps
                 });

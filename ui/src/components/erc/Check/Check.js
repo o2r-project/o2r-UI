@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography, CircularProgress, Dialog, DialogContent, DialogTitle, DialogActions } from "@material-ui/core";
+import { Button, Accordion, AccordionDetails, AccordionSummary, Typography, CircularProgress, Dialog, DialogContent, DialogTitle, DialogActions } from "@material-ui/core";
 import socketIOClient from "socket.io-client";
 import uuid from 'uuid/v1';
 
@@ -37,6 +37,7 @@ class ListJobs extends Component {
         super(props);
         this.state = {
             expanded: props.runningJob ? props.jobs[0].id : 'panel1',
+            open: false
         }
     }
 
@@ -58,16 +59,16 @@ class ListJobs extends Component {
         return (
             <div>
                 {this.props.jobs.map(job => (
-                    <ExpansionPanel square key={uuid()}
+                    <Accordion square key={uuid()}
                         expanded={this.state.expanded === job.id}
                         onChange={this.handleChange(job.id)}>
-                        <ExpansionPanelSummary aria-controls="panel1d-content" id="panel1d-header" style={{ backgroundColor: 'rgb(245, 245, 245)' }}>
+                        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" style={{ backgroundColor: 'rgb(245, 245, 245)' }}>
                             <Typography><b>Started: </b>{job.steps.validate_bag.start} <br />
                                 <b>Overall Status: </b><Status checkStatus={job.steps.check.status} status={job.status}></Status>
                             </Typography>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
-                            <Typography className="steps">
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <div className="steps">
                                 <div className="stepmargin"><span><b>1) Create configuration file: </b><Status status={job.steps.generate_configuration.status} /></span></div>
                                 <div className="stepmargin"><span><b>2) Validate configuration file: </b><Status status={job.steps.validate_compendium.status} /></span></div>
                                 <div className="stepmargin"><span><b>3) Create docker manifest: </b><Status status={job.steps.generate_manifest.status}></Status></span></div>
@@ -76,9 +77,9 @@ class ListJobs extends Component {
                                 <div className="stepmargin"><span><b>6) Compare original and reproduced results: </b><Status checkStatus={job.steps.check.status} status={job.steps.check.status}></Status></span></div>
                                 <Comparison job={job} displayfile={this.props.displayfile} className="compare"></Comparison>
                                 <Logs job={job} logs={this.props.logs}></Logs>
-                            </Typography>
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
+                            </div>
+                        </AccordionDetails>
+                    </Accordion>
                 ))}
             </div>
         );
