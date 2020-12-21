@@ -44,6 +44,16 @@ If you want to run the UI based on locally running microservices, i.e., the o2r 
 docker-compose --file o2r-UI/ui/docker-compose-local-microservices.yml up
 ```
 
+**Installing new packages**
+
+After you installed further packages from [npm](https://www.npmjs.com/), you have to rebuild the container. 
+The easiest way to do this are these two commands:
+```bash
+docker-compose down -v
+docker-compose up --build
+```
+After the build the packages are available to use.
+
 ## Create a release
 
 This repository contains two pieces of software, whose versions are managed in `ui/bindings/package.json` and `ui/package.json` respectively.

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import L, { geoJSON } from "leaflet"
+import L from "leaflet"
 
 
-import { Card, CardHeader, CardContent, CardActions, Button, IconButton, Collapse, Grid, Paper, TextField } from '@material-ui/core';
+import { Card, CardHeader, CardContent, Button, IconButton, Collapse, Grid, Paper } from '@material-ui/core';
 
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';

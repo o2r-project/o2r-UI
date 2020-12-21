@@ -1,3 +1,9 @@
 .Erc {
   text-align: center;
 }
+
+
+.MuiButton-startIcon{
+  display: inline !important;
+  margin-top: 7px;
+}
