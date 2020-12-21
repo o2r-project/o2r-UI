@@ -217,7 +217,7 @@ class ERC extends React.Component {
     render() {
         return (
             <div className="Erc" >
-              {this.state.isPreview ? <ReflexContainer style={{"border-bottom-color":"#c6c6c6"}}><p id="PreviewNotice"><b>This is a preview! Changes from the create window will not be displayed.</b></p></ReflexContainer>: ""}
+              {this.state.isPreview ? <ReflexContainer style={{"border-bottom":"1px solid #c6c6c6"}}><p id="PreviewNotice"><b>This is a preview! Changes from the create window will not be displayed.</b></p></ReflexContainer>: ""}
                 <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
                     <ReflexElement style={{ overflow: "hidden" }}>
                         <Grid container>
