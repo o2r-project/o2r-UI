@@ -7,7 +7,7 @@ import RequiredMetadata from './requiredMetadata/RequiredMetadata';
 import SpatioTemporalMetadata from './spatioTemporalMetadata/SpatioTemporalMetadata';
 import Bindings from './bindings/Bindings';
 import httpRequests from '../../helpers/httpRequests';
-
+import config from '../../helpers/config';
 
 
 function TabContainer(props) {
@@ -153,7 +153,7 @@ class CreateERC extends Component {
 
     componentDidMount = () => {
       this.getMetadata();
-      document.title = "Create ERC | o2r Demoserver";
+      document.title = "Create ERC" + config.title;
     }
 
     handleClose = () => {

@@ -4,6 +4,7 @@ import { Card, CardContent, Grid } from "@material-ui/core/";
 import './startpage.css';
 import Upload from "../uploadERC/Upload";
 import InspectExamples from '../inspectExamples/InspectExamples';
+import config from '../../../helpers/config';
 
 class Startpage extends Component {
   state = {
@@ -11,7 +12,7 @@ class Startpage extends Component {
   };
 
   componentDidMount(){
-    document.title = "Home | o2r Deno Server"
+    document.title = "Home" + config.title;
   }
 
   render() {

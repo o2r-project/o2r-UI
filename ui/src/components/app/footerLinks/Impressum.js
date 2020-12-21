@@ -1,9 +1,10 @@
 import React, { Component } from "react";
+import config from '../../../helpers/config';
 
 class Impressum extends Component {
 
     componentDidMount(){
-      document.title = "Impressum | o2r Demoserver"
+      document.title = "Impressum" + config.title;
 
     }
 

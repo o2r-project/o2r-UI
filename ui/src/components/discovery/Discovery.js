@@ -6,6 +6,7 @@ import L from 'leaflet'
 import prepareQuery from './/queryBuilder'
 import OwnMap, { ref, ref2 } from "./Map"
 import ResultList from './resultList'
+import config from '../../helpers/config';
 
 import './discovery.css'
 
@@ -30,7 +31,7 @@ class Discovery extends Component {
     componentDidMount() {
       this.searchCompendia();
       this.calculateDateRange();
-      document.title = "Discover | o2r Demo Server"
+      document.title = "Discover" + config.title;
      }
 
     calculateDateRange = () => {

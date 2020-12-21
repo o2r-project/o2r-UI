@@ -38,7 +38,7 @@ class Manipulate extends React.Component {
         if (this.state.bindings.length > 5) {
             this.setState({ variant: "scrollable" })
         }
-        document.title = "Manipulate | ERC " + this.props.id+ " | o2r Demoserver";
+        document.title = "Manipulate | ERC " + this.props.id + config.title;
     }
 
     componentDidUpdate = (prevProps) => {

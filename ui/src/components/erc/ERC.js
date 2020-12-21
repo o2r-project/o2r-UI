@@ -40,7 +40,7 @@ class ERC extends React.Component {
     componentDidMount = () => {
       this.getMetadata();
       this.props.history.replace(this.props.location.pathname);
-      document.title = "ERC " + this.state.id+ " | o2r Demoserver";
+      document.title = "ERC " + this.state.id + config.title;
      };
 
 
@@ -217,7 +217,7 @@ class ERC extends React.Component {
     render() {
         return (
             <div className="Erc" >
-              {this.state.isPreview ? <p id="PreviewNotice"><b>This is a preview! Changes from the create window will not be displayed.</b></p>: ""}
+              {this.state.isPreview ? <ReflexContainer style={{"border-bottom-color":"#c6c6c6"}}><p id="PreviewNotice"><b>This is a preview! Changes from the create window will not be displayed.</b></p></ReflexContainer>: ""}
                 <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
                     <ReflexElement style={{ overflow: "hidden" }}>
                         <Grid container>

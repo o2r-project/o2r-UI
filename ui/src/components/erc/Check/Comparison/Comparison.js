@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Dialog, AppBar, Toolbar, Slide, Typography } from "@material-ui/core";
+import { Button, Dialog, AppBar, Toolbar, Slide, Typography, FormControlLabel, Checkbox} from "@material-ui/core";
 import logo from '../../../../assets/img/o2r-logo-only-white.svg';
 import Iframe from 'react-iframe';
 import { withRouter } from 'react-router-dom';
@@ -26,7 +26,7 @@ class Comparison extends Component {
         if (this.props.location.search === '?result') {
             self.setState({ open: true })
         }
-        document.title = "Comparison | ERC " + this.state.job.compendium_id + " | o2r Demoserver "
+        document.title = "Comparison | ERC " + this.state.job.compendium_id + config.title;
     }
 
     handleClickOpen = () => {
@@ -69,14 +69,14 @@ class Comparison extends Component {
         $("#frame3").contents().off( "scroll" );
     }
 
-    handleCheck = () => {
-      let checked = $('.checkScroll').prop("checked");
+    handleCheck = (event) => {
+      let checked = event.target.checked;
       console.log(checked);
       if(checked){
-         this.deactivateScroll();
+         this.activateScroll();
        }
        else{
-         this.activateScroll();
+         this.deactivateScroll();
         }
     }
 
@@ -119,12 +119,15 @@ class Comparison extends Component {
                             <Iframe className="check_" id={'frame2'} url={config.baseUrl + "job/" + this.state.job.id + "/data/display.html"}></Iframe>
                             <Iframe className="diff" id={'frame3'} url={config.baseUrl + "job/" + this.state.job.id + "/data/check.html"}></Iframe>
                             <h4 className="title_" > To use synchronised scrolling in Firefox, move the cursor to the leftmost document. </h4>
-                            <form>
-                              <label>
-                                Disable synchronised scrolling
-                                <input className="checkScroll" type="checkbox" name="scroll" onChange={this.handleCheck}/>
-                              </label>
-                            </form>
+                            <FormControlLabel
+                              className = "checkScroll"
+                              label = "Synchronised scrolling"
+                              labelPlacement = "start"
+                              control = {<Checkbox
+                                          color="primary"
+                                          onChange={this.handleCheck}
+                                          defaultChecked/>}
+                              />
                         </div>
                     }
                 </Dialog>

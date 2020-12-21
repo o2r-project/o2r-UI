@@ -1,9 +1,10 @@
 import React, { Component } from "react";
+import config from '../../../helpers/config';
 
 class Privacy extends Component {
 
     componentDidMount(){
-      document.title = "Privacy | o2r Demoserver"
+      document.title = "Privacy" + config.title;
 
     }
 

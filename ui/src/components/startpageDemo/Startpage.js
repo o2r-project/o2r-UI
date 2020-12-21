@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import './startpage.css';
 import InspectExamples from '../inspectExamplesDemo/InspectExamples';
 import Dropzone from "../uploadERC/Dropzone/Dropzone";
+import config from '../../helpers/config';
 
 class Startpage extends Component {
   state = {
@@ -10,7 +11,7 @@ class Startpage extends Component {
   };
 
   componentDidMount(){
-    document.title = "Home | o2r Demo Server"
+    document.title = "Home" + config.title;
   }
 
 
