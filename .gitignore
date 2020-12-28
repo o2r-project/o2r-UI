@@ -1,1 +1,3 @@
 ui/src/Dockerfile-prod
+ui/screenshots
+node_modules

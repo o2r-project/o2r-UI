@@ -119,7 +119,7 @@ render() {
 
 
       <InspectExamples />
-      <Dialog open={this.state.open}>
+      <Dialog open={this.state.open} id="dialog">
           <DialogTitle> {this.state.title}</DialogTitle>
           {this.state.errorMessage ?
             <div>

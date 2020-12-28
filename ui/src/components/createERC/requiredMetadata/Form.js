@@ -92,7 +92,7 @@ export const Form = props => {
                 <Grid item xs={10}>
                     <Card>
                         <CardContent>
-                            <h3>This is the metadata we extracted out of your workspace. Is it correct? Fine, click the save button on the right. No? Make some changes and click on save.</h3>
+                            <h3 id="title">This is the metadata we extracted out of your workspace. Is it correct? Fine, click the save button on the right. No? Make some changes and click on save.</h3>
                             <h4>Title</h4>
                             <TextField
                                 id="title"
@@ -326,6 +326,7 @@ export const Form = props => {
                         </Button>
                         <Button
                             type="submit"
+                            id="publish"
                             variant="contained"
                             color="primary"
                             disabled={!valid || props.showProgress}
@@ -334,11 +335,13 @@ export const Form = props => {
                          </Button>
                         {props.candidate
                           ? <Button
+                          id="goTo"
                               type="button"
                               onClick={goToErc}>
                               Preview
                             </Button>
                           : <Button
+                          id="goTo"
                               type="button"
                               color="primary"
                               onClick={goToErc}

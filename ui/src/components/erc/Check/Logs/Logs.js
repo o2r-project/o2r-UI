@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button, Dialog, AppBar, Toolbar, Slide, DialogContent, Typography } from "@material-ui/core";
-import uuid from 'uuid/v1';
+import {v1 as uuid} from 'uuid';
 import logo from '../../../../assets/img/o2r-logo-only-white.svg';
 import { withRouter } from 'react-router-dom';
 

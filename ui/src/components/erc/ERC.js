@@ -345,12 +345,12 @@ class ERC extends React.Component {
                                 variant="scrollable"
                                 scrollButtons="auto"
                             >
-                                <Tab label="Inspect" />
-                                <Tab label="Check" />
-                                <Tab label="Manipulate" />
-                                <Tab label="Substitution" />
-                                <Tab label="Metadata" />
-                                <Tab label="Shipment" />
+                                <Tab label="Inspect" id="inspect"/>
+                                <Tab label="Check" id="check"/>
+                                <Tab label="Manipulate" id="manipulate"/>
+                                <Tab label="Substitution" id="substitution"/>
+                                <Tab label="Metadata" id="metdata"/>
+                                <Tab label="Shipment" id="shipment"/>
                             </Tabs>
                         </Paper>
                         {this.state.tabValue === 0 &&

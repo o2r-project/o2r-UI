@@ -13,7 +13,7 @@
     "@material-ui/icons": "^4.5.1",
     "core-js": "^3.8.1",
     "csv-string": "^4.0.1",
-    "formik": "^2.2.6",
+    "formik": "^1.5.8",
     "formik-persist": "^1.1.0",
     "jquery": "^3.5.1",
     "jquery-highlight": "^3.5.0",
@@ -25,9 +25,10 @@
     "react": "^17.0.1",
     "react-compare-image": "^3.0.2",
     "react-dom": "^17.0.1",
+    "react-highlight.js": "^1.0.7",
     "react-iframe": "^1.8.0",
     "react-json-tree": "^0.13.0",
-    "react-leaflet": "^3.0.5",
+    "react-leaflet": "^2.7.0",
     "react-leaflet-draw": "^0.19.0",
     "react-modal-video": "^1.2.3",
     "react-reflex": "^3.0.16",
@@ -35,14 +36,14 @@
     "react-scripts": "^4.0.1",
     "react-share": "^4.3.1",
     "react-visual-diff": "^0.4.3",
-    "socket.io-client": "^3.0.4",
+    "socket.io-client": "^2.2.0",
     "uuid": "^8.3.2",
     "yup": "^0.32.8"
   },
   "scripts": {
     "start": "react-scripts start --loglevel debug",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest --runInBand --detectOpenHandles",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -54,6 +55,9 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "axios": "^0.21.1"
+    "axios": "^0.21.1",
+    "jest": "^26.6.0",
+    "jest-puppeteer": "^4.4.0",
+    "puppeteer": "^5.5.0"
   }
 }

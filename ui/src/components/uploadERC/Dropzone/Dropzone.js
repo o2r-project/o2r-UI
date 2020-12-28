@@ -63,7 +63,7 @@ class Dropzone extends Component {
         />
         <br/>
         <Button
-          className="uploadButton" variant="contained" color="primary" style={{marginTop:"3%"}} disabled={!this.props.loggedIn}
+          id="upload" className="uploadButton" variant="contained" color="primary" style={{marginTop:"3%"}} disabled={!this.props.loggedIn}
           onClick={this.uploadFolder.bind(this)}>
           Load workspace
         </Button>

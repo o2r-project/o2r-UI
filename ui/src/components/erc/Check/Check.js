@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, Accordion, AccordionDetails, AccordionSummary, Typography, CircularProgress, Dialog, DialogContent, DialogTitle, DialogActions } from "@material-ui/core";
 import socketIOClient from "socket.io-client";
-import uuid from 'uuid/v1';
+import {v1 as uuid} from 'uuid';
 
 import httpRequests from '../../../helpers/httpRequests';
 import './check.css';
@@ -72,7 +72,7 @@ class ListJobs extends Component {
                         </AccordionSummary>
                         <AccordionDetails>
                             <div className="steps">
-                                <div className="stepmargin"><span><b>1) Create configuration file: </b><Status status={job.steps.generate_configuration.status} /></span></div>
+                                <div className="stepmargin"><span><b id="stepOne">1) Create configuration file: </b><Status status={job.steps.generate_configuration.status} /></span></div>
                                 <div className="stepmargin"><span><b>2) Validate configuration file: </b><Status status={job.steps.validate_compendium.status} /></span></div>
                                 <div className="stepmargin"><span><b>3) Create docker manifest: </b><Status status={job.steps.generate_manifest.status}></Status></span></div>
                                 <div className="stepmargin"><span><b>4) Build docker image: </b><Status status={job.steps.image_build.status}></Status></span></div>
@@ -144,7 +144,7 @@ class Check extends Component {
                 self.socket();
             })
             .catch((response) => {
-                if (response.response.status === 401) {
+                if (response.status === 401) {
                     self.setState({ open: true, title: "Request to Server Failed", errorMessage: "You have to be logged in to run an analysis" })
                 }
             })
@@ -193,7 +193,7 @@ class Check extends Component {
         return (
             <div>
                 <div className="runAnalysisBtn">
-                    <Button variant="contained" color="primary"
+                    <Button variant="contained" color="primary" id="runAnalysis"
                         onClick={this.newJob.bind(this)}
                     >
                         Run analysis
