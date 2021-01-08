@@ -27,8 +27,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
 
-   - name: UI
-     run: cd ui
+    - name: UI
+      run: cd ui
 
     - name: Start containers
       run: docker-compose -f "docker-compose.yml" up -d --build
