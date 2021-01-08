@@ -27,9 +27,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
 
-    - name: UI
-      run: cd ui
-
     - name: Start containers
       run: docker-compose -f "ui/docker-compose.yml" up -d --build
 
@@ -39,11 +36,13 @@ jobs:
         node-version: 14.x
 
     - name: Install dependencies
+      working-directory: ./ui
       run: npm install
 
     - name: Run tests
+      working-directory: ./ui
       run: npm run test
 
     - name: Stop containers
       if: always()
-      run: docker-compose -f "docker-compose.yml" down
+      run: docker-compose -f "ui/docker-compose.yml" down
