@@ -24,7 +24,7 @@ function ComparisonView(props) {
         setOpen(false)
     }
 
-});
+}, [props.location.search]);
 
     const handleClickOpen = () => {
         props.history.push(props.location.pathname + '?compare')

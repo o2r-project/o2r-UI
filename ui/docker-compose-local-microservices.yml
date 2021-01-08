@@ -43,6 +43,9 @@ services:
       - '81:3000'
     #environment:
      # - NODE_ENV=development
+    # enable TTY for react-scripts https://github.com/facebook/create-react-app/issues/8688
+    stdin_open: true
+    tty: true
 
   webserver:
     image: nginx:latest

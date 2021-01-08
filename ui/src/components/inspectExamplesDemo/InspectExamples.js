@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, CardContent, CardActionArea, CardActions, Typography, Button, CardHeader, Grid, makeStyles, ThemeProvider } from "@material-ui/core/";
+import { Card, CardContent, CardActionArea, CardActions, Typography, Button, CardHeader, Grid, makeStyles } from "@material-ui/core/";
 import { withRouter } from 'react-router-dom';
 import { TwitterShareButton, TwitterIcon } from 'react-share';
 import '../../../node_modules/react-modal-video/css/modal-video.min.css';
@@ -55,7 +55,7 @@ function SpacingGrid(props) {
                                         >
                                             Go to ERC
                                         </Button>
-                                        <a class="link" href={config.ercUrl + erc.id}>{config.ercUrl + erc.id}</a>
+                                        <a className="link" href={config.ercUrl + erc.id}>{config.ercUrl + erc.id}</a>
                                     </Grid>
                                 </CardActions>
 
@@ -83,7 +83,6 @@ class InspectExamples extends Component {
     sort = (ercs) => { return ercs };
 
     getErcs() {
-        let self = this;
         let ercs = [];
         httpRequests.listAllCompendia()
             .then((res) => {

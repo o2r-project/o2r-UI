@@ -8,6 +8,22 @@ function getUser() {
     return axios.get(_env.api + 'auth/whoami');
 }
 
+function getOneUser(id) {
+    return axios.get(_env.api + 'user/' + id);
+}
+
+function createPublicLink(id){
+    return axios.put(_env.api + 'compendium/' + id + '/link')
+}
+
+function deletePublicLink(id){
+    return axios.delete(_env.api + 'compendium/' + id + '/link')
+}
+
+function getPublicLinks(){
+    return axios.get(_env.api + 'link')
+}
+
 function listAllCompendia() {
     return axios.get(_env.api + 'compendium');
 }
@@ -93,7 +109,58 @@ function complexSearch(query){
     return axios.post(_url, query);
 }
 
+function createShipment(id, recipient){
+   /** var config = {
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    };
+    const body={compendium_id: id, recipient,update_packaging: true, _id: id}*/
+    var params = new URLSearchParams();
+    params.append('compendium_id', id);
+    params.append('recipient', recipient);
+    return axios.post(_env.api + 'shipment', params);
+}
+
+function getShipmentsByERCID(id){
+    return axios.get(_env.api + 'shipment?compendium_id=' + id)
+}
+
+function getShipment(id){
+    return axios.get(_env.api + 'shipment/' + id)
+}
+
+function publishShipment(id){
+    return axios.put(_env.api + 'shipment/' + id + '/publishment')
+}
+
+function uploadViaZenodo(idOrUrl, path){
+    var _url = _env.api + 'compendium/';
+    var _path = path;
+    if(_path) {
+        if (_path.substr(0, 1) !== '/') {
+            _path = '/' + _path;
+        }
+    } else {
+        _path = '/';
+    }
+
+    var _data = {
+        content_type:"workspace",
+        path: _path
+    }
+
+    if(idOrUrl.startsWith('http')) {
+        _data.share_url = idOrUrl;
+    } else if(idOrUrl.startsWith('10.5281') || idOrUrl.startsWith('10.5072')) { // sandbox DOIs starting with 10.5072 are taken apart by loader
+        _data.doi = idOrUrl;
+    } else {
+        _data.zenodo_record_id = idOrUrl;
+    }
+
+    return axios.post(_url, _data);
+}
+
 module.exports = {
+    uploadViaZenodo: uploadViaZenodo,
     getUser: getUser,
     listAllCompendia: listAllCompendia,
     listUserCompendia: listUserCompendia,
@@ -114,4 +181,12 @@ module.exports = {
     downloadERC: downloadERC,
     createSubstitution: createSubstitution,
     complexSearch: complexSearch,
+    getOneUser: getOneUser,
+    createPublicLink: createPublicLink,
+    deletePublicLink: deletePublicLink,
+    getPublicLinks: getPublicLinks,
+    createShipment: createShipment,
+    getShipmentsByERCID: getShipmentsByERCID,
+    getShipment: getShipment,
+    publishShipment: publishShipment,
 };

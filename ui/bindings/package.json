@@ -1,6 +1,6 @@
 {
   "name": "o2r-bindings",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Microservice for linking text, data, and code.",
   "main": "index.js",
   "scripts": {

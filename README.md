@@ -19,6 +19,7 @@ If you see an error related to the MongoDB or HTTP request timeouts during the f
 
 The container for the development of the UI is built locally based on `ui/Dockerfile.dev`.
 Only the directory `/ui` is mounted into the container, so if dependencies in `ui/package.json` change, you must update the container with `docker-compose build --no-cache ui`.
+Also note that the `ui/node_modules` directory is mounted so that your host's version of `node` best matches the one used in the Dockerfile.
 
 ### Running the platform
 
@@ -42,6 +43,16 @@ If you want to run the UI based on locally running microservices, i.e., the o2r 
 ```bash
 docker-compose --file o2r-UI/ui/docker-compose-local-microservices.yml up
 ```
+
+**Installing new packages**
+
+After you installed further packages from [npm](https://www.npmjs.com/), you have to rebuild the container. 
+The easiest way to do this are these two commands:
+```bash
+docker-compose down -v
+docker-compose up --build
+```
+After the build the packages are available to use.
 
 ## Create a release
 
