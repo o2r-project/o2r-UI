@@ -37,7 +37,7 @@ jobs:
 
     - name: Install dependencies
       working-directory: ./ui
-      run: npm install
+      run: sudo npm install
 
     - name: Run tests
       working-directory: ./ui
