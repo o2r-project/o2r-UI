@@ -90,7 +90,7 @@ function VerticalLinearStepper(props) {
       disable2(true)
     }
   }
-  else if (activeStep === 2 && props.tmpParam[0] && props.tmpParam[0].uiWidget && props.tmpParam[0].uiWidget.type === "radio") {
+  else if (activeStep === 2 && props.tmpParam[0] && props.tmpParam[0].uiWidget && props.tmpParam[0].uiWidget.type === "radio" && props.tmpParam[0].uiWidget.options) {
     if (props.tmpParam[0].uiWidget.options.length > 1 && props.tmpParam[0].uiWidget.caption) {
       if (disabled2) {
         disable2(false)

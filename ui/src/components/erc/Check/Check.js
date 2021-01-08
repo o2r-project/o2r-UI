@@ -8,17 +8,20 @@ import './check.css';
 import config from '../../../helpers/config';
 import Comparison from './Comparison/Comparison';
 import Logs from './Logs/Logs';
+import { useTheme } from '@material-ui/core/styles';
+
 
 function Status(status) {
+    const theme = useTheme();
     switch (status.status) {
         case 'success':
-            return <span className="success">Success</span>
+            return <span style={{"color": theme.palette.success.main}}>Success</span>
         case 'failure':
             if (status.checkStatus !== "failure") {
-                return <span className="failure">Process Failed (check logs)</span>
+                return <span style={{"color": theme.palette.failure.main}}>Process Failed (check logs)</span>
             }
             else {
-                return <span className="failure">Reproduction Failed (click on "Show Result" for details)</span>
+                return <span style={{"color": theme.palette.failure.main}}>Reproduction Failed (click on "Show Result" for details)</span>
             }
         case 'running':
             return <span className="running">Running <CircularProgress size={15} /></span>

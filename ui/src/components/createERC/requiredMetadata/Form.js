@@ -292,7 +292,6 @@ export const Form = props => {
                                 onBlur={blur.bind(null)}
                                 margin="normal"
                                 variant="outlined"
-                                native={true}
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
