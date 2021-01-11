@@ -191,8 +191,6 @@ function VerticalLinearStepper(props) {
 
   const goToErc = () => props.goToErc();
 
-  const goToPreview = () => props.goToPreview();
-
   return (
     <div className={classes.root}>
       <Stepper activeStep={activeStep} orientation="vertical">
@@ -284,7 +282,7 @@ function VerticalLinearStepper(props) {
             Publish
           </Button>
           {props.candidate
-            ? <Button onClick={goToPreview} className={classes.button} variant="contained">
+            ? <Button onClick={goToErc} className={classes.button} variant="contained">
                 Preview
               </Button>
             : <Button onClick={goToErc} disabled = {props.candidate} className={classes.button} variant="contained" color="primary">
@@ -642,10 +640,6 @@ class Bindings extends Component {
     this.props.goToErc();
   }
 
-  goToPreview= () => {
-    this.props.goToPreview();
-  }
-
   clearBinding() {
     let state = this.state;
     //state.codeview=true;
@@ -692,7 +686,6 @@ class Bindings extends Component {
                 saveBinding={this.saveBinding.bind(this)}
                 saveErc={this.saveErc.bind(this)}
                 goToErc={this.goToErc.bind(this)}
-                goToPreview={this.goToPreview.bind(this)}
                 candidate={this.props.candidate}
                 clearBinding={this.clearBinding.bind(this)}
                 figures={this.state.figures}

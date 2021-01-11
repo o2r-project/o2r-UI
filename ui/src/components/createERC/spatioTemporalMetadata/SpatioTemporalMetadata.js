@@ -50,7 +50,7 @@ class SpatioTemporalMetadata extends React.Component {
   }
 
   handlePreview = (e) => {
-    this.props.goToPreview()
+    this.props.goToErc()
   }
 
   handleSave = () => {

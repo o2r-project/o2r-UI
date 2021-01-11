@@ -64,7 +64,6 @@ export const Form = props => {
 
 
     const goToErc = () => props.goToERC();
-    const goToPreview = () => props.goToPreview();
 
 
     const setMostRestrictive = () => {
@@ -338,7 +337,7 @@ export const Form = props => {
                         {props.candidate
                           ? <Button
                               type="button"
-                              onClick={goToPreview}>
+                              onClick={goToErc}>
                               Preview
                             </Button>
                           : <Button
