@@ -42,7 +42,7 @@
   "scripts": {
     "start": "react-scripts start --loglevel debug",
     "build": "react-scripts build",
-    "test": "jest || exit 0",
+    "test": "jest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

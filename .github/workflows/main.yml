@@ -38,6 +38,11 @@ jobs:
 
     - name: Start containers
       run: docker-compose -f "ui/docker-compose.yml" up -d --build
+    
+    - name: Sleep for 5 minutes
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '5m'
 
     - name: Run tests
       working-directory: ./ui
