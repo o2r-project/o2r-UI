@@ -49,6 +49,9 @@ jobs:
     - name: Check running containers
       run: docker ps
 
+    - name: Check logs of webserver
+      run: docker logs ui_webserver
+
     - name: Run tests
       working-directory: ./ui
       run: npm run test
