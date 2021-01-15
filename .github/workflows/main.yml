@@ -17,6 +17,8 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   test:
@@ -39,10 +41,10 @@ jobs:
     - name: Start containers
       run: docker-compose -f "ui/docker-compose.yml" up -d --build
     
-    - name: Sleep for 5 minutes
+    - name: Sleep for 1 minute
       uses: jakejarvis/wait-action@master
       with:
-        time: '5m'
+        time: '1m'
     
     - name: Check running containers
       run: docker ps

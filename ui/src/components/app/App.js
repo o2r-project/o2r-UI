@@ -43,7 +43,7 @@ const Header = ( props ) => {
               </Button> : ''}
           </NavLink>
         </HashRouter>
-        <Button color="inherit"
+        <Button color="inherit" id="login"
           href={props.loggedIn ? "api/v1/auth/logout" : "api/v1/auth/login"} 
           onClick={() => props.login()}>{props.loggedIn ? 'Logout' : 'Login'}
         </Button>

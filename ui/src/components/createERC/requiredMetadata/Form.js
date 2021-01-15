@@ -93,7 +93,7 @@ export const Form = props => {
                 <Grid item xs={10}>
                     <Card>
                         <CardContent>
-                            <h3>This is the metadata we extracted out of your workspace. Is it correct? Fine, click the save button on the right. No? Make some changes and click on save.</h3>
+                            <h3 id="title">This is the metadata we extracted out of your workspace. Is it correct? Fine, click the save button on the right. No? Make some changes and click on save.</h3>
                             <h4>Title</h4>
                             <TextField
                                 id="title"

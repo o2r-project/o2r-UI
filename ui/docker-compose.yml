@@ -207,8 +207,8 @@ services:
       - DEBUGME=inspecter
 
   bindings:
-    #image: o2rproject/o2r-bindings:latest
-    build: ./bindings
+    image: o2rproject/o2r-bindings:latest
+    #build: ./bindings
     #restart: always
     volumes:
      - o2rstorage:/tmp/o2r
