@@ -43,6 +43,9 @@ jobs:
       uses: jakejarvis/wait-action@master
       with:
         time: '5m'
+    
+    - name: Check running containers
+      run: docker ps
 
     - name: Run tests
       working-directory: ./ui
