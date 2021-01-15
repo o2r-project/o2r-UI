@@ -125,7 +125,7 @@ services:
       - LOADER_VOLUME=ui_o2rstorage
       - "LOADER_META_TOOL_CONTAINER=o2rproject/o2r-meta:1447d43"
       #- "LOADER_META_TOOL_CONTAINER=meta:dev"
-      
+
   informer:
     image: o2rproject/o2r-informer:0.5.0
     depends_on:
@@ -212,10 +212,10 @@ services:
     #restart: always
     volumes:
      - o2rstorage:/tmp/o2r
-    environment: 
+    environment:
      - DEBUG=bindings
      - BINDINGS_PORT=8092
-     
+
   guestlister:
     image: o2rproject/o2r-guestlister:0.2.1
     depends_on:
@@ -235,12 +235,12 @@ services:
   #  image: ui:master
   #  ports:
   #    - '81:3000'
-  
+
   ui:
     container_name: ui
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile_pb_2
     volumes:
       - '.:/usr/src/app'
       - '/usr/src/app/node_modules'
