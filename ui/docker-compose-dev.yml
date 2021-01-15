@@ -84,7 +84,7 @@ services:
   #    - elasticsearch
 
   muncher:
-    image: o2rproject/o2r-muncher:0.26.2
+    image: o2rproject/o2r-muncher:0.27.0
     depends_on:
       - mongodb
       - configmongodb
@@ -186,18 +186,6 @@ services:
       SHIPPER_BASE_PATH: "/tmp/o2r"
       PYTHONUNBUFFERED: "0"
 
-  substituter:
-    image: o2rproject/o2r-substituter:0.5.0
-    depends_on:
-      - mongodb
-      - configmongodb
-    volumes:
-      - o2rstorage:/tmp/o2r
-    environment:
-      - "SUBSTITUTER_MONGODB=mongodb://mongodb:27017/"
-      - SUBSTITUTER_PORT=8090
-      - DEBUG=substituter,substituter:*
-
   inspecter:
     image: o2rproject/o2r-inspecter:0.0.1
     volumes:
@@ -259,7 +247,6 @@ services:
       - informer
       - loader
       - shipper
-      - substituter
       - bindings
       - ui
     volumes:
