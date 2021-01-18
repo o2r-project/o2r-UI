@@ -12,8 +12,7 @@ RUN npm install react-scripts@3.4.3 -g --silent
 COPY package.json /usr/src/app/package.json
 RUN npm install --silent
 
-COPY src /usr/src/app/src
-COPY public /usr/src/app/public
+COPY . /usr/src/app/.
 RUN npm run build
 
 FROM nginx:alpine

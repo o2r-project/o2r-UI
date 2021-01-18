@@ -30,6 +30,17 @@ docker-compose up
 
 The platform is available at [http://localhost](http://localhost) and the API at `http://localhost/api`.
 
+## Production environment with docker-compose
+
+This project has another docker-compose configuration for the deployment of a production build (file `ui/docker-compose-prod.yml`). This configuration has no `ui` container. Instead the webserver container creates a static production build with the command [`npm run build`](https://create-react-app.dev/docs/available-scripts/).  Which then hosted through nginx. For this reason there is also a another nginx configuration (file `ui/dev/nginx-prod.conf`) with the corresponding 
+
+If you want to change the webserver container use: `docker-compose --file o2r-UI/ui/docker-compose-prod.yml build --no-cache webserver`.
+
+To start the platform with the production build:
+```bash
+docker-compose --file o2r-UI/ui/docker-compose-prod.yml up
+```
+
 ### Accessing the API directly
 
 1. Click the "Log in" button in the UI
