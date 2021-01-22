@@ -11,7 +11,7 @@ const o2rTheme = createMuiTheme({
         success: {
             main: '#008643'
         },
-        warn: {
+        warning: {
           main: '#CE5100'
         }
     }

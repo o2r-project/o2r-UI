@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import {Button, AppBar, Toolbar, Typography, ThemeProvider } from '@material-ui/core';
+import {Button, AppBar, Toolbar, Typography, MuiThemeProvider } from '@material-ui/core';
 import { Route, NavLink, HashRouter } from "react-router-dom";
 
-import theme from '../../helpers/theme';
+import o2rTheme from '../../helpers/theme';
 import './App.css';
 import logo from '../../assets/img/o2r-logo-only-white.svg';
 import orcidLogo from '../../assets/img/orcid.png';
@@ -101,7 +101,7 @@ class App extends Component {
 
   render() {
     return (
-      <ThemeProvider theme={theme}>
+      <MuiThemeProvider theme={o2rTheme}>
       <div id="pageContainer">
       <Header
         loggedIn={this.state.loggedIn}
@@ -125,7 +125,7 @@ class App extends Component {
       </HashRouter>
       <Footer></Footer>
       </div>
-      </ThemeProvider>
+      </MuiThemeProvider>
     )
   }
 }
