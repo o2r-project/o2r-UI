@@ -59,6 +59,11 @@ jobs:
       working-directory: ./ui
       run: npm run test
 
+    - uses: actions/upload-artifact@v2
+      with:
+        name: screenshots
+        path: *.jpg
+
     - name: Stop containers
       if: always()
       run: docker-compose -f "ui/docker-compose.yml" down

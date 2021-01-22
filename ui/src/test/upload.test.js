@@ -2,6 +2,10 @@ const timeout = 100000;
 
 beforeAll(async () => {
     await page.goto(URL, { waitUntil: "domcontentloaded" });
+    await page.setViewport({
+        width: 1920,
+        height: 1080
+    })
 });
 
 describe("Test upload", () => {
@@ -40,6 +44,7 @@ describe("Test upload", () => {
 
     test("Try upload with login", async () => {
 
+        await page.screenshot({ path: 'image10.jpg', type: 'jpeg', fullPage: true});
         const inputUploadHandle = await page.$('input[type=file]');
         await page.screenshot({ path: 'image.jpg', type: 'jpeg' });
 
@@ -104,3 +109,22 @@ describe("Test upload", () => {
 
 
 });
+
+describe("Inspect ERC", () => {
+ 
+ 
+     test("Go To startpage", async () => {
+        await page.goto(URL, { waitUntil: "domcontentloaded" });
+        await page.reload({ waitUntil: ["networkidle0", "domcontentloaded"] });
+        await page.screenshot({ path: 'image4.jpg', type: 'jpeg', fullPage: true });
+
+        const title = await page.title();
+
+    
+        expect(title).toBe("o2r");
+
+     })
+ 
+ 
+ 
+ });
