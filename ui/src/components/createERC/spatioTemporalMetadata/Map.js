@@ -1,6 +1,6 @@
 import L from 'leaflet'
 import React from 'react'
-import { Map, TileLayer, FeatureGroup } from 'react-leaflet'
+import { MapContainer, TileLayer, FeatureGroup } from 'react-leaflet'
 import { EditControl } from 'react-leaflet-draw'
 
 let GeoJSON
@@ -205,7 +205,7 @@ class OwnMap extends React.Component {
         const position = [52, 7.6]
 
         return (
-            <Map center={position} zoom={1} ref="map">
+            <MapContainer center={position} zoom={1} ref="map">
                 <TileLayer
                     attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -226,7 +226,7 @@ class OwnMap extends React.Component {
 
                 </FeatureGroup>
 
-            </Map>);
+            </MapContainer>);
     }
 }
 
