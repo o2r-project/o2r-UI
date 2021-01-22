@@ -44,9 +44,9 @@ describe("Test upload", () => {
 
     test("Try upload with login", async () => {
 
-        await page.screenshot({ path: 'image10.jpg', type: 'jpeg', fullPage: true});
+        await page.screenshot({ path: 'screenshots/image10.jpg', type: 'jpeg', fullPage: true});
         const inputUploadHandle = await page.$('input[type=file]');
-        await page.screenshot({ path: 'image.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/image.jpg', type: 'jpeg' });
 
         // prepare file to upload
         let fileToUpload = './src/test/insyde_workspace.zip';
@@ -60,7 +60,7 @@ describe("Test upload", () => {
 
         const handle = await page.$("h3");
         const html = await page.evaluate(handle => handle.innerText, handle);
-        await page.screenshot({ path: 'image1.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/image1.jpg', type: 'jpeg' });
 
         expect(html).toBe("This is the metadata we extracted out of your workspace. Is it correct? Fine, click the save button on the right. No? Make some changes and click on save.");
     }, timeout);
@@ -78,7 +78,7 @@ describe("Test upload", () => {
 
         await page.click('#publish')
         await page.waitForTimeout(5000)
-        await page.screenshot({ path: 'image2.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/image2.jpg', type: 'jpeg' });
         const is_disabled = await page.$eval('button[id=goTo]', (button) => {return button.disabled;});
         console.log(is_disabled)
         
@@ -91,7 +91,7 @@ describe("Test upload", () => {
         await page.click('#goTo')
         await page.waitForTimeout(2000)
         //await page.waitForNavigation();
-        await page.screenshot({ path: 'image3.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/image3.jpg', type: 'jpeg' });
         
         
         const elementHandle = await page.$(
@@ -115,8 +115,8 @@ describe("Inspect ERC", () => {
  
      test("Go To startpage", async () => {
         await page.goto(URL, { waitUntil: "domcontentloaded" });
-        await page.reload({ waitUntil: ["networkidle0", "domcontentloaded"] });
-        await page.screenshot({ path: 'image4.jpg', type: 'jpeg', fullPage: true });
+        await page.waitForTimeout(2000)
+        await page.screenshot({ path: 'screenshots/image4.jpg', type: 'jpeg', fullPage: true });
 
         const title = await page.title();
 
