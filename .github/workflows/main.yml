@@ -7,7 +7,7 @@ on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches:
-    - main
+    - master
     - dev
   pull_request:
 
@@ -50,7 +50,7 @@ jobs:
       run: docker ps
 
     - name: Check logs of webserver
-      run: docker logs ui_webserver
+      run: docker logs ui_webserver_1
 
     - name: Run tests
       working-directory: ./ui

@@ -327,6 +327,7 @@ export const Form = props => {
                         </Button>
                         <Button
                             type="submit"
+                            id="publish"
                             variant="contained"
                             color="primary"
                             disabled={!valid || props.showProgress}
@@ -335,6 +336,7 @@ export const Form = props => {
                          </Button>
                         <Button
                             type="button"
+                            id="goTo"
                             onClick={goToErc}
                             disabled={props.candidate}>
                             Go To ERC

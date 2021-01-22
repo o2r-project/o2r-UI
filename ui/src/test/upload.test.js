@@ -41,6 +41,7 @@ describe("Test upload", () => {
     test("Try upload with login", async () => {
 
         const inputUploadHandle = await page.$('input[type=file]');
+        await page.screenshot({ path: 'image.jpg', type: 'jpeg' });
 
         // prepare file to upload
         let fileToUpload = './src/test/insyde_workspace.zip';
@@ -54,8 +55,52 @@ describe("Test upload", () => {
 
         const handle = await page.$("h3");
         const html = await page.evaluate(handle => handle.innerText, handle);
+        await page.screenshot({ path: 'image1.jpg', type: 'jpeg' });
 
         expect(html).toBe("This is the metadata we extracted out of your workspace. Is it correct? Fine, click the save button on the right. No? Make some changes and click on save.");
     }, timeout);
+
+    test("Go to ERC is disabled", async () => {
+
+
+        const is_disabled = await page.$eval('button[id=goTo]', (button) => {return button.disabled;});
+        console.log(is_disabled)
+        expect(is_disabled).toBe(true);
+
+    }, timeout);
+
+    test("Test publish", async () => {
+
+        await page.click('#publish')
+        await page.waitForTimeout(5000)
+        await page.screenshot({ path: 'image2.jpg', type: 'jpeg' });
+        const is_disabled = await page.$eval('button[id=goTo]', (button) => {return button.disabled;});
+        console.log(is_disabled)
+        
+        expect(is_disabled).toBe(false);
+
+    }, timeout);
+
+    test("Test goToERC", async () => {
+
+        await page.click('#goTo')
+        await page.waitForTimeout(2000)
+        //await page.waitForNavigation();
+        await page.screenshot({ path: 'image3.jpg', type: 'jpeg' });
+        
+        
+        const elementHandle = await page.$(
+            'iframe',
+        );
+        const frame = await elementHandle.contentFrame();
+        //const handle = await frame.$("h1");
+        const html = await frame.$eval('h1', (html) => {return html.innerText;});
+
+        expect(html).toBe("INSYDE: a synthetic, probabilistic flood damage model based on explicit cost analysis");
+
+
+    }, timeout);
+
+
 
 });
