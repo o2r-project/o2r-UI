@@ -59,7 +59,9 @@ jobs:
       working-directory: ./ui
       run: npm run test
 
-    - uses: actions/upload-artifact@v2
+    - name: Save pictures
+      if: always()
+      uses: actions/upload-artifact@v2
       with:
         name: screenshots
         path: ui/screenshots/

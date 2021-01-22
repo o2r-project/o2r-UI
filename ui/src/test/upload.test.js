@@ -116,12 +116,31 @@ describe("Inspect ERC", () => {
      test("Go To startpage", async () => {
         await page.goto(URL, { waitUntil: "domcontentloaded" });
         await page.waitForTimeout(2000)
-        await page.screenshot({ path: 'screenshots/image4.jpg', type: 'jpeg', fullPage: true });
 
         const title = await page.title();
 
     
         expect(title).toBe("o2r");
+
+     })
+
+     test("Checout ERC 0", async () => {
+        await page.click('#0')
+        await page.waitForTimeout(2000)
+        //await page.waitForNavigation();
+        await page.screenshot({ path: 'screenshots/image5.jpg', type: 'jpeg' });
+        
+        
+        const elementHandle = await page.$(
+            'iframe',
+        );
+        const frame = await elementHandle.contentFrame();
+        //const handle = await frame.$("h1");
+        const html = await frame.$eval('h1', (html) => {return html.innerText;});
+
+        expect(html).toBe("INSYDE: a synthetic, probabilistic flood damage model based on explicit cost analysis");
+
+
 
      })
  

@@ -12,6 +12,7 @@ describe("Test title and header of the homepage", () => {
     }, timeout);
 
     test("Header of the page", async () => {
+        await page.screenshot({ path: 'screenshots/startPage.jpg', type: 'jpeg', fullPage: true });
         const h1Handle = await page.$("h1");
         const html = await page.evaluate(h1Handle => h1Handle.innerHTML, h1Handle);
 
