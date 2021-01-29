@@ -232,8 +232,8 @@ services:
     volumes:
       - '.:/usr/src/app'
       - '/usr/src/app/node_modules'
-    #ports:
-    #  - '81:3000'
+    ports:
+      - '3000:3000'
     # enable TTY for react-scripts https://github.com/facebook/create-react-app/issues/8688
     stdin_open: true
     tty: true
