@@ -89,7 +89,7 @@ describe("Test upload", () => {
     test("Test goToERC", async () => {
 
         await page.click('#goTo')
-        await page.waitForTimeout(2000)
+        await page.waitForTimeout(3000)
         //await page.waitForNavigation();
         await page.screenshot({ path: 'screenshots/image3.jpg', type: 'jpeg' });
         

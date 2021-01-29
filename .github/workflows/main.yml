@@ -41,10 +41,10 @@ jobs:
     - name: Start containers
       run: docker-compose -f "ui/docker-compose.yml" up -d --build
     
-    - name: Sleep for 1 minute
+    - name: Sleep for 3 minutes
       uses: jakejarvis/wait-action@master
       with:
-        time: '1m'
+        time: '3m'
     
     - name: Check running containers
       run: docker ps
