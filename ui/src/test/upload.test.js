@@ -30,8 +30,8 @@ describe("Test upload", () => {
 
         await page.click('#login')
         //await page.waitForNavigation();
-        await page.waitForTimeout(2000)
-        //await page.screenshot({ path: 'login.jpg', type: 'jpeg' });
+        await page.waitForTimeout(3000)
+        await page.screenshot({ path: 'login.jpg', type: 'jpeg' });
         await page.click('#regular');
         await page.waitForNavigation();
 
@@ -44,9 +44,9 @@ describe("Test upload", () => {
 
     test("Try upload with login", async () => {
 
-        await page.screenshot({ path: 'screenshots/image10.jpg', type: 'jpeg', fullPage: true});
+        
         const inputUploadHandle = await page.$('input[type=file]');
-        await page.screenshot({ path: 'screenshots/image.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/StartPageLoggedIn.jpg', type: 'jpeg' });
 
         // prepare file to upload
         let fileToUpload = './src/test/insyde_workspace.zip';
@@ -60,7 +60,7 @@ describe("Test upload", () => {
 
         const handle = await page.$("h3");
         const html = await page.evaluate(handle => handle.innerText, handle);
-        await page.screenshot({ path: 'screenshots/image1.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/CreateERC.jpg', type: 'jpeg' });
 
         expect(html).toBe("This is the metadata we extracted out of your workspace. Is it correct? Fine, click the save button on the right. No? Make some changes and click on save.");
     }, timeout);
@@ -78,7 +78,7 @@ describe("Test upload", () => {
 
         await page.click('#publish')
         await page.waitForTimeout(5000)
-        await page.screenshot({ path: 'screenshots/image2.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/CreateERCSavedMetadata.jpg', type: 'jpeg' });
         const is_disabled = await page.$eval('button[id=goTo]', (button) => {return button.disabled;});
         console.log(is_disabled)
         
@@ -91,7 +91,7 @@ describe("Test upload", () => {
         await page.click('#goTo')
         await page.waitForTimeout(3000)
         //await page.waitForNavigation();
-        await page.screenshot({ path: 'screenshots/image3.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/ERCView.jpg', type: 'jpeg' });
         
         
         const elementHandle = await page.$(
@@ -128,7 +128,7 @@ describe("Inspect ERC", () => {
         await page.click('#0')
         await page.waitForTimeout(2000)
         //await page.waitForNavigation();
-        await page.screenshot({ path: 'screenshots/image5.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/ERCView2.jpg', type: 'jpeg' });
         
         
         const elementHandle = await page.$(
