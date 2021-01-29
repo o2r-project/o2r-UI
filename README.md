@@ -36,17 +36,26 @@ The platform is available at [http://localhost](http://localhost) and the API at
 
 ## Production environment with docker-compose
 
-This project has another docker-compose configuration for the deployment of a production build (file `ui/docker-compose.yml`). This configuration has no `ui` container. Instead the webserver container creates a static production build with the command [`npm run build`](https://create-react-app.dev/docs/available-scripts/) using a [multi-stage docker file](/usr/share/hunspell) (file `ui/Dockerfile`) which is then hosted through nginx. For this reason there is also a another nginx configuration (file `ui/dev/nginx.conf`). Because it shares a lot of the architecture with development configuration most of the endpoints are defined in a shared config file (file `ui/dev/nginx-share.conf`).
-
-If you want to change the webserver container use:
-```bash
-docker-compose --file o2r-UI/ui/docker-compose.yml build --no-cache webserver
-```
+This project has another docker-compose configuration for the deployment of a production build (file `ui/docker-compose.yml`).
+This configuration has no `ui` container. Instead the webserver container creates a static production build with the command [`npm run build`](https://create-react-app.dev/docs/available-scripts/) using a [multi-stage docker file](https://docs.docker.com/develop/develop-images/multistage-build/) (file `ui/Dockerfile`) which is then served through nginx.
+For this reason there is also another nginx configuration (file `ui/dev/nginx.conf`).
+Because it shares a lot of the architecture with development configuration most of the endpoints are defined in a shared partial nginx configuration file (file `ui/dev/nginx-share.conf`).
 
 To start the platform with the production build:
+
 ```bash
 cd ui/
-docker-compose upP
+
+docker-compose up 
+
+# force rebuild of images
+docker-compose up --build
+```
+
+If you want to change the webserver container use:
+
+```bash
+docker-compose --file o2r-UI/ui/docker-compose.yml build --no-cache webserver
 ```
 
 ### Accessing the API directly
