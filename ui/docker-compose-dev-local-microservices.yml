@@ -27,10 +27,10 @@ services:
     #restart: always
     volumes:
      - o2rstorage:/tmp/o2r
-    environment: 
+    environment:
      - DEBUG=bindings
      - BINDINGS_PORT=8092
-     
+
   ui:
     container_name: ui
     build:
@@ -52,6 +52,6 @@ services:
     depends_on:
       - ui
     volumes:
-      - "./dev/nginx-local-microservices.conf:/etc/nginx/nginx.conf:ro"
+      - "./dev/nginx-dev-local-microservices.conf:/etc/nginx/nginx.conf:ro"
     ports:
       - "80:80"

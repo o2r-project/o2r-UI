@@ -9,7 +9,6 @@ import httpRequests from '../../../helpers/httpRequests';
 import Manipulate from '../../erc/Manipulate/Manipulate';
 import ComputationalResult from './ComputationalResult/ComputationalResult';
 import ParamResult from './ParamResult/ParamResult';
-import SelectedCode from './SelectedCode/SelectedCode';
 import SliderSetting from './SliderSetting/SliderSetting';
 import WidgetSelector from './WidgetSelector/WidgetSelector';
 import './bindings.css';
@@ -75,14 +74,14 @@ function VerticalLinearStepper(props) {
   }*/
 
 
-  if (parameter !== '' && disabled && activeStep === 2 && props.parameter.length != 0) {
+  if (parameter !== '' && disabled && activeStep === 2 && props.parameter.length !== 0) {
     disable(false);
   }
 
 
-  if (activeStep === 2 && props.tmpParam[0]&& props.tmpParam[0].uiWidget && props.tmpParam[0].uiWidget.type == "slider") {
+  if (activeStep === 2 && props.tmpParam[0]&& props.tmpParam[0].uiWidget && props.tmpParam[0].uiWidget.type === "slider") {
 
-    if ((props.tmpParam[0].uiWidget.minValue || props.tmpParam[0].uiWidget.minValue == 0) && props.tmpParam[0].uiWidget.caption && (props.tmpParam[0].uiWidget.maxValue || props.tmpParam[0].uiWidget.minValue == 0) && props.tmpParam[0].uiWidget.stepSize) {
+    if ((props.tmpParam[0].uiWidget.minValue || props.tmpParam[0].uiWidget.minValue === 0) && props.tmpParam[0].uiWidget.caption && (props.tmpParam[0].uiWidget.maxValue || props.tmpParam[0].uiWidget.minValue === 0) && props.tmpParam[0].uiWidget.stepSize) {
       if (disabled2) {
         disable2(false)
       }
@@ -91,7 +90,7 @@ function VerticalLinearStepper(props) {
       disable2(true)
     }
   }
-  else if (activeStep === 2 && props.tmpParam[0] && props.tmpParam[0].uiWidget && props.tmpParam[0].uiWidget.type == "radio") {
+  else if (activeStep === 2 && props.tmpParam[0] && props.tmpParam[0].uiWidget && props.tmpParam[0].uiWidget.type === "radio" && props.tmpParam[0].uiWidget.options) {
     if (props.tmpParam[0].uiWidget.options.length > 1 && props.tmpParam[0].uiWidget.caption) {
       if (disabled2) {
         disable2(false)
@@ -198,7 +197,7 @@ function VerticalLinearStepper(props) {
           <Step key={label} >
             <StepLabel><h3>{label}</h3></StepLabel>
             <StepContent>
-              {activeStep === 0 && props.figures != '' ?
+              {activeStep === 0 && props.figures !== '' ?
                 <ComputationalResult value={result} figures={props.figures} handleResultChange={handleResultChange} />
                 : ''}
               {/*activeStep === 1 ?
@@ -335,7 +334,7 @@ class Bindings extends Component {
           if (plotFunction) {
             plotFunction.plotFunction = codelines[i];
             plotFunction.line = i;
-            if (codelines[i].search("Figure") == -1) {
+            if (codelines[i].search("Figure") === -1) {
               plotFunction.type = "table";
               plotFunction.result = "Table " + codelines[i].substring(10, codelines[i].indexOf("()"));
             }
@@ -367,7 +366,7 @@ class Bindings extends Component {
     const regex = /plotFigure\d*[a-z]?\(/g;
     let begin = codeline.search(regex);
     let found;
-    if (begin != -1) {
+    if (begin !== -1) {
       let end = codeline.indexOf(')', begin)
       found = {
         firstIndex: begin,
@@ -382,7 +381,7 @@ class Bindings extends Component {
   setResult(figure) {
     if (figure.indexOf("Figure") >= 0) {
       let state = this.state;
-      let selectedFigure = this.state.figures.find(element => element.plotFunction == figure);
+      let selectedFigure = this.state.figures.find(element => element.plotFunction === figure);
       state.bindingResult = selectedFigure;
       state.bindingCode = this.sliceCode(state.analyzedCode, selectedFigure);
       this.setState(state, () => {
@@ -494,11 +493,11 @@ class Bindings extends Component {
         }
       }
       else if(codeItem.type === "call") {
-        if(codeItem.func.id == "load"){
+        if(codeItem.func.id === "load"){
           codelines.push(codeItem.location)
         }
       }
-      else if(codeItem.type == "import"){
+      else if(codeItem.type === "import"){
         codelines.push(codeItem.location)
       }
   }
@@ -620,7 +619,7 @@ class Bindings extends Component {
     let arr = this.state.possibleParameters;
     var index = -1
     for (var i in arr) {
-      if (value[0] && arr[i].targets[0].id == value[0].name) {
+      if (value[0] && arr[i].targets[0].id === value[0].name) {
         index = i;
       }
     }
@@ -727,7 +726,7 @@ class Bindings extends Component {
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
           The feature for creating interactive figures automatic is still in its infancy. For your Figure the creation did not worked.
-          Please, contact us since we are strongly interested in creating them for you: <a href="mailto:o2r.team@uni-muenster.de" target="_blank"> o2r.team [ at ] uni-muenster [.de]</a>
+          Please, contact us since we are strongly interested in creating them for you: <a href="mailto:o2r.team@uni-muenster.de" target="_blank" rel="noopener noreferrer"> o2r.team [ at ] uni-muenster [.de]</a>
           </DialogContentText>
         </DialogContent>
         <DialogActions>

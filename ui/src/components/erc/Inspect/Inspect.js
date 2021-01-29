@@ -33,7 +33,7 @@ class Inspect extends Component {
                 </ReflexElement>
                 <ReflexSplitter propagate={true} style={{ height: "10px" }} />
                 <ReflexElement>
-                    {props.dataset != undefined && Array.isArray(props.datafiles)
+                    {props.dataset !== undefined && Array.isArray(props.datafiles)
                     ?<SelectFile value={props.dataset.datafile} handleChange={this.props.handleDataChange} options={props.datafiles} name="dataset" />
                     : ''}
                     {props.dataset != null

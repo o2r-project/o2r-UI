@@ -52,7 +52,7 @@ class MainView extends React.Component {
             })
         });
 
-        if (foundParameters.length != 0) {
+        if (foundParameters.length !== 0) {
             answerText = "This Codeline is the Parameter for "
 
             for (var i = 0; i < foundParameters.length - 1; i++) {
@@ -61,7 +61,7 @@ class MainView extends React.Component {
             answerText += foundParameters[foundParameters.length - 1].computationalResult.result + ". "
 
         }
-        if (foundParameters.length != 0) {
+        if (foundParameters.length !== 0) {
             answerText += " Please check in the \"Manipulate\" view"
             this.setState({ title: "Codeline in Bindings found", selectedText: answerText, popup: true })
         }
@@ -69,7 +69,7 @@ class MainView extends React.Component {
 
     closePopup = (name, e) => {
         this.setState({ popup: false })
-        if (name == "tabChange")
+        if (name === "tabChange")
             this.props.handleTabChange(e, 2);
     }
 
@@ -78,7 +78,7 @@ class MainView extends React.Component {
         const url = this.props.filePath;
         return (
 
-            <div onMouseUp={this.handleSelectedText.bind(this)} style={{ top: "50px", left: 0, marginBottom: "50px", width: "100%", height: "90%", position: "absolute" }}>
+            <div onMouseUp={this.handleSelectedText.bind(this)} style={{ top: "100px", left: 0, marginBottom: "0px", width: "100%", height: "90%", position: "absolute" }}>
                 <Iframe id={'iframe_id'} url={url} className="iframe"/>
                 <Popup
                     selectedText={this.state.selectedText}

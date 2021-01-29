@@ -108,15 +108,15 @@ class Comparison extends Component {
                         <div className="compare_">
                             <h4 className="title" style={{ marginLeft: "1%" }}> Original results </h4>
                             <h4 className="title"> Reproduced results </h4>
-                            <Iframe className="display" id={'frame1'} url={config.baseUrl + "job/" + this.state.job.id + "/data/display.html"}></Iframe>
+                            <Iframe className="display" id={'frame1'} url={config.baseUrl + "job/" + this.state.job.id + "/data/" + this.props.displayfile}></Iframe>
                             <Iframe className="check" id={'frame2'} url={config.baseUrl + "job/" + this.state.job.id + "/data/check.html"}></Iframe>
                         </div> :
                         <div className="compare_">
                             <h4 className="title_" > Original results </h4>
                             <h4 className="title_"> Reproduced results </h4>
                             <h4 className="title_"> Differences between original and reproduced results </h4>
-                            <Iframe className="display_" id={'frame1'} url={config.baseUrl + "compendium/" + this.state.job.compendium_id + "/data/display.html"}></Iframe>
-                            <Iframe className="check_" id={'frame2'} url={config.baseUrl + "job/" + this.state.job.id + "/data/display.html"}></Iframe>
+                            <Iframe className="display_" id={'frame1'} url={config.baseUrl + "compendium/" + this.state.job.compendium_id + "/data/" + this.props.displayfile}></Iframe>
+                            <Iframe className="check_" id={'frame2'} url={config.baseUrl + "job/" + this.state.job.id + "/data/" + this.props.displayfile}></Iframe>
                             <Iframe className="diff" id={'frame3'} url={config.baseUrl + "job/" + this.state.job.id + "/data/check.html"}></Iframe>
                             <h4 className="title_" > To use synchronised scrolling in Firefox, move the cursor to the leftmost document. </h4>
                             <FormControlLabel

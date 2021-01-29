@@ -1,7 +1,7 @@
 import React from 'react';
 import 'react-reflex/styles.css';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
-import { Paper, Tabs, Tab, Button, IconButton, Grid, Dialog, DialogActions, DialogTitle, Box} from "@material-ui/core";
+import { Paper, Tabs, Tab, Button, IconButton, Grid, Dialog, DialogActions, DialogTitle, , Icon, Box} from "@material-ui/core";
 import GetAppIcon from '@material-ui/icons/GetApp';
 
 import config from '../../helpers/config';
@@ -15,7 +15,9 @@ import Substitution from './Substitution/Substitution';
 import DownloadPop from './Download/DownloadPop';
 import SubstitutionInfoPop from './Substitution/SubstitutionInfo';
 import Metadata from './Metadata/Metadata';
+import Shipment from './Shipment/Shipment';
 import { withRouter } from 'react-router-dom';
+import logo from '../../assets/img/DOI_logo.svg.png';
 
 class ERC extends React.Component {
     constructor(props) {
@@ -33,6 +35,8 @@ class ERC extends React.Component {
             html: true,
             pdf: true,
             isPreview: false
+            doiurl: false,
+            publicLink: false,
         };
         this.handleClose = this.handleClose.bind(this);
     }
@@ -121,14 +125,14 @@ class ERC extends React.Component {
                     self.setState({ pdfFile: pdfs[0] })
                     set = true;
                 } else {
-                    for (var element of pdfs) {
-                        if (element.name === "paper.pdf") {
-                            self.setState({ pdfFile: element })
+                    for (var element1 of pdfs) {
+                        if (element1.name === "paper.pdf") {
+                            self.setState({ pdfFile: element1 })
                             set = true;
                         }
                     }
                 }
-                if (!set && !this.state.metadata.identifier.doiurl) {
+                if (!set && !self.state.metadata.identifier.doiurl) {
                     self.setState({ pdf: false })
                 }
             })
@@ -153,7 +157,7 @@ class ERC extends React.Component {
                 if (response.data.substituted) {
                     substituted = response.data.metadata.substitution
                 }
-
+                let candidate = response.data.candidate
                 const data = response.data.metadata.o2r;
                 let dataset = '';
                 if (Array.isArray(data.inputfiles)) {
@@ -171,7 +175,9 @@ class ERC extends React.Component {
                     binding: data.interaction[0],
                     substituted: substituted,
                     isPreview: response.data.candidate
-                });
+                    candidate: candidate,
+                    doiurl: data.identifier.doiurl
+                }, () => { 
                 self.setDisplayFile(data.displayfile);
                 if (Array.isArray(data.inputfiles)) {
                     self.setDataFile(data.inputfiles[0]);
@@ -180,12 +186,27 @@ class ERC extends React.Component {
                 }
                 self.setCodeFile(data.mainfile);
                 self.setPdfFile();
+                self.proofPublicLink();
+                })
             })
             .catch(function (response) {
                 self.setState({ failure: true })
                 console.log(response)
             })
     }
+
+    proofPublicLink = () =>{
+        const self = this;
+        httpRequests.getPublicLinks()
+            .then( response => {
+                for (let result of response.data.results){
+                    if (result.compendium_id === this.state.id){
+                        self.setState({publicLink : result.id})
+                    }
+                }
+            })
+    }
+
 
     handleTabChange = (e, newValue) => {
         this.setState({
@@ -197,6 +218,17 @@ class ERC extends React.Component {
         this.setState({
             html: !this.state.html
         })
+    }
+
+    handlePublicLink(){
+        if(this.state.publicLink){
+            this.setState({publicLink: false})
+            httpRequests.deletePublicLink(this.state.id)
+        }
+        else{
+            httpRequests.createPublicLink(this.state.id)
+                .then( response => this.setState({publicLink: response.data.id}))
+        }
     }
 
     openPop = (name) => {
@@ -238,12 +270,18 @@ class ERC extends React.Component {
                     <ReflexElement style={{ overflow: "hidden" }}>
                         <Grid container>
                             <Grid item xs={4}>
-                                {this.state.substituted ?
-                                    <span style={{ float: "left" }}>
-                                        <span style={{ top: "1px", position: "relative" }}> This is a substituted ERC</span>
-                                        <Button onClick={() => this.openPop("substitutionInfoOpen")}>More Info</Button>
-                                    </span>
-                                    : ""}
+                                {this.state.doiurl ?
+                                    <Button
+                                        onClick={() => window.location.href= this.state.doiurl}
+                                        variant='contained'
+                                        color='inherit'
+                                        style={{ float: "center" }}
+                                        startIcon={<Icon>
+                                            <img src={logo} height={20} width={20} alt="DOI"/>
+                                        </Icon>}
+                                    >
+                                        Article
+                                    </Button> : ""}
                             </Grid>
                             {this.state.substitutionInfoOpen ? <SubstitutionInfoPop substitution={this.state.substituted} open={this.state.substitutionInfoOpen} handleClose={this.handleClose} /> : ""}
                             <Grid item xs={4}>
@@ -258,9 +296,33 @@ class ERC extends React.Component {
                                     </Button> : ""}
                             </Grid>
                             <Grid item xs={4}>
-                                <IconButton size='large' label='Download' style={{ float: "right" }} onClick={() => this.openPop("downloadOpen")}>
+                                <IconButton size='medium' label='Download' style={{ float: "right" }} onClick={() => this.openPop("downloadOpen")}>
                                     Download<GetAppIcon />
                                 </IconButton>
+                            </Grid>
+                            <Grid item xs={3}>
+                                {this.state.substituted ?
+                                    <span style={{ float: "left" }}>
+                                        <span style={{ top: "1px", position: "relative" }}> This is a substituted ERC</span>
+                                        <Button onClick={() => this.openPop("substitutionInfoOpen")}>More Info</Button>
+                                    </span>
+                                    : ""}
+                            </Grid>
+                            {this.state.substitutionInfoOpen ? <SubstitutionInfoPop substitution={this.state.substituted} open={this.state.substitutionInfoOpen} handleClose={this.handleClose} /> : ""}
+                            <Grid item xs={6}>
+                                {this.state.publicLink && this.props.userLevel > 0 ?
+                                    <span >
+                                        <span style={{ top: "1px", position: "relative" }}> This ERC has an public Link: </span>
+                                        <a href={config.ercUrl + this.state.publicLink}> {config.ercUrl + this.state.publicLink} </a>
+                                    </span>
+                                    : ""}
+                            </Grid>
+                            <Grid item xs={3}>
+                                {this.state.candidate && this.props.userLevel > 100 ?
+                                    <span style={{ float: "right" }}>
+                                        <Button variant='contained' onClick={() => this.handlePublicLink()}>{this.state.publicLink ? "Delete public Link" : "Create public Link" } </Button>
+                                    </span>
+                                    : ""}
                             </Grid>
                         </Grid>
                         {this.state.downloadOpen ? <DownloadPop id={this.state.id} open={this.state.downloadOpen} handleClose={this.handleClose} /> : ""}
@@ -288,6 +350,7 @@ class ERC extends React.Component {
                                 <Tab label="Manipulate" />
                                 <Tab label="Substitution" />
                                 <Tab label="Metadata" />
+                                <Tab label="Shipment" />
                             </Tabs>
                         </Paper>
                         {this.state.tabValue === 0 &&
@@ -301,7 +364,7 @@ class ERC extends React.Component {
                         }
                         {this.state.tabValue === 1 &&
                             <div>
-                                <Check id={this.state.id}></Check>
+                                <Check id={this.state.id} displayfile={this.state.displayfile}></Check>
                             </div>
                         }
                         {this.state.tabValue === 2 &&
@@ -321,6 +384,12 @@ class ERC extends React.Component {
                             this.state.tabValue === 4 &&
                             <div>
                                 <Metadata erc={this.state.data} substitution={this.state.substituted}/>
+                            </div>
+                        }
+                       {
+                            this.state.tabValue === 5 &&
+                            <div>
+                                <Shipment erc={this.state.data} getMetadata={() => this.getMetadata()}/>
                             </div>
                         }
                     </ReflexElement>

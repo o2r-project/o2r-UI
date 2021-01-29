@@ -10,7 +10,6 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import { withRouter } from 'react-router-dom';
 
 import './substitution.css'
-import { file } from '@babel/types';
 
 class Substitution extends React.Component {
 
@@ -78,16 +77,16 @@ class Substitution extends React.Component {
             return false
         }
         for (var file of this.props.baseErcData.files.children) {
-            if (file.name == this.props.baseErcData.metadata.o2r.inputfiles || this.props.baseErcData.metadata.o2r.inputfiles.includes(file.name)) {
+            if (file.name === this.props.baseErcData.metadata.o2r.inputfiles || this.props.baseErcData.metadata.o2r.inputfiles.includes(file.name)) {
                 baseFiles.push(file)
             }
         }
-        for (var file of erc.files.children) {
-            if (file.name == erc.metadata.o2r.inputfiles || erc.metadata.o2r.inputfiles.includes(file.name)) {
+        for (file of erc.files.children) {
+            if (file.name === erc.metadata.o2r.inputfiles || erc.metadata.o2r.inputfiles.includes(file.name)) {
                 substitutionFiles.push(file)
             }
         }
-        for (var file of baseFiles) {
+        for (file of baseFiles) {
             for (var file2 of substitutionFiles) {
                 if (file.extension === file2.extension) {
                     return true;
