@@ -42,6 +42,47 @@ services:
     ports:
       - "1234:1234"
 
+  #elasticsearch:
+  #  image: docker.elastic.co/elasticsearch/elasticsearch:5.6.16
+  #  environment:
+  #    - cluster.name=o2rplatform-es-cluster
+  #    - bootstrap.memory_lock=true
+  #    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #    - "xpack.security.enabled=false"
+  #    - "cluster.routing.allocation.disk.watermark.low=5gb"
+  #    - "cluster.routing.allocation.disk.watermark.high=5gb"
+  #  ulimits:
+  #    memlock:
+  #      soft: -1
+  #      hard: -1
+  #  mem_limit: 1g
+  #  #ports:
+  #  #  - "9200:9200"
+  #elasticsearch2:
+  #  image: docker.elastic.co/elasticsearch/elasticsearch:5.6.16
+  #  environment:
+  #    - cluster.name=o2rplatform-es-cluster
+  #    - bootstrap.memory_lock=true
+  #    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #    - "discovery.zen.ping.unicast.hosts=elasticsearch"
+  #    - "xpack.security.enabled=false"
+  #    - "cluster.routing.allocation.disk.watermark.low=5gb"
+  #    - "cluster.routing.allocation.disk.watermark.high=5gb"
+  #  ulimits:
+  #    memlock:
+  #      soft: -1
+  #      hard: -1
+  #  mem_limit: 1g
+
+  #kibana:
+  #  image: docker.elastic.co/kibana/kibana:5.6.16
+  #  environment:
+  #    - "ELASTICSEARCH_URL=http://elasticsearch:9200"
+  #  ports:
+  #    - "5601:5601"
+  #  depends_on:
+  #    - elasticsearch
+
   muncher:
     image: o2rproject/o2r-muncher:0.26.2
     depends_on:
@@ -113,8 +154,25 @@ services:
       - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
       - OAUTH_STARTUP_FAIL_ON_ERROR=false
 
+  #finder:
+  #  image: o2rproject/o2r-finder:0.6.2
+  #  depends_on:
+  #    - mongodb
+  #    - configmongodb
+  #    - elasticsearch
+  #  volumes:
+  #    - o2rstorage:/tmp/o2r
+  #  environment:
+  #    - "FINDER_MONGODB=mongodb://mongodb:27017/"
+  #    - FINDER_PORT=8084
+  #    - DEBUG=finder,finder:*
+  #    - ELASTIC_SEARCH_URL=elasticsearch:9200
+  #    - "MONGO_DATA_URL=mongodb://mongodb/muncher"
+  #    - "MONGO_OPLOG_URL=mongodb://mongodb/muncher"
+  #    - BATCH_COUNT=20
+
   shipper:
-    image: o2rproject/o2r-shipper:e1ce0e6
+    image: o2rproject/o2r-shipper:8f95fd6
     depends_on:
       - mongodb
       - configmongodb
@@ -171,17 +229,42 @@ services:
       - OAUTH_URL_AUTHORIZATION=${OAUTH_URL_AUTHORIZATION}
       - OAUTH_URL_TOKEN=${OAUTH_URL_TOKEN}
 
-  webserver:
+  # test containerised versions:
+  #ui:
+  #  image: o2rproject/ui:0.2.2
+  #  image: ui:master
+  #  ports:
+  #    - '81:3000'
+
+  ui:
+    container_name: ui
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
+    volumes:
+      - '.:/usr/src/app'
+      - '/usr/src/app/node_modules'
+    #ports:
+    #  - '81:3000'
+    # enable TTY for react-scripts https://github.com/facebook/create-react-app/issues/8688
+    stdin_open: true
+    tty: true
+
+  webserver:
+    image: nginx:latest
     depends_on:
       - bouncer
+      #- finder
       - muncher
       - informer
       - loader
       - shipper
       - substituter
       - bindings
+      - ui
+    volumes:
+      - "./dev/nginx-dev.conf:/etc/nginx/nginx.conf:ro"
+      - "./dev/nginx-cors.conf:/etc/nginx/nginx-cors.conf:ro"
+      - "./dev/nginx-share.conf:/etc/nginx/nginx-share.conf:ro"
     ports:
       - "80:80"
