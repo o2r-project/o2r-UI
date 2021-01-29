@@ -15,7 +15,6 @@
     "csv-string": "^4.0.1",
     "formik": "^2.2.6",
     "formik-persist": "^1.1.0",
-    "jest": "^26.6.3",
     "jquery": "^3.5.1",
     "jquery-highlight": "^3.5.0",
     "leaflet": "^1.5.1",
@@ -57,6 +56,7 @@
   ],
   "devDependencies": {
     "axios": "^0.21.1",
+    "jest": "26.6.3",
     "jest-puppeteer": "^4.4.0",
     "puppeteer": "^5.5.0"
   }
