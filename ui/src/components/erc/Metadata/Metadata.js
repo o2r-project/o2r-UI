@@ -1,6 +1,6 @@
 import React from 'react';
 import { List, ListItem, ListItemText, Button } from '@material-ui/core';
-import { MapContainer, TileLayer, Polygon } from 'react-leaflet'
+import { Map, TileLayer, Polygon } from 'react-leaflet'
 
 
 import { withRouter } from 'react-router-dom';
@@ -51,7 +51,7 @@ class Metadata extends React.Component {
                     <span style={{ marginLeft: "2%" }}><b>Text: </b>{this.metadata.license.text}</span> <br /> <br />
 
                     <span ><b>Spatial extend:</b></span> <br />
-                    <MapContainer center={[50.2, 7.6]} zoom={13} ref="map">
+                    <Map center={[50.2, 7.6]} zoom={13} ref="map">
                         <TileLayer
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -59,7 +59,7 @@ class Metadata extends React.Component {
                         <Polygon
                             positions={positions}
                         />
-                    </MapContainer>
+                    </Map>
                     <br />
                     <span ><b>Temporal extend: </b>From {this.metadata.temporal.begin.substr(0, 10)} to {this.metadata.temporal.end.substr(0, 10)}</span> <br />
                     {this.props.erc.substituted ?
