@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, Accordion, AccordionDetails, AccordionSummary, Typography, CircularProgress, Dialog, DialogContent, DialogTitle, DialogActions } from "@material-ui/core";
 import socketIOClient from "socket.io-client";
-import uuid from 'uuid/v1';
+import {v1 as uuid} from 'uuid';
 
 import httpRequests from '../../../helpers/httpRequests';
 import './check.css';
