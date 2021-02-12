@@ -43,7 +43,7 @@
   "scripts": {
     "start": "react-scripts start --loglevel debug",
     "build": "react-scripts build",
-    "test": "jest",
+    "test": "jest --runInBand --detectOpenHandles --forceExit",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -56,7 +56,7 @@
   ],
   "devDependencies": {
     "axios": "^0.21.1",
-    "jest": "26.6.0",
+    "jest": "^26.6.0",
     "jest-puppeteer": "^4.4.0",
     "puppeteer": "^5.5.0"
   }
