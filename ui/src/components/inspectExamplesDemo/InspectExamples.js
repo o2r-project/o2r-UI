@@ -33,7 +33,7 @@ function SpacingGrid(props) {
                     {props.ercs.map((erc, index) =>
                         <div key={index} style={{ width: '20%', marginRight: '2%', marginTop: '1%', marginBottom: '3%' }}>
                             <Card className="example">
-                                <CardActionArea id={index} onClick={() => props.forward(erc)}>
+                                <CardActionArea id={"button"+index} onClick={() => props.forward(erc)}>
                                     <CardHeader
                                         title={erc.metadata.o2r.title} />
                                     <CardContent>
