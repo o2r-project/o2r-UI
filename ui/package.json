@@ -13,7 +13,7 @@
     "@material-ui/icons": "^4.5.1",
     "core-js": "^3.8.1",
     "csv-string": "^4.0.1",
-    "formik": "^2.2.6",
+    "formik": "^1.5.8",
     "formik-persist": "^1.1.0",
     "jquery": "^3.5.1",
     "jquery-highlight": "^3.5.0",
@@ -43,7 +43,7 @@
   "scripts": {
     "start": "react-scripts start --loglevel debug",
     "build": "react-scripts build",
-    "test": "jest --runInBand --detectOpenHandles --forceExit",
+    "test": "jest --runInBand --detectOpenHandles",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
