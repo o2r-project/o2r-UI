@@ -4,6 +4,8 @@ import { Map, TileLayer, Polygon } from 'react-leaflet'
 
 
 import { withRouter } from 'react-router-dom';
+import languageCodes from '../../../helpers/isoCodes_639-1.json'
+
 let ref2;
 
 class Metadata extends React.Component {
@@ -48,7 +50,11 @@ class Metadata extends React.Component {
                     <span ><b>License: </b></span> <br />
                     <span style={{ marginLeft: "2%" }}><b>Code: </b>{this.metadata.license.code}</span> <br />
                     <span style={{ marginLeft: "2%" }}><b>Data: </b>{this.metadata.license.data}</span> <br />
-                    <span style={{ marginLeft: "2%" }}><b>Text: </b>{this.metadata.license.text}</span> <br /> <br />
+                    <span style={{ marginLeft: "2%" }}><b>Text: </b>{this.metadata.license.text}</span> <br /><br />
+                    <span> <b>DOI: </b>{this.metadata.identifier.doi}</span><br />
+                    <span> <b>Languages: </b>{languageCodes.filter(language => this.metadata.languages.includes(language.code)).map(language => language.full).toString().replace(/,/g, ", ")}</span><br />
+                    <span> <b>Keywords: </b>{this.metadata.keywords.toString().replace(/,/g, ", ")}</span><br />
+                    <br />
 
                     <span ><b>Spatial extend:</b></span> <br />
                     <Map center={[50.2, 7.6]} zoom={13} ref="map">
