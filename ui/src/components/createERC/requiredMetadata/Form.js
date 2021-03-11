@@ -334,13 +334,23 @@ export const Form = props => {
                         >
                             Publish
                          </Button>
-                        <Button
-                            type="button"
-                            id="goTo"
-                            onClick={goToErc}
-                            disabled={props.candidate}>
-                            Go To ERC
+
+                        {props.candidate
+                          ? <Button
+                              type="button"
+                              onClick={goToErc}>
+                              Preview
                             </Button>
+                          : <Button
+                              id="goTo"
+                              type="button"
+                              color="primary"
+                              onClick={goToErc}
+                              disabled={props.candidate}>
+                              Go To ERC
+
+                            </Button>
+                       }
                     </Paper>
                     <div id={"errorMessage"}>
                         {errors.title ? errors.title : ""}

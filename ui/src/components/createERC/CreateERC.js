@@ -5,8 +5,10 @@ import { Tabs, Tab, Typography, AppBar, Snackbar, LinearProgress } from '@materi
 import './createERC.css';
 import RequiredMetadata from './requiredMetadata/RequiredMetadata';
 import SpatioTemporalMetadata from './spatioTemporalMetadata/SpatioTemporalMetadata';
+import OptionalMetadata from './optionalMetadata/OptionalMetadata'
 import Bindings from './bindings/Bindings';
 import httpRequests from '../../helpers/httpRequests';
+import config from '../../helpers/config';
 
 
 
@@ -35,7 +37,7 @@ class CreateERC extends Component {
             spatioTemporalChanged: false,
             authorsValid: false,
             candidate: true,
-            showProgress: false,
+            showProgress: false
         }
     }
 
@@ -57,6 +59,8 @@ class CreateERC extends Component {
                             metadata: metadata,
                             originalMetadata: JSON.parse(JSON.stringify(metadata)),
                             authors: metadata.creators,
+                            languages: metadata.paperLanguage,
+                            keywords: metadata.keywords,
                             candidate: candidate,
                             codefile: res2,
                         }, () => self.authorsNotNull());
@@ -69,7 +73,6 @@ class CreateERC extends Component {
     }
 
     setMetadata = (metadata, submit) => {
-
         this.setState({
             metadata: metadata,
         }, () => {
@@ -146,17 +149,21 @@ class CreateERC extends Component {
         this.setState({ authorsValid: valid });
     };
 
-
-    componentDidMount = () => this.getMetadata();
+    componentDidMount = () => {
+      this.getMetadata();
+      document.title = "Create ERC" + config.title;
+    }
 
     handleClose = () => {
         this.setState({ open: false })
+
+
     }
 
     render() {
         const { value } = this.state;
         return (
-            <div>
+              <div>
                 <AppBar position="fixed" color="default" id="appBar">
                     <Tabs scrollButtons="on" variant="standard" indicatorColor="primary" centered textColor="primary"
                         value={value}
@@ -164,6 +171,7 @@ class CreateERC extends Component {
                     >
                         <Tab label="Required Metadata" />
                         <Tab label="Spatiotemporal Metadata" />
+                        <Tab label="Optional Metadata" />
                         <Tab label="Create bindings" />
                     </Tabs>
                 </AppBar>
@@ -208,6 +216,32 @@ class CreateERC extends Component {
                     </TabContainer>
                 }
                 {value === 2 &&
+                    <TabContainer>
+                        {this.state.metadata != null
+                            ? <OptionalMetadata
+                                metadata={this.state.metadata
+                                }
+                                setMetadata={this.setMetadata}
+                                goToErc={this.goToErc}
+                                originalMetadata={this.state.originalMetadata
+                                }
+                                authors={this.state.authors}
+                                authorsChanged={this.state.authorsChanged}
+                                changed={this.state.changed}
+                                spatioTemporalChanged={this.state.spatioTemporalChanged}
+                                updateAuthors={this.updateAuthors}
+                                updateLanguages={this.updateLanguages}
+                                updateKeywords={this.updateKeywords}
+                                setChangedFalse={this.setChangedFalse}
+                                setChanged={this.setChanged}
+                                authorsValid={this.state.authorsValid}
+                                candidate={this.state.candidate}
+                                showProgress={this.state.showProgress}
+                            />
+                            : ''}
+                    </TabContainer>
+                }
+                {value === 3 &&
                     <TabContainer>
                         <Bindings
                             metadata={this.state.metadata}

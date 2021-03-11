@@ -280,9 +280,14 @@ function VerticalLinearStepper(props) {
           <Button onClick={saveErc} disabled = {!valid2} className={classes.button} variant="contained" color="primary">
             Publish
           </Button>
-          <Button onClick={goToErc} disabled = {props.candidate} className={classes.button} variant="contained" color="primary">
-            Go to ERC
-          </Button>
+          {props.candidate
+            ? <Button onClick={goToErc} className={classes.button} variant="contained">
+                Preview
+              </Button>
+            : <Button onClick={goToErc} disabled = {props.candidate} className={classes.button} variant="contained" color="primary">
+                Go to ERC
+              </Button>
+          }
         </Paper>
       )}
     </div>
@@ -472,7 +477,7 @@ class Bindings extends Component {
   }
 
   analyzeIfConditions = (analyzedCode, codelines) => {
-  
+
     for (var codeItem of analyzedCode) {
       if (codeItem.type === "if"  || codeItem.type === "while" ) {
         if(codeItem.code[0].func && codeItem.code[0].func.id ==="install.packages"){
@@ -530,8 +535,8 @@ class Bindings extends Component {
   /*handleMouseUp ( e ) {
     if (this.state.creationStep === 1) {
       try {
-        this.setCode(window.getSelection().getRangeAt(0).toString()); 
-      } catch (error) {     
+        this.setCode(window.getSelection().getRangeAt(0).toString());
+      } catch (error) {
       }
     } else if (this.state.creationStep === 2) {
       this.setState({
@@ -627,13 +632,13 @@ class Bindings extends Component {
   saveErc = () =>  {
     this.props.setChangedFalse("all")
     this.props.updateMetadata(this.props.metadata, true)
-    
+
   }
 
   goToErc= () => {
     this.props.goToErc();
   }
-  
+
   clearBinding() {
     let state = this.state;
     //state.codeview=true;
@@ -728,7 +733,7 @@ class Bindings extends Component {
           <Button onClick={this.handleClose} color="primary">
             Go Back
           </Button>
-          <Button onClick={() => window.location.href="mailto:o2r.team@uni-muenster.de?subject=CreateBinding"} color="primary" autoFocus>
+          <Button onClick={() => {window.location.href="mailto:o2r.team@uni-muenster.de?subject=CreateBinding"}} color="primary" autoFocus>
             Contact
           </Button>
         </DialogActions>

@@ -1,9 +1,12 @@
 import React from 'react';
 import { List, ListItem, ListItemText, Button } from '@material-ui/core';
-import { Map, TileLayer, Polygon } from 'react-leaflet'
+import { Map, TileLayer, Polygon } from 'react-leaflet';
+import config from '../../../helpers/config';
 
 
 import { withRouter } from 'react-router-dom';
+import languageCodes from '../../../helpers/isoCodes_639-1.json'
+
 let ref2;
 
 class Metadata extends React.Component {
@@ -16,6 +19,7 @@ class Metadata extends React.Component {
     componentDidMount() {
         ref2 = this.refs.map.leafletElement;
         ref2.fitBounds([this.metadata.spatial.union.bbox[0], this.metadata.spatial.union.bbox[2]])
+        document.title = "Metadata | ERC " + this.props.erc.id + config.title;
     }
 
     goToErc = (id) => {
@@ -48,7 +52,11 @@ class Metadata extends React.Component {
                     <span ><b>License: </b></span> <br />
                     <span style={{ marginLeft: "2%" }}><b>Code: </b>{this.metadata.license.code}</span> <br />
                     <span style={{ marginLeft: "2%" }}><b>Data: </b>{this.metadata.license.data}</span> <br />
-                    <span style={{ marginLeft: "2%" }}><b>Text: </b>{this.metadata.license.text}</span> <br /> <br />
+                    <span style={{ marginLeft: "2%" }}><b>Text: </b>{this.metadata.license.text}</span> <br /><br />
+                    <span> <b>DOI: </b>{this.metadata.identifier.doi}</span><br />
+                    <span> <b>Languages: </b>{languageCodes.filter(language => this.metadata.languages.includes(language.code)).map(language => language.full).toString().replace(/,/g, ", ")}</span><br />
+                    <span> <b>Keywords: </b>{this.metadata.keywords.toString().replace(/,/g, ", ")}</span><br />
+                    <br />
 
                     <span ><b>Spatial extend:</b></span> <br />
                     <Map center={[50.2, 7.6]} zoom={13} ref="map">

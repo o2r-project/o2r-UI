@@ -186,6 +186,7 @@ class Check extends Component {
 
     componentDidMount() {
         this.getJobs();
+        document.title = "Check | ERC " + this.props.id + config.title;
     }
 
     render() {
