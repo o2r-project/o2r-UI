@@ -1,7 +1,7 @@
 import React from 'react';
 import 'react-reflex/styles.css';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
-import { Paper, Tabs, Tab, Button, IconButton, Grid, Dialog, DialogActions, DialogTitle, , Icon, Box} from "@material-ui/core";
+import { Paper, Tabs, Tab, Button, IconButton, Grid, Dialog, DialogActions, DialogTitle, Icon, Box} from "@material-ui/core";
 import GetAppIcon from '@material-ui/icons/GetApp';
 
 import config from '../../helpers/config';
@@ -34,7 +34,7 @@ class ERC extends React.Component {
             tabValue: 0,
             html: true,
             pdf: true,
-            isPreview: false
+            isPreview: false,
             doiurl: false,
             publicLink: false,
         };
@@ -174,7 +174,7 @@ class ERC extends React.Component {
                     codefiles: data.codefiles,
                     binding: data.interaction[0],
                     substituted: substituted,
-                    isPreview: response.data.candidate
+                    isPreview: response.data.candidate,
                     candidate: candidate,
                     doiurl: data.identifier.doiurl
                 }, () => { 

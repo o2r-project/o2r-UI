@@ -109,7 +109,9 @@ class OptionalMetadata extends Component {
                             goToERC={this.props.goToErc}
                             spatioTemporalChanged={this.props.spatioTemporalChanged}
                             changed={this.props.changed}
+                            optionalChanged={this.props.optionalChanged}
                             setChangedFalse={this.props.setChangedFalse}
+                            setChanged={this.props.setChanged}
                             originalMetadata={JSON.parse(JSON.stringify(this.originialValues))}
                             originalAuthors={JSON.parse(JSON.stringify(this.props.originalMetadata.creators))}
                             candidate={this.props.candidate}

@@ -180,6 +180,7 @@ class RequiredMetadata extends Component {
                             resetAuthors={refs2}
                             goToERC={this.props.goToErc}
                             spatioTemporalChanged={this.props.spatioTemporalChanged}
+                            optionalChanged={this.props.optionalChanged}
                             authorsChanged={this.props.authorsChanged}
                             changed={this.props.changed}
                             setChangedFalse={this.props.setChangedFalse}

@@ -29,11 +29,10 @@ export const OptionalForm = props => {
     }
 
     const valid = (props.authorsChanged && props.authorsValid && isEmpty(errors)) || (props.changed && isEmpty(errors) && props.authorsValid)
-        || (props.spatioTemporalChanged && props.authorsValid && isEmpty(errors)) || (isEmpty(errors) && props.candidate)
+        || (props.spatioTemporalChanged && props.authorsValid && isEmpty(errors)) || (props.optionalChanged && props.authorsValid && isEmpty(errors)) ||(isEmpty(errors) && props.candidate)
 
-    valid2 = isEmpty(errors) && props.authorsValid
 
-    const reset = props.authorsChanged || props.changed
+    const reset = props.optionalChanged
 
     const handleReset = async () => {
 
@@ -43,7 +42,7 @@ export const OptionalForm = props => {
             props.resetAuthors[i].getFormikActions().resetForm(props.originalAuthors[i])
         }*/
         //props.onUpdate(JSON.parse(JSON.stringify(props.originalAuthors)));
-        props.setChangedFalse("all");
+        props.setChangedFalse("optionalChanged");
         await props.setFormValues(props.originalMetadata)
         props.validateForm()
         props.setTouched({ "doi": true });
@@ -55,6 +54,7 @@ export const OptionalForm = props => {
         e.persist();
         e.target.name = name;
         handleChange(e);
+        props.setChanged("optionalChanged")
         var values = props.values
         values[name] = e.target.value
         setFieldTouched(name, true, false);
@@ -64,24 +64,25 @@ export const OptionalForm = props => {
     const arrayChange = (name, index, e) => {
         e.persist();
         e.target.name = name;
+        props.setChanged("optionalChanged")
         var values = props.values
         values[name].splice(index, 1, e.target.value)
         setFieldTouched(name, true, true);
-        console.log(values)
         props.setFormValues(values)
     };
     const arrayDelete = (name, index, e) => {
         e.persist();
         e.target.name = name;
+        props.setChanged("optionalChanged")
         var values = props.values
         values[name].splice(index, 1)
         setFieldTouched(name, true, true);
-        console.log(values)
         props.setFormValues(values)
     };
     const arrayAdd = (name, e) => {
         e.persist();
         e.target.name = name;
+        props.setChanged("optionalChanged")
         var values = props.values
         values[name].push("")
         setFieldTouched(name, true, true);
@@ -133,12 +134,12 @@ export const OptionalForm = props => {
 
                                                 {/* Edit the value here */}
                                                 <TextField
-                                                    id="keywords"
+                                                    id={"keywords"}
                                                     label="Optional"
                                                     style={{ margin: 8, width: '80%' }}
                                                     placeholder="Keyword"
-                                                    helperText={touched.keywords ? errors.keywords : ""}
-                                                    error={touched.keywords && Boolean(errors.keywords)}
+                                                    helperText={touched.keywords? errors.keywords ? errors.keywords[index] : "" : ""}
+                                                    error={errors.keywords ? touched.keywords && Boolean(errors.keywords[index]): false}
                                                     value={keyword}
                                                     onChange={arrayChange.bind(null, "keywords", index)}
                                                     //onBlur={blur.bind(null)}
@@ -184,8 +185,8 @@ export const OptionalForm = props => {
                                                     label="Optional"
                                                     style={{ margin: 8, width: '80%' }}
                                                     placeholder="Language"
-                                                    helperText={touched.paperLanguage ? errors.paperLanguage : ""}
-                                                    error={touched.paperLanguage && Boolean(errors.paperLanguage)}
+                                                    helperText={touched.paperLanguage ? errors.paperLanguage ? errors.paperLanguage[index] : "" : ""}
+                                                    error={errors.paperLanguage ? touched.paperLanguage && Boolean(errors.paperLanguage[index]): false}
                                                     value={language}
                                                     onChange={arrayChange.bind(null, "paperLanguage", index)}
                                                     //onBlur={blur.bind(null)}
