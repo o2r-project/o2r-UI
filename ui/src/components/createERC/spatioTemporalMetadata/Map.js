@@ -24,6 +24,8 @@ class OwnMap extends React.Component {
         ref2 = this.refs.map.leafletElement;
     }
 
+
+
     isEmpty(obj) {
         for (var key in obj) {
             if (obj.hasOwnProperty(key))
@@ -85,7 +87,6 @@ class OwnMap extends React.Component {
     }
 
     revertLayers = () => {
-        const latlngs = uneditedLayerProps
         this._editableFG = ref;
         
         GeoJSON = uneditedLayerProps;

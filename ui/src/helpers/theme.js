@@ -10,6 +10,12 @@ const o2rTheme = createMuiTheme({
         },
         success: {
             main: '#008643'
+        },
+        warning: {
+          main: '#CE5100'
+        },
+        failure: {
+            main: '#860000'
         }
     }
 

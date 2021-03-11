@@ -292,7 +292,6 @@ export const Form = props => {
                                 onBlur={blur.bind(null)}
                                 margin="normal"
                                 variant="outlined"
-                                native={true}
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
@@ -334,12 +333,20 @@ export const Form = props => {
                         >
                             Publish
                          </Button>
-                        <Button
-                            type="button"
-                            onClick={goToErc}
-                            disabled={props.candidate}>
-                            Go To ERC
+                        {props.candidate
+                          ? <Button
+                              type="button"
+                              onClick={goToErc}>
+                              Preview
                             </Button>
+                          : <Button
+                              type="button"
+                              color="primary"
+                              onClick={goToErc}
+                              disabled={props.candidate}>
+                              Go To ERC
+                            </Button>
+                       }
                     </Paper>
                     <div id={"errorMessage"}>
                         {errors.title ? errors.title : ""}

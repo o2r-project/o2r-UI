@@ -1,4 +1,4 @@
-import L, { geoJSON } from 'leaflet'
+//import L, { geoJSON } from 'leaflet'
 import React from 'react'
 import { Map, TileLayer, FeatureGroup } from 'react-leaflet'
 import { EditControl } from 'react-leaflet-draw'
@@ -35,7 +35,7 @@ class OwnMap extends React.Component {
 
     _onEdited = (e) => {
 
-        var bounds;
+        var bounds
         if (this.isEmpty(e.layers._layers)) {
             return
         }

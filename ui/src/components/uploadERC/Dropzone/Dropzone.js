@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { DropzoneArea } from 'material-ui-dropzone';
-import { Button, Dialog, DialogContent, DialogTitle, DialogActions, CircularProgress } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 
 import './Dropzone.css';
@@ -12,14 +12,14 @@ class Dropzone extends Component {
     super(props);
     this.state = {
       files: [],
-      progress: 0,
+      
     };
   }
 
   config = {
     onUploadProgress: (progressEvent) =>{
       var percentCompleted = Math.round( (progressEvent.loaded * 100) / progressEvent.total * 0.8 );
-      this.setState({progress : percentCompleted})
+      this.props.setUpperState({progress : percentCompleted})
     }
   }
   handleChange(files) {
@@ -30,11 +30,10 @@ class Dropzone extends Component {
 
   uploadFolder() {
     const self = this.props;
-    const state = this
     const data = new FormData();
     data.append('compendium', this.state.files[0]);
     data.append('content_type', 'workspace');
-    state.setState({ title: "uploading ERC", open: true, errorMessage: null })
+    self.setUpperState({ title: "uploading ERC", open: true, errorMessage: null })
     httpRequests.uploadWorkspace(data, this.config)
       .then(function (response) {
         self.history.push({
@@ -44,16 +43,14 @@ class Dropzone extends Component {
       })
       .catch((response) => {
         if (response.response.status === 401) {
-          state.setState({ title: "ERC Upload failed", errorMessage: "You have to be logged in to upload a Workspace" })
+          self.setUpperState({ title: "ERC Upload failed", errorMessage: "You have to be logged in to upload a Workspace" })
         } else if (response.response.status === 500) {
-          state.setState({ title: "ERC Upload failed", errorMessage: "You must select an ERC to upload" })
+          self.setUpperState({ title: "ERC Upload failed", errorMessage: "You must select an ERC to upload" })
         }
       })
   }
 
-  handleClose() {
-    this.setState({ open: false })
-  }
+
 
   render() {
     return (
@@ -71,24 +68,7 @@ class Dropzone extends Component {
           Load workspace
         </Button>
         {!this.props.loggedIn ? <p style={{color : "red"}}>You have to be logged in to upload a Workspace</p> : ""}
-        <Dialog open={this.state.open}>
-          <DialogTitle> {this.state.title}</DialogTitle>
-          {this.state.errorMessage ?
-            <div>
-              <DialogContent>
-                {this.state.errorMessage}
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={this.handleClose.bind(this)} color="primary">
-                  OK
-              </Button>
-              </DialogActions> </div> :
-            <DialogContent style={{"align-self": "center", "overflow-y": "unset"}}>
-              <CircularProgress variant="static" value={this.state.progress}/>
-              <p> {this.state.progress} % </p>
-            </DialogContent>
-          }
-        </Dialog>
+
       </div>
     )
   }

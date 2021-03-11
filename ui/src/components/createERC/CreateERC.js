@@ -8,7 +8,7 @@ import SpatioTemporalMetadata from './spatioTemporalMetadata/SpatioTemporalMetad
 import OptionalMetadata from './optionalMetadata/OptionalMetadata'
 import Bindings from './bindings/Bindings';
 import httpRequests from '../../helpers/httpRequests';
-
+import config from '../../helpers/config';
 
 
 
@@ -37,7 +37,7 @@ class CreateERC extends Component {
             spatioTemporalChanged: false,
             authorsValid: false,
             candidate: true,
-            showProgress: false,
+            showProgress: false
         }
     }
 
@@ -149,17 +149,21 @@ class CreateERC extends Component {
         this.setState({ authorsValid: valid });
     };
 
-
-    componentDidMount = () => this.getMetadata();
+    componentDidMount = () => {
+      this.getMetadata();
+      document.title = "Create ERC" + config.title;
+    }
 
     handleClose = () => {
         this.setState({ open: false })
+
+
     }
 
     render() {
         const { value } = this.state;
         return (
-            <div>
+              <div>
                 <AppBar position="fixed" color="default" id="appBar">
                     <Tabs scrollButtons="on" variant="standard" indicatorColor="primary" centered textColor="primary"
                         value={value}

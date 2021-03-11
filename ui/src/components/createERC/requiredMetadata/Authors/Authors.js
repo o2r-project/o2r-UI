@@ -7,11 +7,6 @@ import AddIcon from '@material-ui/icons/Add';
 
 class Authors extends Component {
 
-    constructor(props) {
-        super(props);
-
-
-    }
 
     handleDelete(i) {
         let authors = this.props.authors.slice();

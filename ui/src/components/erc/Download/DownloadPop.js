@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, FormControl, RadioGroup, Slide, Radio, FormControlLabel, Grid } from "@material-ui/core";
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, FormControl, RadioGroup, Radio, FormControlLabel, Grid } from "@material-ui/core";
 
 import httpRequests from '../../../helpers/httpRequests';
 
@@ -9,7 +9,9 @@ class DownloadPop extends Component {
         super(props);
         this.state = {
             value: 0,
-            successfulJob: false
+            successfulJob: false,
+            text: "The reproducibility check failed. It is thus not possible to download the image."
+
         }
 
         this.handleClose = this.handleClose.bind(this)
@@ -23,6 +25,9 @@ class DownloadPop extends Component {
         const self = this;
         httpRequests.listJobs(this.props.id)
             .then(function (res) {
+                if(res.data.results.length === 0){
+                    self.setState({ text:  "Image tarball is missing, so it is not available for download. Please run the analysis first."})
+                }
                 for (let i = 0; i < res.data.results.length; i++) {
                     httpRequests.getSingleJob(res.data.results[i])
                         .then(function (res2) {
@@ -68,7 +73,7 @@ class DownloadPop extends Component {
                     <Grid container spacing={0}>
                     <Grid item xs={4}>
                     {this.state.successfulJob ? "" : <div style={{"margin-left": "10px"}}> <DialogContentText>
-                        Image tarball is missing, so it is not available for download. Please run the analysis first.
+                        {this.state.text}
                     </DialogContentText> </div>}
                     </Grid>
                     <Grid item xs={4} style={{ "text-align": "center"}}>
