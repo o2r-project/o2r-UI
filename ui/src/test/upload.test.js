@@ -144,8 +144,32 @@ describe("Inspect ERC", () => {
 
         expect(html).toBe("INSYDE: a synthetic, probabilistic flood damage model based on explicit cost analysis");
 
+     })
 
+     test("Go To check", async () => {
+        //await page.waitForTimeout(2000)
+        await page.click('#check')
+        await page.waitForTimeout(2000)
+        //await page.waitForNavigation();
+        await page.screenshot({ path: 'screenshots/ERCView4.jpg', type: 'jpeg' });
+        
+        const handle = await page.$("#runAnalysis");
+        const html = await page.evaluate(handle => handle.innerText, handle);
 
+        expect(html).toBe("RUN ANALYSIS");
+     })
+
+     test("Start Analysis", async () => {
+        
+        await page.click('#runAnalysis')
+        await page.waitForTimeout(2000)
+        //await page.waitForNavigation();
+        await page.screenshot({ path: 'screenshots/analysisStarted.jpg', type: 'jpeg' });
+        
+        const handle = await page.$("#stepOne");
+        const html = await page.evaluate(handle => handle.innerText, handle);
+
+        expect(html).toBe("1) Create configuration file: ");
      })
 
  

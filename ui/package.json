@@ -36,7 +36,7 @@
     "react-scripts": "^4.0.1",
     "react-share": "^4.3.1",
     "react-visual-diff": "^0.4.3",
-    "socket.io-client": "^3.0.4",
+    "socket.io-client": "^2.2.0",
     "uuid": "^8.3.2",
     "yup": "^0.32.8"
   },
