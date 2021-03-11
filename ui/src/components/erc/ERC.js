@@ -1,7 +1,7 @@
 import React from 'react';
 import 'react-reflex/styles.css';
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
-import { Paper, Tabs, Tab, Button, IconButton, Grid, Dialog, DialogActions, DialogTitle, Icon } from "@material-ui/core";
+import { Paper, Tabs, Tab, Button, IconButton, Grid, Dialog, DialogActions, DialogTitle, , Icon, Box} from "@material-ui/core";
 import GetAppIcon from '@material-ui/icons/GetApp';
 
 import config from '../../helpers/config';
@@ -34,13 +34,18 @@ class ERC extends React.Component {
             tabValue: 0,
             html: true,
             pdf: true,
+            isPreview: false
             doiurl: false,
             publicLink: false,
         };
         this.handleClose = this.handleClose.bind(this);
     }
 
-    componentDidMount = () => { this.getMetadata(); this.props.history.replace(this.props.location.pathname) };
+    componentDidMount = () => {
+      this.getMetadata();
+      this.props.history.replace(this.props.location.pathname);
+      document.title = "ERC " + this.state.id + config.title;
+     };
 
 
     setDataFile(datafile) {
@@ -169,6 +174,7 @@ class ERC extends React.Component {
                     codefiles: data.codefiles,
                     binding: data.interaction[0],
                     substituted: substituted,
+                    isPreview: response.data.candidate
                     candidate: candidate,
                     doiurl: data.identifier.doiurl
                 }, () => { 
@@ -240,9 +246,26 @@ class ERC extends React.Component {
         });
     }
 
+
+
+
     render() {
+        const classes = this.useStyles
         return (
             <div className="Erc" >
+              {this.state.isPreview ? <Box
+                                          color="white"
+                                          textAlign="center"
+                                          bgcolor="warning.main"
+                                          width={1/3}
+                                          border={1}
+                                          borderRadius={4}
+                                          mx="auto"
+                                          my={2}
+                                          >
+                                          <p><b>This is a preview! Changes from the create window will not be displayed.</b></p>
+                                      </Box> : ""}
+                <Box  borderTop={1} borderColor="silver">
                 <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
                     <ReflexElement style={{ overflow: "hidden" }}>
                         <Grid container>
@@ -266,7 +289,7 @@ class ERC extends React.Component {
                                     <Button
                                         onClick={this.handleDisplayFile.bind(this)}
                                         variant='contained'
-                                        color='inherit'
+                                        color = "inherit"
                                         style={{ float: "center" }}
                                     >
                                         {this.state.html ? 'Show PDf' : 'Show HTML'}
@@ -371,6 +394,7 @@ class ERC extends React.Component {
                         }
                     </ReflexElement>
                 </ReflexContainer>
+                </Box>
                 <Dialog
                     open={this.state.failure}
                     onClose={this.handleAlertClose.bind(this)}>

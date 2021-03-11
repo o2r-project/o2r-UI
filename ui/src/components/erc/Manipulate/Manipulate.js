@@ -38,15 +38,16 @@ class Manipulate extends React.Component {
         if (this.state.bindings.length > 5) {
             this.setState({ variant: "scrollable" })
         }
+        document.title = "Manipulate | ERC " + this.props.id + config.title;
     }
 
     componentDidUpdate = (prevProps) => {
         if(JSON.stringify(this.props.bindings) !== JSON.stringify(prevProps.bindings)){
             this.setState({bindings : this.props.bindings, binding: this.props.bindings[0], params: this.getParams(this.props.bindings[0].sourcecode.parameter)}, () => this.setParameter.bind(this))
-            
+
         }
     }
-    
+
     runManipulateService() {
         const self = this;
         self.state.bindings.forEach((binding) => {

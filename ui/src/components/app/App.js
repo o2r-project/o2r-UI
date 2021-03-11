@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import {Button, AppBar, Toolbar, Typography, ThemeProvider } from '@material-ui/core';
+import {Button, AppBar, Toolbar, Typography, MuiThemeProvider } from '@material-ui/core';
 import { Route, NavLink, HashRouter } from "react-router-dom";
 
-import theme from '../../helpers/theme';
+import o2rTheme from '../../helpers/theme';
 import './App.css';
 import logo from '../../assets/img/o2r-logo-only-white.svg';
 import orcidLogo from '../../assets/img/orcid.png';
@@ -18,7 +18,7 @@ import Discovery from '../discovery/Discovery';
 import ERC from '../erc/ERC';
 
 const Header = ( props ) => {
-  return (        
+  return (
     <AppBar id="header">
       <Toolbar>
       <a href="/"><img src={logo} alt="o2r" id="headerLogo"/></a>
@@ -35,22 +35,22 @@ const Header = ( props ) => {
             </Button>
           </NavLink>*/}
           <NavLink id="link" to={"/author/" + props.userOrcid}>
-            {props.loggedIn ? 
+            {props.loggedIn ?
               <Button color="inherit">
-                {props.userName} | 
+                {props.userName} |
                   <img src={orcidLogo} className="orcidImage" alt="orcid"></img>
                   {props.userOrcid}
               </Button> : ''}
           </NavLink>
         </HashRouter>
         <Button color="inherit"
-          href={props.loggedIn ? "api/v1/auth/logout" : "api/v1/auth/login"} 
+          href={props.loggedIn ? "api/v1/auth/logout" : "api/v1/auth/login"}
           onClick={() => props.login()}>{props.loggedIn ? 'Logout' : 'Login'}
         </Button>
         {/*<Button color="inherit">
           Help
             </Button>*/}
-      </Toolbar> 
+      </Toolbar>
     </AppBar>
   );
 };
@@ -106,20 +106,20 @@ class App extends Component {
       )
       .catch(response => {
         console.log(response);
-      });  
+      });
   }
 
   render() {
     return (
-      <ThemeProvider theme={theme}>
+      <MuiThemeProvider theme={o2rTheme}>
       <div id="pageContainer">
-      <Header 
-        loggedIn={this.state.loggedIn} 
+      <Header
+        loggedIn={this.state.loggedIn}
         login={() => this.user()}
         userName={this.state.userName}
-        userOrcid={this.state.userOrcid}>  
+        userOrcid={this.state.userOrcid}>
       </Header>
-      
+
       <HashRouter>
       <div>
         <div className="content" id="mainView">
@@ -135,10 +135,9 @@ class App extends Component {
       </HashRouter>
       <Footer></Footer>
       </div>
-      </ThemeProvider>
+      </MuiThemeProvider>
     )
   }
 }
 
 export default App
-

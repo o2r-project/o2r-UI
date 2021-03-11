@@ -1,8 +1,15 @@
 import React, { Component } from "react";
+import config from '../../../helpers/config';
 
 class Privacy extends Component {
+
+    componentDidMount(){
+      document.title = "Privacy" + config.title;
+
+    }
+
     render() {
-        return ( 
+        return (
         <div>
             <h3>Privacy Policy</h3>
             <h4 id="userdata">User Data</h4>

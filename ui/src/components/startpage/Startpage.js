@@ -4,11 +4,16 @@ import { Card, CardContent, Grid } from "@material-ui/core/";
 import './startpage.css';
 import Upload from "../uploadERC/Upload";
 import InspectExamples from '../inspectExamples/InspectExamples';
+import config from '../../../helpers/config';
 
 class Startpage extends Component {
   state = {
     spacing: "10"
   };
+
+  componentDidMount(){
+    document.title = "Home" + config.title;
+  }
 
   render() {
     const { spacing } = this.state;
@@ -28,7 +33,7 @@ class Startpage extends Component {
             </Card>
             </Grid>
             <Grid item>
-            <Card id="uploadCard2">    
+            <Card id="uploadCard2">
             <CardContent>
                 <InspectExamples />
             </CardContent>
