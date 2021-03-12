@@ -45,7 +45,6 @@ const Header = ( props ) => {
         </HashRouter>
         <Button color="inherit" id="login"
           href={props.loggedIn ? "api/v1/auth/logout" : "api/v1/auth/login"} 
-
           onClick={() => props.login()}>{props.loggedIn ? 'Logout' : 'Login'}
         </Button>
         {/*<Button color="inherit">

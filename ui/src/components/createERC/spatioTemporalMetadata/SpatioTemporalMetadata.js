@@ -309,7 +309,7 @@ class SpatioTemporalMetadata extends React.Component {
                 type="submit"
                 variant="contained"
                 color="primary"
-                disabled={!(this.props.spatioTemporalChanged || this.props.authorsChanged || this.props.changed) || !valid2 || this.state.editing || this.state.drawing}
+                disabled={!(this.props.spatioTemporalChanged || this.props.authorsChanged || this.props.changed || this.props.optionalChanged) || !valid2 || this.state.editing || this.state.drawing}
               >
                 Publish
             </Button>

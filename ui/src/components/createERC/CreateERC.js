@@ -34,6 +34,7 @@ class CreateERC extends Component {
             open: false,
             changed: false,
             authorsChanged: false,
+            optionalChanged: false,
             spatioTemporalChanged: false,
             authorsValid: false,
             candidate: true,
@@ -124,7 +125,7 @@ class CreateERC extends Component {
 
     setChangedFalse = (x) => {
         if (x === "all") {
-            this.setState({ changed: false, authorsChanged: false, spatioTemporalChanged: false })
+            this.setState({ changed: false, authorsChanged: false, spatioTemporalChanged: false, optionalChanged:false })
         }
         else {
             this.setState({ [x]: false })
@@ -190,6 +191,7 @@ class CreateERC extends Component {
                                 authorsChanged={this.state.authorsChanged}
                                 changed={this.state.changed}
                                 spatioTemporalChanged={this.state.spatioTemporalChanged}
+                                optionalChanged={this.state.optionalChanged}
                                 updateAuthors={this.updateAuthors}
                                 setChangedFalse={this.setChangedFalse}
                                 setChanged={this.setChanged}
@@ -212,6 +214,7 @@ class CreateERC extends Component {
                             changed={this.state.changed}
                             authorsChanged={this.state.authorsChanged}
                             spatioTemporalChanged={this.state.spatioTemporalChanged}
+                            optionalChanged={this.state.optionalChanged}
                             candidate={this.state.candidate}/> }
                     </TabContainer>
                 }
@@ -219,16 +222,15 @@ class CreateERC extends Component {
                     <TabContainer>
                         {this.state.metadata != null
                             ? <OptionalMetadata
-                                metadata={this.state.metadata
-                                }
+                                metadata={this.state.metadata}
                                 setMetadata={this.setMetadata}
                                 goToErc={this.goToErc}
-                                originalMetadata={this.state.originalMetadata
-                                }
+                                originalMetadata={this.state.originalMetadata}
                                 authors={this.state.authors}
                                 authorsChanged={this.state.authorsChanged}
                                 changed={this.state.changed}
                                 spatioTemporalChanged={this.state.spatioTemporalChanged}
+                                optionalChanged={this.state.optionalChanged}
                                 updateAuthors={this.updateAuthors}
                                 updateLanguages={this.updateLanguages}
                                 updateKeywords={this.updateKeywords}
@@ -249,6 +251,7 @@ class CreateERC extends Component {
                             compendium_id={this.state.compendium_id}
                             updateMetadata={this.updateMetadata}
                             setChangedFalse={this.setChangedFalse}
+                            
                             originalMetadata={this.state.originalMetadata}
                             goToErc={this.goToErc}
                             candidate={this.state.candidate}

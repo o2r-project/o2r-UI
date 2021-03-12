@@ -26,8 +26,7 @@ export const Form = props => {
     }
 
     const valid = (props.authorsChanged && props.authorsValid && isEmpty(errors)) || (props.changed && isEmpty(errors) && props.authorsValid)
-        || (props.spatioTemporalChanged && props.authorsValid && isEmpty(errors)) || (isEmpty(errors) && props.candidate)
-
+        || (props.spatioTemporalChanged && props.authorsValid && isEmpty(errors)) || (props.optionalChanged && props.authorsValid && isEmpty(errors)) ||(isEmpty(errors) && props.candidate)
     valid2 = isEmpty(errors) && props.authorsValid
 
     const reset = props.authorsChanged || props.changed
@@ -40,7 +39,7 @@ export const Form = props => {
             props.resetAuthors[i].getFormikActions().resetForm(props.originalAuthors[i])
         }
         props.onUpdate(JSON.parse(JSON.stringify(props.originalAuthors)));
-        props.setChangedFalse("all");
+        props.setChangedFalse("changed");
         await props.setFormValues(props.originalMetadata)
         props.validateForm()
         props.setTouched({ "title": true, "abstract": true, "publicationDate": true, "textLicense": true, "dataLicense": true, "codeLicense": true });
@@ -337,6 +336,7 @@ export const Form = props => {
 
                         {props.candidate
                           ? <Button
+                          id="goTo"
                               type="button"
                               id="goTo"
                               onClick={goToErc}>
