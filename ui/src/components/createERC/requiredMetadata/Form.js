@@ -333,20 +333,23 @@ export const Form = props => {
                         >
                             Publish
                          </Button>
+
                         {props.candidate
                           ? <Button
                           id="goTo"
                               type="button"
+                              id="goTo"
                               onClick={goToErc}>
                               Preview
                             </Button>
                           : <Button
-                          id="goTo"
+                              id="goTo"
                               type="button"
                               color="primary"
                               onClick={goToErc}
                               disabled={props.candidate}>
                               Go To ERC
+
                             </Button>
                        }
                     </Paper>

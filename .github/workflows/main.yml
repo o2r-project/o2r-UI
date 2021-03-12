@@ -49,9 +49,6 @@ jobs:
     - name: Check running containers
       run: docker ps
 
-    - name: Check logs of ui
-      run: docker logs ui
-
     - name: Check logs of webserver
       run: docker logs ui_webserver_1
 

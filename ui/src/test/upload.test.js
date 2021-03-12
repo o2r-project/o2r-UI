@@ -68,12 +68,13 @@ describe("Test upload", () => {
         expect(html).toBe("This is the metadata we extracted out of your workspace. Is it correct? Fine, click the save button on the right. No? Make some changes and click on save.");
     }, timeout);
 
-    test("Go to ERC is disabled", async () => {
+    test("Only Preview is possible", async () => {
 
 
-        const is_disabled = await page.$eval('button[id=goTo]', (button) => {return button.disabled;});
-        console.log(is_disabled)
-        expect(is_disabled).toBe(true);
+        const handle = await page.$("#goTo");
+        const html = await page.evaluate(handle => handle.innerText, handle);
+        expect(html).toBe("PREVIEW");
+
 
     }, timeout);
 
@@ -82,10 +83,9 @@ describe("Test upload", () => {
         await page.click('#publish')
         await page.waitForTimeout(5000)
         await page.screenshot({ path: 'screenshots/CreateERCSavedMetadata.jpg', type: 'jpeg' });
-        const is_disabled = await page.$eval('button[id=goTo]', (button) => {return button.disabled;});
-        console.log(is_disabled)
-        
-        expect(is_disabled).toBe(false);
+        const handle = await page.$("#goTo");
+        const html = await page.evaluate(handle => handle.innerText, handle);
+        expect(html).toBe("GO TO ERC");
 
     }, timeout);
 
@@ -123,7 +123,7 @@ describe("Inspect ERC", () => {
         const title = await page.title();
 
     
-        expect(title).toBe("o2r");
+        expect(title).toBe("Home | o2r Demoserver");
 
      })
 

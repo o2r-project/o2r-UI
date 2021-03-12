@@ -8,7 +8,7 @@ describe("Test title and header of the homepage", () => {
     test("Title of the page", async () => {
         const title = await page.title();
 
-        expect(title).toBe("o2r");
+        expect(title).toBe("Home | o2r Demoserver");
     }, timeout);
 
     test("Header of the page", async () => {
