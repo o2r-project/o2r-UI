@@ -338,6 +338,7 @@ export const Form = props => {
                         {props.candidate
                           ? <Button
                               type="button"
+                              id="goTo"
                               onClick={goToErc}>
                               Preview
                             </Button>
