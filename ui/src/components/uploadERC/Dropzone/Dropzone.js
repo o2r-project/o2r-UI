@@ -42,9 +42,13 @@ class Dropzone extends Component {
         });
       })
       .catch((response) => {
-        if (response.response.status === 401) {
+        if(!response.response){
+          self.setUpperState({ title: "ERC Upload failed", errorMessage: "Something went wrong. Please try it again in a new window or different Browser." })
+        }
+        else if (response.response.status === 401) {
           self.setUpperState({ title: "ERC Upload failed", errorMessage: "You have to be logged in to upload a Workspace" })
-        } else if (response.response.status === 500) {
+        } 
+        else if (response.response.status === 500) {
           self.setUpperState({ title: "ERC Upload failed", errorMessage: "You must select an ERC to upload" })
         }
       })

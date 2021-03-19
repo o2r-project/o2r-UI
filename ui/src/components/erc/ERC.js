@@ -205,6 +205,9 @@ class ERC extends React.Component {
                     }
                 }
             })
+            .catch(function (response) {
+                console.log(response)
+            })
     }
 
 
