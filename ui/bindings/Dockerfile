@@ -1,4 +1,4 @@
-FROM rocker/geospatial:3.6.2
+FROM rocker/geospatial:3.6.3
 
 SHELL ["/bin/bash", "-c"]
 
@@ -9,6 +9,10 @@ RUN R -e 'install.packages(c("rioja", "FME", "SoilR", "verification", "MASS", "s
 RUN R -e 'install.packages(c("caTools", "Cairo", "stats", "extrafont", "xts", "maps"))'
 RUN R -e 'install.packages("INLA", repos=c(getOption("repos"), INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE)'
 RUN R -e 'install.packages(c("truncnorm"))'
+#update of package raster needed to run specific bindings
+RUN R -e 'install.packages(c("raster"))' 
+
+
 # based on https://gist.github.com/remarkablemark/aacf14c29b3f01d6900d13137b21db3a
 RUN apt-get update \
     && apt-get install -y curl \
