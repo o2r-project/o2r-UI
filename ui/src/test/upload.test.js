@@ -78,7 +78,134 @@ describe("Test upload", () => {
 
     }, timeout);
 
+    test("Go to Bindings", async () => {
+
+        await page.click('#bindings')
+        await page.waitForTimeout(2000)
+        const handle = await page.$("#label0");
+        const html = await page.evaluate(handle => handle.innerText, handle);
+        await page.screenshot({ path: 'screenshots/Bindings.jpg', type: 'jpeg' });
+
+        expect(html).toBe("Which figure should be made interactive?");
+
+    }, timeout);
+
+
+    test("Select plotFigure1", async () => {
+
+        await page.select('#selectFigure', "plotFigure1()");
+        await page.waitForTimeout(4000)
+        
+        const handle = await page.$("#preview");
+        const html = await page.evaluate(handle => handle.innerText, handle);
+
+        expect(html).toBe("Preview of the interactive figure");
+   
+
+    }, timeout);
+
+    test("Go to next step", async () => {
+
+        await page.click('#next')
+        const handle = await page.$("#label1");
+        const html = await page.evaluate(handle => handle.innerText, handle);
+
+        expect(html).toBe("Select the parameter which should be made possible to change");
+   
+    }, timeout);
+
+    const MaterialSelect = async (page, newSelectedValue, cssSelector) => {
+        await page.evaluate((newSelectedValue, cssSelector) => {
+            var clickEvent = document.createEvent('MouseEvents');
+            clickEvent.initEvent("mousedown", true, true);
+            var selectNode = document.querySelector(cssSelector);
+            selectNode.dispatchEvent(clickEvent);
+            [...document.querySelectorAll('li')].filter(el => el.innerText == newSelectedValue)[0].click();
+        }, newSelectedValue, cssSelector);
+    }
+
+    test("Select parameter and go to next step", async () => {
+
+        await page.waitForTimeout(2000)
+
+        const myLocalvalue= '{"type":"assign","targets":[{"type":"name","id":"duration","location":{"first_line":324,"last_line":324,"first_column":0,"last_column":8}}],"sources":[{"type":"literal","value":24,"location":{"first_line":324,"last_line":324,"first_column":12,"last_column":14}}],"location":{"first_line":324,"last_line":324,"first_column":0,"last_column":14},"text":"duration <- 24"}'
+        //await page.evaluate(handle => handle.value = {"type":"assign","targets":[{"type":"name","id":"duration","location":{"first_line":324,"last_line":324,"first_column":0,"last_column":8}}],"sources":[{"type":"literal","value":24,"location":{"first_line":324,"last_line":324,"first_column":12,"last_column":14}}],"location":{"first_line":324,"last_line":324,"first_column":0,"last_column":14},"text":"duration <- 24"}, test);
+        //await page.$eval(".MuiSelect-nativeInput", (el, value) => el.value = value, myLocalvalue);
+
+        const MaterialSelect = async (page, newSelectedValue, cssSelector) => {
+            await page.evaluate((newSelectedValue, cssSelector) => {
+                var clickEvent = document.createEvent('MouseEvents');
+                clickEvent.initEvent("mousedown", true, true);
+                var selectNode = document.querySelector(cssSelector);
+                selectNode.dispatchEvent(clickEvent);
+                [...document.querySelectorAll('li')].filter(el => el.innerText == newSelectedValue)[0].click();
+            }, newSelectedValue, cssSelector);
+        }
+
+        await MaterialSelect(page, "duration", '#selectP')
+
+        //const val= await page.$eval(".MuiSelect-nativeInput", el => el.value)
+        //console.log(val)
+
+
+        await page.waitForTimeout(1000)
+        await page.click('#next')
+        await page.waitForTimeout(1000)
+
+
+        const handle = await page.$(".MuiFormControlLabel-label");
+        const html = await page.evaluate(handle => handle.innerText, handle);
+        await page.screenshot({ path: 'screenshots/Bindings2.jpg', type: 'jpeg' });
+
+        expect(html).toBe("Slider");
+   
+
+    }, timeout);
+
+    test("fill widget Information and save", async () => {
+
+        await page.waitForTimeout(2000)
+
+        await page.click('#min')
+        await page.$eval('#min', el => el.value = 0);
+        await page.$eval('#min', e => e.blur());
+        
+        await page.click('#max')
+        await page.$eval('#max', el => el.value = 24);
+        await page.$eval('#max', e => e.blur());
+        
+        await page.click('#step')
+        await page.$eval('#step', el => el.value = 1);
+        await page.$eval('#step', e => e.blur());
+
+        await page.click('#captionSlider')
+        await page.$eval('#captionSlider', el => el.value = 'Duration of flooding event');
+        await page.$eval('#captionSlider', e => e.blur());
+        await page.click('#min')
+
+        await page.waitForTimeout(1000)
+
+
+
+        await page.click('#save')
+        await page.waitForTimeout(1000)
+
+        await page.click('#next')
+        await page.waitForTimeout(1000)
+
+
+        const handle = await page.$("#text");
+        const html = await page.evaluate(handle => handle.innerText, handle);
+        await page.screenshot({ path: 'screenshots/Bindings.jpg', type: 'jpeg' });
+
+        expect(html).toBe("All steps completed - Feel free to create another binding");
+   
+    }, timeout);
+
     test("Test publish", async () => {
+
+        await page.click('#required')
+        await page.waitForTimeout(1000)
 
         await page.click('#publish')
         await page.waitForTimeout(5000)
@@ -172,7 +299,18 @@ describe("Inspect ERC", () => {
         expect(html).toBe("1) Create configuration file: ");
      })
 
- 
+     test("Go to Manipulate", async () => {
+        //await page.waitForTimeout(2000)
+        await page.click('#check')
+        await page.waitForTimeout(2000)
+        //await page.waitForNavigation();
+        await page.screenshot({ path: 'screenshots/ERCViewManipulate.jpg', type: 'jpeg' });
+        
+        const handle = await page.$("#runAnalysis");
+        const html = await page.evaluate(handle => handle.innerText, handle);
+
+        expect(html).toBe("RUN ANALYSIS");
+     })
  
  
  });
