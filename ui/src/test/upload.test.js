@@ -301,16 +301,71 @@ describe("Inspect ERC", () => {
 
      test("Go to Manipulate", async () => {
         //await page.waitForTimeout(2000)
-        await page.click('#check')
+        await page.click('#manipulate')
         await page.waitForTimeout(2000)
         //await page.waitForNavigation();
         await page.screenshot({ path: 'screenshots/ERCViewManipulate.jpg', type: 'jpeg' });
         
-        const handle = await page.$("#runAnalysis");
+        const handle = await page.$("#desc");
         const html = await page.evaluate(handle => handle.innerText, handle);
 
-        expect(html).toBe("RUN ANALYSIS");
+        expect(html).toBe("Duration of flooding event");
+     })
+
+     test("Slider Change", async () =>{
+        const dragAndDrop = async (page, originSelector)  => {
+            await page.waitForSelector(originSelector)
+            const origin = await page.$(originSelector)
+            const ob = await origin.boundingBox()
+              
+            console.log(`Dragging from ${ob.x + ob.width / 2}, ${ob.y + ob.height / 2}`)
+            await page.mouse.move(ob.x + ob.width / 2, ob.y + ob.height / 2)
+            await page.mouse.down()
+            console.log(`Dropping at   ${ob.x + ob.width / 2}, ${ob.y + ob.height / 2}`)
+            await page.mouse.move(ob.x + ob.width / 2 - 300, ob.y + ob.height / 2)
+            await page.mouse.up()
+          }
+     
+
+     await page.click('#saveComparison')
+     await dragAndDrop(page, ".MuiSlider-thumb")
+     await page.click('#saveComparison')
+
+     await page.click('#showComparison')
+
+     const handle = await page.$("#caption0");
+     const html = await page.evaluate(handle => handle.innerText, handle);
+
+     expect(html).toBe("Parameter 1: duration = 24;");
+    })
+
+    test("Go To Metadata", async () => {
+        //await page.waitForTimeout(2000)
+        await page.click('#close')
+        await page.waitForTimeout(1000)
+        await page.click('#metadata')
+        await page.waitForTimeout(2000)
+        //await page.waitForNavigation();
+        await page.screenshot({ path: 'screenshots/Metadata.jpg', type: 'jpeg' });
+        
+        const handle = await page.$("#title");
+        const html = await page.evaluate(handle => handle.innerText, handle);
+
+        expect(html).toBe("Title: INSYDE: a synthetic, probabilistic flood damage model based on explicit cost analysis");
      })
  
+     test("Go To Shipment", async () => {
+         await page.click('.MuiTabScrollButton-root')
+        //await page.waitForTimeout(2000)
+        await page.click('#shipment')
+        await page.waitForTimeout(2000)
+        //await page.waitForNavigation();
+        await page.screenshot({ path: 'screenshots/Shipment.jpg', type: 'jpeg' });
+        
+        const handle = await page.$("#description");
+        const html = await page.evaluate(handle => handle.innerText, handle);
+
+        expect(html).toBe("Create new Shipment:");
+     })
  
  });
