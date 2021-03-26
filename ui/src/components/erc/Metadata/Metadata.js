@@ -69,7 +69,7 @@ class Metadata extends React.Component {
                         />
                     </Map>
                     <br />
-                    <span ><b>Temporal extend: </b>From {this.metadata.temporal.begin.substr(0, 10)} to {this.metadata.temporal.end.substr(0, 10)}</span> <br />
+                    <span ><b>Temporal extend: </b>From {this.metadata.temporal.begin? this.metadata.temporal.begin.substr(0, 10):""} to {this.metadata.end ? this.metadata.temporal.end.substr(0, 10) : ""}</span> <br />
                     {this.props.erc.substituted ?
                     <>
                         <span><b>Subsituted ERC:</b></span>

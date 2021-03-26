@@ -87,6 +87,7 @@ class Comparison extends Component {
                 <Button variant="contained" color="primary"
                     disabled={this.state.job.status !== 'failure' && this.state.job.status !== 'success'}
                     onClick={this.handleClickOpen}
+                    id="result"
                     style={{ marginTop: "5%", width: "150px", }}
                 >
                     Show result
@@ -101,7 +102,7 @@ class Comparison extends Component {
                             <Typography variant="h6" color="inherit" style={{ flex: 1 }}>
                                 <a href="/"><img src={logo} alt="o2r" id="headerLogo" /></a>
                             </Typography>
-                            <Button color="inherit" onClick={this.handleClose}>Close</Button>
+                            <Button id="close" color="inherit" onClick={this.handleClose}>Close</Button>
                         </Toolbar>
                     </AppBar>
                     {this.state.job.status === 'success' ?
@@ -114,7 +115,7 @@ class Comparison extends Component {
                         <div className="compare_">
                             <h4 className="title_" > Original results </h4>
                             <h4 className="title_"> Reproduced results </h4>
-                            <h4 className="title_"> Differences between original and reproduced results </h4>
+                            <h4 className="title_" id="diffCaption"> Differences between original and reproduced results </h4>
                             <Iframe className="display_" id={'frame1'} url={config.baseUrl + "compendium/" + this.state.job.compendium_id + "/data/" + this.props.displayfile}></Iframe>
                             <Iframe className="check_" id={'frame2'} url={config.baseUrl + "job/" + this.state.job.id + "/data/" + this.props.displayfile}></Iframe>
                             <Iframe className="diff" id={'frame3'} url={config.baseUrl + "job/" + this.state.job.id + "/data/check.html"}></Iframe>
