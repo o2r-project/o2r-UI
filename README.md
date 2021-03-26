@@ -1,4 +1,6 @@
 # o2r-UI
+![Test](https://github.com/o2r-project/o2r-UI/actions/workflows/main.yml/badge.svg)
+
 
 This project is a re-implementation of the [o2r-platform](https://github.com/o2r-project/o2r-platform) using React.
 
@@ -99,3 +101,21 @@ The images are built on Docker Hub:
 
 - [o2rproject/ui](https://hub.docker.com/r/o2rproject/ui)
 - [o2rproject/o2r-bindings](https://hub.docker.com/r/o2rproject/o2r-bindings)
+
+
+## Test
+
+We have now tests. These test run as github actions and you can inspect them over here:
+
+![Test](https://github.com/o2r-project/o2r-UI/actions/workflows/main.yml/badge.svg)
+
+
+To run the test by yourself, complete the following steps:
+
+- Run the platform
+    - ```cd ui/```
+    - ```docker-compose up```
+- Install all packages local
+    - ```npm install```
+- Run all the test
+    - ```npm test```
