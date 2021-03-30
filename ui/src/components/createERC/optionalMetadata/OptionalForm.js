@@ -238,12 +238,22 @@ export const OptionalForm = props => {
                         >
                             Publish
                          </Button>
-                        <Button
-                            type="button"
-                            onClick={goToErc}
-                            disabled={props.candidate}>
-                            Go To ERC
+                        {props.candidate
+                          ? <Button
+                          id="goTo"
+                              type="button"
+                              onClick={goToErc}>
+                              Preview
                             </Button>
+                          : <Button
+                          id="goTo"
+                              type="button"
+                              color="primary"
+                              onClick={goToErc}
+                              disabled={props.candidate}>
+                              Go To ERC
+                            </Button>
+                        }
                     </Paper>
                     <div id={"errorMessage"}>
                     </div>
