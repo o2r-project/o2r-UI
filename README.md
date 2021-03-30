@@ -25,6 +25,7 @@ Only the directory `/ui` is mounted into the container, so if dependencies in `u
 ```bash
 docker-compose --file docker-compose-dev.yml build --no-cache ui
 ```
+
 Also note that the `ui/node_modules` directory is mounted so that your host's version of `node` best matches the one used in the Dockerfile.
 
 ### Running the platform

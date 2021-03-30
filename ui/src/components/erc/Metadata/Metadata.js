@@ -32,6 +32,8 @@ class Metadata extends React.Component {
 
     render() {
         const positions = [this.metadata.spatial.union.bbox[0], this.metadata.spatial.union.bbox[1], this.metadata.spatial.union.bbox[2], this.metadata.spatial.union.bbox[3]]
+        const languages = this.metadata.languages ? languageCodes.filter(language => this.metadata.languages.includes(language.code)).map(language => language.full).toString().replace(/,/g, ", ") : null;
+        const keywords  = this.metadata.keywords ? this.metadata.keywords.toString().replace(/,/g, ", ") : null;  
         return (
             <>
                 <div style={{ width: "90%", marginLeft: "5%", textAlign: "justify" }}>
@@ -54,8 +56,8 @@ class Metadata extends React.Component {
                     <span style={{ marginLeft: "2%" }}><b>Data: </b>{this.metadata.license.data}</span> <br />
                     <span style={{ marginLeft: "2%" }}><b>Text: </b>{this.metadata.license.text}</span> <br /><br />
                     <span> <b>DOI: </b>{this.metadata.identifier.doi}</span><br />
-                    <span> <b>Languages: </b>{this.metadata.languages ? languageCodes.filter(language => this.metadata.languages.includes(language.code)).map(language => language.full).toString().replace(/,/g, ", ") : ""}</span><br />
-                    <span> <b>Keywords: </b>{this.metadata.keywords.toString().replace(/,/g, ", ")}</span><br />
+                    <span> <b>Languages: </b>{languages}</span><br />
+                    <span> <b>Keywords: </b>{keywords}</span><br />
                     <br />
 
                     <span ><b>Spatial extend:</b></span> <br />
