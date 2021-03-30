@@ -105,7 +105,7 @@ The images are built on Docker Hub:
 
 ## Test
 
-We have now tests. These test run as github actions and you can inspect them over here:
+Tests run as GitHub actions and you can inspect them over here:
 
 ![Test](https://github.com/o2r-project/o2r-UI/actions/workflows/main.yml/badge.svg)
 

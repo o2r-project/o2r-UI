@@ -1,4 +1,6 @@
 const timeout = 60000;
+const archiver = require('archiver');
+var fs = require("fs");
 
 beforeAll(async () => {
     await page.goto(URL, { waitUntil: "domcontentloaded" });
@@ -7,6 +9,20 @@ beforeAll(async () => {
         width: 1920,
         height: 1080
     })
+
+    const output = fs.createWriteStream(__dirname + '/dummy_workspace.zip');
+    const archive = archiver('zip');
+
+    output.on('close', function () {
+        console.log(archive.pointer() + ' total bytes');
+        console.log('archiver has been finalized and the output file descriptor has closed.');
+    });
+
+    archive.pipe(output);
+
+    archive.directory(__dirname +'/dummy_workspace', false);
+
+    archive.finalize();
 });
 
 describe("Test upload", () => {
@@ -18,7 +34,6 @@ describe("Test upload", () => {
 
         if(html !== "LOGOUT"){
             await page.click('#login')
-            //await page.waitForNavigation();
             await page.waitForTimeout(3000)
             await page.screenshot({ path: 'screenshots/dummylogin.jpg', type: 'jpeg' });
             await page.click('#regular');
@@ -36,18 +51,14 @@ describe("Test upload", () => {
 
         
         const inputUploadHandle = await page.$('input[type=file]');
-        //await page.screenshot({ path: 'screenshots/StartPageLoggedIn.jpg', type: 'jpeg' });
 
         // prepare file to upload
-        let fileToUpload = './src/test/dummy.zip';
+        let fileToUpload = './src/test/dummy_workspace.zip';
         inputUploadHandle.uploadFile(fileToUpload);
         await page.waitForTimeout(2000)
         await page.click('#upload')
         await page.waitForNavigation({waitUntil: 'networkidle2'});
         await page.waitForTimeout(2000)
-        //await page.waitForSelector("h3")
-        //await page.waitForNavigation({waitUntil: 'networkidle2'});
-        //await page.screenshot({ path: 'image.jpg', type: 'jpeg' });
   
 
         const handle = await page.$("h3");
@@ -85,7 +96,6 @@ describe("Test upload", () => {
 
         await page.click('#goTo')
         await page.waitForTimeout(3000)
-        //await page.waitForNavigation();
         await page.screenshot({ path: 'screenshots/dummyERCView.jpg', type: 'jpeg' });
         
         
@@ -93,7 +103,6 @@ describe("Test upload", () => {
             'iframe',
         );
         const frame = await elementHandle.contentFrame();
-        //const handle = await frame.$("h1");
         const html = await frame.$eval('body', (html) => {return html.innerText;});
 
         expect(html).toBe("dummy");
@@ -120,10 +129,8 @@ describe("Inspect ERC", () => {
      })
 
      test("Checout ERC 0", async () => {
-        //await page.waitForTimeout(2000)
         await page.click('#button0')
         await page.waitForTimeout(2000)
-        //await page.waitForNavigation();
         await page.screenshot({ path: 'screenshots/dummyERCView2.jpg', type: 'jpeg' });
         
         
@@ -131,7 +138,6 @@ describe("Inspect ERC", () => {
             'iframe',
         );
         const frame = await elementHandle.contentFrame();
-        //const handle = await frame.$("h1");
         const html = await frame.$eval('body', (html) => {return html.innerText;});
 
         expect(html).toBe("dummy");
@@ -139,10 +145,8 @@ describe("Inspect ERC", () => {
      })
 
      test("Go To check", async () => {
-        //await page.waitForTimeout(2000)
         await page.click('#check')
-        await page.waitForTimeout(2000)
-        //await page.waitForNavigation();
+        await page.waitForTimeout(2000)+
         await page.screenshot({ path: 'screenshots/dummyERCViewCheck.jpg', type: 'jpeg' });
         
         const handle = await page.$("#runAnalysis");
@@ -155,7 +159,6 @@ describe("Inspect ERC", () => {
         
         await page.click('#runAnalysis')
         await page.waitForTimeout(2000)
-        //await page.waitForNavigation();
         await page.screenshot({ path: 'screenshots/dummyanalysisStarted.jpg', type: 'jpeg' });
         
         const handle = await page.$("#stepOne");
@@ -168,11 +171,11 @@ describe("Inspect ERC", () => {
         
         
         await page.waitForTimeout(10000)
-        //await page.waitForNavigation();
         await page.click("#logs")
         await page.waitForTimeout(1000)
         
         const handle = await page.$("#bag");
+        await page.screenshot({ path: 'screenshots/dummyLogs.jpg', type: 'jpeg' });
         const html = await page.evaluate(handle => handle.innerText, handle);
 
         expect(html).toBe("Validate bag:");
@@ -182,9 +185,9 @@ describe("Inspect ERC", () => {
         
         await page.waitForTimeout(1000)
         await page.click('#close')
-        //await page.waitForNavigation();
         await page.click("#result")
         
+        await page.screenshot({ path: 'screenshots/dummyResult.jpg', type: 'jpeg' });
         const handle = await page.$("#diffCaption");
         const html = await page.evaluate(handle => handle.innerText, handle);
 
@@ -196,11 +199,9 @@ describe("Inspect ERC", () => {
     test("Go To Metadata", async () => {
         await page.waitForTimeout(1000)
         await page.click('#close')
-        //await page.waitForTimeout(2000)
         await page.waitForTimeout(1000)
         await page.click('#metadata')
         await page.waitForTimeout(2000)
-        //await page.waitForNavigation();
         await page.screenshot({ path: 'screenshots/dummyMetadata.jpg', type: 'jpeg' });
         
         const handle = await page.$("#title");
@@ -211,10 +212,8 @@ describe("Inspect ERC", () => {
  
      test("Go To Shipment", async () => {
          await page.click('.MuiTabScrollButton-root')
-        //await page.waitForTimeout(2000)
         await page.click('#shipment')
         await page.waitForTimeout(2000)
-        //await page.waitForNavigation();
         await page.screenshot({ path: 'screenshots/dummyShipment.jpg', type: 'jpeg' });
         
         const handle = await page.$("#description");

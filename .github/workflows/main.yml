@@ -52,6 +52,9 @@ jobs:
     - name: Check logs of webserver
       run: docker logs ui_webserver_1
 
+    - name: Check logs of guestlister
+      run: docker logs ui_guestlister_1
+
     - name: Run tests
       working-directory: ./ui
       run: npm run test
