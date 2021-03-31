@@ -54,6 +54,7 @@ describe("Test upload", () => {
 
         const inputUploadHandle = await page.$('input[type=file]');
 
+        await page.screenshot({ path: 'screenshots/insydeUploadERC.jpg', type: 'jpeg' });
         let fileToUpload = './src/test/insyde_workspace.zip';
         inputUploadHandle.uploadFile(fileToUpload);
         await page.waitForTimeout(2000)
