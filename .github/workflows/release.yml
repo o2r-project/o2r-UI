@@ -51,7 +51,7 @@ jobs:
         path: ${{ github.workspace }}/build.zip
 
     - name: get-npm-version
-        id: package-version
+      id: package-version
       uses: martinbeentjes/npm-get-version-action@master
       with:
         path: ui/
