@@ -3,6 +3,7 @@ name: Release
 # Controls when the action will run. 
 on:
 
+  #every push which starts with a v
   push:
     tags: 
       - 'v*'
