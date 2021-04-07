@@ -11,6 +11,7 @@ beforeAll(async () => {
         height: 1080
     })
 
+    /** 
     const output = fs.createWriteStream(__dirname + '/insyde_workspace.zip');
     const archive = archiver('zip');
 
@@ -24,6 +25,7 @@ beforeAll(async () => {
     archive.directory(__dirname +'/insyde_workspace', false);
 
     archive.finalize();
+    */
 });
 
 describe("Test upload", () => {
@@ -54,11 +56,13 @@ describe("Test upload", () => {
 
         const inputUploadHandle = await page.$('input[type=file]');
 
-        await page.screenshot({ path: 'screenshots/insydeUploadERC.jpg', type: 'jpeg' });
+        
         let fileToUpload = './src/test/insyde_workspace.zip';
         inputUploadHandle.uploadFile(fileToUpload);
+        await page.screenshot({ path: 'screenshots/insydeUploadERC.jpg', type: 'jpeg' });
         await page.waitForTimeout(2000)
         await page.click('#upload')
+        await page.screenshot({ path: 'screenshots/insydeUploadERC2.jpg', type: 'jpeg' });
         await page.waitForNavigation({ waitUntil: 'networkidle2' });
         await page.waitForTimeout(2000)
 
