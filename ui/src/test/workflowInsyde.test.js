@@ -11,7 +11,7 @@ beforeAll(async () => {
         height: 1080
     })
 
-    /** 
+    
     const output = fs.createWriteStream(__dirname + '/insyde_workspace.zip');
     const archive = archiver('zip');
 
@@ -25,7 +25,7 @@ beforeAll(async () => {
     archive.directory(__dirname +'/insyde_workspace', false);
 
     archive.finalize();
-    */
+    
 });
 
 describe("Test upload", () => {
