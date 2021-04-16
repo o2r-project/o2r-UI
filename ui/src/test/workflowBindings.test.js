@@ -1,4 +1,4 @@
-const timeout = 1000000;
+const timeout = 500000;
 const archiver = require('archiver');
 var fs = require("fs");
 
@@ -11,7 +11,7 @@ beforeAll(async () => {
         height: 1080
     })
 
-    /** 
+    
     
     const output = fs.createWriteStream(__dirname + '/bindings_workspace.zip');
     const archive = archiver('zip');
@@ -27,7 +27,7 @@ beforeAll(async () => {
 
     archive.finalize();
 
-    */
+    
     
 });
 
@@ -59,7 +59,7 @@ describe("Test upload 1", () => {
 
         const inputUploadHandle = await page.$('input[type=file]');
 
-        
+        await page.waitForTimeout(4000)
         let fileToUpload = './src/test/bindings_workspace.zip';
         inputUploadHandle.uploadFile(fileToUpload);
         await page.screenshot({ path: 'screenshots/bindingsUploadERC.jpg', type: 'jpeg' });
