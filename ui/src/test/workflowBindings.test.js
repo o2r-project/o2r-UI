@@ -12,7 +12,7 @@ beforeAll(async () => {
     })
 
     
-    const output = fs.createWriteStream(__dirname + '/insyde_workspace.zip');
+    const output = fs.createWriteStream(__dirname + '/bindings_workspace.zip');
     const archive = archiver('zip');
 
     output.on('close', function () {
@@ -22,7 +22,7 @@ beforeAll(async () => {
 
     archive.pipe(output);
 
-    archive.directory(__dirname +'/insyde_workspace', false);
+    archive.directory(__dirname +'/bindingsExample', false);
 
     archive.finalize();
     
@@ -39,7 +39,7 @@ describe("Test upload", () => {
         if (html !== "LOGOUT") {
             await page.click('#login')
             await page.waitForTimeout(3000)
-            await page.screenshot({ path: 'screenshots/insydelogin.jpg', type: 'jpeg' });
+            await page.screenshot({ path: 'screenshots/bindingslogin.jpg', type: 'jpeg' });
             await page.click('#regular');
             await page.waitForNavigation();
         }
@@ -57,19 +57,19 @@ describe("Test upload", () => {
         const inputUploadHandle = await page.$('input[type=file]');
 
         
-        let fileToUpload = './src/test/insyde_workspace.zip';
+        let fileToUpload = './src/test/bindings_workspace.zip';
         inputUploadHandle.uploadFile(fileToUpload);
-        await page.screenshot({ path: 'screenshots/insydeUploadERC.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/bindingsUploadERC.jpg', type: 'jpeg' });
         await page.waitForTimeout(2000)
         await page.click('#upload')
-        await page.screenshot({ path: 'screenshots/insydeUploadERC2.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/bindingsUploadERC2.jpg', type: 'jpeg' });
         await page.waitForNavigation({ waitUntil: 'networkidle2' });
         await page.waitForTimeout(2000)
 
 
         const handle = await page.$("h3");
         const html = await page.evaluate(handle => handle.innerText, handle);
-        await page.screenshot({ path: 'screenshots/insydeCreateERC.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/bindingsCreateERC.jpg', type: 'jpeg' });
 
         expect(html).toBe("This is the metadata we extracted out of your workspace. Is it correct? Fine, click the save button on the right. No? Make some changes and click on save.");
     }, timeout);
@@ -90,7 +90,7 @@ describe("Test upload", () => {
         await page.waitForTimeout(2000)
         const handle = await page.$("#label0");
         const html = await page.evaluate(handle => handle.innerText, handle);
-        await page.screenshot({ path: 'screenshots/insydeBindings.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/bindingsBindings.jpg', type: 'jpeg' });
 
         expect(html).toBe("Which figure should be made interactive?");
 
@@ -99,7 +99,7 @@ describe("Test upload", () => {
 
     test("Select plotFigure1", async () => {
 
-        await page.select('#selectFigure', "plotFigure1()");
+        await page.select('#selectFigure', "plotFigure1(cars)");
         await page.waitForTimeout(4000)
 
         const handle = await page.$("#preview");
@@ -139,7 +139,7 @@ describe("Test upload", () => {
             }, newSelectedValue, cssSelector);
         }
 
-        await MaterialSelect(page, "duration", '#selectP')
+        await MaterialSelect(page, "minimumMilesPerGallon", '#selectP')
 
 
 
@@ -150,7 +150,7 @@ describe("Test upload", () => {
 
         const handle = await page.$(".MuiFormControlLabel-label");
         const html = await page.evaluate(handle => handle.innerText, handle);
-        await page.screenshot({ path: 'screenshots/insydeBindings2.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/bindingsBindings2.jpg', type: 'jpeg' });
 
         expect(html).toBe("Slider");
 
@@ -162,11 +162,11 @@ describe("Test upload", () => {
         await page.waitForTimeout(2000)
 
         await page.click('#min')
-        await page.$eval('#min', el => el.value = 0);
+        await page.$eval('#min', el => el.value = 12);
         await page.$eval('#min', e => e.blur());
 
         await page.click('#max')
-        await page.$eval('#max', el => el.value = 24);
+        await page.$eval('#max', el => el.value = 30);
         await page.$eval('#max', e => e.blur());
 
         await page.click('#step')
@@ -174,7 +174,7 @@ describe("Test upload", () => {
         await page.$eval('#step', e => e.blur());
 
         await page.click('#captionSlider')
-        await page.$eval('#captionSlider', el => el.value = 'Duration of flooding event');
+        await page.$eval('#captionSlider', el => el.value = 'Minimum distance in miles the car should come with one gallon');
         await page.$eval('#captionSlider', e => e.blur());
         await page.click('#min')
 
@@ -191,7 +191,7 @@ describe("Test upload", () => {
 
         const handle = await page.$("#text");
         const html = await page.evaluate(handle => handle.innerText, handle);
-        await page.screenshot({ path: 'screenshots/insydeBindings3.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/bindingsBindings3.jpg', type: 'jpeg' });
 
         expect(html).toBe("All steps completed - Feel free to create another binding");
 
@@ -204,7 +204,7 @@ describe("Test upload", () => {
 
         await page.click('#publish')
         await page.waitForTimeout(5000)
-        await page.screenshot({ path: 'screenshots/insydeCreateERCSavedMetadata.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/bindingsCreateERCSavedMetadata.jpg', type: 'jpeg' });
         const handle = await page.$("#goTo");
         const html = await page.evaluate(handle => handle.innerText, handle);
         expect(html).toBe("GO TO ERC");
@@ -215,7 +215,7 @@ describe("Test upload", () => {
 
         await page.click('#goTo')
         await page.waitForTimeout(3000)
-        await page.screenshot({ path: 'screenshots/insydeERCView.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/bindingsERCView.jpg', type: 'jpeg' });
 
 
         const elementHandle = await page.$(
@@ -224,7 +224,7 @@ describe("Test upload", () => {
         const frame = await elementHandle.contentFrame();
         const html = await frame.$eval('h1', (html) => { return html.innerText; });
 
-        expect(html).toBe("INSYDE: a synthetic, probabilistic flood damage model based on explicit cost analysis");
+        expect(html).toBe("BindingsExample");
 
 
     }, timeout);
@@ -250,7 +250,7 @@ describe("Inspect ERC", () => {
     test("Checout ERC 0", async () => {
         await page.click('#button0')
         await page.waitForTimeout(2000)
-        await page.screenshot({ path: 'screenshots/insydeERCView2.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/bindingsERCView2.jpg', type: 'jpeg' });
 
 
         const elementHandle = await page.$(
@@ -259,14 +259,14 @@ describe("Inspect ERC", () => {
         const frame = await elementHandle.contentFrame();
         const html = await frame.$eval('h1', (html) => { return html.innerText; });
 
-        expect(html).toBe("INSYDE: a synthetic, probabilistic flood damage model based on explicit cost analysis");
+        expect(html).toBe("BindingsExample");
 
     })
 
     test("Go To check", async () => {
         await page.click('#check')
         await page.waitForTimeout(2000)
-        await page.screenshot({ path: 'screenshots/insydecheckView.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/bindingscheckView.jpg', type: 'jpeg' });
 
         const handle = await page.$("#runAnalysis");
         const html = await page.evaluate(handle => handle.innerText, handle);
@@ -278,7 +278,7 @@ describe("Inspect ERC", () => {
 
         await page.click('#runAnalysis')
         await page.waitForTimeout(2000)
-        await page.screenshot({ path: 'screenshots/insydeanalysisStarted.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/bindingsanalysisStarted.jpg', type: 'jpeg' });
 
         const handle = await page.$("#stepOne");
         const html = await page.evaluate(handle => handle.innerText, handle);
@@ -291,12 +291,12 @@ describe("Inspect ERC", () => {
         await page.click('#manipulate')
         await page.waitForTimeout(2000)
 
-        await page.screenshot({ path: 'screenshots/insydeERCViewManipulate.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/bindingsERCViewManipulate.jpg', type: 'jpeg' });
 
         const handle = await page.$("#desc");
         const html = await page.evaluate(handle => handle.innerText, handle);
 
-        expect(html).toBe("Duration of flooding event");
+        expect(html).toBe("Minimum distance in miles the car should come with one gallon");
     })
 
     test("Slider Change", async () => {
@@ -325,7 +325,7 @@ describe("Inspect ERC", () => {
         const handle = await page.$("#caption0");
         const html = await page.evaluate(handle => handle.innerText, handle);
 
-        expect(html).toBe("Parameter 1: duration = 24;");
+        expect(html).toBe("Parameter 1: minimumMilesPerGallon = 4;");
     })
 
     test("Go To Metadata", async () => {
@@ -334,19 +334,19 @@ describe("Inspect ERC", () => {
         await page.waitForTimeout(1000)
         await page.click('#metadata')
         await page.waitForTimeout(2000)
-        await page.screenshot({ path: 'screenshots/insydeMetadata.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/bindingsMetadata.jpg', type: 'jpeg' });
 
         const handle = await page.$("#title");
         const html = await page.evaluate(handle => handle.innerText, handle);
 
-        expect(html).toBe("Title: INSYDE: a synthetic, probabilistic flood damage model based on explicit cost analysis");
+        expect(html).toBe("Title: BindingsExample");
     })
 
     test("Go To Shipment", async () => {
         await page.click('.MuiTabScrollButton-root')
         await page.click('#shipment')
         await page.waitForTimeout(2000)
-        await page.screenshot({ path: 'screenshots/insydeShipment.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/bindingsShipment.jpg', type: 'jpeg' });
 
         const handle = await page.$("#description");
         const html = await page.evaluate(handle => handle.innerText, handle);
