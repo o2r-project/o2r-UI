@@ -273,6 +273,8 @@ describe("Inspect ERC", () => {
 
         expect(html).toBe("RUN ANALYSIS");
     })
+    
+    
 
     test("Start Analysis", async () => {
 
@@ -285,9 +287,37 @@ describe("Inspect ERC", () => {
 
         expect(html).toBe("1) Create configuration file: ");
     })
+    test("Inspect Logs", async () => {
+        
+        
+        await page.waitForTimeout(10000)
+        await page.click("#logs")
+        await page.waitForTimeout(1000)
+        
+        const handle = await page.$("#bag");
+        await page.screenshot({ path: 'screenshots/dummyLogs.jpg', type: 'jpeg' });
+        const html = await page.evaluate(handle => handle.innerText, handle);
+
+        expect(html).toBe("Validate bag:");
+     }, timeout)
+
+     test("Inspect Results", async () => {
+        
+        await page.waitForTimeout(1000)
+        await page.click('#close')
+        await page.click("#result")
+        
+        await page.screenshot({ path: 'screenshots/dummyResult.jpg', type: 'jpeg' });
+        const handle = await page.$("#diffCaption");
+        const html = await page.evaluate(handle => handle.innerText, handle);
+
+        expect(html).toBe("Differences between original and reproduced results");
+     })
 
     test("Go to Manipulate", async () => {
 
+        await page.waitForTimeout(1000)
+        await page.click('#close')
         await page.click('#manipulate')
         await page.waitForTimeout(2000)
 
