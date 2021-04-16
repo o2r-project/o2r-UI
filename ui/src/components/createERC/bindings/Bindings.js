@@ -211,7 +211,7 @@ function VerticalLinearStepper(props) {
                   <FormControl component="fieldset">
                     <RadioGroup id="widget" aria-label="position" name="position" value={widget} onChange={handleWidgetChange} row>
                       <WidgetSelector id="slider" value="slider" label="Slider" />
-                      <WidgetSelector value="radio" label="Radio" />
+                      <WidgetSelector id="radio" value="radio" label="Radio" />
                     </RadioGroup>
                   </FormControl>
                   {widget === 'slider'
@@ -226,7 +226,7 @@ function VerticalLinearStepper(props) {
                         handleSlider(e.target.value, 'caption')} styles={classes.textField} />
                     </div>
                     : <div>
-                      <ChipInput style={{ marginBottom: '3%' }}
+                      <ChipInput id="chips" style={{ marginBottom: '3%' }}
                         onChange={(chips) => handleSlider(chips, 'options')}
                         placeholder="Type and enter at least two options"
                       />
@@ -234,7 +234,7 @@ function VerticalLinearStepper(props) {
                         handleSlider(e.target.value, 'caption')} styles={classes.textField} />
                     </div>
                   }
-                  <Button variant="contained" color="primary"
+                  <Button variant="contained" color="primary" id="add"
                     //disabled={disabled2}
                     onClick={addParameter}
                   >

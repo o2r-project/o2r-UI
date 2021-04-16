@@ -228,6 +228,7 @@ class Manipulate extends React.Component {
                                         ? <RadioGroup aria-label="position" name="position" value={this.state[parameter.name]} onChange={this.handleChange(parameter.name)} row>
                                             {parameter.uiWidget.options.map((option, index) => (
                                                 <FormControlLabel key={index}
+                                                    id={"option" +index}
                                                     value={option}
                                                     control={<Radio color="primary" />}
                                                     label={option}

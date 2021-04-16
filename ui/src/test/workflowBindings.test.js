@@ -28,7 +28,7 @@ beforeAll(async () => {
     
 });
 
-describe("Test upload", () => {
+describe("Test upload 1", () => {
 
 
     test("Login", async () => {
@@ -120,12 +120,6 @@ describe("Test upload", () => {
 
     }, timeout);
 
-
-
-    test("Select parameter and go to next step", async () => {
-
-        await page.waitForTimeout(2000)
-
         // https://stackoverflow.com/questions/60949856/e2e-testing-material-ui-select-with-puppeteer
 
 
@@ -139,7 +133,64 @@ describe("Test upload", () => {
             }, newSelectedValue, cssSelector);
         }
 
+    test("Select parameter and go to next step", async () => {
+
+        await page.waitForTimeout(2000)
+
         await MaterialSelect(page, "minimumMilesPerGallon", '#selectP')
+
+        await page.waitForTimeout(1000)
+        await page.click('#next')
+        await page.waitForTimeout(1000)
+
+
+        const handle = await page.$(".MuiFormControlLabel-label");
+        const html = await page.evaluate(handle => handle.innerText, handle);
+        await page.screenshot({ path: 'screenshots/bindingsBindings2.jpg', type: 'jpeg' });
+
+        expect(html).toBe("Slider");
+
+
+    }, timeout);
+
+    test("fill widget Information and create next parameter", async () => {
+
+        await page.waitForTimeout(2000)
+
+        await page.click('#min')
+        await page.$eval('#min', el => el.value = 4);
+        await page.$eval('#min', e => e.blur());
+
+        await page.click('#max')
+        await page.$eval('#max', el => el.value = 30);
+        await page.$eval('#max', e => e.blur());
+
+        await page.click('#step')
+        await page.$eval('#step', el => el.value = 1);
+        await page.$eval('#step', e => e.blur());
+
+        await page.click('#captionSlider')
+        await page.$eval('#captionSlider', el => el.value = 'Minimum distance in miles the car should come with one gallon');
+        await page.$eval('#captionSlider', e => e.blur());
+        await page.click('#min')
+        await page.screenshot({ path: 'screenshots/bindingsBindingsSlider.jpg', type: 'jpeg' });
+
+        await page.waitForTimeout(1000)
+
+        await page.click('#add')
+
+        const handle = await page.$("#label1");
+        const html = await page.evaluate(handle => handle.innerText, handle);
+
+        expect(html).toBe("Select the parameter which should be made possible to change");
+    }, timeout);
+
+    test("Select parameter and go to next step", async () => {
+
+        await page.waitForTimeout(2000)
+
+
+        await MaterialSelect(page, "numberOfCylinders", '#selectP')
 
 
 
@@ -157,29 +208,28 @@ describe("Test upload", () => {
 
     }, timeout);
 
-    test("fill widget Information and save", async () => {
 
-        await page.waitForTimeout(2000)
+    test("change widget, fill Information and save", async () => {
 
-        await page.click('#min')
-        await page.$eval('#min', el => el.value = 12);
-        await page.$eval('#min', e => e.blur());
-
-        await page.click('#max')
-        await page.$eval('#max', el => el.value = 30);
-        await page.$eval('#max', e => e.blur());
-
-        await page.click('#step')
-        await page.$eval('#step', el => el.value = 1);
-        await page.$eval('#step', e => e.blur());
-
-        await page.click('#captionSlider')
-        await page.$eval('#captionSlider', el => el.value = 'Minimum distance in miles the car should come with one gallon');
-        await page.$eval('#captionSlider', e => e.blur());
-        await page.click('#min')
-
+        await page.click("#radio")
         await page.waitForTimeout(1000)
-
+        await page.click("#chips")
+        await page.$eval('#chips', el => el.value = 'all');
+        await page.keyboard.press('Enter');
+        await page.waitForTimeout(1000)
+        await page.$eval('#chips', el => el.value = '4');
+        await page.keyboard.press('Enter');
+        await page.waitForTimeout(1000)
+        await page.$eval('#chips', el => el.value = '6');
+        await page.keyboard.press('Enter');
+        await page.waitForTimeout(1000)
+        await page.$eval('#chips', el => el.value = '8');
+        await page.keyboard.press('Enter');
+        await page.waitForTimeout(1000)
+        await page.click('#captionRadio')
+        await page.$eval('#captionRadio', el => el.value = 'Number of Cylinders of displayed cars');
+        await page.$eval('#captionRadio', e => e.blur());
+        await page.waitForTimeout(1000)
 
 
         await page.click('#save')
@@ -191,7 +241,7 @@ describe("Test upload", () => {
 
         const handle = await page.$("#text");
         const html = await page.evaluate(handle => handle.innerText, handle);
-        await page.screenshot({ path: 'screenshots/bindingsBindings3.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/bindingsBindingsFinished.jpg', type: 'jpeg' });
 
         expect(html).toBe("All steps completed - Feel free to create another binding");
 
@@ -232,6 +282,7 @@ describe("Test upload", () => {
 
 
 });
+
 
 describe("Inspect ERC", () => {
 
@@ -341,21 +392,23 @@ describe("Inspect ERC", () => {
             await page.mouse.move(ob.x + ob.width / 2, ob.y + ob.height / 2)
             await page.mouse.down()
             console.log(`Dropping at   ${ob.x + ob.width / 2}, ${ob.y + ob.height / 2}`)
-            await page.mouse.move(ob.x + ob.width / 2 - 300, ob.y + ob.height / 2)
+            await page.mouse.move(ob.x + ob.width / 2 + 300, ob.y + ob.height / 2)
             await page.mouse.up()
         }
 
 
         await page.click('#saveComparison')
         await dragAndDrop(page, ".MuiSlider-thumb")
+        await page.click('#option0')
         await page.click('#saveComparison')
+        await page.click('#option1')
 
         await page.click('#showComparison')
 
         const handle = await page.$("#caption0");
         const html = await page.evaluate(handle => handle.innerText, handle);
 
-        expect(html).toBe("Parameter 1: minimumMilesPerGallon = 4;");
+        expect(html).toBe("Parameter 1: minimumMilesPerGallon = 4; Parameter 2: numberOfCylinders = \"all\";");
     })
 
     test("Go To Metadata", async () => {
