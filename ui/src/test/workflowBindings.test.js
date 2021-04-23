@@ -12,7 +12,7 @@ beforeAll(async () => {
     })
 
     
-    
+    /** 
     const output = fs.createWriteStream(__dirname + '/bindings_workspace.zip');
     const archive = archiver('zip');
 
@@ -26,6 +26,8 @@ beforeAll(async () => {
     archive.directory(__dirname +'/bindingsExample', false);
 
     archive.finalize();
+
+    */
 
     
     
@@ -65,6 +67,7 @@ describe("Test upload 1", () => {
         await page.screenshot({ path: 'screenshots/bindingsUploadERC.jpg', type: 'jpeg' });
         await page.waitForTimeout(10000)
         await page.click('#upload')
+        await page.waitForTimeout(1000)
         await page.screenshot({ path: 'screenshots/bindingsUploadERC2.jpg', type: 'jpeg' });
         await page.waitForNavigation({ waitUntil: 'networkidle2' });
         await page.waitForTimeout(2000)
