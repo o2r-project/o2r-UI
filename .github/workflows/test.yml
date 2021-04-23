@@ -27,7 +27,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v1
 
     - name: Install node
       uses: actions/setup-node@v1
@@ -37,6 +37,10 @@ jobs:
     - name: Install dependencies
       working-directory: ./ui
       run: sudo npm install
+    
+    - name: Pull meta image
+      working-directory: ./ui
+      run: docker pull o2rproject/o2r-meta:1447d43
 
     - name: Start containers
       run: docker-compose -f "ui/docker-compose.yml" up -d --build
@@ -71,9 +75,9 @@ jobs:
       working-directory: ./ui
       run: npm run test
 
-    - name: Check logs of loader
+    - name: Check logs of muncher
       if: always()
-      run: docker logs ui_loader_1
+      run: docker logs ui_muncher_1
 
     - name: Save pictures
       if: always()
