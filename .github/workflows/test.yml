@@ -71,6 +71,10 @@ jobs:
       working-directory: ./ui
       run: npm run test
 
+    - name: Run tests twice
+      working-directory: ./ui
+      run: npm run test
+
     - name: Save pictures
       if: always()
       uses: actions/upload-artifact@v2
