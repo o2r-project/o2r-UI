@@ -52,7 +52,7 @@ jobs:
     - name: Restart containers for guestlister
       run: docker-compose -f "ui/docker-compose.yml" up -d --build
 
-    - name: Sleep for 1 minute
+    - name: Sleep for 5 minute
       uses: jakejarvis/wait-action@master
       with:
         time: '5m'
@@ -71,10 +71,9 @@ jobs:
       working-directory: ./ui
       run: npm run test
 
-    - name: Run tests twice
+    - name: Check logs of loader
       if: always()
-      working-directory: ./ui
-      run: npm run test
+      run: docker logs ui_loader_1
 
     - name: Save pictures
       if: always()

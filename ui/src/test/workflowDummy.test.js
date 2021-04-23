@@ -57,9 +57,11 @@ describe("Test upload", () => {
 
         // prepare file to upload
         let fileToUpload = './src/test/dummy_workspace.zip';
+        await page.screenshot({ path: 'screenshots/dummyUploadERC.jpg', type: 'jpeg' });
         inputUploadHandle.uploadFile(fileToUpload);
         await page.waitForTimeout(10000)
         await page.click('#upload')
+        await page.screenshot({ path: 'screenshots/dummyUploadERC.jpg', type: 'jpeg' });
         await page.waitForNavigation({waitUntil: 'networkidle2'});
         await page.waitForTimeout(2000)
   
