@@ -63,7 +63,7 @@ describe("Test upload 1", () => {
         let fileToUpload = './src/test/bindings_workspace.zip';
         inputUploadHandle.uploadFile(fileToUpload);
         await page.screenshot({ path: 'screenshots/bindingsUploadERC.jpg', type: 'jpeg' });
-        await page.waitForTimeout(2000)
+        await page.waitForTimeout(10000)
         await page.click('#upload')
         await page.screenshot({ path: 'screenshots/bindingsUploadERC2.jpg', type: 'jpeg' });
         await page.waitForNavigation({ waitUntil: 'networkidle2' });

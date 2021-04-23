@@ -55,7 +55,7 @@ describe("Test upload", () => {
         // prepare file to upload
         let fileToUpload = './src/test/dummy_workspace.zip';
         inputUploadHandle.uploadFile(fileToUpload);
-        await page.waitForTimeout(2000)
+        await page.waitForTimeout(10000)
         await page.click('#upload')
         await page.waitForNavigation({waitUntil: 'networkidle2'});
         await page.waitForTimeout(2000)
