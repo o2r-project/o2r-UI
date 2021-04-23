@@ -47,7 +47,7 @@ const ResultList= (props) =>
                                                     </Grid>
                                                     <Grid item xs={3}>
                                                         <Button variant="contained" size="small" color="primary" style={{ "top": "40%" }} onClick={() => props.editMetadata(erc)}>
-                                                            Edit Metadta
+                                                            Edit Metadata
                                                          </Button>
                                                          <br/>
                                                          <br/>
