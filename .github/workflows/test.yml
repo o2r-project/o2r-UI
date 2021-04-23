@@ -51,10 +51,9 @@ jobs:
         time: '1m'
 
     - name: Restart containers for guestlister
-      run: docker-compose -f "ui/docker-compose.yml" stop
-
-    - name: Restart containers for guestlister
-      run: docker-compose -f "ui/docker-compose.yml" up -d --build
+      run: |
+        docker-compose -f "ui/docker-compose.yml" stop
+        docker-compose -f "ui/docker-compose.yml" up -d
 
     - name: Sleep for 2 minutes
       uses: jakejarvis/wait-action@master
