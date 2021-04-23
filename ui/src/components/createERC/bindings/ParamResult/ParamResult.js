@@ -7,9 +7,11 @@ class ParamResult extends Component {
         return (
             <div>
                 <Select
+          
                   value={this.props.value}
                   onChange={this.props.handleParamChange}
                   style={{minWidth : "30%"}}
+                  id="selectP"
                 >
                   <MenuItem value=''></MenuItem>
                   {this.props.params.map((param,index) => (

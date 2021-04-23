@@ -216,7 +216,7 @@ class Manipulate extends React.Component {
                         <Grid item xs={8}>
                             {this.state.binding.sourcecode.parameter.map((parameter, index) => (
                                 <div className="slider" key={index}>
-                                    <Typography variant='caption'>
+                                    <Typography id="desc" variant='caption'>
                                         {parameter.uiWidget.caption}
                                     </Typography>
                                     {parameter.uiWidget.type === 'slider'
@@ -228,6 +228,7 @@ class Manipulate extends React.Component {
                                         ? <RadioGroup aria-label="position" name="position" value={this.state[parameter.name]} onChange={this.handleChange(parameter.name)} row>
                                             {parameter.uiWidget.options.map((option, index) => (
                                                 <FormControlLabel key={index}
+                                                    id={"option" +index}
                                                     value={option}
                                                     control={<Radio color="primary" />}
                                                     label={option}
@@ -253,7 +254,7 @@ class Manipulate extends React.Component {
                         </Grid>
                     </Grid>
                     <div className="image">
-                        <Button variant="contained" color="primary" className="maniBtn"
+                        <Button id="saveComparison" variant="contained" color="primary" className="maniBtn"
                             onClick={this.saveForComparison.bind(this)}
                             disabled={this.state.settings.length === 2}
                         >

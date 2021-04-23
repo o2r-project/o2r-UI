@@ -352,7 +352,7 @@ class ERC extends React.Component {
                                 <Tab label="Check" id="check"/>
                                 <Tab label="Manipulate" id="manipulate"/>
                                 <Tab label="Substitution" id="substitution"/>
-                                <Tab label="Metadata" id="metdata"/>
+                                <Tab label="Metadata" id="metadata"/>
                                 <Tab label="Shipment" id="shipment"/>
                             </Tabs>
                         </Paper>

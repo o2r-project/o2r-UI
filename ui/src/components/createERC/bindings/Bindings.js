@@ -195,7 +195,7 @@ function VerticalLinearStepper(props) {
       <Stepper activeStep={activeStep} orientation="vertical">
         {steps.map((label, index) => (
           <Step key={label} >
-            <StepLabel><h3>{label}</h3></StepLabel>
+            <StepLabel><h3 id={"label"+index}>{label}</h3></StepLabel>
             <StepContent>
               {activeStep === 0 && props.figures !== '' ?
                 <ComputationalResult value={result} figures={props.figures} handleResultChange={handleResultChange} />
@@ -209,9 +209,9 @@ function VerticalLinearStepper(props) {
               {activeStep === 2 ?
                 <div>
                   <FormControl component="fieldset">
-                    <RadioGroup aria-label="position" name="position" value={widget} onChange={handleWidgetChange} row>
-                      <WidgetSelector value="slider" label="Slider" />
-                      <WidgetSelector value="radio" label="Radio" />
+                    <RadioGroup id="widget" aria-label="position" name="position" value={widget} onChange={handleWidgetChange} row>
+                      <WidgetSelector id="slider" value="slider" label="Slider" />
+                      <WidgetSelector id="radio" value="radio" label="Radio" />
                     </RadioGroup>
                   </FormControl>
                   {widget === 'slider'
@@ -226,7 +226,7 @@ function VerticalLinearStepper(props) {
                         handleSlider(e.target.value, 'caption')} styles={classes.textField} />
                     </div>
                     : <div>
-                      <ChipInput style={{ marginBottom: '3%' }}
+                      <ChipInput id="chips" style={{ marginBottom: '3%' }}
                         onChange={(chips) => handleSlider(chips, 'options')}
                         placeholder="Type and enter at least two options"
                       />
@@ -234,14 +234,14 @@ function VerticalLinearStepper(props) {
                         handleSlider(e.target.value, 'caption')} styles={classes.textField} />
                     </div>
                   }
-                  <Button variant="contained" color="primary"
-                    disabled={disabled2}
+                  <Button variant="contained" color="primary" id="add"
+                    //disabled={disabled2}
                     onClick={addParameter}
                   >
                     Add paramater
                       </Button>
-                  <Button variant="contained" color="primary" style={{ marginLeft: '5%' }}
-                    disabled={disabled2}
+                  <Button id={"save"} variant="contained" color="primary" style={{ marginLeft: '5%' }}
+                    //disabled={disabled2}
                     onClick={showPreview}
                   >
                     Save parameter
@@ -260,7 +260,7 @@ function VerticalLinearStepper(props) {
                 >
                   Back
                 </Button>
-                <Button variant="contained" color="primary" className={classes.button}
+                <Button id="next" variant="contained" color="primary" className={classes.button}
                   onClick={handleNext}
                   disabled={disabled}
                 >
@@ -273,7 +273,7 @@ function VerticalLinearStepper(props) {
       </Stepper>
       {activeStep === steps.length && (
         <Paper square elevation={0} className={classes.resetContainer}>
-          <Typography>All steps completed - Feel free to create another binding</Typography>
+          <Typography id="text">All steps completed - Feel free to create another binding</Typography>
           <Button onClick={handleReset} className={classes.button} variant="contained" color="primary">
             Create another binding
           </Button>
@@ -702,7 +702,7 @@ class Bindings extends Component {
               </div>
               :*/
               <div>
-                <h4>Preview of the interactive figure</h4>
+                <h4 id="preview">Preview of the interactive figure</h4>
                 <div className='codeView'>
                   <Manipulate bindings={[this.state.binding]} />
                   {/*<Button variant="contained" color="primary"

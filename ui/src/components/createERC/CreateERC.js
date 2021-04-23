@@ -170,10 +170,10 @@ class CreateERC extends Component {
                         value={value}
                         onChange={this.handleTabChange}
                     >
-                        <Tab label="Required Metadata" />
-                        <Tab label="Spatiotemporal Metadata" />
-                        <Tab label="Optional Metadata" />
-                        <Tab label="Create bindings" />
+                        <Tab label="Required Metadata" id="required"/>
+                        <Tab label="Spatiotemporal Metadata" id="spatiotemporal"/>
+                        <Tab label="Optional Metadata" id="optional"/>
+                        <Tab label="Create bindings"  id="bindings"/>
                     </Tabs>
                 </AppBar>
                 {this.state.showProgress

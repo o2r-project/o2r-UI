@@ -1,0 +1,29 @@
+---
+author:
+  - name: "Ted Tester"
+    affiliation: University of Munster
+    affiliation2: University of Nowhere
+    address: >
+      This might be a correct address
+      Yet it might also be lorem ipsum\newline
+      Another line 252b\newline
+      00000 Anywhere, Nomansland
+    email: ted.tester@awebsite8372930.org
+    url: \url{http://404.awebsite8372930.org}
+    Telephone: +00/00/1000-2000
+  - name: "Carl Connauthora"
+    affiliation: N.O.N.E
+title: 'This is the title: it contains a colon'
+abstract: >
+  Tempus eget nunc eu, lobortis condimentum nulla. Nam sagittis massa nec libero luctus facilisis. Suspendisse ac ornare ligula.
+keywords:
+  # at least one keyword must be supplied
+  formatted: [lorem, ipsum, dolor , sit, amet]
+  plain:     [lorem, ipsum, dolor , sit, amet]
+---
+
+```{r plot, dev = 'png'}
+set.seed(42)
+random <- sapply(1:100, function(x) sample(1:12,size=10))
+plot(x = 1:1000, random)
+```

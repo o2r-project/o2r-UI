@@ -38,7 +38,7 @@ class Metadata extends React.Component {
             <>
                 <div style={{ width: "90%", marginLeft: "5%", textAlign: "justify" }}>
                     <h2>Metadata of compendium:</h2>
-                    <span><b>Title: </b>{this.metadata.title}</span> <br />
+                    <span id="title"><b>Title: </b>{this.metadata.title}</span> <br />
                     <p> <span style={{ "font-weight": "bold" }}> Created on: </span> {this.props.erc.created.substr(0, 10)} {this.props.erc.created.substr(11, 5)}  <br />
                         <span style={{ "font-weight": "bold" }}> by: </span> {this.props.erc.user} </p>
                     <span ><b>Description: </b>{this.metadata.description}</span> <br /> <br />
@@ -71,7 +71,7 @@ class Metadata extends React.Component {
                         />
                     </Map>
                     <br />
-                    <span ><b>Temporal extend: </b>From {this.metadata.temporal.begin.substr(0, 10)} to {this.metadata.temporal.end.substr(0, 10)}</span> <br />
+                    <span ><b>Temporal extend: </b>From {this.metadata.temporal.begin? this.metadata.temporal.begin.substr(0, 10):""} to {this.metadata.end ? this.metadata.temporal.end.substr(0, 10) : ""}</span> <br />
                     {this.props.erc.substituted ?
                     <>
                         <span><b>Subsituted ERC:</b></span>
