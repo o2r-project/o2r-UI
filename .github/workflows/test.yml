@@ -56,10 +56,10 @@ jobs:
     - name: Restart containers for guestlister
       run: docker-compose -f "ui/docker-compose.yml" up -d --build
 
-    - name: Sleep for 5 minute
+    - name: Sleep for 2 minutes
       uses: jakejarvis/wait-action@master
       with:
-        time: '5m'
+        time: '2m'
 
     
     - name: Check running containers
