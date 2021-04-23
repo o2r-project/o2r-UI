@@ -12,7 +12,7 @@ beforeAll(async () => {
     })
 
     
-    /** 
+    
     const output = fs.createWriteStream(__dirname + '/bindings_workspace.zip');
     const archive = archiver('zip');
 
@@ -27,7 +27,7 @@ beforeAll(async () => {
 
     archive.finalize();
 
-    */
+    
 
     
     
