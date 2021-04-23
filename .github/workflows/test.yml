@@ -77,9 +77,9 @@ jobs:
       with:
         name: screenshots
         path: |
-        ui/screenshots/
-        ui/src/test/dummy_workspace.zip
-        ui/src/test/bindings_workspace.zip
+          ui/screenshots/
+          ui/src/test/dummy_workspace.zip
+          ui/src/test/bindings_workspace.zip
 
 
     - name: Stop containers
