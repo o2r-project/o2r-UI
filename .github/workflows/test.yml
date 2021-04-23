@@ -55,7 +55,7 @@ jobs:
     - name: Sleep for 1 minute
       uses: jakejarvis/wait-action@master
       with:
-        time: '1m'
+        time: '5m'
 
     
     - name: Check running containers
