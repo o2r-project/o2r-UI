@@ -43,7 +43,7 @@ services:
       - "1234:1234"
 
   muncher:
-    image: o2rproject/o2r-muncher:0.27.0
+    image: o2rproject/o2r-muncher:0.30.0
     depends_on:
       - mongodb
       - configmongodb
@@ -61,6 +61,7 @@ services:
       - DEBUG=*,-mquery,-express:*,-express-session,-body-parser:*
 
       - "MUNCHER_META_TOOL_CONTAINER=o2rproject/o2r-meta:1447d43"
+      #- "MUNCHER_META_TOOL_CONTAINER=meta:dev"
       #- MUNCHER_META_TOOL_CONTAINER_RM=false
       - MUNCHER_SAVE_IMAGE_TARBALL=false # saves space and time during dev
       - MUNCHER_CONTAINERIT_IMAGE=o2rproject/containerit:geospatial-0.6.0.9000
@@ -68,23 +69,7 @@ services:
       - "MUNCHER_CONTAINERIT_BASE_IMAGE=rocker/geospatial:3.6.2"
       #- "MUNCHER_META_TOOL_CONTAINER=meta:dev"
       #- MUNCHER_ALLOW_INVALID_METADATA=true
-
-  loader:
-    image: o2rproject/o2r-loader:0.12.0
-    depends_on:
-      - mongodb
-      - configmongodb
-    volumes:
-      - o2rstorage:/tmp/o2r
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - "LOADER_MONGODB=mongodb://mongodb:27017/"
-      - LOADER_PORT=8088
-      - DEBUG=*,-mquery,-express:*,-express-session,-body-parser:*
-      - LOADER_VOLUME=ui_o2rstorage
-      - "LOADER_META_TOOL_CONTAINER=o2rproject/o2r-meta:1447d43"
-      #- "LOADER_META_TOOL_CONTAINER=meta:dev"
-
+      
   informer:
     image: o2rproject/o2r-informer:0.5.0
     depends_on:
@@ -128,14 +113,6 @@ services:
       SHIPPER_BASE_PATH: "/tmp/o2r"
       PYTHONUNBUFFERED: "0"
 
-  inspecter:
-    image: o2rproject/o2r-inspecter:0.0.1
-    volumes:
-      - o2rstorage:/tmp/o2r
-    environment:
-      - INSPECTER_PORT=8091
-      - DEBUGME=inspecter
-
   bindings:
     image: o2rproject/o2r-bindings:latest
     #build: ./bindings
@@ -167,7 +144,6 @@ services:
       - bouncer
       - muncher
       - informer
-      - loader
       - shipper
       - bindings
     ports:
