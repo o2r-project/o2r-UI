@@ -27,7 +27,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v1
 
     - name: Install node
       uses: actions/setup-node@v1
@@ -37,6 +37,10 @@ jobs:
     - name: Install dependencies
       working-directory: ./ui
       run: sudo npm install
+    
+    - name: Pull meta image
+      working-directory: ./ui
+      run: docker pull o2rproject/o2r-meta:1447d43
 
     - name: Start containers
       run: docker-compose -f "ui/docker-compose.yml" up -d --build
@@ -47,15 +51,14 @@ jobs:
         time: '1m'
 
     - name: Restart containers for guestlister
-      run: docker-compose -f "ui/docker-compose.yml" stop
+      run: |
+        docker-compose -f "ui/docker-compose.yml" stop
+        docker-compose -f "ui/docker-compose.yml" up -d
 
-    - name: Restart containers for guestlister
-      run: docker-compose -f "ui/docker-compose.yml" up -d --build
-
-    - name: Sleep for 5 minute
+    - name: Sleep for 2 minutes
       uses: jakejarvis/wait-action@master
       with:
-        time: '5m'
+        time: '2m'
 
     
     - name: Check running containers
@@ -71,9 +74,9 @@ jobs:
       working-directory: ./ui
       run: npm run test
 
-    - name: Check logs of loader
+    - name: Check logs of muncher
       if: always()
-      run: docker logs ui_loader_1
+      run: docker logs ui_muncher_1
 
     - name: Save pictures
       if: always()

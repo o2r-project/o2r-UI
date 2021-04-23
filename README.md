@@ -120,3 +120,6 @@ To run the test by yourself, complete the following steps:
     - ```npm install```
 - Run all the test
     - ```npm test```
+
+You can debug the GithHub Actions. Collaborators can manually start the debug [workflow](https://github.com/o2r-project/o2r-UI/actions/workflows/debug.yml) and can connect via ssh to the host system on which the actual Action run. 
+For further infromation read the [debug docs](https://github.com/marketplace/actions/debugging-with-tmate)

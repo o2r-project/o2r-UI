@@ -159,6 +159,7 @@ class ERC extends React.Component {
                 }
                 let candidate = response.data.candidate
                 const data = response.data.metadata.o2r;
+                data["creators"] = response.data.metadata.raw.author
                 let dataset = '';
                 if (Array.isArray(data.inputfiles)) {
                     dataset = data.inputfiles[0];
