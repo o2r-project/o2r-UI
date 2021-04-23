@@ -16,11 +16,6 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-    inputs:
-      debug_enabled:
-        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'     
-        required: false
-        default: false
 
 
 
@@ -81,7 +76,11 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: screenshots
-        path: ui/screenshots/
+        path: |
+        ui/screenshots/
+        ui/src/test/dummy_workspace.zip
+        ui/src/test/bindings_workspace.zip
+
 
     - name: Stop containers
       if: always()
