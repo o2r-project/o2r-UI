@@ -175,7 +175,7 @@ class Shipment extends React.Component {
                 <br />
 
                 <Paper>
-                    Create new Shipment:
+                    <p id="description"> Create new Shipment:</p>
                     <br></br>
                     <br />
                     <br />

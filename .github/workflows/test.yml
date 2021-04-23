@@ -27,7 +27,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
 
     - name: Install node
       uses: actions/setup-node@v1
@@ -41,10 +41,22 @@ jobs:
     - name: Start containers
       run: docker-compose -f "ui/docker-compose.yml" up -d --build
     
-    - name: Sleep for 3 minutes
+    - name: Sleep for 1 minute
       uses: jakejarvis/wait-action@master
       with:
-        time: '3m'
+        time: '1m'
+
+    - name: Restart containers for guestlister
+      run: docker-compose -f "ui/docker-compose.yml" stop
+
+    - name: Restart containers for guestlister
+      run: docker-compose -f "ui/docker-compose.yml" up -d --build
+
+    - name: Sleep for 5 minute
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '5m'
+
     
     - name: Check running containers
       run: docker ps
@@ -52,16 +64,27 @@ jobs:
     - name: Check logs of webserver
       run: docker logs ui_webserver_1
 
+    - name: Check logs of guestlister
+      run: docker logs ui_guestlister_1
+
     - name: Run tests
       working-directory: ./ui
       run: npm run test
+
+    - name: Check logs of loader
+      if: always()
+      run: docker logs ui_loader_1
 
     - name: Save pictures
       if: always()
       uses: actions/upload-artifact@v2
       with:
         name: screenshots
-        path: ui/screenshots/
+        path: |
+          ui/screenshots/
+          ui/src/test/dummy_workspace.zip
+          ui/src/test/bindings_workspace.zip
+
 
     - name: Stop containers
       if: always()

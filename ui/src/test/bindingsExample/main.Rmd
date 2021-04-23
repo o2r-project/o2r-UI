@@ -1,0 +1,51 @@
+---
+title: "BindingsExample"
+author: 
+- affiliation:  "TC, Test Town"
+  name: "Thomas Test"
+date: "4/15/2021"
+output: html_document
+licenses:
+  code: CC-BY-3.0
+  data: CC-BY-3.0
+  text: CC-BY-3.0
+abstract: "ERC to Test Bindings"
+---
+
+## Binding Test
+
+This is an R Markdown document to test the o2r Binding function. It provides a simple Plot where the horsepower of different Cars is scattered against their 1/4 mile time. Additionally the linear regresion is shown.
+
+We have two parameters to change:
+
+1. The number of cylinders the cars is allowed have. By all it juses all cars, other options are 4, 6 or 8.
+2. The minimum miles per Gallon. So cars can be excluded, that need to much energy.
+
+
+
+```{r, out.width= 600}
+data("mtcars")
+numberOfCylinders = "all"
+minimumMilesPerGallon = 4
+
+if(numberOfCylinders == "all"){
+  cars= mtcars 
+  } else{
+  cylinders = as.numeric(numberOfCylinders)
+  cars = subset(mtcars, cyl == cylinders)
+  }
+
+cars = subset(cars, mpg > minimumMilesPerGallon)
+
+
+fm <- lm(cars$qsec ~ cars$hp)
+plotFigure1 = function(cars){
+  plot(cars$hp, cars$qsec)
+  abline(fm, col="red")
+}
+
+plotFigure1(cars)
+
+
+```
+

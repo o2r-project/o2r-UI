@@ -203,10 +203,10 @@ export const Form = props => {
                             <br />
                             <h4>Licenses</h4>
                             <div>
-                                <Button variant="contained" color="primary" style={{ margin: "8px" }}
+                                <Button variant="contained" color="primary" id="most" style={{ margin: "8px" }}
                                     onClick={() => { setMostRestrictive() }}
                                 >MOST RESTRICTIVE</Button>
-                                <Button variant="contained" color="primary" style={{ margin: "8px" }}
+                                <Button variant="contained" color="primary" id="least" style={{ margin: "8px" }}
                                     onClick={setLeastRestrictive}
                                 >LEAST RESTRICTIVE</Button>
                             </div>

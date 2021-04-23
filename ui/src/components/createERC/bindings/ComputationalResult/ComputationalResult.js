@@ -10,6 +10,7 @@ class ComputationalResult extends Component {
                   native
                   value={this.props.value}
                   onChange={this.props.handleResultChange}
+                  id="selectFigure"
                 >
                   <option value=''></option>
                   {this.props.figures.map((figure,index) => (
