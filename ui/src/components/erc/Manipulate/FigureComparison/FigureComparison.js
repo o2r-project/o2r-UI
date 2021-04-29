@@ -24,7 +24,7 @@ function ComparisonView(props) {
         setOpen(false)
     }
 
-});
+}, [props.location.search]);
 
     const handleClickOpen = () => {
         props.history.push(props.location.pathname + '?compare')
@@ -40,7 +40,7 @@ function ComparisonView(props) {
 
     return (
         <div>
-            <Button variant="contained" color="primary" className="maniBtn"
+            <Button id="showComparison" variant="contained" color="primary" className="maniBtn"
                 onClick={handleClickOpen}
                 style={{ marginTop: "1%" }}
                 disabled={props.settings.length !== 2}
@@ -56,7 +56,7 @@ function ComparisonView(props) {
                         <Typography variant="h6" color="inherit" style={{ flex: 1 }}>
                             <a href="/"><img src={logo} alt="o2r" id="headerLogo" /></a>
                         </Typography>
-                        <Button color="inherit" onClick={handleClose}>Close</Button>
+                        <Button color="inherit" onClick={handleClose} id="close">Close</Button>
                     </Toolbar>
                 </AppBar>
                 <div>
@@ -74,7 +74,7 @@ function ComparisonView(props) {
                             {props.settings.map((setting, index) => (
                                 <Grid item xs={6} style={{ "text-align": "center" }}>
                                     <figure className="img">
-                                        <figcaption>{props.settingsText[index]}</figcaption>
+                                        <figcaption id={"caption" + index}>{props.settingsText[index]}</figcaption>
                                         <img src={setting} alt="" />
                                     </figure>
 

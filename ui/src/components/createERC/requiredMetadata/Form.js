@@ -26,8 +26,7 @@ export const Form = props => {
     }
 
     const valid = (props.authorsChanged && props.authorsValid && isEmpty(errors)) || (props.changed && isEmpty(errors) && props.authorsValid)
-        || (props.spatioTemporalChanged && props.authorsValid && isEmpty(errors)) || (isEmpty(errors) && props.candidate)
-
+        || (props.spatioTemporalChanged && props.authorsValid && isEmpty(errors)) || (props.optionalChanged && props.authorsValid && isEmpty(errors)) ||(isEmpty(errors) && props.candidate)
     valid2 = isEmpty(errors) && props.authorsValid
 
     const reset = props.authorsChanged || props.changed
@@ -40,7 +39,7 @@ export const Form = props => {
             props.resetAuthors[i].getFormikActions().resetForm(props.originalAuthors[i])
         }
         props.onUpdate(JSON.parse(JSON.stringify(props.originalAuthors)));
-        props.setChangedFalse("all");
+        props.setChangedFalse("changed");
         await props.setFormValues(props.originalMetadata)
         props.validateForm()
         props.setTouched({ "title": true, "abstract": true, "publicationDate": true, "textLicense": true, "dataLicense": true, "codeLicense": true });
@@ -93,7 +92,7 @@ export const Form = props => {
                 <Grid item xs={10}>
                     <Card>
                         <CardContent>
-                            <h3>This is the metadata we extracted out of your workspace. Is it correct? Fine, click the save button on the right. No? Make some changes and click on save.</h3>
+                            <h3 id="title">This is the metadata we extracted out of your workspace. Is it correct? Fine, click the save button on the right. No? Make some changes and click on save.</h3>
                             <h4>Title</h4>
                             <TextField
                                 id="title"
@@ -204,10 +203,10 @@ export const Form = props => {
                             <br />
                             <h4>Licenses</h4>
                             <div>
-                                <Button variant="contained" color="primary" style={{ margin: "8px" }}
+                                <Button variant="contained" color="primary" id="most" style={{ margin: "8px" }}
                                     onClick={() => { setMostRestrictive() }}
                                 >MOST RESTRICTIVE</Button>
-                                <Button variant="contained" color="primary" style={{ margin: "8px" }}
+                                <Button variant="contained" color="primary" id="least" style={{ margin: "8px" }}
                                     onClick={setLeastRestrictive}
                                 >LEAST RESTRICTIVE</Button>
                             </div>
@@ -292,7 +291,6 @@ export const Form = props => {
                                 onBlur={blur.bind(null)}
                                 margin="normal"
                                 variant="outlined"
-                                native={true}
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
@@ -328,18 +326,32 @@ export const Form = props => {
                         </Button>
                         <Button
                             type="submit"
+                            id="publish"
                             variant="contained"
                             color="primary"
                             disabled={!valid || props.showProgress}
                         >
                             Publish
                          </Button>
-                        <Button
-                            type="button"
-                            onClick={goToErc}
-                            disabled={props.candidate}>
-                            Go To ERC
+
+                        {props.candidate
+                          ? <Button
+                          id="goTo"
+                              type="button"
+                              id="goTo"
+                              onClick={goToErc}>
+                              Preview
                             </Button>
+                          : <Button
+                              id="goTo"
+                              type="button"
+                              color="primary"
+                              onClick={goToErc}
+                              disabled={props.candidate}>
+                              Go To ERC
+
+                            </Button>
+                       }
                     </Paper>
                     <div id={"errorMessage"}>
                         {errors.title ? errors.title : ""}

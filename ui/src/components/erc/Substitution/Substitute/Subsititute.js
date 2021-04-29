@@ -69,7 +69,7 @@ class Substitute extends Component {
         .then(function (response){
                 const files = response.data.files.children;
                 for (var file of files){
-                    if(file.name == "erc.yml"){
+                    if(file.name === "erc.yml"){
                         self.setState({configurationFile:true})
                     }
                 }
@@ -93,7 +93,7 @@ class Substitute extends Component {
         const substitutionFiles = this.state.substitutionFiles;
         const selectedSubstitutionFiles = this.state.selectedSubstitutionFiles;
         const selectedBaseFiles = this.state.selectedBaseFiles;
-        if (name == "substitutionFile") {
+        if (name === "substitutionFile") {
             if (this.state.basefile) {
                 substitutionFiles.push({ "base": this.state.basefile, "overlay": file })
                 selectedSubstitutionFiles.push(file);
@@ -123,7 +123,7 @@ class Substitute extends Component {
         return (
             <div>
                 <Dialog className="main_block" fullScreen TransitionComponent={Transition}
-                    open={this.props.erc !== 0 && this.props.location.search== '?substitute'}
+                    open={this.props.erc !== 0 && this.props.location.search === '?substitute'}
                 >
                     <AppBar>
                         <Toolbar>

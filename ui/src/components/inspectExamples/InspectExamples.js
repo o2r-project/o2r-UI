@@ -58,7 +58,7 @@ class InspectExamples extends Component {
                 {this.state.ercs.map( (erc, index ) =>
                     <div key={index}>
                         <Card className="example">
-                            <CardActionArea onClick={this.forward.bind(this,erc)}>
+                            <CardActionArea id={index} onClick={this.forward.bind(this,erc)}>
                                 <CardHeader
                                         title={erc.metadata.o2r.title}/>
                                     <CardContent>

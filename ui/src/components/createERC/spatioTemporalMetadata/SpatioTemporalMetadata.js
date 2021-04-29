@@ -49,6 +49,10 @@ class SpatioTemporalMetadata extends React.Component {
     this.props.goToErc()
   }
 
+  handlePreview = (e) => {
+    this.props.goToErc()
+  }
+
   handleSave = () => {
     this.props.setChangedFalse("all")
     this.props.setMetadata(this.props.metadata, true)
@@ -145,7 +149,7 @@ class SpatioTemporalMetadata extends React.Component {
       httpRequests.geocodingRequest(query)
         .then(function (res) {
           console.log(res)
-          if (res.data.features.length == 0) { alert("No result found"); return; }
+          if (res.data.features.length === 0) { alert("No result found"); return; }
           const resultBBox = res.data.features[0].bbox
           if (!resultBBox) { alert("No result found"); return; }
           const bbox = []
@@ -305,16 +309,23 @@ class SpatioTemporalMetadata extends React.Component {
                 type="submit"
                 variant="contained"
                 color="primary"
-                disabled={!(this.props.spatioTemporalChanged || this.props.authorsChanged || this.props.changed) || !valid2 || this.state.editing || this.state.drawing}
+                disabled={!(this.props.spatioTemporalChanged || this.props.authorsChanged || this.props.changed || this.props.optionalChanged) || !valid2 || this.state.editing || this.state.drawing}
               >
                 Publish
             </Button>
-              <Button
-                type="button"
-                onClick={this.handleClick.bind(null)}
-                disabled={this.props.candidate}>
-                Go To ERC
-             </Button>
+              {this.props.candidate
+                ?<Button
+                    type="button"
+                    onClick={this.handlePreview.bind(null)}>
+                    Preview
+                  </Button>
+                : <Button
+                    type="button"
+                    onClick={this.handleClick.bind(null)}
+                    disabled={this.props.candidate}
+                    color="primary">
+                    Go To ERC
+                  </Button>}
             </Card>
             <div id={"errorMessage"}>
               {!valid2 ? "Required Metadata is not valid" : ""} <br />

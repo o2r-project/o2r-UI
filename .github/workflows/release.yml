@@ -1,0 +1,68 @@
+name: Release
+
+# Controls when the action will run. 
+on:
+
+  #every push which starts with a v
+  push:
+    tags: 
+      - 'v*'
+
+    
+
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  release:
+    # Set the type of machine to run on
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Install node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14.x
+
+    - name: Install dependencies
+      working-directory: ./ui
+      run: sudo npm install
+
+    - name: Create React Build
+      working-directory: ./ui
+      run: sudo npm run build
+
+    - name: Zip Buiĺd folder
+      uses: papeloto/action-zip@v1
+      with:
+        files: ui/build
+        dest: build.zip
+
+    - name: Save build s Artifact for dest porposes
+      uses: actions/upload-artifact@v1
+      with:
+        name: build
+        path: ${{ github.workspace }}/build.zip
+
+    - name: get-npm-version
+      id: package-version
+      uses: martinbeentjes/npm-get-version-action@master
+      with:
+        path: ui/
+
+    - uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "${{ steps.package-version.outputs.current-version}}"
+        title: "Release ${{ steps.package-version.outputs.current-version}}"
+        prerelease: false
+        files: |
+          ${{ github.workspace }}/build.zip
+

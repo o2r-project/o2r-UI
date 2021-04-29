@@ -27,10 +27,10 @@ services:
     #restart: always
     volumes:
      - o2rstorage:/tmp/o2r
-    environment: 
+    environment:
      - DEBUG=bindings
      - BINDINGS_PORT=8092
-     
+
   ui:
     container_name: ui
     build:
@@ -43,12 +43,15 @@ services:
       - '81:3000'
     #environment:
      # - NODE_ENV=development
+    # enable TTY for react-scripts https://github.com/facebook/create-react-app/issues/8688
+    stdin_open: true
+    tty: true
 
   webserver:
     image: nginx:latest
     depends_on:
       - ui
     volumes:
-      - "./dev/nginx-local-microservices.conf:/etc/nginx/nginx.conf:ro"
+      - "./dev/nginx-dev-local-microservices.conf:/etc/nginx/nginx.conf:ro"
     ports:
       - "80:80"

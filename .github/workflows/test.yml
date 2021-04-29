@@ -1,0 +1,94 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Test
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches:
+    - master
+    - dev
+  pull_request:
+
+    
+
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  test:
+    # Set the type of machine to run on
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Install node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14.x
+
+    - name: Install dependencies
+      working-directory: ./ui
+      run: sudo npm install
+    
+    - name: Pull meta image
+      working-directory: ./ui
+      run: docker pull o2rproject/o2r-meta:1447d43
+
+    - name: Start containers
+      run: docker-compose -f "ui/docker-compose.yml" up -d --build
+    
+    - name: Sleep for 1 minute
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '1m'
+
+    - name: Restart containers for guestlister
+      run: |
+        docker-compose -f "ui/docker-compose.yml" stop
+        docker-compose -f "ui/docker-compose.yml" up -d
+
+    - name: Sleep for 2 minutes
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '2m'
+
+    
+    - name: Check running containers
+      run: docker ps
+
+    - name: Check logs of webserver
+      run: docker logs ui_webserver_1
+
+    - name: Check logs of guestlister
+      run: docker logs ui_guestlister_1
+
+    - name: Run tests
+      working-directory: ./ui
+      run: npm run test
+
+    - name: Check logs of muncher
+      if: always()
+      run: docker logs ui_muncher_1
+
+    - name: Save pictures
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+        name: screenshots
+        path: |
+          ui/screenshots/
+          ui/src/test/dummy_workspace.zip
+          ui/src/test/bindings_workspace.zip
+
+
+    - name: Stop containers
+      if: always()
+      run: docker-compose -f "ui/docker-compose.yml" down

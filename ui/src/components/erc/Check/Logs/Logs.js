@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button, Dialog, AppBar, Toolbar, Slide, DialogContent, Typography } from "@material-ui/core";
-import uuid from 'uuid/v1';
+import {v1 as uuid} from 'uuid';
 import logo from '../../../../assets/img/o2r-logo-only-white.svg';
 import { withRouter } from 'react-router-dom';
 
@@ -41,6 +41,7 @@ class LogsView extends Component{
             <Button variant="contained" color="primary" 
                 disabled={this.state.job.status !== 'failure' && this.state.job.status !== 'success' && this.props.logs !== null}
                 onClick={this.handleClickOpen}
+                id="logs"
                 style={{marginTop: "5%", width: "150px",}}
             >
                 Show logs
@@ -55,12 +56,12 @@ class LogsView extends Component{
                         <Typography variant="h6" color="inherit" style={{ flex: 1 }}>
                             <a href="/"><img src={logo} alt="o2r" id="headerLogo" /></a>
                         </Typography>
-                        <Button color="inherit" onClick={this.handleClose}>Close</Button>
+                        <Button id ="close" color="inherit" onClick={this.handleClose}>Close</Button>
                     </Toolbar>
                 </AppBar>
                 <DialogContent style={{marginTop: "64px", paddingTop: "20px"}}>
                 <div className="logs">
-                    <b>Validate bag: </b>
+                    <b id="bag"> Validate bag: </b>
                     <ul>
                         {this.props.logs.validate_bag.text.map(log => (
                             <li key={uuid()}>

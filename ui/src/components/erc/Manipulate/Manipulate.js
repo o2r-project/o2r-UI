@@ -38,15 +38,16 @@ class Manipulate extends React.Component {
         if (this.state.bindings.length > 5) {
             this.setState({ variant: "scrollable" })
         }
+        document.title = "Manipulate | ERC " + this.props.id + config.title;
     }
 
     componentDidUpdate = (prevProps) => {
         if(JSON.stringify(this.props.bindings) !== JSON.stringify(prevProps.bindings)){
             this.setState({bindings : this.props.bindings, binding: this.props.bindings[0], params: this.getParams(this.props.bindings[0].sourcecode.parameter)}, () => this.setParameter.bind(this))
-            
+
         }
     }
-    
+
     runManipulateService() {
         const self = this;
         self.state.bindings.forEach((binding) => {
@@ -75,7 +76,7 @@ class Manipulate extends React.Component {
                 }, 2000);
             })
         }
-        if(parameter.length == 0){
+        if(parameter.length === 0){
             setTimeout(() => {
                 this.buildFullUrl(this.state.binding);
             }, 2000);
@@ -87,7 +88,7 @@ class Manipulate extends React.Component {
         this.setState({ loading: true, processURL: true });
         let url = config.baseUrl + 'compendium/' + binding.id + "/binding/" + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?';
         let settingsText = ""
-        if(this.state.params.length == 0){
+        if(this.state.params.length === 0){
             settingsText = "information about paramers will be displayed here"
         }
         for (let i = 0; i < this.state.params.length; i++) {
@@ -136,7 +137,7 @@ class Manipulate extends React.Component {
                 this.buildFullUrl(this.state.binding);
                 let changed = false;
                 for (let i = 0; i < parameter.length; i++) {
-                    if (this.state[parameter[i].name] != parameter[i].val) {
+                    if (this.state[parameter[i].name] !== parameter[i].val) {
                         changed = true;
                     }
                 }
@@ -215,7 +216,7 @@ class Manipulate extends React.Component {
                         <Grid item xs={8}>
                             {this.state.binding.sourcecode.parameter.map((parameter, index) => (
                                 <div className="slider" key={index}>
-                                    <Typography variant='caption'>
+                                    <Typography id="desc" variant='caption'>
                                         {parameter.uiWidget.caption}
                                     </Typography>
                                     {parameter.uiWidget.type === 'slider'
@@ -227,10 +228,11 @@ class Manipulate extends React.Component {
                                         ? <RadioGroup aria-label="position" name="position" value={this.state[parameter.name]} onChange={this.handleChange(parameter.name)} row>
                                             {parameter.uiWidget.options.map((option, index) => (
                                                 <FormControlLabel key={index}
+                                                    id={"option" +index}
                                                     value={option}
                                                     control={<Radio color="primary" />}
                                                     label={option}
-                                                    checked={option == this.state[parameter.name]}
+                                                    checked={option === this.state[parameter.name]}
                                                 />
                                             ))}
                                         </RadioGroup>
@@ -240,7 +242,7 @@ class Manipulate extends React.Component {
 
                             ))}
                         </Grid>
-                        <Grid item xs={4} style={{ "min-height": "100px" }}>
+                        <Grid item xs={4} style={{ minHeight: "100px" }}>
                             <Button variant='contained' color='primary' disabled={!this.state.changed}
                                 onClick={this.setOriginalSettings.bind(this)}
                             >
@@ -252,7 +254,7 @@ class Manipulate extends React.Component {
                         </Grid>
                     </Grid>
                     <div className="image">
-                        <Button variant="contained" color="primary" className="maniBtn"
+                        <Button id="saveComparison" variant="contained" color="primary" className="maniBtn"
                             onClick={this.saveForComparison.bind(this)}
                             disabled={this.state.settings.length === 2}
                         >

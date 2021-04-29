@@ -1,9 +1,12 @@
 import React from 'react';
 import { List, ListItem, ListItemText, Button } from '@material-ui/core';
-import { Map, TileLayer, Polygon } from 'react-leaflet'
+import { Map, TileLayer, Polygon } from 'react-leaflet';
+import config from '../../../helpers/config';
 
 
 import { withRouter } from 'react-router-dom';
+import languageCodes from '../../../helpers/isoCodes_639-1.json'
+
 let ref2;
 
 class Metadata extends React.Component {
@@ -16,6 +19,7 @@ class Metadata extends React.Component {
     componentDidMount() {
         ref2 = this.refs.map.leafletElement;
         ref2.fitBounds([this.metadata.spatial.union.bbox[0], this.metadata.spatial.union.bbox[2]])
+        document.title = "Metadata | ERC " + this.props.erc.id + config.title;
     }
 
     goToErc = (id) => {
@@ -28,11 +32,13 @@ class Metadata extends React.Component {
 
     render() {
         const positions = [this.metadata.spatial.union.bbox[0], this.metadata.spatial.union.bbox[1], this.metadata.spatial.union.bbox[2], this.metadata.spatial.union.bbox[3]]
+        const languages = this.metadata.languages ? languageCodes.filter(language => this.metadata.languages.includes(language.code)).map(language => language.full).toString().replace(/,/g, ", ") : null;
+        const keywords  = this.metadata.keywords ? this.metadata.keywords.toString().replace(/,/g, ", ") : null;  
         return (
             <>
                 <div style={{ width: "90%", marginLeft: "5%", textAlign: "justify" }}>
                     <h2>Metadata of compendium:</h2>
-                    <span><b>Title: </b>{this.metadata.title}</span> <br />
+                    <span id="title"><b>Title: </b>{this.metadata.title}</span> <br />
                     <p> <span style={{ "font-weight": "bold" }}> Created on: </span> {this.props.erc.created.substr(0, 10)} {this.props.erc.created.substr(11, 5)}  <br />
                         <span style={{ "font-weight": "bold" }}> by: </span> {this.props.erc.user} </p>
                     <span ><b>Description: </b>{this.metadata.description}</span> <br /> <br />
@@ -48,7 +54,11 @@ class Metadata extends React.Component {
                     <span ><b>License: </b></span> <br />
                     <span style={{ marginLeft: "2%" }}><b>Code: </b>{this.metadata.license.code}</span> <br />
                     <span style={{ marginLeft: "2%" }}><b>Data: </b>{this.metadata.license.data}</span> <br />
-                    <span style={{ marginLeft: "2%" }}><b>Text: </b>{this.metadata.license.text}</span> <br /> <br />
+                    <span style={{ marginLeft: "2%" }}><b>Text: </b>{this.metadata.license.text}</span> <br /><br />
+                    <span> <b>DOI: </b>{this.metadata.identifier.doi}</span><br />
+                    <span> <b>Languages: </b>{languages}</span><br />
+                    <span> <b>Keywords: </b>{keywords}</span><br />
+                    <br />
 
                     <span ><b>Spatial extend:</b></span> <br />
                     <Map center={[50.2, 7.6]} zoom={13} ref="map">
@@ -61,7 +71,7 @@ class Metadata extends React.Component {
                         />
                     </Map>
                     <br />
-                    <span ><b>Temporal extend: </b>From {this.metadata.temporal.begin.substr(0, 10)} to {this.metadata.temporal.end.substr(0, 10)}</span> <br />
+                    <span ><b>Temporal extend: </b>From {this.metadata.temporal.begin? this.metadata.temporal.begin.substr(0, 10):""} to {this.metadata.end ? this.metadata.temporal.end.substr(0, 10) : ""}</span> <br />
                     {this.props.erc.substituted ?
                     <>
                         <span><b>Subsituted ERC:</b></span>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 
-import { Card, CardHeader, CardContent, CardActions, Button, IconButton, Collapse, Grid, Paper, TextField } from '@material-ui/core';
+import { Card, CardHeader, CardContent, Button, IconButton, Collapse, Grid, } from '@material-ui/core';
 
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
@@ -47,7 +47,7 @@ const ResultList= (props) =>
                                                     </Grid>
                                                     <Grid item xs={3}>
                                                         <Button variant="contained" size="small" color="primary" style={{ "top": "40%" }} onClick={() => props.editMetadata(erc)}>
-                                                            Edit Metadta
+                                                            Edit Metadata
                                                          </Button>
                                                          <br/>
                                                          <br/>
