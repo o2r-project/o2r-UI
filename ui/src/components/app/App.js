@@ -82,8 +82,24 @@ class App extends Component {
       loggedIn: this.user(),
       userName: null,
       userOrcid: null,
+      ojsView: this.ojs(),
+      id: this.id(),
     };
   };
+
+  ojs(){
+    if (typeof ojsView !== 'undefined') {
+      return ojsView // eslint-disable-line
+  }
+  return false
+  }
+
+  id(){
+    if (typeof ercID !== 'undefined') {
+      return ercID // eslint-disable-line
+  }
+  return ""
+  }
 
   user () {
     httpRequests.getUser()
@@ -111,6 +127,7 @@ class App extends Component {
 
   render() {
     return (
+      ! this.state.ojsView? 
       <MuiThemeProvider theme={o2rTheme}>
       <div id="pageContainer">
       <Header
@@ -135,6 +152,18 @@ class App extends Component {
       </HashRouter>
       <Footer></Footer>
       </div>
+      </MuiThemeProvider>:
+
+
+      <MuiThemeProvider theme={o2rTheme}>
+
+      <HashRouter>
+        <div className="content" id="mainView">
+          <Route path="/" component={(props) => <ERC {...props} id={this.state.id} userLevel={this.state.level} />}></Route>
+        </div>
+      </HashRouter>
+
+
       </MuiThemeProvider>
     )
   }

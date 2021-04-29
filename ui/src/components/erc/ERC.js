@@ -24,7 +24,7 @@ class ERC extends React.Component {
         super(props);
         this.state = {
             failure: false,
-            id: this.props.match.params.id,
+            id: this.props.id ? this.props.id: this.props.match.params.id,
             displayfile: null,
             pdfFile: null,
             dataset: null,
@@ -43,7 +43,7 @@ class ERC extends React.Component {
 
     componentDidMount = () => {
       this.getMetadata();
-      this.props.history.replace(this.props.location.pathname);
+      //this.props.history.replace(this.props.location.pathname);
       document.title = "ERC " + this.state.id + config.title;
      };
 
