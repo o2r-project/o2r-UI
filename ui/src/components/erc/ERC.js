@@ -4,7 +4,7 @@ import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import { Paper, Tabs, Tab, Button, IconButton, Grid, Dialog, DialogActions, DialogTitle, Icon, Box} from "@material-ui/core";
 import GetAppIcon from '@material-ui/icons/GetApp';
 
-import config from '../../helpers/config';
+//import config from '../../helpers/config';
 import './erc.css';
 import httpRequests from '../../helpers/httpRequests';
 import MainView from './MainView/MainView';
@@ -44,7 +44,7 @@ class ERC extends React.Component {
     componentDidMount = () => {
       this.getMetadata();
       //this.props.history.replace(this.props.location.pathname);
-      document.title = "ERC " + this.state.id + config.title;
+      document.title = "ERC " + this.state.id + config.title; // eslint-disable-line
      };
 
 
@@ -317,7 +317,8 @@ class ERC extends React.Component {
                                 {this.state.publicLink && this.props.userLevel > 0 ?
                                     <span >
                                         <span style={{ top: "1px", position: "relative" }}> This ERC has an public Link: </span>
-                                        <a href={config.ercUrl + this.state.publicLink}> {config.ercUrl + this.state.publicLink} </a>
+                                        <a href={config.ercUrl + this.state.publicLink}> {config.ercUrl + this.state.publicLink // eslint-disable-line
+                                        } </a> 
                                     </span>
                                     : ""}
                             </Grid>
@@ -335,7 +336,7 @@ class ERC extends React.Component {
                                 metadata={this.state.metadata}
                                 handleTabChange={this.handleTabChange}
                                 filePath={this.state.html
-                                    ? config.baseUrl + "compendium/" + this.state.id + "/data/" + this.state.displayfile
+                                    ? config.baseUrl + "compendium/" + this.state.id + "/data/" + this.state.displayfile // eslint-disable-line
                                     : this.state.pdfFile !== null ? this.state.pdfFile.path : this.state.metadata.identifier.doiurl}>
                             </MainView>
                             : <div>There is no file to display</div>}

@@ -5,7 +5,7 @@ import {v1 as uuid} from 'uuid';
 
 import httpRequests from '../../../helpers/httpRequests';
 import './check.css';
-import config from '../../../helpers/config';
+//import config from '../../../helpers/config';
 import Comparison from './Comparison/Comparison';
 import Logs from './Logs/Logs';
 import { useTheme } from '@material-ui/core/styles';
@@ -95,7 +95,7 @@ class Check extends Component {
         super(props);
         this.state = {
             jobs: [],
-            socketPath: config.baseUrl,
+            socketPath: config.baseUrl, // eslint-disable-line
             runningJob: [],
         }
     }
@@ -186,7 +186,7 @@ class Check extends Component {
 
     componentDidMount() {
         this.getJobs();
-        document.title = "Check | ERC " + this.props.id + config.title;
+        document.title = "Check | ERC " + this.props.id + config.title; // eslint-disable-line
     }
 
     render() {

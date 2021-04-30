@@ -88,15 +88,15 @@ class App extends Component {
   };
 
   ojs(){
-    if (typeof ojsView !== 'undefined') {
-      return ojsView // eslint-disable-line
+    if (typeof config.ojsView !== 'undefined') {// eslint-disable-line
+      return config.ojsView // eslint-disable-line
   }
   return false
   }
 
   id(){
-    if (typeof ercID !== 'undefined') {
-      return ercID // eslint-disable-line
+    if (typeof config.ercID !== 'undefined') {// eslint-disable-line
+      return config.ercID // eslint-disable-line
   }
   return ""
   }

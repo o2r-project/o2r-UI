@@ -1,7 +1,7 @@
 import React from 'react';
 import { List, ListItem, ListItemText, Button } from '@material-ui/core';
 import { Map, TileLayer, Polygon } from 'react-leaflet';
-import config from '../../../helpers/config';
+//import config from '../../../helpers/config';
 
 
 import { withRouter } from 'react-router-dom';
@@ -19,7 +19,7 @@ class Metadata extends React.Component {
     componentDidMount() {
         ref2 = this.refs.map.leafletElement;
         ref2.fitBounds([this.metadata.spatial.union.bbox[0], this.metadata.spatial.union.bbox[2]])
-        document.title = "Metadata | ERC " + this.props.erc.id + config.title;
+        document.title = "Metadata | ERC " + this.props.erc.id + config.title; // eslint-disable-line
     }
 
     goToErc = (id) => {

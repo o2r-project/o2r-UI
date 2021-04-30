@@ -1,6 +1,6 @@
 import React from 'react';
 
-import config from '../../../../../helpers/config'
+//import config from '../../../../../helpers/config'
 
 
 class Download extends React.Component {
@@ -8,13 +8,13 @@ class Download extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            url: config.baseUrl + "compendium/" + props.id + "/data/" + props.file
+            url: config.baseUrl + "compendium/" + props.id + "/data/" + props.file // eslint-disable-line
         };
     }
 
     componentDidUpdate(prevProps) {
         if (this.props.file !== prevProps.file) {
-            this.setState({ url: config.baseUrl + "compendium/" + this.props.id + "/data/" + this.props.file })
+            this.setState({ url: config.baseUrl + "compendium/" + this.props.id + "/data/" + this.props.file }) // eslint-disable-line
         }
     }
 
