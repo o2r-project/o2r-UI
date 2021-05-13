@@ -24,7 +24,7 @@ class ERC extends React.Component {
         super(props);
         this.state = {
             failure: false,
-            id: this.props.match.params.id,
+            id: this.props.location.state ? this.props.location.state.id : this.props.match.params.id ,
             displayfile: null,
             pdfFile: null,
             dataset: null,
@@ -45,6 +45,31 @@ class ERC extends React.Component {
       this.getMetadata();
       document.title = "ERC " + this.state.id + config.title;
      };
+
+     checkHash(){
+        let hash = this.props.location.state? this.props.location.state.hash : this.props.location.hash;
+        let tab = 0
+        switch(hash){
+          case "#Check":
+              tab = 1
+              break;
+              case "#Manipulate":
+                  tab =2;
+                  break;
+              case "#Substitution":
+                  tab = 3;
+                  break;
+              case "#Metadata":
+                  tab=4;
+                  break;
+              case "#Shipment":
+                  tab =5;
+                  break;
+        }
+        this.setState({
+          tabValue: tab,
+      })
+     }
 
 
     setDataFile(datafile) {
@@ -187,6 +212,7 @@ class ERC extends React.Component {
                 self.setCodeFile(data.mainfile);
                 self.setPdfFile();
                 self.proofPublicLink();
+                self.checkHash();
                 })
             })
             .catch(function (response) {
@@ -212,6 +238,27 @@ class ERC extends React.Component {
 
 
     handleTabChange = (e, newValue) => {
+
+        let hash = "#"
+        switch(newValue){
+            case 1:
+                hash += "Check"
+                break;
+            case 2:
+                hash += "Manipulate"
+                break;
+            case 3:
+                hash += "Substitution"
+                break;
+            case 4:
+                hash += "Metadata"
+                break;
+            case 5:
+                hash += "Shipment"
+                break;
+
+        }
+        this.props.history.replace(hash, null)
         this.setState({
             tabValue: newValue,
         })

@@ -19,10 +19,10 @@ class jobsRender extends Component {
         this.state={
             id: this.props.match.params.id,
             jobId: this.props.match.params.jobId,
-            job: this.props.location.state.job,
-            displayfile: this.props.location.state.displayfile ? this.props.location.state.displayfile : displayfile,
-            result: this.props.location.state.result ? this.props.location.state.result : "unset",
-            runningJob: this.props.location.state.runningJob
+            job: this.props.location.state ? this.props.location.job : undefined,
+            displayfile: this.props.location.state ? this.props.location.state.displayfile : displayfile,
+            result: this.props.location.state ? this.props.location.state.result : "unset",
+            runningJob: this.props.location.state ?this.props.location.state.runningJob : false
         }
     }
 

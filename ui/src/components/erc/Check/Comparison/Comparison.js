@@ -27,8 +27,10 @@ class Comparison extends Component {
     }
 
     handleClose = () => {
-            this.props.history.push({
-                pathname: '/erc/' + this.props.id});
+        this.props.history.push({
+            pathname: '/erc/' + this.props.id + "#Check",
+            state: { id : this.props.id, hash: "#Check"}
+        });
     }
 
     activateScroll = () => {
