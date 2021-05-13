@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { Button, Accordion, AccordionDetails, AccordionSummary, Typography, CircularProgress, Dialog, DialogContent, DialogTitle, DialogActions } from "@material-ui/core";
 import socketIOClient from "socket.io-client";
-import {v1 as uuid} from 'uuid';
+import { v1 as uuid } from 'uuid';
 
 import httpRequests from '../../../helpers/httpRequests';
 import './check.css';
 import config from '../../../helpers/config';
 import Comparison from './Comparison/Comparison';
-import Logs from './Logs/Logs';
+import { withRouter, Route } from 'react-router-dom';
 import { useTheme } from '@material-ui/core/styles';
 
 
@@ -15,13 +15,13 @@ function Status(status) {
     const theme = useTheme();
     switch (status.status) {
         case 'success':
-            return <span style={{"color": theme.palette.success.main}}>Success</span>
+            return <span style={{ "color": theme.palette.success.main }}>Success</span>
         case 'failure':
             if (status.checkStatus !== "failure") {
-                return <span style={{"color": theme.palette.failure.main}}>Process Failed (check logs)</span>
+                return <span style={{ "color": theme.palette.failure.main }}>Process Failed (check logs)</span>
             }
             else {
-                return <span style={{"color": theme.palette.failure.main}}>Reproduction Failed (click on "Show Result" for details)</span>
+                return <span style={{ "color": theme.palette.failure.main }}>Reproduction Failed (click on "Show Result" for details)</span>
             }
         case 'running':
             return <span className="running">Running <CircularProgress size={15} /></span>
@@ -58,6 +58,17 @@ class ListJobs extends Component {
         }
     }
 
+    handleClickOpen(job, hash) {
+        let result = false
+        if(hash=="result"){
+            result=true
+        }
+        this.props.history.push({
+            pathname: '/erc/' + this.props.id + '/job/' + job.id + "#"+ hash,
+            state: { job: job, runningJob: true, displayfile: this.props.displayfile, result: result}
+        });
+    }
+
     render() {
         return (
             <div>
@@ -78,8 +89,21 @@ class ListJobs extends Component {
                                 <div className="stepmargin"><span><b>4) Build docker image: </b><Status status={job.steps.image_build.status}></Status></span></div>
                                 <div className="stepmargin"><span><b>5) Execute analysis: </b><Status status={job.steps.image_execute.status}></Status></span></div>
                                 <div className="stepmargin"><span><b>6) Compare original and reproduced results: </b><Status checkStatus={job.steps.check.status} status={job.steps.check.status}></Status></span></div>
-                                <Comparison job={job} displayfile={this.props.displayfile} className="compare"></Comparison>
-                                <Logs job={job} logs={this.props.logs}></Logs>
+                                <Button variant="contained" color="primary"
+                                    disabled={job.status !== 'failure' && job.status !== 'success'}
+                                    onClick={()=> this.handleClickOpen(job, "result")}
+                                    id="result"
+                                    style={{ marginTop: "5%",marginRight:"10%", width: "150px", }}
+                                >
+                                    Show result
+                                </Button>
+                                <Button variant="contained" color="primary"
+                                    onClick={() => this.handleClickOpen(job, "logs")}
+                                    id="logs"
+                                    style={{ marginTop: "5%", width: "150px", }}
+                                >
+                                    Show logs
+                                </Button>
                             </div>
                         </AccordionDetails>
                     </Accordion>
@@ -87,6 +111,7 @@ class ListJobs extends Component {
             </div>
         );
     }
+
 }
 
 class Check extends Component {
@@ -99,6 +124,7 @@ class Check extends Component {
             runningJob: [],
         }
     }
+
 
     socket() {
         const self = this;
@@ -217,6 +243,8 @@ class Check extends Component {
                             jobs={this.state.runningJob}
                             runningJob={true}
                             displayfile={this.props.displayfile}
+                            id={this.props.id}
+                            history={this.props.history}
                         >
                         </ListJobs> : ''}
                     {this.state.jobs.length > 0 ?
@@ -224,6 +252,8 @@ class Check extends Component {
                             jobs={this.state.jobs}
                             runningJob={false}
                             displayfile={this.props.displayfile}
+                            id={this.props.id}
+                            history={this.props.history}
                         >
                         </ListJobs> : ''}
                 </div>
@@ -232,4 +262,4 @@ class Check extends Component {
     }
 }
 
-export default Check;
+export default withRouter(Check);

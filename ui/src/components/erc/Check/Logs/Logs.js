@@ -16,37 +16,26 @@ class LogsView extends Component{
 
     constructor(props) {
         super(props);
-        this.state = { open: false, job: props.job }
+        this.state = { open: true, job: props.job }
     };
 
     componentDidMount() {
         const self = this;
-        console.log(this.props.location.search)
-        if (this.props.location.search === '?logs') {
+        if (this.props.job) {
             self.setState({ open: true })
         }
     }
 
-    handleClickOpen = () => {
-        this.props.history.push(this.props.location.pathname + '?logs')
-    }
   
     handleClose = () => {
-        window.history.back();
+        this.props.history.push({
+            pathname: '/erc/' + this.props.id});
     }
   
     render() {
         return (
         <div>
-            <Button variant="contained" color="primary" 
-                disabled={this.state.job.status !== 'failure' && this.state.job.status !== 'success' && this.props.logs !== null}
-                onClick={this.handleClickOpen}
-                id="logs"
-                style={{marginTop: "5%", width: "150px",}}
-            >
-                Show logs
-            </Button>
-            {this.props.logs !== null ?
+            {this.props.job !== undefined ?
             <Dialog className="main_block" fullScreen TransitionComponent={Transition}
                 open={this.state.open} 
                 onClose={this.handleClose}
@@ -63,7 +52,7 @@ class LogsView extends Component{
                 <div className="logs">
                     <b id="bag"> Validate bag: </b>
                     <ul>
-                        {this.props.logs.validate_bag.text.map(log => (
+                        {this.props.job.logs.validate_bag.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
@@ -71,7 +60,7 @@ class LogsView extends Component{
                     </ul>
                     <b>Generate configuration: </b>
                     <ul>
-                        {this.props.logs.generate_configuration.text.map(log => (
+                        {this.props.job.logs.generate_configuration.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
@@ -79,7 +68,7 @@ class LogsView extends Component{
                     </ul>
                     <b>Image prepare: </b>
                     <ul>
-                        {this.props.logs.image_prepare.text.map(log => (
+                        {this.props.job.logs.image_prepare.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
@@ -87,7 +76,7 @@ class LogsView extends Component{
                     </ul>
                     <b>Validate compendium: </b>
                     <ul>
-                        {this.props.logs.validate_compendium.text.map(log => (
+                        {this.props.job.logs.validate_compendium.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
@@ -95,7 +84,7 @@ class LogsView extends Component{
                     </ul>
                     <b>Generate manifest: </b>
                     <ul>
-                        {this.props.logs.generate_manifest.text.map(log => (
+                        {this.props.job.logs.generate_manifest.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
@@ -103,7 +92,7 @@ class LogsView extends Component{
                     </ul>
                     <b>Image build: </b>
                     <ul>
-                        {this.props.logs.image_build.text.map(log => (
+                        {this.props.job.logs.image_build.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
@@ -111,7 +100,7 @@ class LogsView extends Component{
                     </ul>
                     <b>Image execute: </b>
                     <ul>
-                        {this.props.logs.image_execute.text.map(log => (
+                        {this.props.job.logs.image_execute.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
@@ -119,7 +108,7 @@ class LogsView extends Component{
                     </ul>
                     <b>Image save: </b>
                     <ul>
-                        {this.props.logs.image_save.text.map(log => (
+                        {this.props.job.logs.image_save.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
@@ -127,7 +116,7 @@ class LogsView extends Component{
                     </ul>
                     <b>Check: </b>
                     <ul>
-                        {this.props.logs.check.text.map(log => (
+                        {this.props.job.logs.check.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
@@ -135,7 +124,7 @@ class LogsView extends Component{
                     </ul>
                     <b>Cleanup: </b>
                     <ul>
-                        {this.props.logs.cleanup.text.map(log => (
+                        {this.props.job.logs.cleanup.text.map(log => (
                             <li key={uuid()}>
                                 {log}
                             </li>
@@ -153,32 +142,12 @@ class Logs extends Component {
 
     constructor(props) {
         super(props);
-        this.state={
-            logs: null,
-        }
-    }
-
-    getLogs(job_id) {
-        const self = this;
-        httpRequests.getLogs(job_id)
-            .then(function(res) {
-                self.setState({
-                    logs: res.data.steps
-                });
-            })
-            .catch(function(res) {
-                console.log(res)
-            })
-    }
-
-    componentDidMount() {
-        this.getLogs(this.props.job.id)
     }
 
     render() {
         return (
             <div>
-                <LogsView logs={this.state.logs} job={this.props.job} location={this.props.location} history={this.props.history}></LogsView>
+                <LogsView logs={this.props.logs} job={this.props.job} location={this.props.location} history={this.props.history} id={this.props.id}></LogsView>
             </div>
         );
     }

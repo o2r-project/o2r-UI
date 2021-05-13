@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {Button, AppBar, Toolbar, Typography, MuiThemeProvider } from '@material-ui/core';
-import { Route, NavLink, HashRouter } from "react-router-dom";
+import { Route, NavLink, BrowserRouter } from "react-router-dom";
 
 import o2rTheme from '../../helpers/theme';
 import './App.css';
@@ -15,6 +15,7 @@ import httpRequests from '../../helpers/httpRequests';
 import Author from '../authorView/Author';
 import CreateERC from '../createERC/CreateERC';
 import Discovery from '../discovery/Discovery';
+import JobsRender from '../erc/Check/JobsRender'
 import ERC from '../erc/ERC';
 
 const Header = ( props ) => {
@@ -28,7 +29,7 @@ const Header = ( props ) => {
         <Button target="_blank" rel="noopener" color="inherit" href="http://www.dlib.org/dlib/january17/nuest/01nuest.html">
           Learn more about ERCs
         </Button>
-        <HashRouter>
+        <BrowserRouter>
           {/*<NavLink id="link" to="/discover">
             <Button color="inherit" label="test">
               Discover ERC
@@ -42,7 +43,7 @@ const Header = ( props ) => {
                   {props.userOrcid}
               </Button> : ''}
           </NavLink>
-        </HashRouter>
+        </BrowserRouter>
         <Button color="inherit" id="login"
           href={props.loggedIn ? "api/v1/auth/logout" : "api/v1/auth/login"} 
           onClick={() => props.login()}>{props.loggedIn ? 'Logout' : 'Login'}
@@ -58,7 +59,7 @@ const Header = ( props ) => {
 const Footer = () => {
   return(
     <div className="mui-container mui--text-center" id="footer">
-      <HashRouter>
+      <BrowserRouter>
       <div id="links">
           <NavLink id="link" to="/">Home</NavLink> |&nbsp;
           <a id="link" href="http://www.dlib.org/dlib/january17/nuest/01nuest.html">About ERC</a> |&nbsp;
@@ -70,7 +71,7 @@ const Footer = () => {
           <a id="link" href="https://github.com/o2r-project/reference-implementation">Implementation</a> |&nbsp;
           Version&nbsp;<code>#dev#</code>
       </div>
-      </HashRouter>
+      </BrowserRouter>
     </div>
   );
 }
@@ -120,7 +121,7 @@ class App extends Component {
         userOrcid={this.state.userOrcid}>
       </Header>
 
-      <HashRouter>
+      <BrowserRouter>
       <div>
         <div className="content" id="mainView">
           <Route exact path="/" component={(props) => <Startpage {...props} loggedIn={this.state.loggedIn}></Startpage>} />
@@ -129,10 +130,12 @@ class App extends Component {
           <Route path="/author/:id" component={Author}/>
           <Route path="/createERC/:id" component={CreateERC}/>
           <Route path="/discover" component={Discovery}/>
-          <Route path="/erc/:id" component={(props) => <ERC {...props} userLevel={this.state.level} />}></Route>
+          <Route exact path="/erc/:id" component={(props) => <ERC {...props} userLevel={this.state.level} />}></Route>
+          <Route path="/erc/:id/job/:jobId" component={JobsRender}></Route>
+           
         </div>
       </div>
-      </HashRouter>
+      </BrowserRouter>
       <Footer></Footer>
       </div>
       </MuiThemeProvider>

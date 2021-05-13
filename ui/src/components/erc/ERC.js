@@ -43,7 +43,6 @@ class ERC extends React.Component {
 
     componentDidMount = () => {
       this.getMetadata();
-      this.props.history.replace(this.props.location.pathname);
       document.title = "ERC " + this.state.id + config.title;
      };
 
