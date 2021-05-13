@@ -49,6 +49,7 @@ class LogsView extends Component{
                     </Toolbar>
                 </AppBar>
                 <DialogContent style={{marginTop: "64px", paddingTop: "20px"}}>
+                {this.props.job.logs ? 
                 <div className="logs">
                     <b id="bag"> Validate bag: </b>
                     <ul>
@@ -130,7 +131,7 @@ class LogsView extends Component{
                             </li>
                         ))}
                     </ul>
-                </div>
+                </div> : "Job starting ... "}
                 </DialogContent>
             </Dialog> : '' }
         </div>

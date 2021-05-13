@@ -65,7 +65,7 @@ class ListJobs extends Component {
         }
         this.props.history.push({
             pathname: '/erc/' + this.props.id + '/job/' + job.id + "#"+ hash,
-            state: { job: job, runningJob: true, displayfile: this.props.displayfile, result: result}
+            state: { job: job, runningJob: this.props.runningJob, displayfile: this.props.displayfile, result: result}
         });
     }
 

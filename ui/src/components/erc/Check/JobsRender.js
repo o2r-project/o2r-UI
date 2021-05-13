@@ -21,30 +21,49 @@ class jobsRender extends Component {
             jobId: this.props.match.params.jobId,
             job: this.props.location.state.job,
             displayfile: this.props.location.state.displayfile ? this.props.location.state.displayfile : displayfile,
-            result: this.props.location.state.result ? this.props.location.state.result : "unset"
+            result: this.props.location.state.result ? this.props.location.state.result : "unset",
+            runningJob: this.props.location.state.runningJob
         }
     }
 
     componentDidMount(){
-        console.log(this.props.location)
-        let result = this.props.location.hash
-        console.log(this.props.location.hash)
+        let result = this.props.location.hash;
         if(result == "#result"){
-            result=true
+            result=true;
         }
         else{
-            result=false
+            result=false;
         }
 
         if(!this.state.job){
-            this.getDisplayfile()
-            this.getJob()
+            this.getDisplayfile();
+            this.getJob();
         }
 
         if(this.state.result === "unset"){
-            this.setState({result})
+            this.setState({result});
+        }
+
+        if(this.state.runningJob){
+            this.socket();
         }
     }
+
+    socket() {
+        const self = this;
+        const socket = socketIOClient(config.baseUrl + "logs/job");
+        socket.on("connect", function (evt) {
+            console.log("Job socket connected");
+        });
+        socket.on("document", (evt) => {
+            console.log("document event");
+        });
+        socket.on("set", (evt) => {
+            console.log("Job socket set");
+            self.getJob()
+        });
+    }
+
 
     getJob(){
         const self = this;
