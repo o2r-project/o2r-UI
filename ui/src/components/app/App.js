@@ -130,7 +130,7 @@ class App extends Component {
           <Route path="/author/:id" component={Author}/>
           <Route path="/createERC/:id" component={CreateERC}/>
           <Route path="/discover" component={Discovery}/>
-          <Route exact path="/erc/:id" component={(props) => <ERC {...props} userLevel={this.state.level} />}></Route>
+          <Route exact path="/erc/:id" component={(props) => <ERC {...props} userLevel={this.state.level} orcid={this.state.userOrcid} />}></Route>
           <Route path="/erc/:id/job/:jobId" component={JobsRender}></Route>
            
         </div>

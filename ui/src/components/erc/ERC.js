@@ -37,6 +37,7 @@ class ERC extends React.Component {
             isPreview: false,
             doiurl: false,
             publicLink: false,
+            publisher: null,
         };
         this.handleClose = this.handleClose.bind(this);
     }
@@ -201,7 +202,8 @@ class ERC extends React.Component {
                     substituted: substituted,
                     isPreview: response.data.candidate,
                     candidate: candidate,
-                    doiurl: data.identifier.doiurl
+                    doiurl: data.identifier.doiurl,
+                    publisher:  response.data.user
                 }, () => { 
                 self.setDisplayFile(data.displayfile);
                 if (Array.isArray(data.inputfiles)) {
@@ -296,6 +298,12 @@ class ERC extends React.Component {
         });
     }
 
+    goToEdit(){
+        this.props.history.push({
+            pathname: '/createErc/' + this.state.id
+        });
+    }
+
 
 
 
@@ -303,7 +311,7 @@ class ERC extends React.Component {
         const classes = this.useStyles
         return (
             <div className="Erc" >
-              {this.state.isPreview ? <Box
+              {this.state.isPreview ? <div><Box
                                           color="white"
                                           textAlign="center"
                                           bgcolor="warning.main"
@@ -312,9 +320,19 @@ class ERC extends React.Component {
                                           borderRadius={4}
                                           mx="auto"
                                           my={2}
+                                          style={{display: 'inline-block'}}
                                           >
                                           <p><b>This is a preview! Changes from the create window will not be displayed.</b></p>
-                                      </Box> : ""}
+     
+                                      </Box> 
+                                      {this.props.userLevel >100 || this.state.publisher === this.props.orcid  ? 
+                    <Button onClick={() => this.goToEdit()}
+                        style={{marginLeft: '10px'}}
+                        variant='contained'
+                        color = "primary"> Edit Metadata </Button> 
+                        : ""}
+ </div> 
+                : ""}
                 <Box  borderTop={1} borderColor="silver">
                 <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
                     <ReflexElement style={{ overflow: "hidden" }}>
