@@ -40,6 +40,7 @@ class Dropzone extends Component {
           pathname: '/createERC/' + response.data.id});
       })
       .catch((response) => {
+        console.log(response)
         if(!response.response){
           self.setUpperState({ title: "ERC Upload failed", errorMessage: "Something went wrong. Please try it again in a new window or different Browser." })
         }

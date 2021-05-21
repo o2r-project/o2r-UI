@@ -13,3 +13,11 @@
   background-color: #004286;
   color: white;
   }
+
+  #licenseItem {
+    border-color: #CE5100;
+  border-width: 1px;
+  border-style: solid;
+  background-color: white;
+  color: #CE5100;
+  }

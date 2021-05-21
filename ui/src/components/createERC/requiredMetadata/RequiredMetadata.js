@@ -15,30 +15,6 @@ const codeLicenses = [];
 const mostRestrictiveData = [];
 const leastRestrictiveData = [];
 
-function prepareLicense() {
-
-    for (var i in licensesData) {
-        if (licensesData[i].domain_content) {
-            textLicenses.push(licensesData[i])
-        }
-        ;
-        if (licensesData[i].domain_data) {
-            dataLicenses.push(licensesData[i])
-        }
-        ;
-        if (licensesData[i].domain_software) {
-            codeLicenses.push(licensesData[i])
-        }
-        ;
-    }
-    mostRestrictiveData.push(textLicenses[3].id);
-    mostRestrictiveData.push(codeLicenses[28].id);
-    mostRestrictiveData.push(dataLicenses[1].id);
-    leastRestrictiveData.push(textLicenses[5].id);
-    leastRestrictiveData.push(codeLicenses[39].id);
-    leastRestrictiveData.push(dataLicenses[4].id);
-}
-
 
 const validationSchema = Yup.object({
     title: Yup.string()
@@ -73,6 +49,7 @@ class RequiredMetadata extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            specialLicense: ""
         }
         this.form = React.createRef();
 
@@ -100,18 +77,21 @@ class RequiredMetadata extends Component {
         dataLicense: this.props.originalMetadata.license.data,
         textLicense: this.props.originalMetadata.license.text,
         codeLicense: this.props.originalMetadata.license.code,
-
+        authors: this.props.originalMetadata.authors
     }
 
     componentDidMount() {
-        prepareLicense();
+        this.prepareLicense();
         refs2 = refs.splice(refs.length - this.props.authors.length, refs.length)
         this.form.current.getFormikActions().validateForm()
         this.form.current.getFormikActions().setTouched({ "title": true, "abstract": true, "publicationDate": true, "textLicense": true, "dataLicense": true, "codeLicense": true });
         for (var i in refs2) {
             refs2[i].getFormikActions().validateForm()
         }
+        this.testSpecialLicense();
     }
+
+    
 
     componentWillUnmount() {
 
@@ -134,6 +114,54 @@ class RequiredMetadata extends Component {
     }
 
 
+        prepareLicense() {
+
+    for (var i in licensesData) {
+        if (licensesData[i].domain_content) {
+            textLicenses.push(licensesData[i])
+        }
+        ;
+        if (licensesData[i].domain_data) {
+            dataLicenses.push(licensesData[i])
+        }
+        ;
+        if (licensesData[i].domain_software) {
+            codeLicenses.push(licensesData[i])
+        }
+        ;
+    }
+    mostRestrictiveData.push(textLicenses[3].id);
+    mostRestrictiveData.push(codeLicenses[28].id);
+    mostRestrictiveData.push(dataLicenses[1].id);
+    leastRestrictiveData.push(textLicenses[5].id);
+    leastRestrictiveData.push(codeLicenses[39].id);
+    leastRestrictiveData.push(dataLicenses[4].id);
+
+}
+
+
+testSpecialLicense(){
+    let specialLicense = {
+        text: false,
+        code: false,
+        data: false
+    }
+    console.log(this.formValues.textLicense)
+    console.log(this.props.metadata.textLicense)
+    if(!Array.from(textLicenses, x => x.id).includes(this.formValues.textLicense)){
+        specialLicense.text = true;
+    }
+    if(!Array.from(codeLicenses, x => x.id).includes(this.formValues.codeLicense)){
+        specialLicense.code = true;
+    }
+    if(!Array.from(dataLicenses, x => x.id).includes(this.formValues.dataLicense)){
+        specialLicense.data = true;
+    }
+    console.log(specialLicense)
+    this.setState({specialLicense: specialLicense})
+}
+
+
 
     setFormValues = (values) => {
 
@@ -145,6 +173,7 @@ class RequiredMetadata extends Component {
             this.props.setChanged("changed")
         }
         this.formValues = values;
+        this.testSpecialLicense();
     }
 
     render() {
@@ -185,13 +214,14 @@ class RequiredMetadata extends Component {
                             changed={this.props.changed}
                             setChangedFalse={this.props.setChangedFalse}
                             originalMetadata={JSON.parse(JSON.stringify(this.originialValues))}
-                            originalAuthors={JSON.parse(JSON.stringify(this.props.originalMetadata.creators))}
+                            originalAuthors={JSON.parse(JSON.stringify(this.originialValues.authors))}
                             textLicenses={textLicenses}
                             codeLicenses={codeLicenses}
                             dataLicenses={dataLicenses}
                             mostRestrictiveData={mostRestrictiveData}
                             leastRestrictiveData={leastRestrictiveData}
                             candidate={this.props.candidate}
+                            specialLicense={this.state.specialLicense}
                             showProgress={this.props.showProgress} />}
                         initialValues={this.formValues}
                         validationSchema={validationSchema}

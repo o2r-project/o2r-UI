@@ -215,7 +215,7 @@ export const Form = props => {
                                 id="textLicense"
                                 select
                                 label="Text License"
-                                style={{ margin: 8, width: '30%' }}
+                                style={props.specialLicense.text ? { margin: 8, width: '30%', backgroundColor: "rgba(206, 81, 0, 0.2)" }: { margin: 8, width: '30%' }}
                                 required
                                 helperText={touched.textLicense ? errors.textLicense : ""}
                                 error={touched.textLicense && Boolean(errors.textLicense)}
@@ -229,7 +229,7 @@ export const Form = props => {
                                 }}
                             >
                                 {(Array.from(props.textLicenses, x => x.id).includes(props.originalMetadata.textLicense) || props.originalMetadata.textLicense === "") ? "" :
-                                    <MenuItem key={props.originalMetadata.textLicense} value={props.originalMetadata.textLicense}>
+                                    <MenuItem id={"licenseItem"}   key={props.originalMetadata.textLicense} value={props.originalMetadata.textLicense}>
                                         {props.originalMetadata.textLicense}
                                     </MenuItem>}
                                 <MenuItem id={"menuItem"} key={props.leastRestrictiveData[0]} value={props.leastRestrictiveData[0]}>
@@ -248,7 +248,7 @@ export const Form = props => {
                                 id="codeLicense"
                                 select
                                 label="Code License"
-                                style={{ margin: 8, width: '30%' }}
+                                style={props.specialLicense.code ? { margin: 8, width: '30%', backgroundColor: "rgba(206, 81, 0, 0.2)" }: { margin: 8, width: '30%' }}
                                 required
                                 helperText={touched.codeLicense ? errors.codeLicense : ""}
                                 error={touched.codeLicense && Boolean(errors.codeLicense)}
@@ -262,7 +262,7 @@ export const Form = props => {
                                 }}
                             >
                                 {(Array.from(props.codeLicenses, x => x.id).includes(props.originalMetadata.codeLicense) || props.originalMetadata.codeLicense === "") ? "" :
-                                    <MenuItem key={props.originalMetadata.codeLicense} value={props.originalMetadata.codeLicense}>
+                                    <MenuItem id={"licenseItem"} key={props.originalMetadata.codeLicense} value={props.originalMetadata.codeLicense}>
                                         {props.originalMetadata.codeLicense}
                                     </MenuItem>}
                                 <MenuItem id={"menuItem"} key={props.leastRestrictiveData[1]} value={props.leastRestrictiveData[1]}>
@@ -281,7 +281,7 @@ export const Form = props => {
                                 id="dataLicense"
                                 select
                                 label="Data License"
-                                style={{ margin: 8, width: '30%' }}
+                                style={props.specialLicense.data ? { margin: 8, width: '30%', backgroundColor: "rgba(206, 81, 0, 0.2)" }: { margin: 8, width: '30%' }}
                                 required
                                 helperText={touched.dataLicense ? errors.dataLicense : ""}
                                 error={touched.dataLicense && Boolean(errors.dataLicense)}
@@ -296,7 +296,7 @@ export const Form = props => {
                                 }}
                             >
                                 {(Array.from(props.dataLicenses, x => x.id).includes(props.originalMetadata.dataLicense) || props.originalMetadata.dataLicense === "") ? "" :
-                                    <MenuItem key={props.originalMetadata.dataLicense} value={props.originalMetadata.dataLicense}>
+                                    <MenuItem id={"licenseItem"}  key={props.originalMetadata.dataLicense} value={props.originalMetadata.dataLicense}>
                                         {props.originalMetadata.dataLicense}
                                     </MenuItem>
                                 }
@@ -312,6 +312,8 @@ export const Form = props => {
                                     </MenuItem>
                                 ))}
                             </TextField>
+                            {props.specialLicense.text || props.specialLicense.code || props.specialLicense.data ? 
+                            <p style={{color:'#CE5100'}}>You use a non-standarized license. If you change and save it, you will not able to change to it back again!</p> : ""}
                         </CardContent>
                     </Card>
                 </Grid>
