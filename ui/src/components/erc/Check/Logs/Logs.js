@@ -3,6 +3,7 @@ import { Button, Dialog, AppBar, Toolbar, Slide, DialogContent, Typography } fro
 import {v1 as uuid} from 'uuid';
 import logo from '../../../../assets/img/o2r-logo-only-white.svg';
 import { withRouter } from 'react-router-dom';
+import Highlight from 'react-highlight.js';
 
 import httpRequests from '../../../../helpers/httpRequests';
 import './logs.css';
@@ -55,85 +56,45 @@ class LogsView extends Component{
                 {this.props.job.logs ? 
                 <div className="logs">
                     <b id="bag"> Validate bag: </b>
-                    <ul>
-                        {this.props.job.logs.validate_bag.text.map(log => (
-                            <li key={uuid()}>
-                                {log}
-                            </li>
-                        ))}
-                    </ul>
+                    <Highlight language="R" className="code">
+                        {this.props.job.logs.validate_bag.text.join('\n')}
+                    </Highlight>
                     <b>Generate configuration: </b>
-                    <ul>
-                        {this.props.job.logs.generate_configuration.text.map(log => (
-                            <li key={uuid()}>
-                                {log}
-                            </li>
-                        ))}
-                    </ul>
+                    <Highlight language="R" className="code">
+                        {this.props.job.logs.generate_configuration.text.join('\n')}
+                    </Highlight>
                     <b>Image prepare: </b>
-                    <ul>
-                        {this.props.job.logs.image_prepare.text.map(log => (
-                            <li key={uuid()}>
-                                {log}
-                            </li>
-                        ))}
-                    </ul>
+                    <Highlight language="R" className="code">
+                        {this.props.job.logs.image_prepare.text.join('\n')}
+                    </Highlight>
                     <b>Validate compendium: </b>
-                    <ul>
-                        {this.props.job.logs.validate_compendium.text.map(log => (
-                            <li key={uuid()}>
-                                {log}
-                            </li>
-                        ))}
-                    </ul>
+                    <Highlight language="R" className="code">
+                        {this.props.job.logs.validate_compendium.text.join('\n')}
+                    </Highlight>
                     <b>Generate manifest: </b>
-                    <ul>
-                        {this.props.job.logs.generate_manifest.text.map(log => (
-                            <li key={uuid()}>
-                                {log}
-                            </li>
-                        ))}
-                    </ul>
+                    <Highlight language="R" className="code">
+                        {this.props.job.logs.generate_manifest.text.join('\n')}
+                    </Highlight>
                     <b>Image build: </b>
-                    <ul>
-                        {this.props.job.logs.image_build.text.map(log => (
-                            <li key={uuid()}>
-                                {log}
-                            </li>
-                        ))}
-                    </ul>
+                    <Highlight language="R" className="code">
+                        {this.props.job.logs.image_build.text.join('\n')}
+                    </Highlight>
                     <b>Image execute: </b>
-                    <ul>
-                        {this.props.job.logs.image_execute.text.map(log => (
-                            <li key={uuid()}>
-                                {log}
-                            </li>
-                        ))}
-                    </ul>
+                    <Highlight language="R" className="code">
+                        {this.props.job.logs.image_execute.text.join('\n')}
+                    </Highlight>
                     <b>Image save: </b>
-                    <ul>
-                        {this.props.job.logs.image_save.text.map(log => (
-                            <li key={uuid()}>
-                                {log}
-                            </li>
-                        ))}
-                    </ul>
+                    <Highlight language="R" className="code">
+                        {this.props.job.logs.image_prepare.text.join('\n')}
+                    </Highlight>
                     <b>Check: </b>
-                    <ul>
-                        {this.props.job.logs.check.text.map(log => (
-                            <li key={uuid()}>
-                                {log}
-                            </li>
-                        ))}
-                    </ul>
+                    <Highlight language="R" className="code">
+                        {this.props.job.logs.check.text.join('\n')}
+                    </Highlight>
                     <b>Cleanup: </b>
-                    <ul>
-                        {this.props.job.logs.cleanup.text.map(log => (
-                            <li key={uuid()}>
-                                {log}
-                            </li>
-                        ))}
-                    </ul>
+                    <Highlight language="R" className="code">
+                        {this.props.job.logs.cleanup.text.join('\n')}
+                    </Highlight>
                 </div> : "Job starting ... "}
                 </DialogContent>
             </Dialog> : '' }
