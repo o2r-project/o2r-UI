@@ -48,9 +48,15 @@ describe("Test upload 1", () => {
             await page.click('#regular');
             await page.waitForNavigation();
         }
+        const h1Handle = await page.$("h1");
+        html = await page.evaluate(h1Handle => h1Handle.innerHTML, h1Handle);
 
-        handle = await page.$("#login");
-        html = await page.evaluate(handle => handle.innerText, handle);
+        expect(html).toBe("Create your own Executable Research Compendium (ERC)");
+    }, timeout)
+
+    test("LoggedIn", async () => {
+        html = await page.$eval("#login", el => el.innerText);
+        console.log(html)
 
         expect(html).toBe("LOGOUT");
 
@@ -337,7 +343,7 @@ describe("Inspect ERC", () => {
     test("Start Analysis", async () => {
 
         await page.click('#runAnalysis')
-        await page.waitForTimeout(2000)
+        await page.waitForTimeout(4000)
         await page.screenshot({ path: 'screenshots/bindingsanalysisStarted.jpg', type: 'jpeg' });
 
         const handle = await page.$("#stepOne");
@@ -353,7 +359,7 @@ describe("Inspect ERC", () => {
         await page.waitForTimeout(4000)
         
         const handle = await page.$("#bag");
-        await page.screenshot({ path: 'screenshots/dummyLogs.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/bindingsLogs.jpg', type: 'jpeg' });
         const html = await page.evaluate(handle => handle.innerText, handle);
 
         expect(html).toBe("Validate bag:");
@@ -368,7 +374,7 @@ describe("Inspect ERC", () => {
         await page.click('#panel1d-header')
         await page.click("#result")
         
-        await page.screenshot({ path: 'screenshots/dummyResult.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/bindingsResult.jpg', type: 'jpeg' });
         const handle = await page.$("#diffCaption");
         const html = await page.evaluate(handle => handle.innerText, handle);
 

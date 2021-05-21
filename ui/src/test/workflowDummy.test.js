@@ -37,27 +37,27 @@ describe("Test upload", () => {
         await page.waitForTimeout(3000)
         let handle = await page.$("#login");
         let html = await page.evaluate(handle => handle.innerText, handle);
-
-        async function login(){
+        if(html !== "LOGOUT"){
 
             await page.click('#login')
             await page.waitForTimeout(3000)
             await page.screenshot({ path: 'screenshots/dummylogin.jpg', type: 'jpeg' });
             await page.click('#regular');
-            resolve('resolved');
     }
 
-    if(html !== "LOGOUT"){
-        await login()
-    }
+    const h1Handle = await page.$("h1");
+    html = await page.evaluate(h1Handle => h1Handle.innerHTML, h1Handle);
 
-        await page.waitForTimeout(5000)
-        handle = await page.$("#login");
-        html = await page.evaluate(handle => handle.innerText, handle);
+    expect(html).toBe("Create your own Executable Research Compendium (ERC)");
+}, timeout)
 
-        expect(html).toBe("LOGOUT");
+test("LoggedIn", async () => {
+    html = await page.$eval("#login", el => el.innerText);
+    console.log(html)
 
-    }, timeout);
+    expect(html).toBe("LOGOUT");
+
+}, timeout);
 
     test("Try upload with login", async () => {
 
