@@ -48,7 +48,7 @@ class ERC extends React.Component {
      };
 
      checkHash(){
-        let hash = this.props.location.state? this.props.location.state.hash : this.props.location.hash;
+        let hash = this.props.location.hash;
         let tab = 0
         switch(hash){
           case "#Check":
@@ -241,6 +241,7 @@ class ERC extends React.Component {
 
     handleTabChange = (e, newValue) => {
 
+    
         let hash = "#"
         switch(newValue){
             case 1:
@@ -260,7 +261,7 @@ class ERC extends React.Component {
                 break;
 
         }
-        this.props.history.replace(hash, null)
+        this.props.history.replace({hash: hash})
         this.setState({
             tabValue: newValue,
         })

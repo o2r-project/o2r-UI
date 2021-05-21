@@ -72,8 +72,8 @@ class ListJobs extends Component {
     render() {
         return (
             <div>
-                {this.props.jobs.map(job => (
-                    <Accordion square key={uuid()}
+                {this.props.jobs.map((job,id )=> (
+                    <Accordion square key={uuid()} 
                         expanded={this.state.expanded === job.id}
                         onChange={this.handleChange(job.id)}>
                         <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" style={{ backgroundColor: 'rgb(245, 245, 245)' }}>

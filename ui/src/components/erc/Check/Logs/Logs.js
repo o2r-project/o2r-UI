@@ -29,8 +29,9 @@ class LogsView extends Component{
   
     handleClose = () => {
         this.props.history.push({
-            pathname: '/erc/' + this.props.id + "#Check",
-            state: { id : this.props.id, hash: "#Check"}
+            pathname: '/erc/' + this.props.id,
+            hash: "#Check",
+            state: { id : this.props.id}
         });
     }
   
