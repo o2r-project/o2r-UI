@@ -1,6 +1,7 @@
 const timeout = 60000;
 const archiver = require('archiver');
 var fs = require("fs");
+const { resolve } = require('path');
 
 beforeAll(async () => {
     await page.goto(URL, { waitUntil: "domcontentloaded" });
@@ -32,17 +33,25 @@ describe("Test upload", () => {
 
     test("Login", async () => {
 
+
+        await page.waitForTimeout(3000)
         let handle = await page.$("#login");
         let html = await page.evaluate(handle => handle.innerText, handle);
 
-        if(html !== "LOGOUT"){
+        async function login(){
+
             await page.click('#login')
             await page.waitForTimeout(3000)
             await page.screenshot({ path: 'screenshots/dummylogin.jpg', type: 'jpeg' });
             await page.click('#regular');
-            await page.waitForNavigation();
-        }
+            resolve('resolved');
+    }
 
+    if(html !== "LOGOUT"){
+        await login()
+    }
+
+        await page.waitForTimeout(5000)
         handle = await page.$("#login");
         html = await page.evaluate(handle => handle.innerText, handle);
 
@@ -177,7 +186,7 @@ describe("Inspect ERC", () => {
         
         await page.waitForTimeout(10000)
         await page.click("#logs")
-        await page.waitForTimeout(1000)
+        await page.waitForTimeout(3000)
         
         const handle = await page.$("#bag");
         await page.screenshot({ path: 'screenshots/dummyLogs.jpg', type: 'jpeg' });
@@ -188,8 +197,10 @@ describe("Inspect ERC", () => {
 
      test("Inspect Results", async () => {
         
-        await page.waitForTimeout(1000)
+        await page.waitForTimeout(2000)
         await page.click('#close')
+        await page.waitForTimeout(4000)
+        await page.click('#panel1d-header')
         await page.click("#result")
         
         await page.screenshot({ path: 'screenshots/dummyResult.jpg', type: 'jpeg' });
@@ -197,7 +208,7 @@ describe("Inspect ERC", () => {
         const html = await page.evaluate(handle => handle.innerText, handle);
 
         expect(html).toBe("Differences between original and reproduced results");
-     })
+     }, timeout)
 
 
      

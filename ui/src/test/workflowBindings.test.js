@@ -1,4 +1,4 @@
-const timeout = 500000;
+const timeout = 60000;
 const archiver = require('archiver');
 var fs = require("fs");
 
@@ -59,13 +59,13 @@ describe("Test upload 1", () => {
     test("Try upload with login", async () => {
 
 
+        await page.waitForTimeout(2000)
         const inputUploadHandle = await page.$('input[type=file]');
 
         await page.waitForTimeout(4000)
         let fileToUpload = './src/test/bindings_workspace.zip';
         inputUploadHandle.uploadFile(fileToUpload);
         await page.screenshot({ path: 'screenshots/bindingsUploadERC.jpg', type: 'jpeg' });
-        await page.waitForTimeout(10000)
         await page.click('#upload')
         await page.waitForTimeout(1000)
         await page.screenshot({ path: 'screenshots/bindingsUploadERC2.jpg', type: 'jpeg' });
@@ -92,6 +92,7 @@ describe("Test upload 1", () => {
 
     test("Go to Bindings", async () => {
 
+        await page.waitForTimeout(2000)
         await page.click('#bindings')
         await page.waitForTimeout(2000)
         const handle = await page.$("#label0");
@@ -349,7 +350,7 @@ describe("Inspect ERC", () => {
         
         await page.waitForTimeout(10000)
         await page.click("#logs")
-        await page.waitForTimeout(1000)
+        await page.waitForTimeout(4000)
         
         const handle = await page.$("#bag");
         await page.screenshot({ path: 'screenshots/dummyLogs.jpg', type: 'jpeg' });
@@ -362,6 +363,9 @@ describe("Inspect ERC", () => {
         
         await page.waitForTimeout(1000)
         await page.click('#close')
+
+        await page.waitForTimeout(4000)
+        await page.click('#panel1d-header')
         await page.click("#result")
         
         await page.screenshot({ path: 'screenshots/dummyResult.jpg', type: 'jpeg' });
@@ -369,7 +373,7 @@ describe("Inspect ERC", () => {
         const html = await page.evaluate(handle => handle.innerText, handle);
 
         expect(html).toBe("Differences between original and reproduced results");
-     })
+     }, timeout)
 
     test("Go to Manipulate", async () => {
 
@@ -409,8 +413,10 @@ describe("Inspect ERC", () => {
         await page.click('#saveComparison')
         await page.click('#option1')
 
+        await page.waitForTimeout(2000)
         await page.click('#showComparison')
 
+        await page.waitForTimeout(2000)
         const handle = await page.$("#caption0");
         const html = await page.evaluate(handle => handle.innerText, handle);
 
