@@ -37,9 +37,7 @@ class Dropzone extends Component {
     httpRequests.uploadWorkspace(data, this.config)
       .then(function (response) {
         self.history.push({
-          pathname: '/createERC/' + response.data.id,
-          state: { data: response }
-        });
+          pathname: '/createERC/' + response.data.id});
       })
       .catch((response) => {
         if(!response.response){

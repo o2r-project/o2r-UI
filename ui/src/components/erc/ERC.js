@@ -24,7 +24,7 @@ class ERC extends React.Component {
         super(props);
         this.state = {
             failure: false,
-            id: this.props.location.state ? this.props.location.state.id : this.props.match.params.id ,
+            id: this.props.location.state ? this.props.location.state.id  ? this.props.location.state.id : this.props.match.params.id : this.props.match.params.id ,
             displayfile: null,
             pdfFile: null,
             dataset: null,
