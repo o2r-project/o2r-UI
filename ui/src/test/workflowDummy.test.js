@@ -43,6 +43,7 @@ describe("Test upload", () => {
             await page.waitForTimeout(3000)
             await page.screenshot({ path: 'screenshots/dummylogin.jpg', type: 'jpeg' });
             await page.click('#regular');
+            await page.waitForTimeout(3000)
     }
 
     const h1Handle = await page.$("h1");

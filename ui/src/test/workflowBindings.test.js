@@ -46,7 +46,7 @@ describe("Test upload 1", () => {
             await page.waitForTimeout(3000)
             await page.screenshot({ path: 'screenshots/bindingslogin.jpg', type: 'jpeg' });
             await page.click('#regular');
-            await page.waitForNavigation();
+            await page.waitForTimeout(3000)
         }
         const h1Handle = await page.$("h1");
         html = await page.evaluate(h1Handle => h1Handle.innerHTML, h1Handle);
