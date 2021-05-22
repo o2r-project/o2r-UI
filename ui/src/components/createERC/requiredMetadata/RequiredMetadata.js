@@ -146,8 +146,6 @@ testSpecialLicense(){
         code: false,
         data: false
     }
-    console.log(this.formValues.textLicense)
-    console.log(this.props.metadata.textLicense)
     if(!Array.from(textLicenses, x => x.id).includes(this.formValues.textLicense)){
         specialLicense.text = true;
     }

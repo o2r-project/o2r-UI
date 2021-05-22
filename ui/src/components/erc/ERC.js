@@ -17,7 +17,7 @@ import SubstitutionInfoPop from './Substitution/SubstitutionInfo';
 import Metadata from './Metadata/Metadata';
 import Shipment from './Shipment/Shipment';
 import { withRouter } from 'react-router-dom';
-import logo from '../../assets/img/DOI_logo.svg.png';
+import Doilogo from '../../assets/img/DOI_logo.svg.png';
 
 class ERC extends React.Component {
     constructor(props) {
@@ -346,7 +346,7 @@ class ERC extends React.Component {
                                         color='inherit'
                                         style={{ float: "center" }}
                                         startIcon={<Icon>
-                                            <img src={logo} height={20} width={20} alt="DOI"/>
+                                            <img src={Doilogo} height={20} width={20} alt="DOI"/>
                                         </Icon>}
                                     >
                                         Article
