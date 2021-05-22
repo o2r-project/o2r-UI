@@ -313,7 +313,7 @@ export const Form = props => {
                                 ))}
                             </TextField>
                             {props.specialLicense.text || props.specialLicense.code || props.specialLicense.data ? 
-                            <p style={{color:'#CE5100'}}>You use a non-standarized license. If you change and save it, you will not able to change to it back again!</p> : ""}
+                            <p style={{color:'#CE5100'}}>You use a non-standarized license. If you change and save it, you will not able to change back to it again!</p> : ""}
                         </CardContent>
                     </Card>
                 </Grid>

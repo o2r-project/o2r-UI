@@ -187,13 +187,14 @@ testSpecialLicense(){
                             const newMetadata = this.props.metadata;
                             newMetadata.title = values.title;
                             newMetadata.description = values.abstract;
-                            newMetadata.creators = this.props.authors;
+                            newMetadata.authors = this.props.authors;
                             newMetadata.publication_date = values.publicationDate;
                             newMetadata.displayfile = values.displayFile;
                             newMetadata.mainfile = values.mainFile;
                             newMetadata.license.data = values.dataLicense;
                             newMetadata.license.text = values.textLicense;
                             newMetadata.license.code = values.codeLicense;
+                            values.authors=this.props.authors
                             this.originialValues = JSON.parse(JSON.stringify(values));
                             this.props.setMetadata(newMetadata, true);
                             actions.resetForm(values);
