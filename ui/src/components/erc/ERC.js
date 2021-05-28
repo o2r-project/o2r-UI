@@ -4,7 +4,7 @@ import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import { Paper, Tabs, Tab, Button, IconButton, Grid, Dialog, DialogActions, DialogTitle, Icon, Box} from "@material-ui/core";
 import GetAppIcon from '@material-ui/icons/GetApp';
 
-import config from '../../helpers/config';
+//import config from '../../helpers/config';
 import './erc.css';
 import httpRequests from '../../helpers/httpRequests';
 import MainView from './MainView/MainView';
@@ -24,7 +24,7 @@ class ERC extends React.Component {
         super(props);
         this.state = {
             failure: false,
-            id: this.props.location.state ? this.props.location.state.id  ? this.props.location.state.id : this.props.match.params.id : this.props.match.params.id ,
+            id: this.props.id ? this.props.id: this.props.location.state ? this.props.location.state.id  ? this.props.location.state.id : this.props.match.params.id : this.props.match.params.id ,
             displayfile: null,
             pdfFile: null,
             dataset: null,
@@ -44,7 +44,7 @@ class ERC extends React.Component {
 
     componentDidMount = () => {
       this.getMetadata();
-      document.title = "ERC " + this.state.id + config.title;
+      document.title = "ERC " + this.state.id + config.title; // eslint-disable-line
      };
 
      checkHash(){
@@ -79,21 +79,6 @@ class ERC extends React.Component {
             .then(function (res) {
                 httpRequests.getFile("compendium/" + self.state.id + "/data/")
                     .then(function (res2) {
-                        if (datafile.trim().toLowerCase().indexOf('.rdata') !== -1) {
-                            httpRequests.getFile('inspection/' + self.state.id + '?file=' + datafile)
-                                .then((res3) => {
-                                    self.setState({
-                                        dataset: {
-                                            datafile: datafile,
-                                            data: res3.data,
-                                            tree: res2.data.children,
-                                        },
-                                    });
-                                })
-                                .catch((res3) => {
-                                    console.log(res3)
-                                })
-                        } else {
                             self.setState({
                                 dataset: {
                                     datafile: datafile,
@@ -101,7 +86,6 @@ class ERC extends React.Component {
                                     tree: res2.data.children,
                                 },
                             });
-                        }
                     })
                     .catch(function (res2) {
                         console.log(res2)
@@ -293,10 +277,14 @@ class ERC extends React.Component {
     }
 
     handleAlertClose() {
-        console.log(this)
+        if(this.props.ojsView){
+            window.open("https://o2r.uni-muenster.de", "_blank")
+        }
+        else{
         this.props.history.push({
             pathname: '/'
         });
+    }
     }
 
     goToEdit(){
@@ -335,7 +323,7 @@ class ERC extends React.Component {
  </div> 
                 : ""}
                 <Box  borderTop={1} borderColor="silver">
-                <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
+                <ReflexContainer style={this.props.ojsView? {height: "100vh"}:{ height: "87vh" }} orientation="vertical">
                     <ReflexElement style={{ overflow: "hidden" }}>
                         <Grid container>
                             <Grid item xs={4}>
@@ -382,7 +370,8 @@ class ERC extends React.Component {
                                 {this.state.publicLink && this.props.userLevel > 0 ?
                                     <span >
                                         <span style={{ top: "1px", position: "relative" }}> This ERC has an public Link: </span>
-                                        <a href={config.ercUrl + this.state.publicLink}> {config.ercUrl + this.state.publicLink} </a>
+                                        <a href={config.ercUrl + this.state.publicLink}> {config.ercUrl + this.state.publicLink // eslint-disable-line
+                                        } </a> 
                                     </span>
                                     : ""}
                             </Grid>
@@ -400,7 +389,7 @@ class ERC extends React.Component {
                                 metadata={this.state.metadata}
                                 handleTabChange={this.handleTabChange}
                                 filePath={this.state.html
-                                    ? config.baseUrl + "compendium/" + this.state.id + "/data/" + this.state.displayfile
+                                    ? config.baseUrl + "compendium/" + this.state.id + "/data/" + this.state.displayfile // eslint-disable-line
                                     : this.state.pdfFile !== null ? this.state.pdfFile.path : this.state.metadata.identifier.doiurl}>
                             </MainView>
                             : <div>There is no file to display</div>}
@@ -467,12 +456,23 @@ class ERC extends React.Component {
                 <Dialog
                     open={this.state.failure}
                     onClose={this.handleAlertClose.bind(this)}>
+                    {this.props.ojsView ? <div>
+                    <DialogTitle>
+                        {"The ERC with the ID " + this.state.id + " does not exist or was deleted. \n Please check if you used the correct ID."}
+                                    </DialogTitle>
+                                    <DialogActions>
+                                        <Button onClick={this.handleAlertClose.bind(this)}> Go To the ERC Overview Page</Button>
+                                    </DialogActions>
+                                    </div>
+                    :
+                    <div>
                     <DialogTitle>
                         {"The ERC with the ID " + this.state.id + " does not exist or was deleted. \n Please select another ERC."}
                     </DialogTitle>
                     <DialogActions>
                         <Button onClick={this.handleAlertClose.bind(this)}> Go To Home Page</Button>
                     </DialogActions>
+                    </div>}
                 </Dialog>
             </div>
         )

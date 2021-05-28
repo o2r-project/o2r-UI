@@ -4,7 +4,7 @@ import './startpage.css';
 import httpRequests from '../../helpers/httpRequests';
 import InspectExamples from '../inspectExamplesDemo/InspectExamples';
 import Dropzone from "../uploadERC/Dropzone/Dropzone";
-import config from '../../helpers/config';
+//import config from '../../helpers/config';
 import { Grid, TextField, Button, Dialog, DialogActions, DialogContent, DialogTitle, CircularProgress } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 
@@ -61,7 +61,7 @@ class Startpage extends Component {
 
 
   componentDidMount(){
-    document.title = "Home" + config.title;
+    document.title = "Home" + config.title; // eslint-disable-line
   }
 
 render() {

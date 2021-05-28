@@ -8,7 +8,7 @@ import SpatioTemporalMetadata from './spatioTemporalMetadata/SpatioTemporalMetad
 import OptionalMetadata from './optionalMetadata/OptionalMetadata'
 import Bindings from './bindings/Bindings';
 import httpRequests from '../../helpers/httpRequests';
-import config from '../../helpers/config';
+//import config from '../../helpers/config';
 
 
 
@@ -153,7 +153,7 @@ class CreateERC extends Component {
 
     componentDidMount = () => {
       this.getMetadata();
-      document.title = "Create ERC" + config.title;
+      document.title = "Create ERC" + config.title; // eslint-disable-line
     }
 
     handleClose = () => {

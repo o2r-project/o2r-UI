@@ -5,7 +5,7 @@ import {v1 as uuid} from 'uuid';
 
 import httpRequests from '../../../helpers/httpRequests';
 import './check.css';
-import config from '../../../helpers/config';
+//import config from '../../../helpers/config';
 import Logs from './Logs/Logs';
 import Comparison from './Comparison/Comparison'
 import {withRouter} from 'react-router-dom';
@@ -51,7 +51,7 @@ class jobsRender extends Component {
 
     socket() {
         const self = this;
-        const socket = socketIOClient(config.baseUrl + "logs/job");
+        const socket = socketIOClient(config.baseUrl + "logs/job"); // eslint-disable-line
         socket.on("connect", function (evt) {
             console.log("Job socket connected");
         });

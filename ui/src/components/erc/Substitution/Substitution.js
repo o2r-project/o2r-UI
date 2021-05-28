@@ -1,7 +1,7 @@
 import React from 'react';
 
 import httpRequests from '../../../helpers/httpRequests';
-import config from '../../../helpers/config';
+//import config from '../../../helpers/config';
 import { Card, CardHeader, CardContent, CardActions, Button, IconButton, Collapse, Grid } from '@material-ui/core';
 import Substitute from './Substitute/Subsititute'
 
@@ -27,7 +27,7 @@ class Substitution extends React.Component {
         if (this.props.baseErcData.metadata.o2r.inputfiles.length !== 0) {
             this.getCompendia()
         }
-        document.title = "Substitution | ERC " + this.props.baseErcId + config.title;
+        document.title = "Substitution | ERC " + this.props.baseErcId + config.title; // eslint-disable-line
     }
 
     getCompendia = () => {

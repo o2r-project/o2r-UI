@@ -4,7 +4,7 @@ import { Card, CardContent, Grid } from "@material-ui/core/";
 import './startpage.css';
 import Upload from "../uploadERC/Upload";
 import InspectExamples from '../inspectExamples/InspectExamples';
-import config from '../../../helpers/config';
+//import config from '../../../helpers/config';
 
 class Startpage extends Component {
   state = {
@@ -12,7 +12,7 @@ class Startpage extends Component {
   };
 
   componentDidMount(){
-    document.title = "Home" + config.title;
+    document.title = "Home" + config.title; // eslint-disable-line
   }
 
   render() {

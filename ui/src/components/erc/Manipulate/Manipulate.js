@@ -7,7 +7,7 @@ import SelectedSettings from './SelectedSettings/SelectedSettings';
 import { search, removeHighlight } from '../MainView/MainView'
 import OwnSlider from './Slider/Slider'
 import './manipulate.css'
-import config from '../../../helpers/config';
+//import config from '../../../helpers/config';
 
 class Manipulate extends React.Component {
 
@@ -38,7 +38,7 @@ class Manipulate extends React.Component {
         if (this.state.bindings.length > 5) {
             this.setState({ variant: "scrollable" })
         }
-        document.title = "Manipulate | ERC " + this.props.id + config.title;
+        document.title = "Manipulate | ERC " + this.props.id + config.title; // eslint-disable-line
     }
 
     componentDidUpdate = (prevProps) => {
@@ -86,7 +86,7 @@ class Manipulate extends React.Component {
     buildFullUrl(binding) {
         console.log("run")
         this.setState({ loading: true, processURL: true });
-        let url = config.baseUrl + 'compendium/' + binding.id + "/binding/" + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?';
+        let url = config.baseUrl + 'compendium/' + binding.id + "/binding/" + binding.computationalResult.result.replace(/\s/g, '').toLowerCase() + '?'; // eslint-disable-line
         let settingsText = ""
         if(this.state.params.length === 0){
             settingsText = "information about paramers will be displayed here"
