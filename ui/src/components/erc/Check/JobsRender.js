@@ -51,7 +51,7 @@ class jobsRender extends Component {
 
     socket() {
         const self = this;
-        const socket = socketIOClient(config.baseUrl + "logs/job");
+        const socket = socketIOClient(config.baseUrl + "logs/job"); // eslint-disable-line
         socket.on("connect", function (evt) {
             console.log("Job socket connected");
         });

@@ -160,11 +160,11 @@ class App extends Component {
 
       <MuiThemeProvider theme={o2rTheme}>
 
-      <HashRouter>
+      <BrowserRouter>
         <div className="content" id="mainView" style={{maxHeight: "100%", marginTop: "0px"}}>
           <Route path="/" component={(props) => <ERC {...props} id={this.state.id} userLevel={this.state.level} ojsView={this.state.ojsView} />}></Route>
         </div>
-      </HashRouter>
+      </BrowserRouter>
 
 
       </MuiThemeProvider>

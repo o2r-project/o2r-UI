@@ -23,8 +23,7 @@ class Comparison extends Component {
 
     componentDidMount() {
         const self = this;
-        document.title = "Comparison | ERC " + this.props.id + config.title;
-
+        document.title = "Comparison | ERC " + this.props.id + config.title; // eslint-disable-line
     }
 
     handleClose = () => {
@@ -101,17 +100,22 @@ class Comparison extends Component {
                             <h4 className="title" style={{ marginLeft: "1%" }}> Original results </h4>
                             <h4 className="title"> Reproduced results </h4>
 
-                            <Iframe className="display" id={'frame1'} url={config.baseUrl + "job/" + this.props.job.id + "/data/" + this.props.displayfile}></Iframe>
-                            <Iframe className="check" id={'frame2'} url={config.baseUrl + "job/" + this.props.job.id + "/data/check.html"}></Iframe>
+                            <Iframe className="display" id={'frame1'} url={config.baseUrl + "job/" + this.props.job.id + "/data/" + this.props.displayfile // eslint-disable-line
+                            }></Iframe> 
+                            <Iframe className="check" id={'frame2'} url={config.baseUrl + "job/" + this.props.job.id + "/data/check.html" // eslint-disable-line
+                            }></Iframe>
                         </div> :
                         <div className="compare_">
                             <h4 className="title_" > Original results </h4>
                             <h4 className="title_"> Reproduced results </h4>
                             <h4 className="title_" id="diffCaption"> Differences between original and reproduced results </h4>
 
-                            <Iframe className="display_" id={'frame1'} url={config.baseUrl + "compendium/" + this.props.job.compendium_id + "/data/" + this.props.displayfile}></Iframe>
-                            <Iframe className="check_" id={'frame2'} url={config.baseUrl + "job/" + this.props.job.id + "/data/" + this.props.displayfile}></Iframe>
-                            <Iframe className="diff" id={'frame3'} url={config.baseUrl + "job/" + this.props.job.id + "/data/check.html"}></Iframe>
+                            <Iframe className="display_" id={'frame1'} url={config.baseUrl + "compendium/" + this.props.job.compendium_id + "/data/" + this.props.displayfile // eslint-disable-line
+                            }></Iframe>
+                            <Iframe className="check_" id={'frame2'} url={config.baseUrl + "job/" + this.props.job.id + "/data/" + this.props.displayfile // eslint-disable-line
+                            }></Iframe>
+                            <Iframe className="diff" id={'frame3'} url={config.baseUrl + "job/" + this.props.job.id + "/data/check.html" // eslint-disable-line
+                            }></Iframe>
 
                             <h4 className="title_" > To use synchronised scrolling in Firefox, move the cursor to the leftmost document. </h4>
                             <FormControlLabel
