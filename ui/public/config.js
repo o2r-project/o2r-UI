@@ -1,6 +1,6 @@
 const config= {
-    "baseUrl": "https://o2r.uni-muenster/api/v1/",
-    "ercUrl": "https://o2r-uni-muenster/erc/",
+    "baseUrl": "http://localhost/api/v1/",
+    "ercUrl": "http://localhost/erc/",
     "title":" | o2r Demoserver",
     "ojsView" : false,
 }

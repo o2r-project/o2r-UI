@@ -127,7 +127,7 @@ class App extends Component {
 
   render() {
     return (
-      ! this.state.ojsView? 
+      ! this.state.ojsView ? 
       <MuiThemeProvider theme={o2rTheme}>
       <div id="pageContainer">
       <Header
@@ -152,14 +152,14 @@ class App extends Component {
       </HashRouter>
       <Footer></Footer>
       </div>
-      </MuiThemeProvider>:
+      </MuiThemeProvider> :
 
 
       <MuiThemeProvider theme={o2rTheme}>
 
       <HashRouter>
-        <div className="content" id="mainView">
-          <Route path="/" component={(props) => <ERC {...props} id={this.state.id} userLevel={this.state.level} />}></Route>
+        <div className="content" id="mainView" style={{maxHeight: "100%", marginTop: "0px"}}>
+          <Route path="/" component={(props) => <ERC {...props} id={this.state.id} userLevel={this.state.level} ojsView={this.state.ojsView} />}></Route>
         </div>
       </HashRouter>
 

@@ -20,9 +20,9 @@ class Download extends React.Component {
 
     render() {
         return (
-            <div style={{ textAlign: 'left' }}>
+            <div style={{ textAlign: 'center' }}>
                 <br />
-                <p style={{ display: 'inline' }}> The file is to large to show. But you can download it </p> <a href={this.state.url} > here </a>
+                <p style={{ display: 'inline', textAlign: "center" }}> The file can not be displayed, because it is not supported or too large. However you can download it </p> <a href={this.state.url} > here </a>
             </div>
         )
     }

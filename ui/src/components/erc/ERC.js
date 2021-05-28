@@ -54,21 +54,6 @@ class ERC extends React.Component {
             .then(function (res) {
                 httpRequests.getFile("compendium/" + self.state.id + "/data/")
                     .then(function (res2) {
-                        if (datafile.trim().toLowerCase().indexOf('.rdata') !== -1) {
-                            httpRequests.getFile('inspection/' + self.state.id + '?file=' + datafile)
-                                .then((res3) => {
-                                    self.setState({
-                                        dataset: {
-                                            datafile: datafile,
-                                            data: res3.data,
-                                            tree: res2.data.children,
-                                        },
-                                    });
-                                })
-                                .catch((res3) => {
-                                    console.log(res3)
-                                })
-                        } else {
                             self.setState({
                                 dataset: {
                                     datafile: datafile,
@@ -76,7 +61,6 @@ class ERC extends React.Component {
                                     tree: res2.data.children,
                                 },
                             });
-                        }
                     })
                     .catch(function (res2) {
                         console.log(res2)
@@ -244,10 +228,14 @@ class ERC extends React.Component {
     }
 
     handleAlertClose() {
-        console.log(this)
+        if(this.props.ojsView){
+            window.open("https://o2r.uni-muenster.de", "_blank")
+        }
+        else{
         this.props.history.push({
             pathname: '/'
         });
+    }
     }
 
 
@@ -270,7 +258,7 @@ class ERC extends React.Component {
                                           <p><b>This is a preview! Changes from the create window will not be displayed.</b></p>
                                       </Box> : ""}
                 <Box  borderTop={1} borderColor="silver">
-                <ReflexContainer style={{ height: "87vh" }} orientation="vertical">
+                <ReflexContainer style={this.props.ojsView? {height: "100vh"}:{ height: "87vh" }} orientation="vertical">
                     <ReflexElement style={{ overflow: "hidden" }}>
                         <Grid container>
                             <Grid item xs={4}>
@@ -403,12 +391,23 @@ class ERC extends React.Component {
                 <Dialog
                     open={this.state.failure}
                     onClose={this.handleAlertClose.bind(this)}>
+                    {this.props.ojsView ? <div>
+                    <DialogTitle>
+                        {"The ERC with the ID " + this.state.id + " does not exist or was deleted. \n Please check if you used the correct ID."}
+                                    </DialogTitle>
+                                    <DialogActions>
+                                        <Button onClick={this.handleAlertClose.bind(this)}> Go To the ERC Overview Page</Button>
+                                    </DialogActions>
+                                    </div>
+                    :
+                    <div>
                     <DialogTitle>
                         {"The ERC with the ID " + this.state.id + " does not exist or was deleted. \n Please select another ERC."}
                     </DialogTitle>
                     <DialogActions>
                         <Button onClick={this.handleAlertClose.bind(this)}> Go To Home Page</Button>
                     </DialogActions>
+                    </div>}
                 </Dialog>
             </div>
         )
