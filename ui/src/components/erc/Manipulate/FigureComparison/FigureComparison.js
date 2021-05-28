@@ -17,17 +17,18 @@ function ComparisonView(props) {
     const [tabValue, setTab] = React.useState(0);
 
     React.useEffect(() => {
-    if (props.location.search === '?compare') {
+    if (props.location.hash === '#compare') {
         setOpen(true)
     }
     else{
         setOpen(false)
     }
 
-}, [props.location.search]);
+}, [props.location.hash]);
 
     const handleClickOpen = () => {
-        props.history.push(props.location.pathname + '?compare')
+        props.history.push(props.location.pathname + '#compare')
+        setOpen(true)
     }
 
     const handleClose = () => {

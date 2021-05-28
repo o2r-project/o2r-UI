@@ -38,7 +38,7 @@ class CreateERC extends Component {
             spatioTemporalChanged: false,
             authorsValid: false,
             candidate: true,
-            showProgress: false
+            showProgress: false,
         }
     }
 
@@ -55,11 +55,12 @@ class CreateERC extends Component {
                 if( candidate !== true) candidate =false;
                 httpRequests.getFile("compendium/" + self.state.compendium_id + "/data/" + metadata.mainfile)
                     .then(function (res2) {
-                        console.log(res2)
+                        console.log(res)
+                        metadata.authors = res.data.metadata.raw.author
                         self.setState({
                             metadata: metadata,
                             originalMetadata: JSON.parse(JSON.stringify(metadata)),
-                            authors: metadata.creators,
+                            authors: metadata.authors,
                             languages: metadata.paperLanguage,
                             keywords: metadata.keywords,
                             candidate: candidate,

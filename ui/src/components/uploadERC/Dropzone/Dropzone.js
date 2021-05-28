@@ -37,11 +37,10 @@ class Dropzone extends Component {
     httpRequests.uploadWorkspace(data, this.config)
       .then(function (response) {
         self.history.push({
-          pathname: '/createERC/' + response.data.id,
-          state: { data: response }
-        });
+          pathname: '/createERC/' + response.data.id});
       })
       .catch((response) => {
+        console.log(response)
         if(!response.response){
           self.setUpperState({ title: "ERC Upload failed", errorMessage: "Something went wrong. Please try it again in a new window or different Browser." })
         }

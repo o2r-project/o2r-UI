@@ -17,14 +17,14 @@ import SubstitutionInfoPop from './Substitution/SubstitutionInfo';
 import Metadata from './Metadata/Metadata';
 import Shipment from './Shipment/Shipment';
 import { withRouter } from 'react-router-dom';
-import logo from '../../assets/img/DOI_logo.svg.png';
+import Doilogo from '../../assets/img/DOI_logo.svg.png';
 
 class ERC extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             failure: false,
-            id: this.props.id ? this.props.id: this.props.match.params.id,
+            id: this.props.id ? this.props.id: this.props.location.state ? this.props.location.state.id  ? this.props.location.state.id : this.props.match.params.id : this.props.match.params.id ,
             displayfile: null,
             pdfFile: null,
             dataset: null,
@@ -37,15 +37,40 @@ class ERC extends React.Component {
             isPreview: false,
             doiurl: false,
             publicLink: false,
+            publisher: null,
         };
         this.handleClose = this.handleClose.bind(this);
     }
 
     componentDidMount = () => {
       this.getMetadata();
-      //this.props.history.replace(this.props.location.pathname);
       document.title = "ERC " + this.state.id + config.title; // eslint-disable-line
      };
+
+     checkHash(){
+        let hash = this.props.location.hash;
+        let tab = 0
+        switch(hash){
+          case "#Check":
+              tab = 1
+              break;
+              case "#Manipulate":
+                  tab =2;
+                  break;
+              case "#Substitution":
+                  tab = 3;
+                  break;
+              case "#Metadata":
+                  tab=4;
+                  break;
+              case "#Shipment":
+                  tab =5;
+                  break;
+        }
+        this.setState({
+          tabValue: tab,
+      })
+     }
 
 
     setDataFile(datafile) {
@@ -161,7 +186,8 @@ class ERC extends React.Component {
                     substituted: substituted,
                     isPreview: response.data.candidate,
                     candidate: candidate,
-                    doiurl: data.identifier.doiurl
+                    doiurl: data.identifier.doiurl,
+                    publisher:  response.data.user
                 }, () => { 
                 self.setDisplayFile(data.displayfile);
                 if (Array.isArray(data.inputfiles)) {
@@ -172,6 +198,7 @@ class ERC extends React.Component {
                 self.setCodeFile(data.mainfile);
                 self.setPdfFile();
                 self.proofPublicLink();
+                self.checkHash();
                 })
             })
             .catch(function (response) {
@@ -197,6 +224,28 @@ class ERC extends React.Component {
 
 
     handleTabChange = (e, newValue) => {
+
+    
+        let hash = "#"
+        switch(newValue){
+            case 1:
+                hash += "Check"
+                break;
+            case 2:
+                hash += "Manipulate"
+                break;
+            case 3:
+                hash += "Substitution"
+                break;
+            case 4:
+                hash += "Metadata"
+                break;
+            case 5:
+                hash += "Shipment"
+                break;
+
+        }
+        this.props.history.replace({hash: hash})
         this.setState({
             tabValue: newValue,
         })
@@ -238,6 +287,12 @@ class ERC extends React.Component {
     }
     }
 
+    goToEdit(){
+        this.props.history.push({
+            pathname: '/createErc/' + this.state.id
+        });
+    }
+
 
 
 
@@ -245,7 +300,7 @@ class ERC extends React.Component {
         const classes = this.useStyles
         return (
             <div className="Erc" >
-              {this.state.isPreview ? <Box
+              {this.state.isPreview ? <div><Box
                                           color="white"
                                           textAlign="center"
                                           bgcolor="warning.main"
@@ -254,9 +309,19 @@ class ERC extends React.Component {
                                           borderRadius={4}
                                           mx="auto"
                                           my={2}
+                                          style={{display: 'inline-block'}}
                                           >
                                           <p><b>This is a preview! Changes from the create window will not be displayed.</b></p>
-                                      </Box> : ""}
+     
+                                      </Box> 
+                                      {this.props.userLevel >100 || this.state.publisher === this.props.orcid  ? 
+                    <Button onClick={() => this.goToEdit()}
+                        style={{marginLeft: '10px'}}
+                        variant='contained'
+                        color = "primary"> Edit Metadata </Button> 
+                        : ""}
+ </div> 
+                : ""}
                 <Box  borderTop={1} borderColor="silver">
                 <ReflexContainer style={this.props.ojsView? {height: "100vh"}:{ height: "87vh" }} orientation="vertical">
                     <ReflexElement style={{ overflow: "hidden" }}>
@@ -269,7 +334,7 @@ class ERC extends React.Component {
                                         color='inherit'
                                         style={{ float: "center" }}
                                         startIcon={<Icon>
-                                            <img src={logo} height={20} width={20} alt="DOI"/>
+                                            <img src={Doilogo} height={20} width={20} alt="DOI"/>
                                         </Icon>}
                                     >
                                         Article

@@ -1,4 +1,4 @@
-const timeout = 500000;
+const timeout = 60000;
 const archiver = require('archiver');
 var fs = require("fs");
 
@@ -46,11 +46,17 @@ describe("Test upload 1", () => {
             await page.waitForTimeout(3000)
             await page.screenshot({ path: 'screenshots/bindingslogin.jpg', type: 'jpeg' });
             await page.click('#regular');
-            await page.waitForNavigation();
+            await page.waitForTimeout(3000)
         }
+        const h1Handle = await page.$("h1");
+        html = await page.evaluate(h1Handle => h1Handle.innerHTML, h1Handle);
 
-        handle = await page.$("#login");
-        html = await page.evaluate(handle => handle.innerText, handle);
+        expect(html).toBe("Create your own Executable Research Compendium (ERC)");
+    }, timeout)
+
+    test("LoggedIn", async () => {
+        html = await page.$eval("#login", el => el.innerText);
+        console.log(html)
 
         expect(html).toBe("LOGOUT");
 
@@ -59,13 +65,13 @@ describe("Test upload 1", () => {
     test("Try upload with login", async () => {
 
 
+        await page.waitForTimeout(2000)
         const inputUploadHandle = await page.$('input[type=file]');
 
         await page.waitForTimeout(4000)
         let fileToUpload = './src/test/bindings_workspace.zip';
         inputUploadHandle.uploadFile(fileToUpload);
         await page.screenshot({ path: 'screenshots/bindingsUploadERC.jpg', type: 'jpeg' });
-        await page.waitForTimeout(10000)
         await page.click('#upload')
         await page.waitForTimeout(1000)
         await page.screenshot({ path: 'screenshots/bindingsUploadERC2.jpg', type: 'jpeg' });
@@ -92,6 +98,7 @@ describe("Test upload 1", () => {
 
     test("Go to Bindings", async () => {
 
+        await page.waitForTimeout(2000)
         await page.click('#bindings')
         await page.waitForTimeout(2000)
         const handle = await page.$("#label0");
@@ -336,7 +343,7 @@ describe("Inspect ERC", () => {
     test("Start Analysis", async () => {
 
         await page.click('#runAnalysis')
-        await page.waitForTimeout(2000)
+        await page.waitForTimeout(4000)
         await page.screenshot({ path: 'screenshots/bindingsanalysisStarted.jpg', type: 'jpeg' });
 
         const handle = await page.$("#stepOne");
@@ -349,10 +356,10 @@ describe("Inspect ERC", () => {
         
         await page.waitForTimeout(10000)
         await page.click("#logs")
-        await page.waitForTimeout(1000)
+        await page.waitForTimeout(4000)
         
         const handle = await page.$("#bag");
-        await page.screenshot({ path: 'screenshots/dummyLogs.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/bindingsLogs.jpg', type: 'jpeg' });
         const html = await page.evaluate(handle => handle.innerText, handle);
 
         expect(html).toBe("Validate bag:");
@@ -362,14 +369,17 @@ describe("Inspect ERC", () => {
         
         await page.waitForTimeout(1000)
         await page.click('#close')
+
+        await page.waitForTimeout(4000)
+        await page.click('#panel1d-header')
         await page.click("#result")
         
-        await page.screenshot({ path: 'screenshots/dummyResult.jpg', type: 'jpeg' });
+        await page.screenshot({ path: 'screenshots/bindingsResult.jpg', type: 'jpeg' });
         const handle = await page.$("#diffCaption");
         const html = await page.evaluate(handle => handle.innerText, handle);
 
         expect(html).toBe("Differences between original and reproduced results");
-     })
+     }, timeout)
 
     test("Go to Manipulate", async () => {
 
@@ -409,8 +419,10 @@ describe("Inspect ERC", () => {
         await page.click('#saveComparison')
         await page.click('#option1')
 
+        await page.waitForTimeout(2000)
         await page.click('#showComparison')
 
+        await page.waitForTimeout(2000)
         const handle = await page.$("#caption0");
         const html = await page.evaluate(handle => handle.innerText, handle);
 

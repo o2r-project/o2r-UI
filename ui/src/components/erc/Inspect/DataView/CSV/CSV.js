@@ -1,5 +1,5 @@
 import React from 'react';
-import csvstring from 'csv-string';
+import * as csvstring from 'csv-string';
 import { Table, TableBody, TableCell, TableHead, TableRow, Paper } from '@material-ui/core';
 
 class CSV extends React.Component {
