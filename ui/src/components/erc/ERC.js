@@ -375,7 +375,7 @@ class ERC extends React.Component {
                                 scrollButtons="auto"
                             >
                                 {this.tabs.map((name) => (
-                                    <Tab label={name} id={name.toLocaleLowerCase}></Tab>
+                                    <Tab label={name} id={name.toLocaleLowerCase()}></Tab>
                                 ))}
                             </Tabs>
                         </Paper>
