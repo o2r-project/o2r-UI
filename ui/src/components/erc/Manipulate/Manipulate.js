@@ -7,7 +7,6 @@ import SelectedSettings from './SelectedSettings/SelectedSettings';
 import { search, removeHighlight } from '../MainView/MainView'
 import OwnSlider from './Slider/Slider'
 import './manipulate.css'
-  from '../../../helpers/config';
 
 class Manipulate extends React.Component {
 

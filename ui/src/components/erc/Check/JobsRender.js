@@ -5,7 +5,6 @@ import {v1 as uuid} from 'uuid';
 
 import httpRequests from '../../../helpers/httpRequests';
 import './check.css';
-  from '../../../helpers/config';
 import Logs from './Logs/Logs';
 import Comparison from './Comparison/Comparison'
 import {withRouter} from 'react-router-dom';

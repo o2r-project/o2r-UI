@@ -4,7 +4,6 @@ import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import CodeView from './CodeView/CodeView';
 import DataView from './DataView/DataView';
 import SelectFile from './SelectFile/SelectFile';
-  from '../../../helpers/config';
 
 class Inspect extends Component {
 

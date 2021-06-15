@@ -1,6 +1,5 @@
 import React from 'react';
 
-  from '../../../../../helpers/config'
 
 
 class Download extends React.Component {
