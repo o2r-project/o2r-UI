@@ -25,7 +25,7 @@ class SubstitutionInfoPop extends Component {
         window.location.reload(true);
     }
 
-    render() {console.log(this.props.substitution)
+    render() {
 
         return (
             <div>

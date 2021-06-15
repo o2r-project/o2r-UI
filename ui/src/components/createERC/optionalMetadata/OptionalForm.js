@@ -36,7 +36,6 @@ export const OptionalForm = props => {
 
     const handleReset = async () => {
 
-        console.log(props.originalMetadata)
         resetForm(props.originalMetadata)
         /*for (var i in props.resetAuthors) {
             props.resetAuthors[i].getFormikActions().resetForm(props.originalAuthors[i])
@@ -86,7 +85,6 @@ export const OptionalForm = props => {
         var values = props.values
         values[name].push("")
         setFieldTouched(name, true, true);
-        console.log(values)
         props.setFormValues(values)
     };
 

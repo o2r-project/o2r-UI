@@ -5,7 +5,6 @@ import { v1 as uuid } from 'uuid';
 
 import httpRequests from '../../../helpers/httpRequests';
 import './check.css';
-//import config from '../../../helpers/config';
 import Comparison from './Comparison/Comparison';
 import { withRouter, Route } from 'react-router-dom';
 import { useTheme } from '@material-ui/core/styles';
@@ -146,7 +145,7 @@ class Check extends Component {
                     });
                 })
                 .catch(function (res) {
-                    console.log(res);
+                    console.log(res)
                 })
         });
     }

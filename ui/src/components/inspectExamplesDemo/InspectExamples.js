@@ -7,7 +7,6 @@ import ModalVideo from 'react-modal-video';
 
 import './inspectExamples.css';
 import httpRequests from '../../helpers/httpRequests';
-//import config from '../../helpers/config.json'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -117,7 +116,6 @@ class InspectExamples extends Component {
     openModal = () => this.setState({ isOpen: true });
 
     render() {
-        console.log(this.state)
         return (
             <div>
                 <h1 style={{ textAlign: 'center', marginBottom: '2%', marginTop: '5%' }}>

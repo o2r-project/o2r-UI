@@ -4,7 +4,6 @@ import './startpage.css';
 import httpRequests from '../../helpers/httpRequests';
 import InspectExamples from '../inspectExamplesDemo/InspectExamples';
 import Dropzone from "../uploadERC/Dropzone/Dropzone";
-//import config from '../../helpers/config';
 import { Grid, TextField, Button, Dialog, DialogActions, DialogContent, DialogTitle, CircularProgress } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 
@@ -17,7 +16,6 @@ class Startpage extends Component {
   };
   
   componentMounted() {
-    console.log("mounted")
 }
 
   submit = () => {
@@ -25,7 +23,6 @@ class Startpage extends Component {
     this.setState({open:true, progress: 30, title: "Retreving file from Zenodo"})
     httpRequests.uploadViaZenodo(this.state.value)
       .then((response) => {
-        console.log(response);
         self.setState({open:true, progress: 50})
         var id= response.data.id
         var metadata= "";
@@ -54,7 +51,6 @@ class Startpage extends Component {
   }
   
   setUpperState = (state) => {
-    console.log(state)
     this.setState(state)
   }
 

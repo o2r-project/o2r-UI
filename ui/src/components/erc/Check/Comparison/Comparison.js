@@ -3,7 +3,6 @@ import { Button, Dialog, AppBar, Toolbar, Slide, Typography, FormControlLabel, C
 import logo from '../../../../assets/img/o2r-logo-only-white.svg';
 import Iframe from 'react-iframe';
 import { withRouter } from 'react-router-dom';
-//import config from '../../../../helpers/config';
 import './comparison.css';
 import * as $ from 'jquery';
 
@@ -68,7 +67,6 @@ class Comparison extends Component {
 
     handleCheck = (event) => {
       let checked = event.target.checked;
-      console.log(checked);
       if(checked){
          this.activateScroll();
        }

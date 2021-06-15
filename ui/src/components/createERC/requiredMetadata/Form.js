@@ -33,7 +33,6 @@ export const Form = props => {
 
     const handleReset = async () => {
 
-        console.log(props.originalMetadata)
         resetForm(props.originalMetadata)
         for (var i in props.resetAuthors) {
             props.resetAuthors[i].getFormikActions().resetForm(props.originalAuthors[i])

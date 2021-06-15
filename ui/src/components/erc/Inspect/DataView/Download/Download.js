@@ -1,6 +1,6 @@
 import React from 'react';
 
-//import config from '../../../../../helpers/config'
+  from '../../../../../helpers/config'
 
 
 class Download extends React.Component {

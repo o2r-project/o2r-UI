@@ -78,7 +78,6 @@ handleSelectedText(e) {
 closePopup = (name, e) => {
     this.setState({ popup: false })
     if (name === "tabChange") {
-        console.log(true)
         this.props.handleTabChange(e, 2);
     }
 }

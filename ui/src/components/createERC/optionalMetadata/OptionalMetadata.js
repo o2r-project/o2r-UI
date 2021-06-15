@@ -84,7 +84,6 @@ class OptionalMetadata extends Component {
             this.props.setChanged("changed")
         }
         this.formValues = values;
-        console.log(this.formValues)
     }
 
     render() {

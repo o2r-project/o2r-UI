@@ -30,20 +30,17 @@ class Shipment extends React.Component {
         let self = this;
         httpRequests.getShipmentsByERCID(this.state.id)
             .then((response) => {
-                console.log(response);
                 for (let shipment of response.data) {
                     httpRequests.getShipment(shipment)
                         .then((response) => {
                             shipment = response.data
                             let urls = this.createURL(shipment)
-                            console.log(urls)
                             shipment.deposition_url = urls.url
                             shipment.doi = urls.doi
                             shipment.image_url = urls.image_url
                             let shipments = this.state.shipments;
                             shipments.unshift(response.data);
                             self.setState({ shipments });
-                            console.log(response);
                         })
                 }
             })

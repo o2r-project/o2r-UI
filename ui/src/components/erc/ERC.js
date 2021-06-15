@@ -4,7 +4,6 @@ import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import { Paper, Tabs, Tab, Button, IconButton, Grid, Dialog, DialogActions, DialogTitle, Icon, Box} from "@material-ui/core";
 import GetAppIcon from '@material-ui/icons/GetApp';
 
-//import config from '../../helpers/config';
 import './erc.css';
 import httpRequests from '../../helpers/httpRequests';
 import MainView from './MainView/MainView';
@@ -19,9 +18,12 @@ import Shipment from './Shipment/Shipment';
 import { withRouter } from 'react-router-dom';
 import Doilogo from '../../assets/img/DOI_logo.svg.png';
 
+
+
 class ERC extends React.Component {
     constructor(props) {
         super(props);
+        // To define the id the user has different possibilities: The Id can be defined in the config.js. If there the Id is not defined the id is taken from the url.
         this.state = {
             failure: false,
             id: this.props.id ? this.props.id: this.props.location.state ? this.props.location.state.id  ? this.props.location.state.id : this.props.match.params.id : this.props.match.params.id ,
@@ -40,6 +42,7 @@ class ERC extends React.Component {
             publisher: null,
         };
         this.handleClose = this.handleClose.bind(this);
+        this.tabs  =["Inspect", "Check", "Manipulate", "Substitution", "Metadata", "Shipment" ]
     }
 
     componentDidMount = () => {
@@ -49,23 +52,10 @@ class ERC extends React.Component {
 
      checkHash(){
         let hash = this.props.location.hash;
-        let tab = 0
-        switch(hash){
-          case "#Check":
-              tab = 1
-              break;
-              case "#Manipulate":
-                  tab =2;
-                  break;
-              case "#Substitution":
-                  tab = 3;
-                  break;
-              case "#Metadata":
-                  tab=4;
-                  break;
-              case "#Shipment":
-                  tab =5;
-                  break;
+        hash = hash.substring(1, hash.length)
+        let tab = this.tabs.indexOf(hash)
+        if(tab === -1){
+            tab=0
         }
         this.setState({
           tabValue: tab,
@@ -146,7 +136,6 @@ class ERC extends React.Component {
                 }
             })
             .catch((res) => {
-                console.log(res)
                 if (!this.state.metadata.identifier.doiurl) {
                     self.setState({ pdf: false })
                 }
@@ -161,7 +150,6 @@ class ERC extends React.Component {
         const self = this;
         httpRequests.singleCompendium(this.state.id)
             .then(function (response) {
-                console.log(response.data)
                 let substituted = null;
                 if (response.data.substituted) {
                     substituted = response.data.metadata.substitution
@@ -227,24 +215,7 @@ class ERC extends React.Component {
 
     
         let hash = "#"
-        switch(newValue){
-            case 1:
-                hash += "Check"
-                break;
-            case 2:
-                hash += "Manipulate"
-                break;
-            case 3:
-                hash += "Substitution"
-                break;
-            case 4:
-                hash += "Metadata"
-                break;
-            case 5:
-                hash += "Shipment"
-                break;
-
-        }
+        hash += this.tabs[newValue]
         this.props.history.replace({hash: hash})
         this.setState({
             tabValue: newValue,
@@ -403,12 +374,9 @@ class ERC extends React.Component {
                                 variant="scrollable"
                                 scrollButtons="auto"
                             >
-                                <Tab label="Inspect" id="inspect"/>
-                                <Tab label="Check" id="check"/>
-                                <Tab label="Manipulate" id="manipulate"/>
-                                <Tab label="Substitution" id="substitution"/>
-                                <Tab label="Metadata" id="metadata"/>
-                                <Tab label="Shipment" id="shipment"/>
+                                {this.tabs.map((name) => (
+                                    <Tab label={name} id={name.toLocaleLowerCase}></Tab>
+                                ))}
                             </Tabs>
                         </Paper>
                         {this.state.tabValue === 0 &&

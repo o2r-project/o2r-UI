@@ -155,7 +155,6 @@ testSpecialLicense(){
     if(!Array.from(dataLicenses, x => x.id).includes(this.formValues.dataLicense)){
         specialLicense.data = true;
     }
-    console.log(specialLicense)
     this.setState({specialLicense: specialLicense})
 }
 

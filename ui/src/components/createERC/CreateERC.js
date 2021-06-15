@@ -8,7 +8,7 @@ import SpatioTemporalMetadata from './spatioTemporalMetadata/SpatioTemporalMetad
 import OptionalMetadata from './optionalMetadata/OptionalMetadata'
 import Bindings from './bindings/Bindings';
 import httpRequests from '../../helpers/httpRequests';
-//import config from '../../helpers/config';
+
 
 
 
@@ -55,7 +55,6 @@ class CreateERC extends Component {
                 if( candidate !== true) candidate =false;
                 httpRequests.getFile("compendium/" + self.state.compendium_id + "/data/" + metadata.mainfile)
                     .then(function (res2) {
-                        console.log(res)
                         metadata.authors = res.data.metadata.raw.author
                         self.setState({
                             metadata: metadata,

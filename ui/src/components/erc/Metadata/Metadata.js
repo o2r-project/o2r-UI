@@ -1,7 +1,6 @@
 import React from 'react';
 import { List, ListItem, ListItemText, Button } from '@material-ui/core';
 import { Map, TileLayer, Polygon } from 'react-leaflet';
-//import config from '../../../helpers/config';
 
 
 import { withRouter } from 'react-router-dom';
@@ -23,7 +22,6 @@ class Metadata extends React.Component {
         this.textLicenseIndex = Array.from(this.licenses, x => x.id).indexOf(this.metadata.license.text) 
         this.codeLicenseIndex = Array.from(this.licenses, x => x.id).indexOf(this.metadata.license.code)
         this.dataLicenseIndex = Array.from(this.licenses, x => x.id).indexOf(this.metadata.license.data)
-        console.log(Array.from(this.licenses, x => x.id))
     }
 
     componentDidMount() {
