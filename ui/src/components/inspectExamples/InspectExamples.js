@@ -5,7 +5,6 @@ import {TwitterShareButton, TwitterIcon} from 'react-share';
 
 import './inspectExamples.css';
 import httpRequests from '../../helpers/httpRequests';
-import config from '../../helpers/config';
 
 class InspectExamples extends Component {
 
@@ -51,7 +50,6 @@ class InspectExamples extends Component {
     }
  
     render() {
-        console.log(this.state)
         return(
             <div>
                 <h1>Inspect Executable Research Compendia</h1>
@@ -68,7 +66,8 @@ class InspectExamples extends Component {
                                     </CardContent>
                             </CardActionArea>
                             <CardActions>
-                                <TwitterShareButton url={config.ercUrl + erc.id} >
+                                <TwitterShareButton url={config.ercUrl + erc.id // eslint-disable-line
+                                } >
                                     <TwitterIcon
                                         size={32}
                                         round 

@@ -63,7 +63,6 @@ class SpatioTemporalMetadata extends React.Component {
   }
 
   setPropsState = (state, result) => {
-    console.log(state)
     this.setState({ [state]: result })
   }
 
@@ -113,7 +112,6 @@ class SpatioTemporalMetadata extends React.Component {
         coordinates: [bbox]
       }
     }
-    console.log(metadata)
     this.props.setMetadata(metadata, false)
 
     this._editableFG = ref;
@@ -148,7 +146,6 @@ class SpatioTemporalMetadata extends React.Component {
     try {
       httpRequests.geocodingRequest(query)
         .then(function (res) {
-          console.log(res)
           if (res.data.features.length === 0) { alert("No result found"); return; }
           const resultBBox = res.data.features[0].bbox
           if (!resultBBox) { alert("No result found"); return; }
@@ -163,7 +160,7 @@ class SpatioTemporalMetadata extends React.Component {
 
 
     }
-    catch (err) { console.log(err) }
+    catch (err) { }
   }
 
   handleGeoJsonWorld = () => {

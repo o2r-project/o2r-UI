@@ -20,7 +20,6 @@ class OwnMap extends React.Component {
 
     componentDidMount() {
         firstTime = true;
-        console.log(this.refs)
         ref2 = this.refs.map.leafletElement;
     }
 
@@ -45,8 +44,6 @@ class OwnMap extends React.Component {
             GeoJSON = layer.toGeoJSON();
 
         });
-        console.log(GeoJSON)
-
         this.props.setState("coordinates", GeoJSON.geometry, true);
     }
 

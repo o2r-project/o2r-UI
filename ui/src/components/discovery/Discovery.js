@@ -6,7 +6,6 @@ import L from 'leaflet'
 import prepareQuery from './/queryBuilder'
 import OwnMap, { ref, ref2 } from "./Map"
 import ResultList from './resultList'
-import config from '../../helpers/config';
 
 import './discovery.css'
 
@@ -31,7 +30,7 @@ class Discovery extends Component {
     componentDidMount() {
       this.searchCompendia();
       this.calculateDateRange();
-      document.title = "Discover" + config.title;
+      document.title = "Discover" + config.title; // eslint-disable-line
      }
 
     calculateDateRange = () => {
@@ -87,7 +86,6 @@ class Discovery extends Component {
         const self = this;
         httpRequests.complexSearch(prepareQuery(this.state.keyword, this.state.coordinates, this.state.from, this.state.to, null, null, this.state.libraries))
             .then(function (res) {
-                console.log(res)
                 const result = []
                 for (var erc of res.data.hits.hits) {
                     result.push(erc._source)
@@ -95,7 +93,6 @@ class Discovery extends Component {
                 self.setState({ ERC: result, open: false });
             })
             .catch(function (res) {
-                console.log(res)
             })
     }
 
@@ -103,7 +100,6 @@ class Discovery extends Component {
         const marks = []
         let steps = (max.getUTCFullYear() - min.getUTCFullYear()) / 5 + 1;
         const labels = min.getUTCMonth();
-        console.log(labels)
         let minDate = new Date(min)
         let changeDate = new Date(minDate)
         let maxDate = new Date(max)
@@ -186,7 +182,6 @@ class Discovery extends Component {
         try {
             httpRequests.geocodingRequest(query)
                 .then(function (res) {
-                    console.log(res)
                     const resultBBox = res.data.features[0].bbox
                     if (!resultBBox) { alert("No result found"); return; }
                     const bbox = []

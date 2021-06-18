@@ -43,7 +43,6 @@ class OwnMap extends React.Component {
 
         editHandler._disableLayerEdit(layer)
 
-        console.log("edited")
         var bounds;
         if (this.isEmpty(layer)) {
             return
@@ -91,8 +90,6 @@ class OwnMap extends React.Component {
         
         GeoJSON = uneditedLayerProps;
 
-        console.log(GeoJSON)
-
         let leafletGeoJSON = new L.GeoJSON(GeoJSON);
         let leafletFG = this._editableFG.leafletElement;
         leafletFG.clearLayers()
@@ -132,7 +129,6 @@ class OwnMap extends React.Component {
     }
 
     _onEditStart = (layer) => {
-        console.log(editHandler)
         editHandler._enableLayerEdit(layer)
         this.props.setState("editing", true)
     }
@@ -151,7 +147,6 @@ class OwnMap extends React.Component {
     }
 
     _onMounted = drawControl => {
-        console.log(drawControl)
         drawHandler = drawControl._toolbars.draw._modes.rectangle.handler;
         editHandler = drawControl._toolbars.edit._modes.edit.handler;
 	};

@@ -6,7 +6,7 @@ This project is a re-implementation of the [o2r-platform](https://github.com/o2r
 
 ## Configuration
 
-The API endpoint and the base URL for sharing ERCs on other platforms must be configured in `ui/src/helpers/config.json`.
+The API endpoint and the base URL for sharing ERCs on other platforms must be configured in `ui/public/config.js`.
 
 ## Development environment with docker-compose
 

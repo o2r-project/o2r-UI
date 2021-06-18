@@ -1,7 +1,7 @@
 const axios = require('axios');
-const config = require('./config');
+//const config = require('./config.json');
 const _env = {
-    api: config.baseUrl
+    api: config.baseUrl // eslint-disable-line
 }
 
 function getUser() {

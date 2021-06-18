@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-import config from '../../../helpers/config';
 
 class Privacy extends Component {
 
     componentDidMount(){
-      document.title = "Privacy" + config.title;
+      document.title = "Privacy" + config.title; // eslint-disable-line
 
     }
 

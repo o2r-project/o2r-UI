@@ -59,6 +59,5 @@ export default function prepareQuery(term, coordinates_selected, from, to, start
     if(size){
         query.size = size;
     }
-    console.log(query)
     return query;
 }

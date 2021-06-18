@@ -45,7 +45,7 @@ const DataTable = (props) => {
         case 'application/json':
             return <JSON json={data.data} file={data.datafile} />
         case '.rdata':
-            return <RData rdata={data.data} id={props.data.id} />
+            return <Download file={data.datafile} id={props.data.id} />
         case 'text/plain':
             return <Txt txt={data.data} file={data.datafile} />
         case '.14c':
@@ -53,7 +53,7 @@ const DataTable = (props) => {
         case '.dat':
             return <Dat content={data.data} file={data.datafile} />
         case undefined:
-            return <div>Dataformat not supported</div>
+            return <Download file={data.datafile} id={props.data.id} />
         default:
             return <div>No data</div>
     }

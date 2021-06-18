@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-import config from '../../../helpers/config';
 
 class Impressum extends Component {
 
     componentDidMount(){
-      document.title = "Impressum" + config.title;
+      document.title = "Impressum" + config.title; // eslint-disable-line
 
     }
 

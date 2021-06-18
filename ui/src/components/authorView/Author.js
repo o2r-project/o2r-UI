@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import httpRequests from '../../helpers/httpRequests';
 import ResultList from './resultList'
 import { Grid, Paper } from "@material-ui/core";
-import config from '../../helpers/config';
 
 class Author extends Component {
 
@@ -17,7 +16,7 @@ class Author extends Component {
     }
     componentDidMount() {
         this.getCompendia();
-        document.title = "Author View" + config.title;
+        document.title = "Author View" + config.title; // eslint-disable-line
     }
 
     goToErc = (erc) => {

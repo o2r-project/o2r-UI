@@ -4,12 +4,11 @@ import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex';
 import CodeView from './CodeView/CodeView';
 import DataView from './DataView/DataView';
 import SelectFile from './SelectFile/SelectFile';
-import config from '../../../helpers/config';
 
 class Inspect extends Component {
 
     componentDidMount(){
-      document.title = "Inspect | ERC " + this.props.state.id + config.title;
+      document.title = "Inspect | ERC " + this.props.state.id + config.title; // eslint-disable-line
     }
 
     render() {

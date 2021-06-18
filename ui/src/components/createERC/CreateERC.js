@@ -8,7 +8,7 @@ import SpatioTemporalMetadata from './spatioTemporalMetadata/SpatioTemporalMetad
 import OptionalMetadata from './optionalMetadata/OptionalMetadata'
 import Bindings from './bindings/Bindings';
 import httpRequests from '../../helpers/httpRequests';
-import config from '../../helpers/config';
+
 
 
 
@@ -38,7 +38,7 @@ class CreateERC extends Component {
             spatioTemporalChanged: false,
             authorsValid: false,
             candidate: true,
-            showProgress: false
+            showProgress: false,
         }
     }
 
@@ -55,11 +55,11 @@ class CreateERC extends Component {
                 if( candidate !== true) candidate =false;
                 httpRequests.getFile("compendium/" + self.state.compendium_id + "/data/" + metadata.mainfile)
                     .then(function (res2) {
-                        console.log(res2)
+                        metadata.authors = res.data.metadata.raw.author
                         self.setState({
                             metadata: metadata,
                             originalMetadata: JSON.parse(JSON.stringify(metadata)),
-                            authors: metadata.creators,
+                            authors: metadata.authors,
                             languages: metadata.paperLanguage,
                             keywords: metadata.keywords,
                             candidate: candidate,
@@ -152,7 +152,7 @@ class CreateERC extends Component {
 
     componentDidMount = () => {
       this.getMetadata();
-      document.title = "Create ERC" + config.title;
+      document.title = "Create ERC" + config.title; // eslint-disable-line
     }
 
     handleClose = () => {

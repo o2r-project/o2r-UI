@@ -7,7 +7,6 @@ import ModalVideo from 'react-modal-video';
 
 import './inspectExamples.css';
 import httpRequests from '../../helpers/httpRequests';
-import config from '../../helpers/config.json'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -44,7 +43,8 @@ function SpacingGrid(props) {
                                 </CardActionArea>
                                 <CardActions>
                                     <Grid container>
-                                        <TwitterShareButton url={config.ercUrl + erc.id} >
+                                        <TwitterShareButton url={config.ercUrl + erc.id // eslint-disable-line
+                                        } >
                                             <TwitterIcon
                                                 size={32}
                                                 round
@@ -55,7 +55,9 @@ function SpacingGrid(props) {
                                         >
                                             Go to ERC
                                         </Button>
-                                        <a className="link" href={config.ercUrl + erc.id}>{config.ercUrl + erc.id}</a>
+                                        <a className="link" href={config.ercUrl + erc.id}>{config.ercUrl + erc.id // eslint-disable-line
+                                        }</a>
+
                                     </Grid>
                                 </CardActions>
 
@@ -114,7 +116,6 @@ class InspectExamples extends Component {
     openModal = () => this.setState({ isOpen: true });
 
     render() {
-        console.log(this.state)
         return (
             <div>
                 <h1 style={{ textAlign: 'center', marginBottom: '2%', marginTop: '5%' }}>
