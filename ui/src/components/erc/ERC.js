@@ -248,14 +248,9 @@ class ERC extends React.Component {
     }
 
     handleAlertClose() {
-        if(this.props.ojsView){
-            window.open("https://o2r.uni-muenster.de", "_blank")
-        }
-        else{
         this.props.history.push({
             pathname: '/'
         });
-    }
     }
 
     goToEdit(){
@@ -429,7 +424,7 @@ class ERC extends React.Component {
                         {"The ERC with the ID " + this.state.id + " does not exist or was deleted. \n Please check if you used the correct ID."}
                                     </DialogTitle>
                                     <DialogActions>
-                                        <Button onClick={this.handleAlertClose.bind(this)}> Go To the ERC Overview Page</Button>
+                                        {this.props.ojsView ? "" :<Button onClick={this.handleAlertClose.bind(this)}> Go To the ERC Overview Page</Button>}
                                     </DialogActions>
                                     </div>
                     :
