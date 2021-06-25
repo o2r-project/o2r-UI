@@ -117,7 +117,11 @@ function createShipment(id, recipient){
     var params = new URLSearchParams();
     params.append('compendium_id', id);
     params.append('recipient', recipient);
-    return axios.post(_env.api + 'shipment', params);
+    let config = null;
+    if (recipient == "download"){
+        config = {responseType: 'arraybuffer'}
+    }
+    return axios.post(_env.api + 'shipment', params, config);
 }
 
 function getShipmentsByERCID(id){

@@ -34,10 +34,15 @@ class Shipment extends React.Component {
                     httpRequests.getShipment(shipment)
                         .then((response) => {
                             shipment = response.data
+                            if(shipment.recipient == "download"){
+                                shipment.deposition_url = config.baseUrl + "shipment/" + shipment.id + "/dl"; // eslint-disable-line
+                            }
+                            else{
                             let urls = this.createURL(shipment)
                             shipment.deposition_url = urls.url
                             shipment.doi = urls.doi
                             shipment.image_url = urls.image_url
+                            }
                             let shipments = this.state.shipments;
                             shipments.unshift(response.data);
                             self.setState({ shipments });
@@ -97,13 +102,41 @@ class Shipment extends React.Component {
         self.setState({ showProgress: true, open: true, message: message, backgroundColor: "#004286" })
         httpRequests.createShipment(this.state.id, this.state.value)
             .then((response) => {
-                console.log(response);
                 let shipments = this.state.shipments;
-                let shipment = response.data;
+                let shipment={}
+                if(self.state.value == "download"){
+                    const disposition = response.request.getResponseHeader('Content-Disposition')
+                    console.log(disposition)
+                    var fileName = "";
+                    var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    var matches = filenameRegex.exec(disposition);
+                    console.log(matches)
+                    if (matches != null && matches[1]) {
+                        fileName = matches[1].replace(/['"]/g, '');
+                     }
+                    let blob = new Blob([response.data], { type: 'application/zip' })
+                    const downloadUrl = URL.createObjectURL(blob)
+                    console.log(downloadUrl)
+                    console.log(fileName)
+                    let a = document.createElement("a"); 
+                    a.href = downloadUrl;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    let id = fileName.substring(0, fileName.lastIndexOf("."));
+                    shipment.id = id
+                    shipment.deposition_url = config.baseUrl + "shipment/" + shipment.id + "/dl"; // eslint-disable-line
+                    shipment.recipient = self.state.value
+                }
+                else{
+                shipment = response.data;
+                console.log(shipment)
+                console.log(response)
                 let urls = this.createURL(shipment)
                 shipment.deposition_url = urls.url
                 shipment.doi = urls.doi
                 shipment.image_url = urls.image_url
+                }
                 shipments.unshift(shipment);
                 self.setState({ shipments });
                 message = "sucessfull shipped to " + self.state.value
@@ -221,6 +254,14 @@ class Shipment extends React.Component {
                                                     <a href={shipment.deposition_url}><img src={shipment.image_url} alt="DOI"></img></a> : "" } </p>
                                             </Grid>
                                                 <Grid item xs={3}>
+                                                    {shipment.recipient == "download" ?
+                                                    <div>
+                                                    {shipment.deposition_url ? <Button variant="contained" size="small" color="primary" onClick={() => this.hrefToLink(shipment.deposition_url)}>
+                                                    Download
+                                                    </Button> : ""}
+                                                    </div>
+                                                    : 
+                                                    <div>
                                                     {shipment.status === "shipped" ? <Button variant="contained" size="small" color="primary" onClick={() => this.publishShipment(shipment)}>
                                                         Publish
                                                          </Button> : ""}
@@ -228,7 +269,8 @@ class Shipment extends React.Component {
                                                     <br />
                                                     {shipment.deposition_url ? <Button variant="contained" size="small" color="primary" onClick={() => this.hrefToLink(shipment.deposition_url)}>
                                                         {shipment.status === "shipped" ? "Inspect on" : "View on"} {shipment.recipient}
-                                                    </Button> : ""}
+                                                    </Button> : "" }
+                                                    </div>}
 
                                                 </Grid>
                                             </Grid>
