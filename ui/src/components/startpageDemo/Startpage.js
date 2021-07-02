@@ -42,8 +42,40 @@ class Startpage extends Component {
         });
   }
 
+  submitLink = () => {
+    let self= this;
+    this.setState({open:true, progress: 30, title: "Retreving file from public link"})
+    httpRequests.uploadViaLink(this.state.link, this.state.fileName)
+      .then((response) => {
+        self.setState({open:true, progress: 50})
+        var id= response.data.id
+        var metadata= "";
+        httpRequests
+                .singleCompendium(response.data.id)
+                .then(function(res) {
+                  self.setState({open:true, progress: 80})
+                    metadata=res.data.metadata
+                    return httpRequests.updateMetadata(res.data.id, res.data.metadata.o2r);
+                })
+        self.setState({open:true, progress: 100})
+        this.props.history.push({
+          pathname: '/erc/' + id,
+          state: { data: metadata }
+      });
+
+        });
+  }
+
   handleChange = (event) => {
     this.setState({value : event.target.value});
+  };
+
+  handleLinkChange = (event) => {
+    this.setState({link : event.target.value});
+  };
+
+  handleFileNameChange = (event) => {
+    this.setState({fileName : event.target.value});
   };
 
   handleClose() {
@@ -72,20 +104,7 @@ render() {
             <h1>Create your own Executable Research Compendium (ERC)</h1>
             <div style={{ width: "65%", marginLeft: "auto", marginRight: "auto" }}>
               <div className="instruction">
-                <b>Step 1: Create an R Markdown file including your R analysis</b>
-              </div>
-              <div className="instruction">
-                <b>Step 2: Add metadata to your R Markdown in YAML format like <a target="_blank"  rel="noopener noreferrer" href="https://github.com/o2r-project/erc-examples/blob/master/ERC/Finished/INSYDE/workspace/main.Rmd">here (optional)</a>
-                </b><br />
-              </div>
-              <div className="instruction">
-                <b>Step 3: Run your R Markdown to generate the HTML file</b><br />
-              </div>
-              <div className="instruction">
-                <b>Step 4: Upload your workspace including the code files, data, and the HTML (.zip)</b><br />
-              </div>
-              <div className="instruction">
-                <b>No workspace at hand? Just upload one of our <a target="_blank"  rel="noopener noreferrer" href="https://github.com/o2r-project/erc-examples/tree/master/ERC/Finished">example workspaces</a></b>
+                <b>To get instruction how to create an workspace, please click <a href= "https://o2r.info/pilots/#%EF%B8%8F-information-for-authors" target= "_blank">here </a>.</b>
               </div>
               <Dropzone loggedIn={this.props.loggedIn} setUpperState={this.setUpperState} handleClose={this.handleClose}/>
             </div>
@@ -106,6 +125,20 @@ render() {
               <br />
               <br />
               <Button variant="contained" color="primary" onClick={this.submit}>Submit</Button>
+            </div>
+
+            <div style={{ width: "65%", marginLeft: "auto", marginRight: "auto" }}>
+              <div className="instruction">
+                <b>Upload over a public sciebo url</b>
+              </div>
+              <br />
+              <form noValidate autoComplete="off">
+                <TextField style={{paddingRight: "10px" }} id="outlined-basic" value={this.state.link} label="Link to the folder containing the zip file" variant="outlined" onChange={this.handleLinkChange}/>
+                <TextField id="outlined-basic" value={this.state.fileName} label="Name of the zip file" variant="outlined" onChange={this.handleFileNameChange}/>
+              </form>
+              <br />
+              <br />
+              <Button variant="contained" color="primary" onClick={this.submitLink}>Submit</Button>
             </div>
 
           </div>

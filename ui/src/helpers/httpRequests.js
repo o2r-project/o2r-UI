@@ -163,7 +163,25 @@ function uploadViaZenodo(idOrUrl, path){
     return axios.post(_url, _data);
 }
 
+
+function uploadViaLink(path, fileName){
+    var _url = _env.api + 'compendium/';
+    var path = path
+
+    var _data = {
+        content_type:"workspace",
+        share_url: path,
+    }
+
+    if(fileName){
+        _data.filename= fileName
+    }
+    return axios.post(_url, _data);
+}
+
 module.exports = {
+
+    uploadViaLink: uploadViaLink,
     uploadViaZenodo: uploadViaZenodo,
     getUser: getUser,
     listAllCompendia: listAllCompendia,
