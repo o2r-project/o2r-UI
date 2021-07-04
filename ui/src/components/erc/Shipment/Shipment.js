@@ -212,14 +212,14 @@ class Shipment extends React.Component {
                     <FormControl component="fieldset" >
                         <FormLabel component="legend">Coose destination</FormLabel>
                         <RadioGroup aria-label="gender" name="gender1" value={this.state.value} onChange={this.handleChange}>
-                            <FormControlLabel value="zenodo" control={<Radio />} label="Zenodo" />
-                            <FormControlLabel value="zenodo_sandbox" control={<Radio />} label="Zenodo Sandbox" />
-                            <FormControlLabel value="download" control={<Radio />} label="Download" />
+                            <FormControlLabel id="zenodo" value="zenodo" control={<Radio />} label="Zenodo" />
+                            <FormControlLabel id="zenodo_sandbox" value="zenodo_sandbox" control={<Radio />} label="Zenodo Sandbox" />
+                            <FormControlLabel id="download" value="download" control={<Radio />} label="Download" />
                         </RadioGroup>
                     </FormControl>
                     <br />
                     <br />
-                    <Button onClick={() => this.ship()} variant="contained" disabled={this.state.showProgress}>
+                    <Button onClick={() => this.ship()} id="ship" variant="contained" disabled={this.state.showProgress}>
                         Ship
                 </Button>
                     <br />
@@ -246,10 +246,10 @@ class Shipment extends React.Component {
                                     <CardContent>
                                         <Grid container spacing={3}>
                                             <Grid item xs={9} style={{ "padding-top": "0px" }}>
-                                                <p> <span style={{ "font-weight": "bold" }}> Last modified on: </span> {shipment.last_modified}  <br />
-                                                    <span style={{ "font-weight": "bold" }}> Created by: </span> {shipment.user} <br />
-                                                    <span style={{ "font-weight": "bold" }}> Recipient: </span> {shipment.recipient} <br />
-                                                    <span style={{ "font-weight": "bold" }}> Status: </span> {shipment.status} <br />
+                                                <p> <span style={{ "font-weight": "bold" }} id={"modified" + index}> Last modified on: </span> {shipment.last_modified}  <br />
+                                                    <span style={{ "font-weight": "bold" }} id={"creator" + index}> Created by: </span> {shipment.user} <br />
+                                                    <span style={{ "font-weight": "bold" }} id={"recipient" + index}> Recipient: </span> {shipment.recipient} <br />
+                                                    <span style={{ "font-weight": "bold" }} id={"status" + index} > Status: </span> {shipment.status} <br />
                                                     {shipment.status === "published" ? 
                                                     <a href={shipment.deposition_url}><img src={shipment.image_url} alt="DOI"></img></a> : "" } </p>
                                             </Grid>
