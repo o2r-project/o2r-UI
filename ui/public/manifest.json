@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "o2r UI",
+  "name": "User Interface for the Project Open Reproducible Research",
   "icons": [
     {
       "src": "favicon.ico",

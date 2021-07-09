@@ -38,12 +38,59 @@ class Startpage extends Component {
           pathname: '/erc/' + id,
           state: { data: metadata }
       });
+    })
+      .catch((response) => {
+          if (response.response.status === 401) {
+            self.setState({ title: "ERC Upload failed", errorMessage: "You have to be logged in to upload a Workspace" })
+          } 
+          else {
+            self.setState({ title: "ERC Upload failed", errorMessage: "Wokrspace not found" })
+          }
+        })
+  }
+
+  submitLink = () => {
+    let self= this;
+    this.setState({open:true, progress: 30, title: "Retreving file from public link"})
+    httpRequests.uploadViaLink(this.state.link, this.state.fileName)
+      .then((response) => {
+        self.setState({open:true, progress: 50})
+        var id= response.data.id
+        var metadata= "";
+        httpRequests
+                .singleCompendium(response.data.id)
+                .then(function(res) {
+                  self.setState({open:true, progress: 80})
+                    metadata=res.data.metadata
+                    return httpRequests.updateMetadata(res.data.id, res.data.metadata.o2r);
+                })
+        self.setState({open:true, progress: 100})
+        this.props.history.push({
+          pathname: '/createErc/' + id,
+          state: { data: metadata }
+        })
+      })
+      .catch((response) => {
+        if (response.response.status === 401) {
+          self.setState({ title: "ERC Upload failed", errorMessage: "You have to be logged in to upload a Workspace" })
+        } 
+        else {
+          self.setState({ title: "ERC Upload failed", errorMessage: "Wokrspace not found" })
+        }
 
         });
   }
 
   handleChange = (event) => {
     this.setState({value : event.target.value});
+  };
+
+  handleLinkChange = (event) => {
+    this.setState({link : event.target.value});
+  };
+
+  handleFileNameChange = (event) => {
+    this.setState({fileName : event.target.value});
   };
 
   handleClose() {
@@ -72,20 +119,7 @@ render() {
             <h1>Create your own Executable Research Compendium (ERC)</h1>
             <div style={{ width: "65%", marginLeft: "auto", marginRight: "auto" }}>
               <div className="instruction">
-                <b>Step 1: Create an R Markdown file including your R analysis</b>
-              </div>
-              <div className="instruction">
-                <b>Step 2: Add metadata to your R Markdown in YAML format like <a target="_blank"  rel="noopener noreferrer" href="https://github.com/o2r-project/erc-examples/blob/master/ERC/Finished/INSYDE/workspace/main.Rmd">here (optional)</a>
-                </b><br />
-              </div>
-              <div className="instruction">
-                <b>Step 3: Run your R Markdown to generate the HTML file</b><br />
-              </div>
-              <div className="instruction">
-                <b>Step 4: Upload your workspace including the code files, data, and the HTML (.zip)</b><br />
-              </div>
-              <div className="instruction">
-                <b>No workspace at hand? Just upload one of our <a target="_blank"  rel="noopener noreferrer" href="https://github.com/o2r-project/erc-examples/tree/master/ERC/Finished">example workspaces</a></b>
+                <h3>To get instruction how to create an workspace, please click <a href= "https://o2r.info/pilots/#%EF%B8%8F-information-for-authors" target= "_blank">here </a>.</h3>
               </div>
               <Dropzone loggedIn={this.props.loggedIn} setUpperState={this.setUpperState} handleClose={this.handleClose}/>
             </div>
@@ -104,8 +138,21 @@ render() {
                 <TextField id="outlined-basic" value={this.state.value} label="Zenodo link or DOI" variant="outlined" onChange={this.handleChange}/>
               </form>
               <br />
-              <br />
               <Button variant="contained" color="primary" onClick={this.submit}>Submit</Button>
+            </div>
+
+            <div style={{ width: "65%", marginLeft: "auto", marginRight: "auto", marginTop: "30px" }}>
+              <div className="instruction">
+                <b>Upload over a public sciebo url</b>
+              </div>
+              <br />
+              <form noValidate autoComplete="off">
+                <TextField id="outlined-basic" style ={{textAlign: "left"}} value={this.state.link} label="Link to the folder containing the zip file" variant="outlined" onChange={this.handleLinkChange}/>
+                <span style ={{marginLeft: "20px"}}> </span>
+                <TextField id="outlined-basic" style ={{textAlign: "left"}}  value={this.state.fileName} label="Name of the zip file" variant="outlined" onChange={this.handleFileNameChange}/>
+              </form>
+              <br />
+              <Button variant="contained" color="primary" onClick={this.submitLink}>Submit</Button>
             </div>
 
           </div>

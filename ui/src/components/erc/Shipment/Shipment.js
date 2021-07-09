@@ -34,10 +34,15 @@ class Shipment extends React.Component {
                     httpRequests.getShipment(shipment)
                         .then((response) => {
                             shipment = response.data
+                            if(shipment.recipient == "download"){
+                                shipment.deposition_url = config.baseUrl + "shipment/" + shipment.id + "/dl"; // eslint-disable-line
+                            }
+                            else{
                             let urls = this.createURL(shipment)
                             shipment.deposition_url = urls.url
                             shipment.doi = urls.doi
                             shipment.image_url = urls.image_url
+                            }
                             let shipments = this.state.shipments;
                             shipments.unshift(response.data);
                             self.setState({ shipments });
@@ -97,13 +102,41 @@ class Shipment extends React.Component {
         self.setState({ showProgress: true, open: true, message: message, backgroundColor: "#004286" })
         httpRequests.createShipment(this.state.id, this.state.value)
             .then((response) => {
-                console.log(response);
                 let shipments = this.state.shipments;
-                let shipment = response.data;
+                let shipment={}
+                if(self.state.value == "download"){
+                    const disposition = response.request.getResponseHeader('Content-Disposition')
+                    console.log(disposition)
+                    var fileName = "";
+                    var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    var matches = filenameRegex.exec(disposition);
+                    console.log(matches)
+                    if (matches != null && matches[1]) {
+                        fileName = matches[1].replace(/['"]/g, '');
+                     }
+                    let blob = new Blob([response.data], { type: 'application/zip' })
+                    const downloadUrl = URL.createObjectURL(blob)
+                    console.log(downloadUrl)
+                    console.log(fileName)
+                    let a = document.createElement("a"); 
+                    a.href = downloadUrl;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    let id = fileName.substring(0, fileName.lastIndexOf("."));
+                    shipment.id = id
+                    shipment.deposition_url = config.baseUrl + "shipment/" + shipment.id + "/dl"; // eslint-disable-line
+                    shipment.recipient = self.state.value
+                }
+                else{
+                shipment = response.data;
+                console.log(shipment)
+                console.log(response)
                 let urls = this.createURL(shipment)
                 shipment.deposition_url = urls.url
                 shipment.doi = urls.doi
                 shipment.image_url = urls.image_url
+                }
                 shipments.unshift(shipment);
                 self.setState({ shipments });
                 message = "sucessfull shipped to " + self.state.value
@@ -179,14 +212,14 @@ class Shipment extends React.Component {
                     <FormControl component="fieldset" >
                         <FormLabel component="legend">Coose destination</FormLabel>
                         <RadioGroup aria-label="gender" name="gender1" value={this.state.value} onChange={this.handleChange}>
-                            <FormControlLabel value="zenodo" control={<Radio />} label="Zenodo" />
-                            <FormControlLabel value="zenodo_sandbox" control={<Radio />} label="Zenodo Sandbox" />
-                            <FormControlLabel value="download" control={<Radio />} label="Download" />
+                            <FormControlLabel id="zenodo" value="zenodo" control={<Radio />} label="Zenodo" />
+                            <FormControlLabel id="zenodo_sandbox" value="zenodo_sandbox" control={<Radio />} label="Zenodo Sandbox" />
+                            <FormControlLabel id="download" value="download" control={<Radio />} label="Download" />
                         </RadioGroup>
                     </FormControl>
                     <br />
                     <br />
-                    <Button onClick={() => this.ship()} variant="contained" disabled={this.state.showProgress}>
+                    <Button onClick={() => this.ship()} id="ship" variant="contained" disabled={this.state.showProgress}>
                         Ship
                 </Button>
                     <br />
@@ -213,14 +246,22 @@ class Shipment extends React.Component {
                                     <CardContent>
                                         <Grid container spacing={3}>
                                             <Grid item xs={9} style={{ "padding-top": "0px" }}>
-                                                <p> <span style={{ "font-weight": "bold" }}> Last modified on: </span> {shipment.last_modified}  <br />
-                                                    <span style={{ "font-weight": "bold" }}> Created by: </span> {shipment.user} <br />
-                                                    <span style={{ "font-weight": "bold" }}> Recipient: </span> {shipment.recipient} <br />
-                                                    <span style={{ "font-weight": "bold" }}> Status: </span> {shipment.status} <br />
+                                                <p> <span style={{ "font-weight": "bold" }} id={"modified" + index}> Last modified on: </span> {shipment.last_modified}  <br />
+                                                    <span style={{ "font-weight": "bold" }} id={"creator" + index}> Created by: </span> {shipment.user} <br />
+                                                    <span style={{ "font-weight": "bold" }} id={"recipient" + index}> Recipient: </span> {shipment.recipient} <br />
+                                                    <span style={{ "font-weight": "bold" }} id={"status" + index} > Status: </span> {shipment.status} <br />
                                                     {shipment.status === "published" ? 
                                                     <a href={shipment.deposition_url}><img src={shipment.image_url} alt="DOI"></img></a> : "" } </p>
                                             </Grid>
                                                 <Grid item xs={3}>
+                                                    {shipment.recipient == "download" ?
+                                                    <div>
+                                                    {shipment.deposition_url ? <Button variant="contained" size="small" color="primary" onClick={() => this.hrefToLink(shipment.deposition_url)}>
+                                                    Download
+                                                    </Button> : ""}
+                                                    </div>
+                                                    : 
+                                                    <div>
                                                     {shipment.status === "shipped" ? <Button variant="contained" size="small" color="primary" onClick={() => this.publishShipment(shipment)}>
                                                         Publish
                                                          </Button> : ""}
@@ -228,7 +269,8 @@ class Shipment extends React.Component {
                                                     <br />
                                                     {shipment.deposition_url ? <Button variant="contained" size="small" color="primary" onClick={() => this.hrefToLink(shipment.deposition_url)}>
                                                         {shipment.status === "shipped" ? "Inspect on" : "View on"} {shipment.recipient}
-                                                    </Button> : ""}
+                                                    </Button> : "" }
+                                                    </div>}
 
                                                 </Grid>
                                             </Grid>
