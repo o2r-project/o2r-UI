@@ -28,12 +28,12 @@ const Header = ( props ) => {
         <Button target="_blank" rel="noopener" color="inherit" href="http://www.dlib.org/dlib/january17/nuest/01nuest.html">
           Learn more about ERCs
         </Button>
-        <BrowserRouter>
-          {/*<NavLink id="link" to="/discover">
+        <BrowserRouter forceRefresh>
+          {/*<a id="link" href="/discover">
             <Button color="inherit" label="test">
               Discover ERC
             </Button>
-          </NavLink>*/}
+          </a>*/}
           <NavLink id="link" to={"/author/" + props.userOrcid}>
             {props.loggedIn ?
               <Button color="inherit">
@@ -58,7 +58,7 @@ const Header = ( props ) => {
 const Footer = () => {
   return(
     <div className="mui-container mui--text-center" id="footer">
-      <BrowserRouter>
+      <BrowserRouter forceRefresh>
       <div id="links">
           <NavLink id="link" to="/">Home</NavLink> |&nbsp;
           <a id="link" href="http://www.dlib.org/dlib/january17/nuest/01nuest.html">About ERC</a> |&nbsp;

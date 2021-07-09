@@ -1,4 +1,4 @@
-const timeout = 60000;
+const timeout = 200000;
 const archiver = require('archiver');
 var fs = require("fs");
 const { resolve } = require('path');
@@ -185,7 +185,7 @@ describe("Inspect ERC", () => {
      test("Inspect Logs", async () => {
         
         
-        await page.waitForTimeout(10000)
+        await page.waitForTimeout(20000)
         await page.click("#logs")
         await page.waitForTimeout(3000)
         
@@ -198,7 +198,7 @@ describe("Inspect ERC", () => {
 
      test("Inspect Results", async () => {
         
-        await page.waitForTimeout(2000)
+        await page.waitForTimeout(20000)
         await page.click('#close')
         await page.waitForTimeout(4000)
         await page.click('#panel1d-header')
@@ -238,5 +238,18 @@ describe("Inspect ERC", () => {
 
         expect(html).toBe("Create new Shipment:");
      })
+
+    test("Ship to download", async () => {
+        await page.click('#download')
+        await page.click('#ship')
+        await page.waitForTimeout(2000)
+        await page.screenshot({ path: 'screenshots/bindingsShipped.jpg', type: 'jpeg' });
+
+        const handle = await page.$("#recipient0");
+        const html = await page.evaluate(handle => handle.innerText, handle);
+
+        expect(html).toBe("Recipient: ");
+    })
+
  
  });
