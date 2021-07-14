@@ -53,5 +53,6 @@ services:
       - ui
     volumes:
       - "./dev/nginx-dev-local-microservices.conf:/etc/nginx/nginx.conf:ro"
+      - "./dev/nginx-cors.conf:/etc/nginx/nginx-cors.conf:ro"
     ports:
       - "80:80"
