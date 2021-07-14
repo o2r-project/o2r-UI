@@ -3,7 +3,6 @@ import React from 'react';
 import CSV from './CSV/CSV';
 import Txt from './Txt/Txt';
 import JSON from './JSON/JSON';
-import RData from './RData/RData';
 import FourteenC from './FourteenC/FourteenC';
 import Dat from './Dat/Dat';
 import Download from './Download/Download';

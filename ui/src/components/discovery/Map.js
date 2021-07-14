@@ -4,7 +4,6 @@ import { Map, TileLayer, FeatureGroup } from 'react-leaflet'
 import { EditControl } from 'react-leaflet-draw'
 
 let GeoJSON
-let firstTime = true;
 export let ref;
 export let ref2;
 export let ref3
@@ -19,7 +18,6 @@ class OwnMap extends React.Component {
     };
 
     componentDidMount() {
-        firstTime = true;
         ref2 = this.refs.map.leafletElement;
     }
 

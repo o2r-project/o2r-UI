@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card, TextField, Button, MenuItem, CardContent, Grid, Paper, IconButton } from "@material-ui/core";
+import { Card, TextField, Button, CardContent, Grid, Paper, IconButton } from "@material-ui/core";
 
-import { Field, FieldArray } from 'formik';
+import { FieldArray } from 'formik';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import '../requiredMetadata/form.css'
@@ -16,7 +16,6 @@ export const OptionalForm = props => {
         touched,
         handleChange,
         setFieldTouched,
-        setValues,
     } = props;
 
 
@@ -168,7 +167,7 @@ export const OptionalForm = props => {
                                     </div>
                                 )}
                             />
-                            <h4>Paper languages as <a href="https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes" target="_blank" title="Wikipedias list of ISO 639 codes">ISO 639-1 codes</a></h4>
+                            <h4>Paper languages as <a href="https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes" target="_blank" rel="noreferrer" title="Wikipedias list of ISO 639 codes">ISO 639-1 codes</a></h4>
                             <FieldArray
                                 name='paperLanguage'
                                 render={arrayHelpers => (

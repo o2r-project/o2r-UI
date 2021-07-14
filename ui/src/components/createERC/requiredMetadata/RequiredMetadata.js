@@ -26,7 +26,7 @@ const validationSchema = Yup.object({
         .required('Abstract is required')
         .min(5, 'Abstract must be at least 5 characters long'),
     publicationDate: Yup.date()
-        .max(new Date, 'No Valid Date')
+        .max(new Date(), 'No Valid Date')
         .required("Date is required"),
     displayFile: Yup.string()
         .required('DisplayFile is required'),
