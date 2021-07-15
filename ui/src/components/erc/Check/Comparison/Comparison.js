@@ -21,7 +21,6 @@ class Comparison extends Component {
     };
 
     componentDidMount() {
-        const self = this;
         document.title = "Comparison | ERC " + this.props.id + config.title; // eslint-disable-line
     }
 

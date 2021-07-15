@@ -84,7 +84,7 @@ services:
   #    - elasticsearch
 
   muncher:
-    image: o2rproject/o2r-muncher:0.30.0
+    image: o2rproject/o2r-muncher:0.32.0
     depends_on:
       - mongodb
       - configmongodb
@@ -110,18 +110,6 @@ services:
       - "MUNCHER_CONTAINERIT_BASE_IMAGE=rocker/geospatial:4.0.5"
       #- "MUNCHER_META_TOOL_CONTAINER=meta:dev"
       #- MUNCHER_ALLOW_INVALID_METADATA=true
-
-  informer:
-    image: o2rproject/o2r-informer:0.5.0
-    depends_on:
-      - mongodb
-      - configmongodb
-    environment:
-      - "INFORMER_MONGODB=mongodb://mongodb:27017/"
-      - INFORMER_MONGODB_HOST=mongodb
-      - INFORMER_MONGODB_PORT=27017
-      - INFORMER_PORT=8082
-      - DEBUG=informer,informer:*
 
   bouncer:
     image: o2rproject/o2r-bouncer:0.16.0
@@ -221,7 +209,6 @@ services:
       - bouncer
       #- finder
       - muncher
-      - informer
       - shipper
       - bindings
       - ui

@@ -5,8 +5,7 @@ import { v1 as uuid } from 'uuid';
 
 import httpRequests from '../../../helpers/httpRequests';
 import './check.css';
-import Comparison from './Comparison/Comparison';
-import { withRouter, Route } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { useTheme } from '@material-ui/core/styles';
 
 
@@ -59,8 +58,8 @@ class ListJobs extends Component {
 
     handleClickOpen(job, hash) {
         let result = false
-        if(hash=="result"){
-            result=true
+        if(hash === "result"){
+            result = true;
         }
         this.props.history.push({
             pathname: '/erc/' + this.props.id + '/job/' + job.id + "#"+ hash,

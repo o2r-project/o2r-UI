@@ -118,7 +118,7 @@ function createShipment(id, recipient){
     params.append('compendium_id', id);
     params.append('recipient', recipient);
     let config = null;
-    if (recipient == "download"){
+    if (recipient === "download"){
         config = {responseType: 'arraybuffer'}
     }
     return axios.post(_env.api + 'shipment', params, config);
@@ -166,8 +166,7 @@ function uploadViaZenodo(idOrUrl, path){
 
 function uploadViaLink(path, fileName){
     var _url = _env.api + 'compendium/';
-    var path = path
-
+    
     var _data = {
         content_type:"workspace",
         share_url: path,

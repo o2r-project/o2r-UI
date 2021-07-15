@@ -263,7 +263,6 @@ class ERC extends React.Component {
 
 
     render() {
-        const classes = this.useStyles
         return (
             <div className="Erc" >
               {this.state.isPreview ? <div><Box

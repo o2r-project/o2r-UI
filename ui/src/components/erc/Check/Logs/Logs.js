@@ -1,11 +1,8 @@
 import React, { Component } from "react";
 import { Button, Dialog, AppBar, Toolbar, Slide, DialogContent, Typography } from "@material-ui/core";
-import {v1 as uuid} from 'uuid';
 import logo from '../../../../assets/img/o2r-logo-only-white.svg';
 import { withRouter } from 'react-router-dom';
 import Highlight from 'react-highlight.js';
-
-import httpRequests from '../../../../helpers/httpRequests';
 import './logs.css';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -104,10 +101,6 @@ class LogsView extends Component{
 }
 
 class Logs extends Component {
-
-    constructor(props) {
-        super(props);
-    }
 
     render() {
         return (
