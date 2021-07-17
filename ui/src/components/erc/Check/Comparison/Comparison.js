@@ -95,7 +95,7 @@ class Comparison extends Component {
                     </AppBar>
                     {this.props.job.status === 'success' ?
                         <div className="compare_">
-                            <h4 className="title"  color="primary"> Original results </h4>
+                            <h4 className="title"  color="primary" id="originalCaption"> Original results </h4>
                             <h4 className="title" color="primary"  > Reproduced results </h4>
 
                             <Iframe className="display" id={'frame1'} url={config.baseUrl + "job/" + this.props.job.id + "/data/" + this.props.displayfile // eslint-disable-line
@@ -104,7 +104,7 @@ class Comparison extends Component {
                             }></Iframe>
                         </div> :
                         <div className="compare_">
-                            <h4 className="title_" color="primary" > Original results </h4>
+                            <h4 className="title_" color="primary" id="originalCaption"> Original results </h4>
                             <h4 className="title_" color="primary"> Reproduced results </h4>
                             <h4 className="title_" color="primary" id="diffCaption"> Differences between original and reproduced results </h4>
 
