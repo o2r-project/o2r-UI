@@ -22,11 +22,11 @@ function Status(status) {
                 return <span style={{ "color": theme.palette.failure.main }}>Reproduction Failed (click on "Show Result" for details)</span>
             }
         case 'running':
-            return <span className="running">Running <CircularProgress size={15} /></span>
+            return <span className="running" style={{ color:  theme.palette.primary.main}} >Running <CircularProgress size={15} /></span>
         case 'skipped':
-            return <span className="skipped">Skipped</span>
+            return <span className="skipped" >Skipped</span>
         case 'queued':
-            return <span className="queued">Queued</span>
+            return <span className="queued" style={{ color:  theme.palette.warning.main}} >Queued</span>
         default:
             return <span>No Status</span>
     };

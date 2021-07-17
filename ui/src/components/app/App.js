@@ -19,7 +19,7 @@ import ERC from '../erc/ERC';
 
 const Header = ( props ) => {
   return (
-    <AppBar id="header">
+    <AppBar style={{backgroundColor : o2rTheme.palette.primary.main}} id="header">
       <Toolbar>
       <a href="/"><img src={logo} alt="o2r" id="headerLogo"/></a>
         <Typography variant="h4" color="inherit" style={{ flex: 1 }}>
@@ -57,7 +57,7 @@ const Header = ( props ) => {
 
 const Footer = () => {
   return(
-    <div className="mui-container mui--text-center" id="footer">
+    <div style={{backgroundColor : o2rTheme.palette.primary.main}} className="mui-container mui--text-center" id="footer">
       <BrowserRouter forceRefresh>
       <div id="links">
           <NavLink id="link" to="/">Home</NavLink> |&nbsp;

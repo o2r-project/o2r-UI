@@ -324,7 +324,7 @@ class SpatioTemporalMetadata extends React.Component {
                     Go To ERC
                   </Button>}
             </Card>
-            <div id={"errorMessage"}>
+            <div color="failure" id={"errorMessage"}>
               {!valid2 ? "Required Metadata is not valid" : ""} <br />
               {this.state.editing ? "Please stop or cancel the editing of the bbox" : ""}
               {this.state.drawing ? "Please finish drawing a new bbox" : ""}

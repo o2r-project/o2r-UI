@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import './comparison.css';
 import * as $ from 'jquery';
 
+
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -94,8 +95,8 @@ class Comparison extends Component {
                     </AppBar>
                     {this.props.job.status === 'success' ?
                         <div className="compare_">
-                            <h4 className="title" style={{ marginLeft: "1%" }}> Original results </h4>
-                            <h4 className="title"> Reproduced results </h4>
+                            <h4 className="title"  color="primary"> Original results </h4>
+                            <h4 className="title" color="primary"  > Reproduced results </h4>
 
                             <Iframe className="display" id={'frame1'} url={config.baseUrl + "job/" + this.props.job.id + "/data/" + this.props.displayfile // eslint-disable-line
                             }></Iframe> 
@@ -103,9 +104,9 @@ class Comparison extends Component {
                             }></Iframe>
                         </div> :
                         <div className="compare_">
-                            <h4 className="title_" > Original results </h4>
-                            <h4 className="title_"> Reproduced results </h4>
-                            <h4 className="title_" id="diffCaption"> Differences between original and reproduced results </h4>
+                            <h4 className="title_" color="primary" > Original results </h4>
+                            <h4 className="title_" color="primary"> Reproduced results </h4>
+                            <h4 className="title_" color="primary" id="diffCaption"> Differences between original and reproduced results </h4>
 
                             <Iframe className="display_" id={'frame1'} url={config.baseUrl + "compendium/" + this.props.job.compendium_id + "/data/" + this.props.displayfile // eslint-disable-line
                             }></Iframe>
