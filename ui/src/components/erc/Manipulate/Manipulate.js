@@ -266,7 +266,7 @@ class Manipulate extends React.Component {
                             : ''}
                         <FigureComparison settings={this.state.settings} settingsText={this.state.settingsText} />
                         <br />
-                        {this.state.processURL ? "" : <img src={this.state.fullUrl} alt="Image Loading Failed" onLoad={this.imageLoaded} onError={this.imageLoaded} style={{ maxWidth: "100%" }} />}
+                        {this.state.processURL ? "" : <img src={this.state.fullUrl} alt="Loading Failed" onLoad={this.imageLoaded} onError={this.imageLoaded} style={{ maxWidth: "100%" }} />}
                     </div>
                 </div>
             </div>

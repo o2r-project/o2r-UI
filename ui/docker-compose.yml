@@ -43,7 +43,7 @@ services:
       - "1234:1234"
 
   muncher:
-    image: o2rproject/o2r-muncher:0.30.0
+    image: o2rproject/o2r-muncher:0.32.0
     depends_on:
       - mongodb
       - configmongodb
@@ -64,23 +64,12 @@ services:
       #- "MUNCHER_META_TOOL_CONTAINER=meta:dev"
       #- MUNCHER_META_TOOL_CONTAINER_RM=false
       - MUNCHER_SAVE_IMAGE_TARBALL=false # saves space and time during dev
-      - MUNCHER_CONTAINERIT_IMAGE=o2rproject/containerit:geospatial-0.6.0.9000
+      - MUNCHER_CONTAINERIT_IMAGE=o2rproject/containerit:geospatial-0.6.0.9004
+      #- MUNCHER_CONTAINERIT_IMAGE=containerit:geospatial-dev
       - MUNCHER_CONTAINERIT_FILTER_BASE_IMAGE_PKGS=true
-      - "MUNCHER_CONTAINERIT_BASE_IMAGE=rocker/geospatial:3.6.2"
+      - "MUNCHER_CONTAINERIT_BASE_IMAGE=rocker/geospatial:4.0.5"
       #- "MUNCHER_META_TOOL_CONTAINER=meta:dev"
       #- MUNCHER_ALLOW_INVALID_METADATA=true
-      
-  informer:
-    image: o2rproject/o2r-informer:0.5.0
-    depends_on:
-      - mongodb
-      - configmongodb
-    environment:
-      - "INFORMER_MONGODB=mongodb://mongodb:27017/"
-      - INFORMER_MONGODB_HOST=mongodb
-      - INFORMER_MONGODB_PORT=27017
-      - INFORMER_PORT=8082
-      - DEBUG=informer,informer:*
 
   bouncer:
     image: o2rproject/o2r-bouncer:0.16.0
@@ -99,7 +88,7 @@ services:
       - OAUTH_STARTUP_FAIL_ON_ERROR=false
 
   shipper:
-    image: o2rproject/o2r-shipper:e1ce0e6
+    image: o2rproject/o2r-shipper:8f95fd6
     depends_on:
       - mongodb
       - configmongodb
@@ -143,7 +132,6 @@ services:
     depends_on:
       - bouncer
       - muncher
-      - informer
       - shipper
       - bindings
     ports:

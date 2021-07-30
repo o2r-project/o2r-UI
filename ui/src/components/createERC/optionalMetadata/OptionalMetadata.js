@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { React, Component } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { withRouter } from 'react-router-dom';
@@ -18,7 +18,7 @@ Yup.addMethod(Yup.array, 'unique', function (message, mapper = a => a) {
 const validationSchema = Yup.object({
     doi: Yup.string()
         .matches(
-          new RegExp( '(?:^' + '(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![%"#? ])\\S)+)' +'$)'), {excludeEmptyString: true, message: "Must be a valid DOI!"}
+          new RegExp('(?:^(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![%"#? ])\\S)+)$)'), {excludeEmptyString: true, message: "Must be a valid DOI!"}
         ),
     paperLanguage: Yup.array().of(
             Yup.string().oneOf(languageCodes.map(language => language.code), "${value} is not a valid ISO 639-1 code. For a full list see above.")
@@ -29,9 +29,6 @@ const validationSchema = Yup.object({
     )
 });
 
-
-
-var refs2;
 
 class OptionalMetadata extends Component {
     constructor(props) {

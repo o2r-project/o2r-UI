@@ -120,7 +120,7 @@ var SymbolTable = /** @class */ (function () {
         }
     };
     SymbolTable.prototype.lookupSpec = function (map, parts) {
-        if (!map || parts.length == 0) {
+        if (!map || parts.length === 0) {
             return undefined;
         }
         var spec = map[parts[0]];

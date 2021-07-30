@@ -263,7 +263,6 @@ class ERC extends React.Component {
 
 
     render() {
-        const classes = this.useStyles
         return (
             <div className="Erc" >
               {this.state.isPreview ? <div><Box
@@ -288,8 +287,8 @@ class ERC extends React.Component {
                         : ""}
  </div> 
                 : ""}
-                <Box  borderTop={1} borderColor="silver">
-                <ReflexContainer style={this.props.ojsView? {height: "100vh"}:{ height: "87vh" }} orientation="vertical">
+                <Box  borderTop={1} borderColor="silver"> 
+                <ReflexContainer style={this.props.ojsView? {height: "calc(100vh - 2.5rem)"}:{ height: "calc(100vh - 2.5rem - 64px)" }} orientation="vertical">
                     <ReflexElement style={{ overflow: "hidden" }}>
                         <Grid container>
                             <Grid item xs={4}>

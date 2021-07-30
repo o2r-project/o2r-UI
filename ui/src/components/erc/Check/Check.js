@@ -5,8 +5,7 @@ import { v1 as uuid } from 'uuid';
 
 import httpRequests from '../../../helpers/httpRequests';
 import './check.css';
-import Comparison from './Comparison/Comparison';
-import { withRouter, Route } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { useTheme } from '@material-ui/core/styles';
 
 
@@ -23,11 +22,11 @@ function Status(status) {
                 return <span style={{ "color": theme.palette.failure.main }}>Reproduction Failed (click on "Show Result" for details)</span>
             }
         case 'running':
-            return <span className="running">Running <CircularProgress size={15} /></span>
+            return <span className="running" style={{ color:  theme.palette.primary.main}} >Running <CircularProgress size={15} /></span>
         case 'skipped':
-            return <span className="skipped">Skipped</span>
+            return <span className="skipped" >Skipped</span>
         case 'queued':
-            return <span className="queued">Queued</span>
+            return <span className="queued" style={{ color:  theme.palette.warning.main}} >Queued</span>
         default:
             return <span>No Status</span>
     };
@@ -59,8 +58,8 @@ class ListJobs extends Component {
 
     handleClickOpen(job, hash) {
         let result = false
-        if(hash=="result"){
-            result=true
+        if(hash === "result"){
+            result = true;
         }
         this.props.history.push({
             pathname: '/erc/' + this.props.id + '/job/' + job.id + "#"+ hash,

@@ -1,10 +1,14 @@
 import React from 'react';
 import { Card, TextField, Button, MenuItem, CardContent, Grid, Paper } from "@material-ui/core";
 import Authors from './Authors/Authors';
+import { useTheme } from '@material-ui/core/styles';
+
 import './form.css'
 export let valid2;
 
 export const Form = props => {
+
+    const theme = useTheme();
 
     const {
         values: { title, abstract, publicationDate, displayFile, mainFile, textLicense, dataLicense, codeLicense },
@@ -228,17 +232,17 @@ export const Form = props => {
                                 }}
                             >
                                 {(Array.from(props.textLicenses, x => x.id).includes(props.originalMetadata.textLicense) || props.originalMetadata.textLicense === "") ? "" :
-                                    <MenuItem id={"licenseItem"}   key={props.originalMetadata.textLicense} value={props.originalMetadata.textLicense}>
+                                    <MenuItem style={{borderColor : theme.palette.warning.main, color:  theme.palette.warning.main}} id={"licenseItem"}   key={props.originalMetadata.textLicense} value={props.originalMetadata.textLicense}>
                                         {props.originalMetadata.textLicense}
                                     </MenuItem>}
-                                <MenuItem id={"menuItem"} key={props.leastRestrictiveData[0]} value={props.leastRestrictiveData[0]}>
+                                <MenuItem style={{backgroundColor : theme.palette.primary.main}} id={"menuItem"} key={props.leastRestrictiveData[0]} value={props.leastRestrictiveData[0]}>
                                     Least Restrictive
                                     </MenuItem>
-                                <MenuItem id={"menuItem"} key={props.mostRestrictiveData[0]} value={props.mostRestrictiveData[0]}>
+                                <MenuItem style={{backgroundColor : theme.palette.primary.main}} id={"menuItem"} key={props.mostRestrictiveData[0]} value={props.mostRestrictiveData[0]}>
                                     Most Restrictive
                                     </MenuItem>
                                 {props.textLicenses.map(option => (
-                                    <MenuItem key={option.id} value={option.id}>
+                                    <MenuItem  key={option.id} value={option.id}>
                                         {option.title}
                                     </MenuItem>
                                 ))}
@@ -261,13 +265,13 @@ export const Form = props => {
                                 }}
                             >
                                 {(Array.from(props.codeLicenses, x => x.id).includes(props.originalMetadata.codeLicense) || props.originalMetadata.codeLicense === "") ? "" :
-                                    <MenuItem id={"licenseItem"} key={props.originalMetadata.codeLicense} value={props.originalMetadata.codeLicense}>
+                                    <MenuItem id={"licenseItem"} style={{borderColor : theme.palette.warning.main, color:  theme.palette.warning.main}}  key={props.originalMetadata.codeLicense} value={props.originalMetadata.codeLicense}>
                                         {props.originalMetadata.codeLicense}
                                     </MenuItem>}
-                                <MenuItem id={"menuItem"} key={props.leastRestrictiveData[1]} value={props.leastRestrictiveData[1]}>
+                                <MenuItem id={"menuItem"} style={{backgroundColor : theme.palette.primary.main}} key={props.leastRestrictiveData[1]} value={props.leastRestrictiveData[1]}>
                                     Least Restrictive
                                     </MenuItem>
-                                <MenuItem id={"menuItem"} key={props.mostRestrictiveData[1]} value={props.mostRestrictiveData[1]}>
+                                <MenuItem id={"menuItem"} style={{backgroundColor : theme.palette.primary.main}} key={props.mostRestrictiveData[1]} value={props.mostRestrictiveData[1]}>
                                     Most Restrictive
                                     </MenuItem>
                                 {props.codeLicenses.map(option => (
@@ -295,14 +299,14 @@ export const Form = props => {
                                 }}
                             >
                                 {(Array.from(props.dataLicenses, x => x.id).includes(props.originalMetadata.dataLicense) || props.originalMetadata.dataLicense === "") ? "" :
-                                    <MenuItem id={"licenseItem"}  key={props.originalMetadata.dataLicense} value={props.originalMetadata.dataLicense}>
+                                    <MenuItem id={"licenseItem"}  style={{borderColor : theme.palette.warning.main, color:  theme.palette.warning.main}}  key={props.originalMetadata.dataLicense} value={props.originalMetadata.dataLicense}>
                                         {props.originalMetadata.dataLicense}
                                     </MenuItem>
                                 }
-                                <MenuItem id={"menuItem"} key={props.leastRestrictiveData[2]} value={props.leastRestrictiveData[2]}>
+                                <MenuItem id={"menuItem"} style={{backgroundColor : theme.palette.primary.main}} key={props.leastRestrictiveData[2]} value={props.leastRestrictiveData[2]}>
                                     Least Restrictive
                                     </MenuItem>
-                                <MenuItem id={"menuItem"} key={props.mostRestrictiveData[2]} value={props.mostRestrictiveData[2]}>
+                                <MenuItem id={"menuItem"} style={{backgroundColor : theme.palette.primary.main}} key={props.mostRestrictiveData[2]} value={props.mostRestrictiveData[2]}>
                                     Most Restrictive
                                     </MenuItem>
                                 {props.dataLicenses.map(option => (
@@ -337,9 +341,8 @@ export const Form = props => {
 
                         {props.candidate
                           ? <Button
-                          id="goTo"
-                              type="button"
                               id="goTo"
+                              type="button"
                               onClick={goToErc}>
                               Preview
                             </Button>
@@ -354,7 +357,7 @@ export const Form = props => {
                             </Button>
                        }
                     </Paper>
-                    <div id={"errorMessage"}>
+                    <div id={"errorMessage"} style={{color:  theme.palette.failure.main}} >
                         {errors.title ? errors.title : ""}
                         {errors.title ? <br /> : ""}
                         {errors.abstract ? errors.abstract : ""}
