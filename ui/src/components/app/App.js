@@ -55,19 +55,39 @@ const Header = ( props ) => {
   );
 };
 
+const calculateBrightness =(colour) => {
+  colour = colour.substring(1,colour.length)
+  var aRgbHex = colour.match(/.{1,2}/g);
+  var rgb = [
+      parseInt(aRgbHex[0], 16),
+      parseInt(aRgbHex[1], 16),
+      parseInt(aRgbHex[2], 16)
+  ];
+  
+  console.log(rgb)
+  // http://www.w3.org/TR/AERT#color-contrast
+  const brightness = Math.round(((parseInt(rgb[0]) * 299) +
+                      (parseInt(rgb[1]) * 587) +
+                      (parseInt(rgb[2]) * 114)) / 1000);
+  console.log(brightness)
+  const textColour = (brightness > 125) ? 'black' : 'white';
+  return textColour;
+}
 const Footer = () => {
+
+  const textColour = calculateBrightness(o2rTheme.palette.primary.main)
   return(
     <div style={{backgroundColor : o2rTheme.palette.primary.main}} className="mui-container mui--text-center" id="footer">
       <BrowserRouter forceRefresh>
-      <div id="links">
-          <NavLink id="link" to="/">Home</NavLink> |&nbsp;
-          <a id="link" href="http://www.dlib.org/dlib/january17/nuest/01nuest.html">About ERC</a> |&nbsp;
-          <a id="link" href="https://o2r.info/erc-spec/">ERC specification</a> |&nbsp;
-          <NavLink id="link" to="/impressum">Impressum</NavLink> |&nbsp;
-          <NavLink id="link" to="/privacy">Privacy Policy</NavLink> |&nbsp;
-          <a id="link" href="https://o2r.info/api/">API</a> |&nbsp;
-          <a id="link" href="https://o2r.uni-muenster.de/api/v1/">Endpoint</a> |&nbsp;
-          <a id="link" href="https://github.com/o2r-project/reference-implementation">Implementation</a> |&nbsp;
+      <div id="links" style={{color: textColour}}>
+          <NavLink style={{color: textColour}} id="link" to="/">Home</NavLink> |&nbsp;
+          <a style={{color: textColour}} id="link" href="http://www.dlib.org/dlib/january17/nuest/01nuest.html">About ERC</a> |&nbsp;
+          <a style={{color: textColour}} id="link" href="https://o2r.info/erc-spec/">ERC specification</a> |&nbsp;
+          <NavLink style={{color: textColour}} id="link" to="/impressum">Impressum</NavLink> |&nbsp;
+          <NavLink  style={{color: textColour}}id="link" to="/privacy">Privacy Policy</NavLink> |&nbsp;
+          <a style={{color: textColour}} id="link" href="https://o2r.info/api/">API</a> |&nbsp;
+          <a style={{color: textColour}} id="link" href="https://o2r.uni-muenster.de/api/v1/">Endpoint</a> |&nbsp;
+          <a style={{color: textColour}} id="link" href="https://github.com/o2r-project/reference-implementation">Implementation</a> |&nbsp;
           Version&nbsp;<code>#dev#</code>
       </div>
       </BrowserRouter>
@@ -161,9 +181,14 @@ class App extends Component {
 
       <BrowserRouter>
         <div className="content" id="mainView" style={{maxHeight: "100%", marginTop: "0px"}}>
-          <Route path="/" component={(props) => <ERC {...props} id={this.state.id} userLevel={this.state.level} ojsView={this.state.ojsView} />}></Route>
+        <Route path="/erc/:id/job/:jobId" component={(props) => <JobsRender {...props} id={this.state.id} ojsView={this.state.ojsView}> </JobsRender>} ></Route>
+          <Route path="/impressum" component={Impressum}/>
+          <Route path="/privacy" component={Privacy}/>
+          <Route exact path="/" component={(props) => <ERC {...props} id={this.state.id} userLevel={this.state.level} ojsView={this.state.ojsView} />}></Route>
+
         </div>
       </BrowserRouter>
+      <Footer></Footer>
 
 
       </MuiThemeProvider>
