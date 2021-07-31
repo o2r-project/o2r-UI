@@ -3,5 +3,4 @@ const config = {
     "ercUrl": "http://localhost/erc/",
     "title": " | o2r Demoserver",
     "ojsView": false,
-    "ERCGalleyPrimaryColour" : "#FF0000",
 }
