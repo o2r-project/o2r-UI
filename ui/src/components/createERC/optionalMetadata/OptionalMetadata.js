@@ -1,4 +1,4 @@
-import { React, Component } from 'react';
+import React, {Component } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { withRouter } from 'react-router-dom';

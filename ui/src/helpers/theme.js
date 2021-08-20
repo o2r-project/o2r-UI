@@ -1,6 +1,6 @@
-import {createTheme} from '@material-ui/core/styles';
+import {createMuiTheme} from '@material-ui/core/styles';
 
-const o2rTheme = createTheme({
+const o2rTheme = createMuiTheme({
     palette: {
         primary : {
             main: config.ojsView ? config.ERCGalleyPrimaryColour : '#004286', //eslint-disable-line
