@@ -203,12 +203,13 @@ describe("Inspect ERC", () => {
         await page.waitForTimeout(4000)
         await page.click('#panel1d-header')
         await page.click("#result")
+        await page.waitForTimeout(4000)
         
         await page.screenshot({ path: 'screenshots/dummyResult.jpg', type: 'jpeg' });
-        const handle = await page.$("#diffCaption");
+        const handle = await page.$("#originalCaption");
         const html = await page.evaluate(handle => handle.innerText, handle);
 
-        expect(html).toBe("Differences between original and reproduced results");
+        expect(html).toBe("Original results");
      }, timeout)
 
 

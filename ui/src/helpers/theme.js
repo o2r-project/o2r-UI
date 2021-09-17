@@ -3,7 +3,7 @@ import {createMuiTheme} from '@material-ui/core/styles';
 const o2rTheme = createMuiTheme({
     palette: {
         primary : {
-            main: '#004286'
+            main: config.ojsView ? config.ERCGalleyPrimaryColour : '#004286', //eslint-disable-line
         },
         secondary: {
             main: '#220086'

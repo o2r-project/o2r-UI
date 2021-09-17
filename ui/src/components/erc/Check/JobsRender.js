@@ -82,6 +82,15 @@ class jobsRender extends Component {
             console.log(res2)
         })
 }
+
+handleClose = () => {
+    const self = this
+    this.props.history.push({
+        pathname: self.props.ojsView ? "/" : '/erc/' + this.state.id,
+        hash: "#Check",
+        state: { id : this.state.id}
+    });
+}
     
 
 getDisplayfile(){
@@ -96,9 +105,9 @@ getDisplayfile(){
     render() {
         return(
             this.state.result? 
-            <Comparison job={this.state.job} id={this.state.id} displayfile={this.state.displayfile}>
+            <Comparison job={this.state.job} id={this.state.id} displayfile={this.state.displayfile} handleClose={this.handleClose} ojsView={this.props.ojsView}>
             </Comparison>:
-            <Logs job={this.state.job} id={this.state.id}>
+            <Logs job={this.state.job} id={this.state.id} handleClose={this.handleClose} ojsView={this.props.ojsView}>
             </Logs>
         )
     }

@@ -156,7 +156,7 @@ class ERC extends React.Component {
                 }
                 let candidate = response.data.candidate
                 const data = response.data.metadata.o2r;
-                data["creators"] = response.data.metadata.raw.author
+                data["creators"] = response.data.metadata.raw ? response.data.metadata.raw.author : response.data.metadata.o2r.creators
                 let dataset = '';
                 if (Array.isArray(data.inputfiles)) {
                     dataset = data.inputfiles[0];
@@ -287,8 +287,8 @@ class ERC extends React.Component {
                         : ""}
  </div> 
                 : ""}
-                <Box  borderTop={1} borderColor="silver">
-                <ReflexContainer style={this.props.ojsView? {height: "100vh"}:{ height: "87vh" }} orientation="vertical">
+                <Box  borderTop={1} borderColor="silver"> 
+                <ReflexContainer style={this.props.ojsView? {height: "calc(100vh - 2.5rem)"}:{ height: "calc(100vh - 2.5rem - 64px)" }} orientation="vertical">
                     <ReflexElement style={{ overflow: "hidden" }}>
                         <Grid container>
                             <Grid item xs={4}>
