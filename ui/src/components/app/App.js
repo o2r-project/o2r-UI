@@ -22,9 +22,9 @@ const Header = ( props ) => {
     <AppBar style={{backgroundColor : o2rTheme.palette.primary.main}} id="header">
       <Toolbar>
       <a href="/"><img src={logo} alt="o2r" id="headerLogo"/></a>
-        <Typography variant="h4" color="inherit" style={{ flex: 1 }}>
+       {!props.ojsView ?<Typography variant="h4" color="inherit" style={{ flex: 1 }}>
           <Button style={{marginLeft: "120px", fontWeight : "bold"}} color="inherit" href={"/"}>HOME</Button>
-        </Typography>
+        </Typography> : ""}
         <Button target="_blank" rel="noopener" color="inherit" href="http://www.dlib.org/dlib/january17/nuest/01nuest.html">
           Learn more about ERCs
         </Button>
@@ -73,18 +73,18 @@ const calculateBrightness =(colour) => {
   const textColour = (brightness > 125) ? 'black' : 'white';
   return textColour;
 }
-const Footer = () => {
+const Footer = (props) => {
 
   const textColour = calculateBrightness(o2rTheme.palette.primary.main)
   return(
     <div style={{backgroundColor : o2rTheme.palette.primary.main}} className="mui-container mui--text-center" id="footer">
       <BrowserRouter forceRefresh>
       <div id="links" style={{color: textColour}}>
-          <NavLink style={{color: textColour}} id="link" to="/">Home</NavLink> |&nbsp;
+          {props.ojsView ? "" : <NavLink style={{color: textColour}} id="link" to="/">Home</NavLink>} |&nbsp; 
           <a style={{color: textColour}} id="link" href="http://www.dlib.org/dlib/january17/nuest/01nuest.html">About ERC</a> |&nbsp;
           <a style={{color: textColour}} id="link" href="https://o2r.info/erc-spec/">ERC specification</a> |&nbsp;
-          <NavLink style={{color: textColour}} id="link" to="/impressum">Impressum</NavLink> |&nbsp;
-          <NavLink  style={{color: textColour}}id="link" to="/privacy">Privacy Policy</NavLink> |&nbsp;
+          {props.ojsView ? <a style={{color: textColour}} id="link" href="https://o2r.uni-muenster.de/impressum">Impressum</a> :<NavLink style={{color: textColour}} id="link" to="/impressum">Impressum</NavLink>} |&nbsp;
+          {props.ojsView ? <a style={{color: textColour}} id="link" href="https://o2r.uni-muenster.de/privacy">Privacy Policy</a> :<NavLink  style={{color: textColour}}id="link" to="/privacy">Privacy Policy</NavLink>} |&nbsp;
           <a style={{color: textColour}} id="link" href="https://o2r.info/api/">API</a> |&nbsp;
           <a style={{color: textColour}} id="link" href="https://o2r.uni-muenster.de/api/v1/">Endpoint</a> |&nbsp;
           <a style={{color: textColour}} id="link" href="https://github.com/o2r-project/reference-implementation">Implementation</a> |&nbsp;
@@ -151,6 +151,7 @@ class App extends Component {
       <MuiThemeProvider theme={o2rTheme}>
       <div id="pageContainer">
       <Header
+        ojsView={this.state.ojsView}
         loggedIn={this.state.loggedIn}
         login={() => this.user()}
         userName={this.state.userName}
@@ -172,7 +173,9 @@ class App extends Component {
         </div>
       </div>
       </BrowserRouter>
-      <Footer></Footer>
+      <Footer
+      ojsView={this.state.ojsView}
+      ></Footer>
       </div>
       </MuiThemeProvider> :
 
@@ -181,14 +184,12 @@ class App extends Component {
 
       <BrowserRouter>
         <div className="content" id="mainView" style={{maxHeight: "100%", marginTop: "0px"}}>
-        <Route path="/erc/:id/job/:jobId" component={(props) => <JobsRender {...props} id={this.state.id} ojsView={this.state.ojsView}> </JobsRender>} ></Route>
-          <Route path="/impressum" component={Impressum}/>
-          <Route path="/privacy" component={Privacy}/>
-          <Route exact path="/" component={(props) => <ERC {...props} id={this.state.id} userLevel={this.state.level} ojsView={this.state.ojsView} />}></Route>
-
+          <Route path="/" component={(props) => <ERC {...props} id={this.state.id} userLevel={this.state.level} ojsView={this.state.ojsView} />}></Route>
         </div>
       </BrowserRouter>
-      <Footer></Footer>
+      <Footer
+      ojsView={this.state.ojsView}
+      ></Footer>
 
 
       </MuiThemeProvider>

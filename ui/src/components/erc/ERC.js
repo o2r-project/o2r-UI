@@ -156,7 +156,7 @@ class ERC extends React.Component {
                 }
                 let candidate = response.data.candidate
                 const data = response.data.metadata.o2r;
-                data["creators"] = response.data.metadata.raw.author
+                data["creators"] = response.data.metadata.raw ? response.data.metadata.raw.author : response.data.metadata.o2r.creators
                 let dataset = '';
                 if (Array.isArray(data.inputfiles)) {
                     dataset = data.inputfiles[0];
@@ -384,7 +384,7 @@ class ERC extends React.Component {
                         }
                         {this.state.tabValue === 1 &&
                             <div>
-                                <Check id={this.state.id} displayfile={this.state.displayfile}></Check>
+                                <Check id={this.state.id} displayfile={this.state.displayfile} ojsView={this.props.ojsView}></Check>
                             </div>
                         }
                         {this.state.tabValue === 2 &&

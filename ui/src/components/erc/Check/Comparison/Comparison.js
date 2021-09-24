@@ -16,7 +16,7 @@ class Comparison extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            open: true,
+            open: this.props.open,
             job: this.props.job
         }
     };

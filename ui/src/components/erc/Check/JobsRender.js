@@ -105,9 +105,9 @@ getDisplayfile(){
     render() {
         return(
             this.state.result? 
-            <Comparison job={this.state.job} id={this.state.id} displayfile={this.state.displayfile} handleClose={this.handleClose} ojsView={this.props.ojsView}>
+            <Comparison job={this.state.job} id={this.state.id} displayfile={this.state.displayfile} handleClose={this.handleClose} ojsView={this.props.ojsView} open={true}>
             </Comparison>:
-            <Logs job={this.state.job} id={this.state.id} handleClose={this.handleClose} ojsView={this.props.ojsView}>
+            <Logs job={this.state.job} id={this.state.id} handleClose={this.handleClose} ojsView={this.props.ojsView} open={true}>
             </Logs>
         )
     }

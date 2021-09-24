@@ -7,6 +7,8 @@ import httpRequests from '../../../helpers/httpRequests';
 import './check.css';
 import { withRouter } from 'react-router-dom';
 import { useTheme } from '@material-ui/core/styles';
+import Comparison from './Comparison/Comparison'
+import Logs from './Logs/Logs'
 
 
 function Status(status) {
@@ -22,11 +24,11 @@ function Status(status) {
                 return <span style={{ "color": theme.palette.failure.main }}>Reproduction Failed (click on "Show Result" for details)</span>
             }
         case 'running':
-            return <span className="running" style={{ color:  theme.palette.primary.main}} >Running <CircularProgress size={15} /></span>
+            return <span className="running" style={{ color: theme.palette.primary.main }} >Running <CircularProgress size={15} /></span>
         case 'skipped':
             return <span className="skipped" >Skipped</span>
         case 'queued':
-            return <span className="queued" style={{ color:  theme.palette.warning.main}} >Queued</span>
+            return <span className="queued" style={{ color: theme.palette.warning.main }} >Queued</span>
         default:
             return <span>No Status</span>
     };
@@ -38,7 +40,9 @@ class ListJobs extends Component {
         super(props);
         this.state = {
             expanded: props.runningJob ? props.jobs[0].id : 'panel1',
-            open: false
+            comparisonOpen: false,
+            logsOpen: false,
+            jobOpen: null
         }
     }
 
@@ -58,13 +62,29 @@ class ListJobs extends Component {
 
     handleClickOpen(job, hash) {
         let result = false
-        if(hash === "result"){
+        if (hash === "result") {
             result = true;
         }
-        this.props.history.push({
-            pathname: '/erc/' + this.props.id + '/job/' + job.id + "#"+ hash,
-            state: { job: job, runningJob: this.props.runningJob, displayfile: this.props.displayfile, result: result}
-        });
+        if (this.props.ojsView) {
+            if (result) {
+                this.setState({ "jobOpen": job, "comparisonOpen": true })
+            }
+            else {
+                this.setState({ "jobOpen": job, "logsOpen": true })
+            }
+        }
+        else {
+
+            this.props.history.push({
+                pathname: '/erc/' + this.props.id + '/job/' + job.id + "#" + hash,
+                state: { job: job, runningJob: this.props.runningJob, displayfile: this.props.displayfile, result: result }
+            });
+        }
+    }
+
+    handleOJSClose() {
+        const self= this;
+        self.setState({ "comparisonOpen": false, "logsOpen": false })
     }
 
     render() {
@@ -93,20 +113,27 @@ class ListJobs extends Component {
                                     id="result"
                                     style={{ marginTop: "5%",marginRight:"10%", width: "150px", }}
                                 >
-                                    Show result
+                            Show result
                                 </Button>
                                 <Button variant="contained" color="primary"
                                     onClick={() => this.handleClickOpen(job, "logs")}
                                     id="logs"
                                     style={{ marginTop: "5%", width: "150px", }}
                                 >
-                                    Show logs
+                            Show logs
                                 </Button>
                             </div>
                         </AccordionDetails>
                     </Accordion>
                 ))}
+                {this.state.comparisonOpen?
+                <Comparison job={this.state.jobOpen} id={this.props.id} displayfile={this.props.displayfile} handleClose={()=> this.handleOJSClose()} ojsView={this.props.ojsView} open={this.state.comparisonOpen}>
+                </Comparison> : "" }
+                {this.state.logsOpen?
+                <Logs job={this.state.jobOpen} id={this.props.id} handleClose={() => this.handleOJSClose()} ojsView={this.props.ojsView} open={this.state.logsOpen}>
+                </Logs>  :""}
             </div>
+
         );
     }
 
@@ -243,6 +270,7 @@ class Check extends Component {
                             displayfile={this.props.displayfile}
                             id={this.props.id}
                             history={this.props.history}
+                            ojsView={this.props.ojsView}
                         >
                         </ListJobs> : ''}
                     {this.state.jobs.length > 0 ?
@@ -252,6 +280,7 @@ class Check extends Component {
                             displayfile={this.props.displayfile}
                             id={this.props.id}
                             history={this.props.history}
+                            ojsView={this.props.ojsView}
                         >
                         </ListJobs> : ''}
                 </div>
