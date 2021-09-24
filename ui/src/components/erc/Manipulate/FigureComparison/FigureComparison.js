@@ -33,6 +33,7 @@ function ComparisonView(props) {
 
     const handleClose = () => {
         window.history.back();
+        setOpen(false)
     }
 
     const handleTabChange = (evt, newValue) => {

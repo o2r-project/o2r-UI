@@ -384,7 +384,7 @@ class ERC extends React.Component {
                         }
                         {this.state.tabValue === 1 &&
                             <div>
-                                <Check id={this.state.id} displayfile={this.state.displayfile}></Check>
+                                <Check id={this.state.id} displayfile={this.state.displayfile} ojsView={this.props.ojsView}></Check>
                             </div>
                         }
                         {this.state.tabValue === 2 &&

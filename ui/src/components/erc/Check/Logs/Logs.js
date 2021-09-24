@@ -14,14 +14,7 @@ class LogsView extends Component{
 
     constructor(props) {
         super(props);
-        this.state = { open: true, job: props.job }
-    };
-
-    componentDidMount() {
-        const self = this;
-        if (this.props.job) {
-            self.setState({ open: true })
-        }
+        this.state = { open: this.props.open, job: props.job }
     }
 
   
@@ -99,7 +92,7 @@ class Logs extends Component {
     render() {
         return (
             <div>
-                <LogsView logs={this.props.logs} job={this.props.job} location={this.props.location} history={this.props.history} id={this.props.id} handleClose={this.props.handleClose} ojsView={this.props.ojsView}></LogsView>
+                <LogsView logs={this.props.logs} job={this.props.job} location={this.props.location} history={this.props.history} id={this.props.id} handleClose={this.props.handleClose} ojsView={this.props.ojsView} open={this.props.open}></LogsView>
             </div>
         );
     }
