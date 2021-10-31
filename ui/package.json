@@ -45,9 +45,14 @@
   },
   "scripts": {
     "start": "react-scripts start --loglevel debug",
-    "build": "react-scripts build",
+    "build": "react-scripts build && npm run build-rename",
     "test": "jest --runInBand --detectOpenHandles",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build-rename": "npm run build-rename-js && npm run build-rename-css && npm run build-rename-js2 && npm run build-rename-css2",
+    "build-rename-js": "renamer --find '/main\\.[^\\.]+\\.chunk.js/g' --replace 'main.chunk.js' build/static/js/*.js",
+    "build-rename-css": "renamer --find '/main\\.[^\\.]+\\.chunk.css/g' --replace 'main.chunk.css' build/static/css/*.css",
+    "build-rename-js2": "renamer --find '/2\\.[^\\.]+\\.chunk.js/g' --replace '2.chunk.js' build/static/js/*.js",
+    "build-rename-css2": "renamer --find '/2\\.[^\\.]+\\.chunk.css/g' --replace '2.chunk.css' build/static/css/*.css"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -58,9 +63,10 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "jest": "26.6.0",
     "jest-puppeteer": "^4.4.0",
-    "puppeteer": "^5.5.0"
+    "puppeteer": "^5.5.0",
+    "renamer": "^4.0.0"
   }
 }
