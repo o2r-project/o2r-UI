@@ -43,7 +43,7 @@ jobs:
 
     - name: Create React Build
       working-directory: ./ui
-      run: sudo npm run build
+      run: sudo npm run ojsbuild
 
     - name: Zip Buiĺd folder
       uses: papeloto/action-zip@v1

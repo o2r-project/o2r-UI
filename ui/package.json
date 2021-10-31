@@ -45,7 +45,8 @@
   },
   "scripts": {
     "start": "react-scripts start --loglevel debug",
-    "build": "react-scripts build && npm run build-rename",
+    "build": "react-scripts build",
+    "ojsbuild": "react-scripts build && npm run build-rename",
     "test": "jest --runInBand --detectOpenHandles",
     "eject": "react-scripts eject",
     "build-rename": "npm run build-rename-js && npm run build-rename-css && npm run build-rename-js2 && npm run build-rename-css2",
