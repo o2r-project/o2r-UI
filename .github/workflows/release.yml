@@ -45,6 +45,18 @@ jobs:
       working-directory: ./ui
       run: sudo npm run ojsbuild
 
+    - name: change css1
+      run: sudo sed -i "s/\/static\/css\/main\.[^=]*\.chunk\.css/\/static\/css\/main\.chunk\.css/g" ui/build/index.html
+
+    - name: change css2
+      run: sudo sed -i "s/\/static\/css\/2\.[^=]*\.chunk\.css/\/static\/css\/2\.chunk\.css/g" ui/build/index.html
+
+    - name: change js1
+      run: sudo sed -i "s/\/static\/js\/main\.[^=]*\.chunk\.js/\/static\/js\/main\.chunk\.js/g" ui/build/index.html
+
+    - name: change js2
+      run: sudo sed -i "s/\/static\/js\/2\.[^=]*\.chunk\.js/\/static\/js\/2\.chunk\.js/g" ui/build/index.html
+
     - name: Zip Buiĺd folder
       uses: papeloto/action-zip@v1
       with:
