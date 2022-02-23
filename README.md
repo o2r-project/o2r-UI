@@ -8,6 +8,7 @@ This project is a re-implementation of the [o2r-platform](https://github.com/o2r
 
 The API endpoint and the base URL for sharing ERCs on other platforms must be configured in `ui/public/config.js`.
 
+
 ## Development environment with docker-compose
 
 You can start all required o2r microservices (using latest images from [Docker Hub](https://hub.docker.com/r/o2rproject)) with just two commands using `docker-compose` (version `1.20.0+`) and Docker (version `1.18.0+`).
@@ -84,6 +85,9 @@ docker-compose down -v
 docker-compose up --build
 ```
 After the build the packages are available to use.
+
+
+**Attention!** If apache is running, it may interfere with the nginx container. You may have to stop the apache service in order to run the platform successfully. See [here](https://github.com/o2r-project/o2r-UI/issues/241#issue-1147911506) for more information.
 
 ## Create a release
 
