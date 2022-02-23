@@ -12,9 +12,8 @@ RUN R -e 'install.packages(c("truncnorm"))'
 #update of package raster needed to run specific bindings
 RUN R -e 'install.packages(c("raster"))' 
 
-
 # based on https://gist.github.com/remarkablemark/aacf14c29b3f01d6900d13137b21db3a
-RUN apt-get update \
+RUN apt-get --allow-releaseinfo-change update \
     && apt-get install -y curl \
     && apt-get -y autoclean
 
